@@ -8,6 +8,23 @@ function UI() {
     //////////////////////////////////////////
     
     var ui = this;
+    
+    var COL_VLX = "#aa2200";
+    var COL_VLY = "#22aa00";
+    var COL_VLZ = "#2175aa";
+    var COL_HORIZ = "#aaaaaa";
+    var COL_PRINCIPAL = "#ffaa00";
+    var COL_ORIGIN = "#f0f0f0";
+    
+    
+    var colXAxis = "#aa2200";
+    var colYAxis = "#22aa00";
+    var colZAxis = "#2175aa";
+    var colHorizon = "#aaaaaa";
+    var colPP = "#ffaa00";
+    var colOrigin = "#f0f0f0";
+    var selectionRadius = 8;
+    
     var canvasContainer;
     var canvasImage;
     var canvasOverlay;
@@ -27,6 +44,96 @@ function UI() {
         //TODO
     }
     
+    getCurrentImageRectSc = function()
+    {
+        var w = canvasRow.width();
+        var h = canvasContainer.height();
+
+        var wIm = this.image != null ? this.image.naturalWidth : w;
+        var hIm = this.image != null ? this.image.naturalHeight : h;
+    
+        var wScale = w / wIm;
+        var hScale = h / hIm;
+    
+        var scale = hScale > wScale ? wScale : hScale;
+        var wR = scale * wIm;
+        var hR = scale * hIm;
+        var dx = 0.5 * (w - wR);
+        var dy = 0.5 * (h - hR);
+    
+        return [dx, dy, wR, hR];
+    }
+    
+    canvasToRelImage = function(x, y)
+    {
+        var rect = getCurrentImageRectSc();
+    
+        //position in image coordinates
+        var xIm = x - rect[0];
+        var yIm = y - rect[1];
+    
+        var xImRel = Math.min(1.0, Math.max(0.0, xIm / rect[2]));
+        var yImRel = Math.min(1.0, Math.max(0.0, (rect[3] - yIm) / rect[3]));
+    
+        return [xImRel, yImRel];
+    }
+
+    relImageToCanvas = function(x, y)
+    {
+        var rect = getCurrentImageRectSc();
+        //console.log("x, y " + x + ", " + y);
+        var xIm = rect[0] + x * rect[2];
+        var yIm = rect[1] + (1 - y) * rect[3];
+    
+        return [xIm, yIm];
+    }
+    
+    drawLineSegment = function(ctx, start, end, col, endMarkers)
+    {
+        ctx.strokeStyle = col;
+        ctx.fillStyle = col;
+        
+        var p0 = relImageToCanvas(start[0], start[1]);
+        var p1 = relImageToCanvas(end[0], end[1]);
+    
+        ctx.beginPath();
+        ctx.moveTo(p0[0], p0[1]);
+        ctx.lineTo(p1[0], p1[1]);
+        ctx.stroke();
+    
+        if (endMarkers)
+        {
+            drawControlPoint(ctx, start, col, true);
+            drawControlPoint(ctx, end, col, true);
+        }
+    }
+    
+    /**
+     * Draws a single line segment control point at a
+     * given position, using a given context.
+     */
+    drawControlPoint = function(ctx, pos, col, fill)
+    {
+        ctx.strokeStyle = col;
+        ctx.fillStyle = col;
+        
+        var p0 = relImageToCanvas(pos[0], pos[1]);
+        ctx.beginPath();
+        ctx.arc(p0[0], p0[1], selectionRadius, 0 , 2 * Math.PI, false);
+
+        if (fill)
+        {
+            ctx.fill();
+        }
+        else
+        {
+            ctx.stroke();
+        }
+    
+        ctx.closePath();     
+    }
+    
+    
     this.redraw = function() {
         var cr = canvasRow;
         var cc = canvasContainer;
@@ -40,50 +147,69 @@ function UI() {
         {
             aspect = this.image.naturalHeight / this.image.naturalWidth;
         }
-        
-        //overlay
+
         var w = cr.width();
         var h = aspect * w;
         
         cc.width(w);
         cc.height(h);
         
-        oc.attr('width', w);
-        oc.attr('height', h);
-        
-        if (this.image)
+        var ctx = ic[0].getContext('2d');
+        ctx.clearRect(0, 0, w, h);
+        if (this.image && this.state.drawImage)
         {
             ic.attr('width', w);
             ic.attr('height', h);
+            var r = getCurrentImageRectSc();
             var ctx = ic[0].getContext('2d');
-            ctx.drawImage(this.image, 0, 0, w, h);
+            ctx.drawImage(this.image, r[0], r[1], r[2], r[3]);
         }
         
+        
+        
+        //overlay
         var ctx = oc[0].getContext('2d');
-        ctx.clearRect(0, 0, w, h);
+        oc.attr('width', w);
+        oc.attr('height', h);
+        
         
         ctx.lineWidth = 1;
     
-        //draw vanishing lines and vanishing points
-        var col = "#aa2200";
-        ctx.strokeStyle = col;
-        ctx.fillStyle = col;
+        //draw control points
+        if (this.state.drawCP) {
         
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(w, h);
-        ctx.stroke();
+            drawLineSegment(ctx, this.state.cpX0Start, this.state.cpX0End, colXAxis, true);
+            drawLineSegment(ctx, this.state.cpX1Start, this.state.cpX1End, colXAxis, true);
+            
+            if (this.state.numVPs > 1) {
+                drawLineSegment(ctx, this.state.cpY0Start, this.state.cpY0End, colYAxis, true);
+                drawLineSegment(ctx, this.state.cpY1Start, this.state.cpY1End, colYAxis, true);
+            }
         
-        ctx.beginPath();
-        ctx.moveTo(w, 0);
-        ctx.lineTo(0, h);
-        ctx.stroke();
+            if (this.state.numVPs > 2) {
+                drawLineSegment(ctx, this.state.cpZ0Start, this.state.cpZ0End, colZAxis, true);
+                drawLineSegment(ctx, this.state.cpZ1Start, this.state.cpZ1End, colZAxis, true);
+            }
+    
+            if (this.state.numVPs == 1) {
+                var start = this.state.manualHorizon ? this.state.cpHorizonStart : [0.1, 0.5];
+                var end = this.state.manualHorizon ? this.state.cpHorizonEnd : [0.9, 0.5];
+                drawLineSegment(ctx, 
+                    start, 
+                    end, 
+                    colHorizon, 
+                    this.state.manualHorizon);
+                }
         
+                drawControlPoint(ctx, this.state.cpOrigin, colOrigin, true);
+                drawControlPoint(ctx, this.state.cpPP, colPP, this.state.numVPs > 2);
+        }
     };
     
     this.onNumVanishingPointsChanged = function() {
     
          var val = $("input[name='radio_num_vps']:checked").val();
+         this.state.numVPs = val;
      
      
          var show1Vp = val == 1;
@@ -106,22 +232,28 @@ function UI() {
                  $(this).hide();
              }
          });
+         
+         this.redraw();
     }
     
     this.setImageVisible = function(on) {
-        
+        this.state.drawImage = on;
+        this.redraw();
     }
     
     this.setControlPointsVisible = function(on) {
-        
+        this.state.drawCP = on;
+        this.redraw();
     }
     
     this.setGridVisible = function(on) {
-        
+        this.state.drawGrid = on;
+        this.redraw();
     }
     
     this.setManualHorizon = function(on) {
-        
+        this.state.manualHorizon = on;
+        this.redraw();
     }
     
     this.onLoadImageUrl = function() {
@@ -164,7 +296,8 @@ function UI() {
     }
     
     this.onCenterPrincipalPoint = function() {
-        
+        this.state.cpPP = [0.5, 0.5];
+        this.redraw();
     }
     
     this.setInfoLabelText = function(message) {
@@ -179,31 +312,31 @@ function UI() {
     onMouseMoveOnCanvas = function(event) {
         var x = event.pageX - $(this).offset().left;
         var y = event.pageY - $(this).offset().top;
-        console.log("onMouseMoveOnCanvas: " + x + ", " + y);
+        //console.log("onMouseMoveOnCanvas: " + x + ", " + y);
     }
     
     onMouseDownOnCanvas = function(event) {
         var x = event.pageX - $(this).offset().left;
         var y = event.pageY - $(this).offset().top;
-        console.log("onMouseDownOnCanvas: " + x + ", " + y);
+        //console.log("onMouseDownOnCanvas: " + x + ", " + y);
     }
      
     onMouseEnterCanvas = function(event) {
         var x = event.pageX - $(this).offset().left;
         var y = event.pageY - $(this).offset().top;
-        console.log("onMouseEnterCanvas: " + x + ", " + y);
+        //console.log("onMouseEnterCanvas: " + x + ", " + y);
     }
     
     onMouseLeaveCanvas = function(event) {
         var x = event.pageX - $(this).offset().left;
         var y = event.pageY - $(this).offset().top;
-        console.log("onMouseLeaveCanvas: " + x + ", " + y);
+        //console.log("onMouseLeaveCanvas: " + x + ", " + y);
     }
     
     onMouseUpOnCanvas = function(event) {
         var x = event.pageX - $(this).offset().left;
         var y = event.pageY - $(this).offset().top;
-        console.log("onMouseUpOnCanvas: " + x + ", " + y);
+        //console.log("onMouseUpOnCanvas: " + x + ", " + y);
     }
     
     onDragOverCanvas = function(event) {
@@ -239,8 +372,6 @@ function UI() {
                 ui.image.src = evt.target.result;
             };
             reader.readAsDataURL(file);
-        
-            $('#imageURL').val("")
         }
         else
         {
@@ -248,7 +379,11 @@ function UI() {
             return;
         }
         
-
+        if (!ui.image)
+        {
+            ui.showErrorMessage('Something went wrong loading the image.');
+            return;
+        }
 
         ui.image.onload = function()
         {
@@ -382,7 +517,17 @@ function UI() {
                 cpHorizonStart: [0.1, 0.5],
                 cpHorizonEnd: [0.9, 0.5],
         
-                cpOrigin: [0.5, 0.5]
+                cpOrigin: [0.5, 0.5],
+                cpPP: [0.1, 0.1],
+                
+                numVPs: 2,
+                manualHorizon: true,
+                
+                drawImage: true,
+                drawCP: true,
+                drawGrid: true,
+                
+                
             } 
         }
         
