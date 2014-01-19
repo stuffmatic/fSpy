@@ -131,5 +131,5 @@ $(document).ready(function() {
     
     
     createCameraPresets();
-    onNumVanishingPointsChanged();
+    
 });

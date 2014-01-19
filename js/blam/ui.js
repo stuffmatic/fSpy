@@ -25,7 +25,7 @@ blam.ui = (function() {
         cc.width(w);
         cc.height(h);
         
-        var ctx = oc[0].getContext('2d');
+        var ctx = ic[0].getContext('2d');
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         
     };
@@ -57,15 +57,62 @@ blam.ui = (function() {
          });
     }
     
+    this.setImageVisible = function(on) {
+        
+    }
+    
+    this.setControlPointsVisible = function(on) {
+        
+    }
+    
+    this.setGridVisible = function(on) {
+        
+    }
+    
+    this.setManualHorizon = function(on) {
+        
+    }
+    
+    this.onLoadImageUrl = function() {
+        
+    }
+    
+    this.onSaveSession = function() {
+        
+    }
+    
+    this.onLoadSession = function() {
+        
+    }
+    
+    this.onResetSession = function() {
+        
+    }
+    
+    this.onCenterPrincipalPoint = function() {
+        
+    }
+    
+    this.showErrorMessage = function(message) {
+        this.errorMessageP.text(message);
+        this.errorModal.foundation('reveal', 'open');
+    }
+    
     this.init = function() {
         
-        //cache elements
+        //////////////////////////////////
+        //   cache elements
+        //////////////////////////////////
         this.canvasContainer = $("#canvas_container");
         this.canvasImage = $("#canvas_image");
         this.canvasOverlay = $("#canvas_overlay");
         this.canvasRow = $("#canvas_row");
+        this.errorModal = $("#modal_error_message");
+        this.errorMessageP = $("#p_error_message");        
         
-        //hook up event callbacks
+        //////////////////////////////////
+        //   hook up event callbacks
+        //////////////////////////////////
         var ui = this;
         
         $("input[name='radio_num_vps']").change(
@@ -76,6 +123,53 @@ blam.ui = (function() {
         
         $(window).resize(function(){
             ui.redraw();
+        });
+        
+        //checkboxes
+        $("#checkbox_view_image").change(function(){
+            var on = $(this).is(":checked");
+            ui.setImageVisible(on);
+        });
+        
+        $("#checkbox_view_cp").change(function(){
+            var on = $(this).is(":checked");
+            ui.setControlPointsVisible(on);
+        });
+        
+        $("#checkbox_view_grid").change(function(){
+            var on = $(this).is(":checked");
+            ui.setGridVisible(on);
+        });
+        
+        $("#checkbox_manual_horizon").change(function(){
+            var on = $(this).is(":checked");
+            ui.setManualHorizon(on);
+        });
+        
+        //buttons
+        $("#button_load_image_url").click(function(){
+            ui.onLoadImageUrl();
+            return false;
+        });
+        
+        $("#button_session_save").click(function(){
+            ui.onSaveSession();
+            return false;
+        });
+        
+        $("#button_session_load").click(function(){
+            ui.onLoadSession();
+            return false;
+        });
+        
+        $("#button_session_reset").click(function(){
+            ui.onResetSession();
+            return false;
+        });
+        
+        $("#button_on_center_pp").click(function(){
+            ui.onCenterPrincipalPoint();
+            return false;
         });
         
         
