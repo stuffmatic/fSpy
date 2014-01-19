@@ -69,7 +69,6 @@ function createCameraPresets()
         ["Canon 1D", 27.9, 18.6],
         ["Canon 1DS", 36, 24],
         ["Canon 5D", 36, 24],
-        ["Canon 5D", 36, 24],
         ["Canon 7D", 22.3, 14.9],
         ["Canon 60D", 22.3, 14.9],
         ["Canon 500D", 22.3, 14.9],
@@ -115,6 +114,8 @@ function createCameraPresets()
 }
 
 $(document).ready(function() {
+    
+    
     
     //check HTML5 compatibility
     var errorList = checkBrowserCompatibility();
