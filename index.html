@@ -1,0 +1,168 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BLAM</title>
+    <link rel="stylesheet" href="css/foundation.css" />
+    <script src="js/modernizr.js"></script>
+  </head>
+  <body>
+    
+    <div class="row">
+      <div class="small-12 columns">
+        <h3>BLAM <small>Interactive HTML5 camera calibration</small></h3>
+      </div>
+    </div>
+    <hr/>
+    <div class="row">
+      <div class="small-12 columns">
+        <div id="canvas_container">
+          <canvas id="canvas_image"></canvas>
+          <canvas id="canvas_overlay"></canvas>
+        </div>
+      </div>
+    </div>
+    <hr/>
+    
+    <div class="row">
+      <div class="small-12 columns text-center">
+        <div id="info_label">Info label</div>
+      </div>
+    </div>
+    
+    <hr/>
+    
+    <div class="row">
+      <div class="medium-6 columns">
+        <h3>Calibration settings</h3>
+        <div class="row collapse">
+          <div class="small-10 columns">
+            <input id="textfield_image_url" type="text" placeholder="Image URL">
+          </div>
+          <div class="small-2 columns">
+            <a id="button_load_image_url" href="#" class="button postfix">Load</a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-4 columns">
+            <a id="button_session_save" href="#" class="button postfix">Save</a>
+          </div>
+          <div class="small-4 columns">
+            <a id="button_session_load" href="#" class="button postfix">Load</a>
+          </div>
+          <div class="small-4 columns">
+            <a id="button_session_reset" href="#" class="button postfix">Reset</a>
+          </div>
+        </div>
+        
+        <hr/>
+        
+        <div class="row">
+          <div class="small-12 columns">
+            <input id="checkbox_view_image" checked="checked" type="checkbox"><label for="checkbox_view_image">Image</label>
+            <input id="checkbox_view_cp" checked="checked" type="checkbox"><label for="checkbox_view_cp">Control points</label>
+            <input id="checkbox_view_grid" checked="checked" type="checkbox"><label for="checkbox_view_grid">Grid</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-4 columns left inline ">
+            <label>Vanishing points</label>
+          </div>
+          <div class="small-8 columns">
+            <input type="radio" name="radio_num_vps" value="1" id="radio_num_vps_1">
+            <label for="radio_num_vps_1">1</label>
+            <input type="radio" name="radio_num_vps" checked="checked" value="2" id="radio_num_vps_2">
+            <label for="radio_num_vps_2">2</label>
+            <input type="radio" name="radio_num_vps" value="3" id="radio_num_vps_3">
+            <label for="radio_num_vps_3">3</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 columns">
+            <input class="1vp" id="checkbox_manual_horizon" checked="checked" type="checkbox">
+            <label class="1vp" for="checkbox_manual_horizon">Manually define horizon angle</label>
+            <label class="1vp">Focal length (mm)</label>
+            <input class="1vp" id="textfield_1vp_focal_length" type="text" placeholder="50" />
+            <a id="button_center_pp" href="#" class="button expand postfix 1vp 2vp">Center principal point</a>
+          </div>
+        </div>
+      </div>
+      <div class="medium-6 columns">
+        <h3>Camera data</h3>
+        <div id="div_camera_preset_container">
+        </div>
+        <label>Sensor width (mm)</label>
+        <input id="textfield_camera_sensor_width" type="text" placeholder="32" />
+        <label>Sensor height (mm)</label>
+        <input id="textfield_camera_sensor_height" type="text" placeholder="24" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="small-12 columns">
+        <h3>Calibration result</h3>    
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="small-12 columns">
+      <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
+        <li>
+          <label>Field of view</label>
+          <div class="panel text-center">
+            <pre id="result_fov">45 deg (horiz), 23 deg (vert)</pre>
+          </div>
+        </li>
+        
+        <li>
+          <label>Camera transform matrix(row major)</label>
+          <div class="panel text-center">
+            <pre id="camera_transform_matrix">0.65749 -0.75347 -0.00000
+0.28190  0.24599 -0.92737
+0.69874  0.60974  0.37414</pre>
+          </div>
+        </li>
+        
+        <li>
+            <label>Camera transform (axis angle)</label>
+            <div class="panel text-center">
+              <pre id="camera_transform_axis_angle">x = 0.65749
+y = -0.75347
+z = -0.00000
+angle = -0.92737</pre>
+            </div>
+        </li>
+        
+        <li>
+          <label>Camera transform (quaternion)</label>
+          <div class="panel text-center">
+            <pre id="camera_transform_quat">w = 0.65749
+x = -0.75347
+y = -0.00000
+z = -0.92737</pre>
+          </div>
+        </li>
+        
+      </ul>
+      </div>
+    </div>
+    
+    <hr/>
+    
+    <div class="row text-center">
+      <div class="medium-12 columns">
+        <img src="img/logo.png">
+      </div>
+    </div>
+    
+    <script src="js/jquery.js"></script>
+    <script src="js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+    </script>
+    <script src="js/blam/calibration_result.js"></script>
+    <script src="js/blam/input_params.js"></script>
+    <script src="js/blam/math.js"></script>
+    <script src="js/blam/blam.js"></script>
+  </body>
+</html>
