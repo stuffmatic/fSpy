@@ -14,19 +14,51 @@ blam.ui = (function() {
         var oc = this.canvasOverlay;
         var ic = this.canvasImage;
         
-        //image
-        
-        //overlay
         var aspect = 9 / 16.0;
         
+        //image
+        if (this.image && this.image.naturalWidth > 0)
+        {
+            aspect = this.image.naturalHeight / this.image.naturalWidth;
+        }
+        
+        //overlay
         var w = cr.width();
-        var h = aspect * w;//cc.height();
+        var h = aspect * w;
         
         cc.width(w);
         cc.height(h);
         
-        var ctx = ic[0].getContext('2d');
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        oc.attr('width', w);
+        oc.attr('height', h);
+        
+        if (this.image)
+        {
+            ic.attr('width', w);
+            ic.attr('height', h);
+            var ctx = ic[0].getContext('2d');
+            ctx.drawImage(this.image, 0, 0, w, h);
+        }
+        
+        var ctx = oc[0].getContext('2d');
+        ctx.clearRect(0, 0, w, h);
+        
+        ctx.lineWidth = 1;
+    
+        //draw vanishing lines and vanishing points
+        var col = "#aa2200";
+        ctx.strokeStyle = col;
+        ctx.fillStyle = col;
+        
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(w, h);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(w, 0);
+        ctx.lineTo(0, h);
+        ctx.stroke();
         
     };
     
@@ -74,7 +106,26 @@ blam.ui = (function() {
     }
     
     this.onLoadImageUrl = function() {
-        
+        //TODO: progress
+        var newImage = new Image();
+        var url = imageUrlTextField.val();
+        newImage.src = url;
+
+        var ui = this;
+    
+        newImage.onerror = function()
+        {
+            ui.showErrorMessage("Could not load image from '" + url + "'.");
+            newImage = null;
+        };
+    
+        newImage.onload = function()
+        {
+            ui.image = null;
+            ui.image = newImage;
+            //recomputeCameraParameters();
+            ui.redraw();
+        };
     }
     
     this.onSaveSession = function() {
@@ -109,6 +160,13 @@ blam.ui = (function() {
         this.canvasRow = $("#canvas_row");
         this.errorModal = $("#modal_error_message");
         this.errorMessageP = $("#p_error_message");        
+        this.imageUrlTextField = $("#textfield_image_url");
+        this.imageUrlTextField.val("img/cube.png");
+        
+        //////////////////////////////////
+        //   Variables
+        //////////////////////////////////
+        this.image = null;
         
         //////////////////////////////////
         //   hook up event callbacks
@@ -172,9 +230,11 @@ blam.ui = (function() {
             return false;
         });
         
-        
-        
         this.redraw();
+        
+        this.onLoadImageUrl();
+        
+        
     };
     
     return this;

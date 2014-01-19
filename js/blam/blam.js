@@ -106,7 +106,7 @@ function createCameraPresets()
     
     containerDiv.html(html);
     
-    containerDiv.change(function() 
+    $("#dropdown_camera_presets").change(function() 
     {
         setCameraPreset($(this).val());
     });
