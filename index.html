@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BLAM</title>
     <link rel="stylesheet" href="css/foundation.css" />
+    <link rel="stylesheet" href="css/blam.css" />
     <script src="js/modernizr.js"></script>
   </head>
   <body>
@@ -15,8 +16,8 @@
       </div>
     </div>
     <hr/>
-    <div class="row">
-      <div class="small-12 columns">
+    <div  class="row">
+      <div id="canvas_row" class="small-12 columns">
         <div id="canvas_container">
           <canvas id="canvas_image"></canvas>
           <canvas id="canvas_overlay"></canvas>
@@ -33,12 +34,18 @@
     
     <hr/>
     
+    
+    <div class="row">
+      <div class="small-12 columns">
+        <h3>Calibration settings</h3>
+      </div>
+    </div>
     <div class="row">
       <div class="medium-6 columns">
-        <h3>Calibration settings</h3>
+        
         <div class="row collapse">
           <div class="small-10 columns">
-            <input id="textfield_image_url" type="text" placeholder="Image URL">
+            <input id="textfield_image_url" type="text" placeholder="img/cube.png">
           </div>
           <div class="small-2 columns">
             <a id="button_load_image_url" href="#" class="button postfix">Load</a>
@@ -56,10 +63,9 @@
           </div>
         </div>
         
-        <hr/>
-        
         <div class="row">
           <div class="small-12 columns">
+            
             <input id="checkbox_view_image" checked="checked" type="checkbox"><label for="checkbox_view_image">Image</label>
             <input id="checkbox_view_cp" checked="checked" type="checkbox"><label for="checkbox_view_cp">Control points</label>
             <input id="checkbox_view_grid" checked="checked" type="checkbox"><label for="checkbox_view_grid">Grid</label>
@@ -89,7 +95,6 @@
         </div>
       </div>
       <div class="medium-6 columns">
-        <h3>Camera data</h3>
         <div id="div_camera_preset_container">
         </div>
         <label>Sensor width (mm)</label>
@@ -163,6 +168,7 @@ z = -0.92737</pre>
     <script src="js/blam/calibration_result.js"></script>
     <script src="js/blam/input_params.js"></script>
     <script src="js/blam/math.js"></script>
+    <script src="js/blam/ui.js"></script>
     <script src="js/blam/blam.js"></script>
   </body>
 </html>

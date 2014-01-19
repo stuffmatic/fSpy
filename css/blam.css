@@ -1,0 +1,22 @@
+#canvas_container
+{
+    text-align: left;
+    position: relative; 
+    width: 100%; 
+    height: 100%;
+}
+
+#canvas_image 
+{
+    position: absolute; 
+    width: 100%; 
+    height: 100%; 
+    background-color: #222222; 
+}
+
+#canvas_overlay 
+{
+    position: absolute; 
+    width: 100%; 
+    height: 100%;
+}

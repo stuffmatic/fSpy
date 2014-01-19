@@ -1,5 +1,4 @@
 window.blam = window.blam || {}
-window.blam.ui = window.blam.ui || {}
 window.blam.inputParams = window.blam.inputParams || {}
 
 assert = function(condition) {
@@ -37,35 +36,6 @@ function checkBrowserCompatibility()
     return null;
 }
 
-function onNumVanishingPointsChanged() {
-    
-     var val = $("input[name='radio_num_vps']:checked").val();
-     
-     
-     var show1Vp = val == 1;
-     var show2Vp = val == 2;
-     
-     $(".1vp").each(function()
-     {
-         if (show1Vp) {
-             $(this).show();
-         }
-         else {
-             $(this).hide();
-         }
-     });
-     
-     $(".2vp").each(function()
-     {
-         if (show2Vp) {
-             $(this).show();
-         }
-         else {
-             $(this).hide();
-         }
-     });
-}
-
 function setCameraPreset(idx)
 {
     console.log("setCameraPreset(idx=" + idx + ")");
@@ -90,10 +60,11 @@ function setCameraPreset(idx)
 
 function createCameraPresets()
 {
+    //TODO: preset IDs
     //[Name, sensor width in mm, sensor height in mm]
     window.blam.cameraPresets =
     [
-        ["Custom", 36, 24],
+        ["Custom camera", 36, 24],
         ["APS-C DSLR", 22.3, 14.9],
         ["Canon 1D", 27.9, 18.6],
         ["Canon 1DS", 36, 24],
@@ -155,14 +126,9 @@ $(document).ready(function() {
         return;
     }
     
-    window.blam.ui.canvasImage = $("#canvas_image")[0];
-    window.blam.ui.canvasOverlay = $("#canvas_overlay")[0];
+    window.blam.ui.init();
     
-    $("input[name='radio_num_vps']").change(
-        function(){
-            onNumVanishingPointsChanged();
-        }
-    );
+    
     
     createCameraPresets();
     onNumVanishingPointsChanged();
