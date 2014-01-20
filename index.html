@@ -17,6 +17,12 @@
       <a class="close-reveal-modal">&#215;</a>
     </div>
     
+    <div id="modal_cheat_sheet" class="reveal-modal" data-reveal>
+      <h2>Quick help</h2>
+      <div id="cheat_sheet"></div>
+      <a class="close-reveal-modal">&#215;</a>
+    </div>
+    
     <div id="modal_load_session" class="reveal-modal" data-reveal>
       <h2>Load session</h2>
       <p>Im a cool paragraph that lives inside of an even cooler modal. Wins</p>
@@ -41,6 +47,7 @@
     <div class="row">
       <div class="small-12 columns">
         <h3>BLAM <small>Interactive HTML5 camera calibration</small></h3>
+        <a href="#" data-reveal-id="modal_cheat_sheet">Quick help</a>
       </div>
     </div>
     <hr/>
@@ -153,18 +160,9 @@
         </li>
         
         <li>
-          <label>Camera orientation matrix (row major)</label>
-          <div class="panel text-center">
-            <pre id="camera_transform_matrix">0.65749 -0.75347 -0.00000
-0.28190  0.24599 -0.92737
-0.69874  0.60974  0.37414</pre>
-          </div>
-        </li>
-        
-        <li>
             <label>Camera orientation (axis angle)</label>
             <div class="panel text-center">
-              <pre id="camera_transform_axis_angle">x = 0.65749
+              <pre id="camera_orientation_axis_angle">x = 0.65749
 y = -0.75347
 z = -0.00000
 angle = -0.92737</pre>
@@ -174,13 +172,39 @@ angle = -0.92737</pre>
         <li>
           <label>Camera orientation (quaternion)</label>
           <div class="panel text-center">
-            <pre id="camera_transform_quat">w = 0.65749
+            <pre id="camera_orientation_quat">w = 0.65749
 x = -0.75347
 y = -0.00000
 z = -0.92737</pre>
           </div>
         </li>
         
+        <li>
+          <label>Camera orientation matrix (row major)</label>
+          <div class="panel text-center">
+            <pre id="camera_orientation_matrix">0.65749 -0.75347 -0.00000
+0.28190  0.24599 -0.92737
+0.69874  0.60974  0.37414</pre>
+          </div>
+        </li>
+        
+        <li>
+          <label>Camera projection matrix (row major)</label>
+          <div class="panel text-center">
+            <pre id="camera_projection_matrix">0.65749 -0.75347 -0.00000
+0.28190  0.24599 -0.92737
+0.69874  0.60974  0.37414</pre>
+          </div>
+        </li>
+        
+        <li>
+          <label>Camera matrix (row major)</label>
+          <div class="panel text-center">
+            <pre id="camera_orientation_matrix">0.65749 -0.75347 -0.00000
+0.28190  0.24599 -0.92737
+0.69874  0.60974  0.37414</pre>
+          </div>
+        </li>
       </ul>
       </div>
     </div>

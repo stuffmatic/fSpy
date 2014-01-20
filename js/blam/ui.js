@@ -9,14 +9,6 @@ function UI() {
     
     var ui = this;
     
-    var COL_VLX = "#aa2200";
-    var COL_VLY = "#22aa00";
-    var COL_VLZ = "#2175aa";
-    var COL_HORIZ = "#aaaaaa";
-    var COL_PRINCIPAL = "#ffaa00";
-    var COL_ORIGIN = "#f0f0f0";
-    
-    
     var colXAxis = "#aa2200";
     var colYAxis = "#22aa00";
     var colZAxis = "#2175aa";
@@ -24,6 +16,8 @@ function UI() {
     var colPP = "#ffaa00";
     var colOrigin = "#f0f0f0";
     var selectionRadius = 8;
+    
+    var controlPointList;
     
     var canvasContainer;
     var canvasImage;
@@ -34,6 +28,8 @@ function UI() {
     var infoP;
     var imageUrlTextField;
     var imageUrlTextField;
+    
+    var draggedControlPoint = null;
 
     this.recalculateResult = function() {
         
@@ -42,6 +38,9 @@ function UI() {
         
         //compute calibraton result from input parameters
         //TODO
+        
+        //redraw
+        this.redraw();
     }
     
     getCurrentImageRectSc = function()
@@ -155,14 +154,18 @@ function UI() {
         cc.height(h);
         
         var ctx = ic[0].getContext('2d');
-        ctx.clearRect(0, 0, w, h);
-        if (this.image && this.state.drawImage)
-        {
-            ic.attr('width', w);
-            ic.attr('height', h);
+        
+        ic.attr('width', w);
+        ic.attr('height', h);
+        if (this.image && this.state.drawImage) {
+            
             var r = getCurrentImageRectSc();
+            console.log(r);
             var ctx = ic[0].getContext('2d');
             ctx.drawImage(this.image, r[0], r[1], r[2], r[3]);
+        }
+        else {
+            ctx.clearRect(0, 0, w, h);
         }
         
         
@@ -171,7 +174,7 @@ function UI() {
         var ctx = oc[0].getContext('2d');
         oc.attr('width', w);
         oc.attr('height', h);
-        
+        ctx.clearRect(0, 0, w, h);
         
         ctx.lineWidth = 1;
     
@@ -202,9 +205,61 @@ function UI() {
                 }
         
                 drawControlPoint(ctx, this.state.cpOrigin, colOrigin, true);
-                drawControlPoint(ctx, this.state.cpPP, colPP, this.state.numVPs > 2);
+                drawControlPoint(ctx, this.state.cpPP, colPP, this.state.numVPs < 3);
         }
     };
+    
+    getControlPointAtScreenCoord = function(xScreen, yScreen) {
+        for (var i = 0; i < controlPointList.length; i++) {
+            var pSc = relImageToCanvas(controlPointList[i][0], controlPointList[i][1]);
+            
+            var dx = xScreen - pSc[0];
+            var dy = yScreen - pSc[1];
+            var distSq = dx * dx + dy * dy;
+            var rSq = selectionRadius * selectionRadius;
+            
+            if (distSq < rSq) {
+                
+                var hit = controlPointList[i];
+                
+                //a control point was hit. see if it's active
+                
+                var isYAxis = (hit == ui.state.cpY0Start || hit == ui.state.cpY0End ||
+                               hit == ui.state.cpY1Start || hit == ui.state.cpY1End);
+                               
+                var isZAxis = (hit == ui.state.cpZ0Start || hit == ui.state.cpZ0End ||
+                               hit == ui.state.cpZ1Start || hit == ui.state.cpZ1End);
+                               
+                var isHorizon = (hit == ui.state.cpHorizonStart || hit == ui.state.cpHorizonEnd);
+                
+                var isPP = hit == ui.state.cpPP;
+                
+                if (ui.state.numVPs == 1) {
+                    if (isYAxis || isZAxis) {
+                        continue;
+                    }
+                    else if (!ui.state.manualHorizon && isHorizon) {
+                        continue
+                    }
+                }
+                else if (ui.state.numVPs == 2) {
+                    if (isHorizon || isZAxis) {
+                        continue;
+                    }                    
+                }
+                else if (ui.state.numVPs == 3) {
+                    if (isHorizon || isPP) {
+                        continue;
+                    }
+                }
+
+                
+                return hit;
+            }
+            
+        }
+    }
+    
     
     this.onNumVanishingPointsChanged = function() {
     
@@ -293,6 +348,33 @@ function UI() {
     
     this.loadSession = function(data) {
         this.state = data["uiState"];
+        controlPointList = [
+        this.state.cpX0Start,
+        this.state.cpX0End,
+        this.state.cpX1Start,
+        this.state.cpX1End,
+        
+        this.state.cpY0Start,
+        this.state.cpY0End,
+        this.state.cpY1Start,
+        this.state.cpY1End,
+        
+        this.state.cpZ0Start,
+        this.state.cpZ0End,
+        this.state.cpZ1Start,
+        this.state.cpZ1End,
+        
+        this.state.cpX0Start,
+        this.state.cpX0End,
+        this.state.cpX1Start,
+        this.state.cpX1End,
+        
+        this.state.cpHorizonStart,
+        this.state.cpHorizonEnd,
+        
+        this.state.cpOrigin,
+        this.state.cpPP
+        ];
     }
     
     this.onCenterPrincipalPoint = function() {
@@ -312,12 +394,29 @@ function UI() {
     onMouseMoveOnCanvas = function(event) {
         var x = event.pageX - $(this).offset().left;
         var y = event.pageY - $(this).offset().top;
+        
+        if (draggedControlPoint != null) {
+            console.log("dragging pt");
+            var pRel = canvasToRelImage(x, y);
+            
+            draggedControlPoint[0] = pRel[0];
+            draggedControlPoint[1] = pRel[1];
+            
+            ui.recalculateResult();
+        }
+        
         //console.log("onMouseMoveOnCanvas: " + x + ", " + y);
     }
     
     onMouseDownOnCanvas = function(event) {
         var x = event.pageX - $(this).offset().left;
         var y = event.pageY - $(this).offset().top;
+        draggedControlPoint = getControlPointAtScreenCoord(x, y);
+        
+        if (draggedControlPoint != null)
+        {
+            console.log("starting drag at " + x + ", " + y);
+        }
         //console.log("onMouseDownOnCanvas: " + x + ", " + y);
     }
      
@@ -330,12 +429,16 @@ function UI() {
     onMouseLeaveCanvas = function(event) {
         var x = event.pageX - $(this).offset().left;
         var y = event.pageY - $(this).offset().top;
+        
+        draggedControlPoint = null;
         //console.log("onMouseLeaveCanvas: " + x + ", " + y);
     }
     
     onMouseUpOnCanvas = function(event) {
         var x = event.pageX - $(this).offset().left;
         var y = event.pageY - $(this).offset().top;
+        
+        draggedControlPoint = null;
         //console.log("onMouseUpOnCanvas: " + x + ", " + y);
     }
     
@@ -485,7 +588,7 @@ function UI() {
         
         //canvas drag n drop events
         canvasOverlay[0].addEventListener('dragover', onDragOverCanvas, false);
-        canvasOverlay[0].addEventListener('drop', onDropOnCanvas, false);
+        canvasOverlay[0].addEventListener('drop', onDropOnCanvas, false);        
         
         //initialize UI state
         this.setInfoLabelText("");
