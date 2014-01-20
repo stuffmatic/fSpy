@@ -29,18 +29,65 @@ function UI() {
     var imageUrlTextField;
     var imageUrlTextField;
     
+    var resultCamOrientationAAP;
+    var resultCamOrientationQuatP;
+    var resultCamOrientationMatrixP;
+    var resultProjectionMatrixP;
+    var resultCameraMatrixP;
+    var resultFovP;
+    
     var draggedControlPoint = null;
 
-    this.recalculateResult = function() {
+    this.recalculateResultAndRedraw = function() {
+        
+        if (typeof window.blam === 'undefined') {
+            alert("blam undef");
+        }
+        if (typeof window.blam.inputParams === 'undefined') {
+            alert("blam inputParams undef");
+        }
+        if (typeof window.blam.calibrationResult === 'undefined') {
+            alert("blam result undef");
+        }
+        
+        
+        console.log(window.blam.inputParams);
         
         //compute input parameters from ui state
-        //TODO
+        window.blam.inputParams.fromUIState(ui.state);
         
         //compute calibraton result from input parameters
-        //TODO
+        var res = window.blam.calibrationResult;
+        res.compute(window.blam.inputParams);
         
-        //redraw
+        //update result fields
+        
+        setResultMatrix(resultCameraMatrixP, res.orientationMatrix, 3); //TODO: actual compound transform
+        setResultMatrix(resultProjectionMatrixP, res.projectionMatrix, 4);
+        setResultMatrix(resultCamOrientationMatrixP, res.orientationMatrix, 3);
+        
+        
+        
+        //redraw canvas
         this.redraw();
+    }
+    
+    setResultMatrix = function(element, matrix, nCols) {
+        element.text("");
+        var text = "";
+        var n = 5;
+        var l = matrix.length;
+        for (var i = 0; i < l; i++)
+        {
+            if (i > 0 && (i % nCols) == 0) {
+                text += "\n";
+            }
+            var pref = matrix[i] < 0 ? "" : " ";
+            text += pref + matrix[i].toFixed(n) + " ";
+            
+        }
+        
+        element.text(text);
     }
     
     getCurrentImageRectSc = function()
@@ -402,7 +449,7 @@ function UI() {
             draggedControlPoint[0] = pRel[0];
             draggedControlPoint[1] = pRel[1];
             
-            ui.recalculateResult();
+            ui.recalculateResultAndRedraw();
         }
         
         //console.log("onMouseMoveOnCanvas: " + x + ", " + y);
@@ -510,6 +557,13 @@ function UI() {
         imageUrlTextField = $("#textfield_image_url");
         imageUrlTextField.val("img/cube.png");
         
+        resultCamOrientationAAP = $("#camera_orientation_axis_angle");
+        resultCamOrientationQuatP = $("camera_orientation_axis_quat");
+        resultCamOrientationMatrixP = $("#camera_orientation_matrix");
+        resultProjectionMatrixP = $("#camera_projection_matrix");
+        resultCameraMatrixP = $("#camera_matrix");
+        resultFovP = $("#result_fov");
+        
         //////////////////////////////////
         //   Variables
         //////////////////////////////////
@@ -574,7 +628,7 @@ function UI() {
             return false;
         });
         
-        $("#button_on_center_pp").click(function(){
+        $("#button_center_pp").click(function(){
             ui.onCenterPrincipalPoint();
             return false;
         });
@@ -596,32 +650,32 @@ function UI() {
         //TODO: load data from url or cookie
         this.state = {}
         var sessionData = {
-            
+                  
             uiState:
             {
                 customSensorWidth: 36,
                 customSensorHeight: 24,
         
-                cpX0Start: [0.2, 0.2],
-                cpX0End: [0.8, 0.2],
-                cpX1Start: [0.8, 0.2],
-                cpX1End: [0.8, 0.8],
+                cpX0Start: [0.7513812154696132,0.3736493123772102],
+                cpX0End: [0.4276243093922652,0.029837917485265226],
+                cpX1Start: [0.5646408839779006,0.8962426326129665],
+                cpX1End: [0.16132596685082873,0.693885068762279],
         
-                cpY0Start: [0.3, 0.3],
-                cpY0End: [0.7, 0.3],
-                cpY1Start: [0.7, 0.3],
-                cpY1End: [0.7, 0.7],
+                cpY0Start: [0.4839779005524862,0.5720776031434185],
+                cpY0End: [0.2276243093922652,0.7724705304518664],
+                cpY1Start: [0.4276243093922652,0.8824901768172888],
+                cpY1End: [0.7756906077348066,0.6978143418467584],
         
-                cpZ0Start: [0.4, 0.4],
-                cpZ0End: [0.4, 0.6],
-                cpZ1Start: [0.6, 0.4],
-                cpZ1End: [0.6, 0.6],
+                cpZ0Start: [0.29392265193370165,0.22826620825147348],
+                cpZ0End: [0.2585635359116022,0.7901522593320236],
+                cpZ1Start: [0.6674033149171271,0.21844302554027506],
+                cpZ1End: [0.6906077348066298,0.7862229862475442],
         
                 cpHorizonStart: [0.1, 0.5],
                 cpHorizonEnd: [0.9, 0.5],
         
-                cpOrigin: [0.5, 0.5],
-                cpPP: [0.1, 0.1],
+                cpOrigin: [0.46740331491712706,0.075024557956778],
+                cpPP: [0.5, 0.5],
                 
                 numVPs: 2,
                 manualHorizon: true,
@@ -637,8 +691,7 @@ function UI() {
         this.loadSession(sessionData);
         
         this.onNumVanishingPointsChanged();
-        this.recalculateResult();
-        this.redraw();
+        this.recalculateResultAndRedraw();
         this.onLoadImageUrl();
     }
     
