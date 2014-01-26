@@ -438,12 +438,17 @@ function UI() {
         this.redraw();
     }
     
+    setDragInfoLabelText = function(message) {
+        infoLabelDrag.text(message);
+    }
+    
     setPosInfoLabelText = function(message) {
         infoLabelPos.text(message);
     }
     
-    setCPInfoLabelText = function(message) {
+    setCPInfoLabelText = function(message, color) {
         infoLabelCP.text(message);
+        infoLabelCP.css("color", color ? color : "");
     }
     
     this.showErrorMessage = function(message) {
@@ -481,26 +486,33 @@ function UI() {
             var isPP = point == ui.state.cpPP;
             
             var message = "";
+            var col = null;
             if (isXAxis) {
                 message = "X axis vanishing line";
+                col = colXAxis;
             }
             else if (isYAxis) {
                 message = "Y axis vanishing line";
+                col = colYAxis;
             }
             else if (isZAxis) {
                 message = "Z axis vanishing line";
+                col = colZAxis;
             }
             else if (isHorizon) {
                 message = "Horizon line";
+                col = colHorizon;
             }
             else if (is3DOrigin) {
                 message = "3D origin";
+                col = colOrigin;
             }
             else if (isPP) {
                 message = "Optical center";
+                col = colPP;
             }
             
-            setCPInfoLabelText(message);
+            setCPInfoLabelText(message, col);
         }
     }
     
@@ -548,6 +560,7 @@ function UI() {
         var y = event.pageY - $(this).offset().top;
         
         setPosInfoLabelText(x + ", " + y);
+        setDragInfoLabelText("");
         canvasOverlay.css("cursor", "crosshair");
         //console.log("onMouseEnterCanvas: " + x + ", " + y);
     }
@@ -559,6 +572,7 @@ function UI() {
         draggedControlPoint = null;
         
         setPosInfoLabelText("");
+        setDragInfoLabelText("");
         canvasOverlay.css("cursor", "default");
         //console.log("onMouseLeaveCanvas: " + x + ", " + y);
     }
@@ -575,6 +589,7 @@ function UI() {
         event.stopPropagation();
         event.preventDefault();
         event.dataTransfer.dropEffect = 'copy'; 
+        setDragInfoLabelText("Drop image to load it");
     }
     
     onDropOnCanvas = function(event) {
@@ -617,11 +632,12 @@ function UI() {
             return;
         }
 
+        setDragInfoLabelText("");
+
         ui.image.onload = function()
         {
             ui.redraw();
         };
-    
     }
     
     this.init = function() {
@@ -636,7 +652,8 @@ function UI() {
         errorModal = $("#modal_error_message");
         errorMessageP = $("#p_error_message"); 
         infoLabelCP = $("#info_label_cp");       
-        infoLabelPos = $("#info_label_pos");       
+        infoLabelPos = $("#info_label_pos");     
+        infoLabelDrag = $("#info_label_drag");     
         imageUrlTextField = $("#textfield_image_url");
         
         resultCamOrientationAAP = $("#camera_orientation_axis_angle");

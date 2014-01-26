@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BLAM</title>
-    <link rel="stylesheet" href="css/foundation.css" />
+    <link rel="stylesheet" href="css/foundation.min.css" />
     <link rel="stylesheet" href="css/blam.css" />
     <script src="js/modernizr.js"></script>
   </head>
@@ -65,11 +65,14 @@
     
     <!-- Info panel -->
     <div class="row">
-      <div class="small-6 columns">
-        <div id="info_label_pos"></div>
+      <div class="small-4 columns">
+        <p class="info_label" id="info_label_pos"></p>
       </div>
-      <div class="small-6 columns">
-        <div id="info_label_cp"></div>
+      <div class="small-4 columns text-center">
+        <p class="info_label" id="info_label_drag"></p>
+      </div>
+      <div class="small-4 columns text-right">
+        <p class="info_label" id="info_label_cp"></p>
       </div>
     </div>
     
@@ -114,7 +117,7 @@
             type="checkbox"><label for="checkbox_view_image">Image</label>
             <input id="checkbox_view_cp" checked="checked" type="checkbox">
             <label for="checkbox_view_cp">Control points</label>
-            <input id="checkbox_view_grid" checked="checked" type="checkbox">'
+            <input id="checkbox_view_grid" checked="checked" type="checkbox">
             <label for="checkbox_view_grid">Grid</label>
           </div>
         </div>
