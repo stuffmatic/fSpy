@@ -25,7 +25,9 @@ function UI() {
     var canvasRow;
     var errorModal;
     var errorMessageP;
-    var infoP;
+    var infoLabelCP;
+    var infoLabelDrag;
+    var infoLabelPos;
     var imageUrlTextField;
     var imageUrlTextField;
     
@@ -395,6 +397,11 @@ function UI() {
     
     this.loadSession = function(data) {
         this.state = data["uiState"];
+        
+        imageUrlTextField.val(this.state.imageUrl);
+        
+        this.onLoadImageUrl();
+        
         controlPointList = [
         this.state.cpX0Start,
         this.state.cpX0End,
@@ -422,6 +429,8 @@ function UI() {
         this.state.cpOrigin,
         this.state.cpPP
         ];
+        
+        
     }
     
     this.onCenterPrincipalPoint = function() {
@@ -429,13 +438,70 @@ function UI() {
         this.redraw();
     }
     
-    this.setInfoLabelText = function(message) {
-        infoP.text(message);
+    setPosInfoLabelText = function(message) {
+        infoLabelPos.text(message);
+    }
+    
+    setCPInfoLabelText = function(message) {
+        infoLabelCP.text(message);
     }
     
     this.showErrorMessage = function(message) {
         errorMessageP.text(message);
         errorModal.foundation('reveal', 'open');
+    }
+    
+    setInfoTextForControlPoint = function(point) {
+        if (!point)
+        {
+            setCPInfoLabelText("");
+        }
+        else
+        {
+            var isXAxis = point == ui.state.cpX0Start;
+            isXAxis = isXAxis || point == ui.state.cpX0End;
+            isXAxis = isXAxis || point == ui.state.cpX1Start;
+            isXAxis = isXAxis || point == ui.state.cpX1End;
+            
+            var isYAxis = point == ui.state.cpY0Start;
+            isYAxis = isYAxis || point == ui.state.cpY0End;
+            isYAxis = isYAxis || point == ui.state.cpY1Start;
+            isYAxis = isYAxis || point == ui.state.cpY1End;
+            
+            var isZAxis = point == ui.state.cpZ0Start;
+            isZAxis = isZAxis || point == ui.state.cpZ0End;
+            isZAxis = isZAxis || point == ui.state.cpZ1Start;
+            isZAxis = isZAxis || point == ui.state.cpZ1End;
+            
+            var isHorizon = point == ui.state.cpHorizonStart;
+            isHorizon = isHorizon || point == ui.state.cpHorizonEnd;
+            
+            var is3DOrigin = point == ui.state.cpOrigin;
+            
+            var isPP = point == ui.state.cpPP;
+            
+            var message = "";
+            if (isXAxis) {
+                message = "X axis vanishing line";
+            }
+            else if (isYAxis) {
+                message = "Y axis vanishing line";
+            }
+            else if (isZAxis) {
+                message = "Z axis vanishing line";
+            }
+            else if (isHorizon) {
+                message = "Horizon line";
+            }
+            else if (is3DOrigin) {
+                message = "3D origin";
+            }
+            else if (isPP) {
+                message = "Optical center";
+            }
+            
+            setCPInfoLabelText(message);
+        }
     }
     
     onMouseMoveOnCanvas = function(event) {
@@ -451,9 +517,19 @@ function UI() {
             
             ui.recalculateResultAndRedraw();
         }
+        else {
+            
+            var cp = getControlPointAtScreenCoord(x, y);
+            setInfoTextForControlPoint(cp);
+            canvasOverlay.css("cursor", cp ? "pointer" : "crosshair");
+        }
+        
+        setPosInfoLabelText(x + ", " + y);
         
         //console.log("onMouseMoveOnCanvas: " + x + ", " + y);
     }
+    
+    
     
     onMouseDownOnCanvas = function(event) {
         var x = event.pageX - $(this).offset().left;
@@ -470,6 +546,9 @@ function UI() {
     onMouseEnterCanvas = function(event) {
         var x = event.pageX - $(this).offset().left;
         var y = event.pageY - $(this).offset().top;
+        
+        setPosInfoLabelText(x + ", " + y);
+        canvasOverlay.css("cursor", "crosshair");
         //console.log("onMouseEnterCanvas: " + x + ", " + y);
     }
     
@@ -478,6 +557,9 @@ function UI() {
         var y = event.pageY - $(this).offset().top;
         
         draggedControlPoint = null;
+        
+        setPosInfoLabelText("");
+        canvasOverlay.css("cursor", "default");
         //console.log("onMouseLeaveCanvas: " + x + ", " + y);
     }
     
@@ -553,9 +635,9 @@ function UI() {
         canvasRow = $("#canvas_row");
         errorModal = $("#modal_error_message");
         errorMessageP = $("#p_error_message"); 
-        infoP = $("#info_label");       
+        infoLabelCP = $("#info_label_cp");       
+        infoLabelPos = $("#info_label_pos");       
         imageUrlTextField = $("#textfield_image_url");
-        imageUrlTextField.val("img/cube.png");
         
         resultCamOrientationAAP = $("#camera_orientation_axis_angle");
         resultCamOrientationQuatP = $("camera_orientation_axis_quat");
@@ -643,9 +725,7 @@ function UI() {
         //canvas drag n drop events
         canvasOverlay[0].addEventListener('dragover', onDragOverCanvas, false);
         canvasOverlay[0].addEventListener('drop', onDropOnCanvas, false);        
-        
-        //initialize UI state
-        this.setInfoLabelText("");
+    
         
         //TODO: load data from url or cookie
         this.state = {}
@@ -684,7 +764,7 @@ function UI() {
                 drawCP: true,
                 drawGrid: true,
                 
-                
+                imageUrl: "img/cube.png"
             } 
         }
         
@@ -692,7 +772,7 @@ function UI() {
         
         this.onNumVanishingPointsChanged();
         this.recalculateResultAndRedraw();
-        this.onLoadImageUrl();
+        
     }
     
 }

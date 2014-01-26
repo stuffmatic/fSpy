@@ -65,8 +65,11 @@
     
     <!-- Info panel -->
     <div class="row">
-      <div class="small-12 columns text-center">
-        <div id="info_label">Info label</div>
+      <div class="small-6 columns">
+        <div id="info_label_pos"></div>
+      </div>
+      <div class="small-6 columns">
+        <div id="info_label_cp"></div>
       </div>
     </div>
     
@@ -91,22 +94,28 @@
         </div>
         <div class="row">
           <div class="small-4 columns">
-            <a id="button_session_save" data-reveal-id="modal_save_session"  href="#" class="button postfix">Save</a>
+            <a id="button_session_save" data-reveal-id="modal_save_session"  
+            href="#" class="button postfix">Save</a>
           </div>
           <div class="small-4 columns">
-            <a id="button_session_load" data-reveal-id="modal_load_session" href="#" class="button postfix">Load</a>
+            <a id="button_session_load" data-reveal-id="modal_load_session" 
+            href="#" class="button postfix">Load</a>
           </div>
           <div class="small-4 columns">
-            <a id="button_session_reset" href="#" data-reveal-id="modal_reset_session" class="button postfix">Reset</a>
+            <a id="button_session_reset" href="#" data-reveal-id="modal_reset_session"
+             class="button postfix">Reset</a>
           </div>
         </div>
         
         <div class="row">
           <div class="small-12 columns">
             
-            <input id="checkbox_view_image" checked="checked" type="checkbox"><label for="checkbox_view_image">Image</label>
-            <input id="checkbox_view_cp" checked="checked" type="checkbox"><label for="checkbox_view_cp">Control points</label>
-            <input id="checkbox_view_grid" checked="checked" type="checkbox"><label for="checkbox_view_grid">Grid</label>
+            <input id="checkbox_view_image" checked="checked" 
+            type="checkbox"><label for="checkbox_view_image">Image</label>
+            <input id="checkbox_view_cp" checked="checked" type="checkbox">
+            <label for="checkbox_view_cp">Control points</label>
+            <input id="checkbox_view_grid" checked="checked" type="checkbox">'
+            <label for="checkbox_view_grid">Grid</label>
           </div>
         </div>
         <div class="row">
@@ -116,7 +125,8 @@
           <div class="small-8 columns">
             <input type="radio" name="radio_num_vps" value="1" id="radio_num_vps_1">
             <label for="radio_num_vps_1">1</label>
-            <input type="radio" name="radio_num_vps" checked="checked" value="2" id="radio_num_vps_2">
+            <input type="radio" name="radio_num_vps" checked="checked" 
+            value="2" id="radio_num_vps_2">
             <label for="radio_num_vps_2">2</label>
             <input type="radio" name="radio_num_vps" value="3" id="radio_num_vps_3">
             <label for="radio_num_vps_3">3</label>
@@ -128,7 +138,7 @@
             <label class="1vp" for="checkbox_manual_horizon">Manually define horizon angle</label>
             <label class="1vp">Focal length (mm)</label>
             <input class="1vp" id="textfield_1vp_focal_length" type="text" placeholder="50" />
-            <a id="button_center_pp" href="#" class="button expand postfix 1vp 2vp">Center principal point</a>
+            <a id="button_center_pp" href="#" class="button expand postfix 1vp 2vp">Center principal point TODO: SHOW HIDE</a>
           </div>
         </div>
       </div>
@@ -153,14 +163,16 @@
       <div class="small-12 columns">
       <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
         <li>
-          <label>Field of view</label>
+          <h4>Field of view</h4>
+          <p>TODO</p>
           <div class="panel text-center">
             <pre id="result_fov">45 deg (horiz), 23 deg (vert)</pre>
           </div>
         </li>
         
         <li>
-            <label>Camera orientation (axis angle)</label>
+            <h4>Camera orientation</h4>
+            <p>Expressed as an axis and an angle.</p>
             <div class="panel text-center">
               <pre id="camera_orientation_axis_angle">x = 0.65749
 y = -0.75347
@@ -170,7 +182,7 @@ angle = -0.92737</pre>
         </li>
         
         <li>
-          <label>Camera orientation (quaternion)</label>
+          <h4>Camera orientation quaternion</h4>
           <div class="panel text-center">
             <pre id="camera_orientation_quat">w = 0.65749
 x = -0.75347
@@ -180,7 +192,8 @@ z = -0.92737</pre>
         </li>
         
         <li>
-          <label>Camera orientation matrix (row major)</label>
+          <h4>Camera orientation matrix</h4>
+          <p> (row major)</p>
           <div class="panel text-center">
             <pre id="camera_orientation_matrix">0.65749 -0.75347 -0.00000
 0.28190  0.24599 -0.92737
@@ -189,7 +202,8 @@ z = -0.92737</pre>
         </li>
         
         <li>
-          <label>Camera projection matrix (row major)</label>
+          <h4>Camera projection matrix</h4>
+          <p> (row major)</p>
           <div class="panel text-center">
             <pre id="camera_projection_matrix">0.65749 -0.75347 -0.00000
 0.28190  0.24599 -0.92737
@@ -198,7 +212,8 @@ z = -0.92737</pre>
         </li>
         
         <li>
-          <label>Camera matrix (row major)</label>
+          <h4>Camera matrix</h4>
+          <p> (row major)</p>
           <div class="panel text-center">
             <pre id="camera_matrix">0.65749 -0.75347 -0.00000
 0.28190  0.24599 -0.92737
@@ -218,7 +233,7 @@ z = -0.92737</pre>
       </div>
     </div>
     
-    <script src="js/jquery.js"></script>
+    <script src="js/jquery.min.js"></script>
     <script src="js/foundation.min.js"></script>
     <script>
       $(document).foundation();
