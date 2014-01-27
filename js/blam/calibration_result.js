@@ -51,21 +51,39 @@ window.blam.calibrationResult = (function() {
     this.compute = function(params) {
         reset();
         
-        this.xVanishingPoint = blam.math.computeIntersectionPoint(params.xVanishingLine1, 
-                                                                  params.xVanishingLine0);
+        this.xVanishingPoint = blam.math.computeIntersectionPoint(params.xVanishingLine0, 
+                                                                  params.xVanishingLine1);
                                                                   
         this.opticalCenter = [params.opticalCenter[0], params.opticalCenter[1]]; 
+        
         
         if (params.numVanishingPoints == 1) {
             this.yVanishingPoint = blam.math.computeSecondVanishingPoint(this.xVanishingPoint,
                                                                          params.relativeFocalLength, 
                                                                          params.opticalCenter, 
                                                                          params.horizonDirection);
-            //blam.math.calibrate2VP(this.xVanishingPoint, this.yVanishingPoint, opticalCenter, origin);
+                                                                        
+            this.focalLengthImagePlaneCoords = blam.math.computeFocalLength(this.xVanishingPoint,
+                                                                            this.yVanishingPoint,
+                                                                            params.opticalCenter);
+            this.zVanishingPoint = blam.math.computeThirdVanishingPoint(this.xVanishingPoint,
+                                                                        this.yVanishingPoint, 
+                                                                        this.focalLengthImagePlaneCoords,
+                                                                        params.opticalCenter);
         }
         else if (params.numVanishingPoints == 2) {
             this.yVanishingPoint = blam.math.computeIntersectionPoint(params.yVanishingLine0, 
                                                                       params.yVanishingLine1);
+                                                                      
+            this.focalLengthImagePlaneCoords = blam.math.computeFocalLength(this.xVanishingPoint,
+                                                                            this.yVanishingPoint,
+                                                                            params.opticalCenter);
+                                                                            
+            this.zVanishingPoint = blam.math.computeThirdVanishingPoint(this.xVanishingPoint,
+                                                                        this.yVanishingPoint, 
+                                                                        this.focalLengthImagePlaneCoords,
+                                                                        params.opticalCenter);
+            
         }
         else if (params.numVanishingPoints == 3) {
             this.yVanishingPoint = blam.math.computeIntersectionPoint(params.yVanishingLine0, 

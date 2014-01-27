@@ -775,10 +775,23 @@ function UI() {
         //keyboard shortcuts
         $(window).bind('keyup', function(e) {
             var code = e.keyCode || e.which;
+            console.log(code);
             if (code == 49 || code == 50 | code == 51) { // 1-3
                 ui.state.numVPs = 1 + code - 49;
                 $("input[name='radio_num_vps']").filter('[value=' + ui.state.numVPs + ']').prop('checked', true);
                 ui.onNumVanishingPointsChanged();
+            }
+            else if (code == 72) { //h
+                //TODO: toggle manual horizon
+            }
+            else if (code == 73) { //i
+                //TODO: toggle image
+            }
+            else if (code == 67) { //c
+                //TODO: toggle control points
+            }
+            else if (code == 71) { //g
+                //TODO: toggle grid
             }
             
         });

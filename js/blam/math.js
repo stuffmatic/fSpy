@@ -331,14 +331,14 @@ blam.math = (function() {
      * Aspect = w / h
      */ 
     this.relIm2ImPlane = function(p, aspect) {
-        return [2.0 * p[0] - 1.0, 2.0 * p[1] / aspect - 1.0]
+        return [2.0 * p[0] - 1.0, (2.0 * p[1] - 1.0) / aspect]
     }
     
     /**
      * Aspect = w / h
      */ 
     this.imPlane2RelIm = function(p, aspect) {
-        return [(p[0] + 1.0) / 2.0, aspect / 2.0 * (p[1] + 1.0)];
+        return [(p[0] + 1.0) / 2.0,  (p[1] * aspect + 1.0) / 2.0];
     }
 
     /**
@@ -363,6 +363,18 @@ blam.math = (function() {
         var Fv = [Fu[0] + k * horizonDir[0], Fu[1] + k * horizonDir[1]];
     
         return Fv
+    }
+    
+    /**
+     * Computes a thrid vanishing point based on two vanishing points 
+     * and a relative focal length.
+     */
+    this.computeThirdVanishingPoint = function(Fu, Fv, f, P) {
+        var PFu = [Fu[0] - P[0], Fu[1] - P[1], f];
+        var PFv = [Fv[0] - P[0], Fv[1] - P[1], f];
+        
+        var cross = [PFu[1] * PFv[2] - PFu[2] * PFv[1], PFu[2] * PFv[0] - PFu[0] * PFv[2], PFu[0] * PFv[1] - PFu[1] * PFv[0]];
+        return cross;
     }
 
     /**
@@ -404,13 +416,14 @@ blam.math = (function() {
     
         var fSq = FvPuv * FuPuv - PPuv * PPuv
         //print("FuPuv", FuPuv, "FvPuv", FvPuv, "PPuv", PPuv, "OPuv", FvPuv * FuPuv)
-        //print("fSq = ", fSq, " = ", FvPuv * FuPuv, " - ", PPuv * PPuv)
+        //console.log("fSq = ", fSq, " = ", FvPuv * FuPuv, " - ", PPuv * PPuv)
         if (fSq < 0)
         {
             return null;
         }
     
         var f = Math.sqrt(fSq);
+        console.log("f " + f);
         //print("dot 1:", dot(normalize(Fu + [f]), normalize(Fv + [f])))
     
         return f
