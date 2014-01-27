@@ -7,6 +7,7 @@ function UI() {
     // Private vars
     //////////////////////////////////////////
     
+    //reference to 'this' to be used from within jquery callbacks
     var ui = this;
     
     var colXAxis = "#aa2200";
@@ -334,11 +335,15 @@ function UI() {
         }
     }
     
+    this.onNumVPsRadioChanged = function() {
+        var val = $("input[name='radio_num_vps']:checked").val();
+        ui.state.numVPs = val;
+        this.onNumVanishingPointsChanged();
+    }
     
     this.onNumVanishingPointsChanged = function() {
     
-         var val = $("input[name='radio_num_vps']:checked").val();
-         this.state.numVPs = val;
+        var val = ui.state.numVPs;
     
          var show1Vp = val == 1;
          var show2Vp = val == 2;
@@ -701,7 +706,7 @@ function UI() {
         
         $("input[name='radio_num_vps']").change(
             function(){
-                ui.onNumVanishingPointsChanged();
+                ui.onNumVPsRadioChanged();
             }
         );
         
@@ -767,6 +772,16 @@ function UI() {
         canvasOverlay[0].addEventListener('dragover', onDragOverCanvas, false);
         canvasOverlay[0].addEventListener('drop', onDropOnCanvas, false);        
     
+        //keyboard shortcuts
+        $(window).bind('keyup', function(e) {
+            var code = e.keyCode || e.which;
+            if (code == 49 || code == 50 | code == 51) { // 1-3
+                ui.state.numVPs = 1 + code - 49;
+                $("input[name='radio_num_vps']").filter('[value=' + ui.state.numVPs + ']').prop('checked', true);
+                ui.onNumVanishingPointsChanged();
+            }
+            
+        });
         
         //TODO: load data from url or cookie
         this.state = {}

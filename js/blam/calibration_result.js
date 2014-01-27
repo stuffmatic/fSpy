@@ -61,7 +61,7 @@ window.blam.calibrationResult = (function() {
                                                                          params.relativeFocalLength, 
                                                                          params.opticalCenter, 
                                                                          params.horizonDirection);
-            blam.math.calibrate2VP(this.xVanishingPoint, this.yVanishingPoint, opticalCenter, origin);
+            //blam.math.calibrate2VP(this.xVanishingPoint, this.yVanishingPoint, opticalCenter, origin);
         }
         else if (params.numVanishingPoints == 2) {
             this.yVanishingPoint = blam.math.computeIntersectionPoint(params.yVanishingLine0, 
