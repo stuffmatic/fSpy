@@ -251,10 +251,14 @@ function UI() {
                     end, 
                     colHorizon, 
                     this.state.manualHorizon);
-                }
+            }
         
-                drawControlPoint(ctx, this.state.cpOrigin, colOrigin, true);
-                drawControlPoint(ctx, this.state.cpPP, colPP, this.state.numVPs < 3);
+            drawControlPoint(ctx, this.state.cpOrigin, colOrigin, true);
+            
+            if (this.state.numVPs < 3) {
+                //use the computed optical center for 3 VPs
+                drawControlPoint(ctx, this.state.cpPP, colPP, true);
+            }
         }
         
         //draw vanishing lines
@@ -267,6 +271,12 @@ function UI() {
             drawLineSegment(ctx, o, xVp, colXAxis, false);
             drawLineSegment(ctx, o, yVp, colYAxis, false);
             drawLineSegment(ctx, o, zVp, colZAxis, false);
+            
+            if (this.state.numVPs == 3) {
+                //use the computed optical center for 3 VPs
+                var oc = blam.math.imPlane2RelIm(cr.opticalCenter, aspect);
+                drawControlPoint(ctx, oc, colPP, false);
+            }
         } 
         else {
             //undefined.
@@ -329,8 +339,7 @@ function UI() {
     
          var val = $("input[name='radio_num_vps']:checked").val();
          this.state.numVPs = val;
-     
-     
+    
          var show1Vp = val == 1;
          var show2Vp = val == 2;
      
@@ -352,7 +361,7 @@ function UI() {
              }
          });
          
-         this.redraw();
+         this.recalculateResultAndRedraw();
     }
     
     this.setImageVisible = function(on) {

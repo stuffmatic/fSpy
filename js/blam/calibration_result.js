@@ -26,7 +26,7 @@ window.blam.calibrationResult = (function() {
     /** */
     this.projectionMatrix;
     /** */
-    this.principalPoint;
+    this.opticalCenter;
     /** */
     this.aspectRatio;
     
@@ -53,6 +53,8 @@ window.blam.calibrationResult = (function() {
         
         this.xVanishingPoint = blam.math.computeIntersectionPoint(params.xVanishingLine1, 
                                                                   params.xVanishingLine0);
+                                                                  
+        this.opticalCenter = [params.opticalCenter[0], params.opticalCenter[1]]; 
         
         if (params.numVanishingPoints == 1) {
             this.yVanishingPoint = blam.math.computeSecondVanishingPoint(this.xVanishingPoint,
@@ -70,6 +72,10 @@ window.blam.calibrationResult = (function() {
                                                                       params.yVanishingLine1);
             this.zVanishingPoint = blam.math.computeIntersectionPoint(params.zVanishingLine0, 
                                                                       params.zVanishingLine1);                                                             
+            var vpx = this.xVanishingPoint;
+            var vpy = this.yVanishingPoint;
+            var vpz = this.zVanishingPoint;
+            this.opticalCenter = blam.math.computeTriangleOrthocenter([vpx, vpy, vpz]);
         }
         
         //TODO: set properly
