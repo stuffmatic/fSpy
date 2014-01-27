@@ -56,7 +56,9 @@ function UI() {
         console.log(window.blam.inputParams);
         
         //compute input parameters from ui state
-        window.blam.inputParams.fromUIState(ui.state);
+        var aspectRatio = canvasContainer.width() / canvasContainer.height();
+        
+        window.blam.inputParams.fromUIState(ui.state, aspectRatio);
         
         //compute calibraton result from input parameters
         var res = window.blam.calibrationResult;
@@ -94,7 +96,7 @@ function UI() {
     
     getCurrentImageRectSc = function()
     {
-        var w = canvasRow.width();
+        var w = canvasContainer.width();
         var h = canvasContainer.height();
 
         var wIm = this.image != null ? this.image.naturalWidth : w;
@@ -116,7 +118,7 @@ function UI() {
     {
         var rect = getCurrentImageRectSc();
     
-        //position in image coordinates
+        //position in relative image coordinates.
         var xIm = x - rect[0];
         var yIm = y - rect[1];
     
@@ -188,16 +190,16 @@ function UI() {
         var oc = canvasOverlay;
         var ic = canvasImage;
         
-        var aspect = 9 / 16.0;
+        var aspect = 16.0 / 9.0;
         
         //image
         if (this.image && this.image.naturalWidth > 0)
         {
-            aspect = this.image.naturalHeight / this.image.naturalWidth;
+            aspect = this.image.naturalWidth / this.image.naturalHeight;
         }
 
         var w = cr.width();
-        var h = aspect * w;
+        var h = w / aspect;
         
         cc.width(w);
         cc.height(h);
@@ -216,8 +218,6 @@ function UI() {
         else {
             ctx.clearRect(0, 0, w, h);
         }
-        
-        
         
         //overlay
         var ctx = oc[0].getContext('2d');
@@ -255,6 +255,21 @@ function UI() {
         
                 drawControlPoint(ctx, this.state.cpOrigin, colOrigin, true);
                 drawControlPoint(ctx, this.state.cpPP, colPP, this.state.numVPs < 3);
+        }
+        
+        //draw vanishing lines
+        if (this.calibrationResult.isDefined) {
+            var cr = this.calibrationResult;
+            var o = blam.math.imPlane2RelIm(this.inputParams.origin, aspect);
+            var xVp = blam.math.imPlane2RelIm(cr.xVanishingPoint, aspect);
+            var yVp = blam.math.imPlane2RelIm(cr.yVanishingPoint, aspect);
+            var zVp = blam.math.imPlane2RelIm(cr.zVanishingPoint, aspect);
+            drawLineSegment(ctx, o, xVp, colXAxis, false);
+            drawLineSegment(ctx, o, yVp, colYAxis, false);
+            drawLineSegment(ctx, o, zVp, colZAxis, false);
+        } 
+        else {
+            //undefined.
         }
     };
     
@@ -600,7 +615,7 @@ function UI() {
         console.log(files);
         if (files.length != 1)
         {
-            ui.showErrorMessage('Try dropping a single image.');
+            ui.showErrorMessage('Try dropping a single file.');
             return;
         }
 

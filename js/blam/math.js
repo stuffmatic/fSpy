@@ -328,6 +328,20 @@ blam.math = (function() {
      **************************************************************************************/
 
     /**
+     * Aspect = w / h
+     */ 
+    this.relIm2ImPlane = function(p, aspect) {
+        return [2.0 * p[0] - 1.0, 2.0 * p[1] / aspect - 1.0]
+    }
+    
+    /**
+     * Aspect = w / h
+     */ 
+    this.imPlane2RelIm = function(p, aspect) {
+        return [(p[0] + 1.0) / 2.0, aspect / 2.0 * (p[1] + 1.0)];
+    }
+
+    /**
      * Computes the coordinates of the second vanishing point
      * based on the first, a focal length, the center of projection and
      * the desired horizon tilt angle. The equations here are derived from
