@@ -10,12 +10,12 @@ function UI() {
     //reference to 'this' to be used from within jquery callbacks
     var ui = this;
     
-    var colXAxis = "#aa2200";
-    var colYAxis = "#22aa00";
+    var colXAxis = "#BD3213";
+    var colYAxis = "#4D9632";
     var colZAxis = "#2175aa";
-    var colHorizon = "#aaaaaa";
-    var colPP = "#ffaa00";
-    var colOrigin = "#f0f0f0";
+    var colHorizon = "#8C568B";
+    var colPP = "#E07C09";
+    var colOrigin = "#736F6B";
     var selectionRadius = 8;
     
     var controlPointList;
@@ -139,7 +139,7 @@ function UI() {
         return [xIm, yIm];
     }
     
-    drawLineSegment = function(ctx, start, end, col, endMarkers)
+    drawLineSegment = function(ctx, start, end, col, endMarkers, cpLabel)
     {
         ctx.strokeStyle = col;
         ctx.fillStyle = col;
@@ -154,8 +154,8 @@ function UI() {
     
         if (endMarkers)
         {
-            drawControlPoint(ctx, start, col, true);
-            drawControlPoint(ctx, end, col, true);
+            drawControlPoint(ctx, start, col, true, cpLabel);
+            drawControlPoint(ctx, end, col, true, cpLabel);
         }
     }
     
@@ -163,14 +163,14 @@ function UI() {
      * Draws a single line segment control point at a
      * given position, using a given context.
      */
-    drawControlPoint = function(ctx, pos, col, fill)
+    drawControlPoint = function(ctx, pos, col, fill, cpLabel)
     {
         ctx.strokeStyle = col;
         ctx.fillStyle = col;
         
         var p0 = relImageToCanvas(pos[0], pos[1]);
         ctx.beginPath();
-        ctx.arc(p0[0], p0[1], selectionRadius, 0 , 2 * Math.PI, false);
+        ctx.arc(Math.round(p0[0]), Math.round(p0[1]), selectionRadius, 0 , 2 * Math.PI, false);
 
         if (fill)
         {
@@ -182,6 +182,11 @@ function UI() {
         }
     
         ctx.closePath();     
+        
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = "#f0f0f0";
+        ctx.fillText(cpLabel, Math.round(p0[0]), Math.round(p0[1]));
     }
     
     
@@ -214,7 +219,9 @@ function UI() {
             var r = getCurrentImageRectSc();
             console.log(r);
             var ctx = ic[0].getContext('2d');
+            ctx.globalAlpha=0.2;
             ctx.drawImage(this.image, r[0], r[1], r[2], r[3]);
+            ctx.globalAlpha=1.0;
         }
         else {
             ctx.clearRect(0, 0, w, h);
@@ -226,44 +233,10 @@ function UI() {
         oc.attr('height', h);
         ctx.clearRect(0, 0, w, h);
         
-        ctx.lineWidth = 1;
-    
-        //draw control points
-        if (this.state.drawCP) {
-        
-            drawLineSegment(ctx, this.state.cpX0Start, this.state.cpX0End, colXAxis, true);
-            drawLineSegment(ctx, this.state.cpX1Start, this.state.cpX1End, colXAxis, true);
-            
-            if (this.state.numVPs > 1) {
-                drawLineSegment(ctx, this.state.cpY0Start, this.state.cpY0End, colYAxis, true);
-                drawLineSegment(ctx, this.state.cpY1Start, this.state.cpY1End, colYAxis, true);
-            }
-        
-            if (this.state.numVPs > 2) {
-                drawLineSegment(ctx, this.state.cpZ0Start, this.state.cpZ0End, colZAxis, true);
-                drawLineSegment(ctx, this.state.cpZ1Start, this.state.cpZ1End, colZAxis, true);
-            }
-    
-            if (this.state.numVPs == 1) {
-                var start = this.state.manualHorizon ? this.state.cpHorizonStart : [0.1, 0.5];
-                var end = this.state.manualHorizon ? this.state.cpHorizonEnd : [0.9, 0.5];
-                drawLineSegment(ctx, 
-                    start, 
-                    end, 
-                    colHorizon, 
-                    this.state.manualHorizon);
-            }
-        
-            drawControlPoint(ctx, this.state.cpOrigin, colOrigin, true);
-            
-            if (this.state.numVPs < 3) {
-                //use the computed optical center for 3 VPs
-                drawControlPoint(ctx, this.state.cpPP, colPP, true);
-            }
-        }
+        ctx.lineWidth = 0.5;
         
         //draw vanishing lines
-        if (this.calibrationResult.isDefined) {
+        if (this.calibrationResult.isDefined && this.state.drawGrid) {
             var cr = this.calibrationResult;
             var o = blam.math.imPlane2RelIm(this.inputParams.origin, aspect);
             var xVp = blam.math.imPlane2RelIm(cr.xVanishingPoint, aspect);
@@ -282,6 +255,44 @@ function UI() {
         else {
             //undefined.
         }
+    
+        ctx.lineWidth = 1.0;
+    
+        //draw control points
+        if (this.state.drawCP) {
+        
+            drawLineSegment(ctx, this.state.cpX0Start, this.state.cpX0End, colXAxis, true, "1");
+            drawLineSegment(ctx, this.state.cpX1Start, this.state.cpX1End, colXAxis, true, "1");
+            
+            if (this.state.numVPs > 1) {
+                drawLineSegment(ctx, this.state.cpY0Start, this.state.cpY0End, colYAxis, true, "2");
+                drawLineSegment(ctx, this.state.cpY1Start, this.state.cpY1End, colYAxis, true, "2");
+            }
+        
+            if (this.state.numVPs > 2) {
+                drawLineSegment(ctx, this.state.cpZ0Start, this.state.cpZ0End, colZAxis, true, "3");
+                drawLineSegment(ctx, this.state.cpZ1Start, this.state.cpZ1End, colZAxis, true, "3");
+            }
+    
+            if (this.state.numVPs == 1) {
+                var start = this.state.manualHorizon ? this.state.cpHorizonStart : [0.1, 0.5];
+                var end = this.state.manualHorizon ? this.state.cpHorizonEnd : [0.9, 0.5];
+                drawLineSegment(ctx, 
+                    start, 
+                    end, 
+                    colHorizon, 
+                    this.state.manualHorizon, "H");
+            }
+        
+            drawControlPoint(ctx, this.state.cpOrigin, colOrigin, true, "O");
+            
+            if (this.state.numVPs < 3) {
+                //use the computed optical center for 3 VPs
+                drawControlPoint(ctx, this.state.cpPP, colPP, true, "P");
+            }
+        }
+        
+        
     };
     
     getControlPointAtScreenCoord = function(xScreen, yScreen) {
