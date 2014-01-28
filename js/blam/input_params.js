@@ -48,6 +48,9 @@ window.blam.inputParams = (function() {
         }
         this.horizonDirection = blam.math.relIm2ImPlane(this.horizonDirection, aspectRatio);
         
+        //TODO
+        this.relativeFocalLength = 2.2;
+        
         //the number of given vanishing points
         this.numVanishingPoints = uiState.numVPs;
         

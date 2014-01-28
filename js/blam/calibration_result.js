@@ -62,13 +62,12 @@ window.blam.calibrationResult = (function() {
                                                                          params.relativeFocalLength, 
                                                                          params.opticalCenter, 
                                                                          params.horizonDirection);
-                                                                        
+
             this.focalLengthImagePlaneCoords = blam.math.computeFocalLength(this.xVanishingPoint,
                                                                             this.yVanishingPoint,
                                                                             params.opticalCenter);
             this.zVanishingPoint = blam.math.computeThirdVanishingPoint(this.xVanishingPoint,
                                                                         this.yVanishingPoint, 
-                                                                        this.focalLengthImagePlaneCoords,
                                                                         params.opticalCenter);
         }
         else if (params.numVanishingPoints == 2) {
@@ -81,7 +80,6 @@ window.blam.calibrationResult = (function() {
                                                                             
             this.zVanishingPoint = blam.math.computeThirdVanishingPoint(this.xVanishingPoint,
                                                                         this.yVanishingPoint, 
-                                                                        this.focalLengthImagePlaneCoords,
                                                                         params.opticalCenter);
             
         }
@@ -94,6 +92,10 @@ window.blam.calibrationResult = (function() {
             var vpy = this.yVanishingPoint;
             var vpz = this.zVanishingPoint;
             this.opticalCenter = blam.math.computeTriangleOrthocenter([vpx, vpy, vpz]);
+            
+            this.focalLengthImagePlaneCoords = blam.math.computeFocalLength(this.xVanishingPoint,
+                                                                            this.yVanishingPoint,
+                                                                            this.opticalCenter);
         }
         
         //TODO: set properly

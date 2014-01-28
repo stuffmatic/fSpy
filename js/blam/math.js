@@ -367,14 +367,26 @@ blam.math = (function() {
     
     /**
      * Computes a thrid vanishing point based on two vanishing points 
-     * and a relative focal length.
+     * and the optical center.
      */
-    this.computeThirdVanishingPoint = function(Fu, Fv, f, P) {
-        var PFu = [Fu[0] - P[0], Fu[1] - P[1], f];
-        var PFv = [Fv[0] - P[0], Fv[1] - P[1], f];
+    this.computeThirdVanishingPoint = function(Fu, Fv, P) {
         
-        var cross = [PFu[1] * PFv[2] - PFu[2] * PFv[1], PFu[2] * PFv[0] - PFu[0] * PFv[2], PFu[0] * PFv[1] - PFu[1] * PFv[0]];
-        return cross;
+        //the optical center is the orthocenter of the triangle formed by Fu, Fv and Fw, the 
+        //third vanihsing point to compute.
+        
+        var FuFv = normalize(vecSubtract(Fv, Fu));
+        var PFu = vecSubtract(P, Fu);
+        var proj = dot(FuFv, PFu);
+        
+        var e = [P[1] - proj * FuFv[1], -P[0] + proj * FuFv[0]];
+        
+        e = normalize(e);
+        
+        var k = (Fu[0] * (Fv[0] - P[0]) + Fu[1] * (Fv[1] - P[1])) / (e[0] * (Fv[0] - P[0]) + e[1] * (Fv[1] - P[1]));
+        
+        return [e[0] * k, e[1] * k];
+    
+        
     }
 
     /**
