@@ -136,7 +136,7 @@ function UI() {
         var xIm = rect[0] + x * rect[2];
         var yIm = rect[1] + (1 - y) * rect[3];
     
-        return [xIm, yIm];
+        return [Math.round(xIm), Math.round(yIm)];
     }
     
     drawLineSegment = function(ctx, start, end, col, endMarkers, cpLabel)
@@ -170,7 +170,7 @@ function UI() {
         
         var p0 = relImageToCanvas(pos[0], pos[1]);
         ctx.beginPath();
-        ctx.arc(Math.round(p0[0]), Math.round(p0[1]), selectionRadius, 0 , 2 * Math.PI, false);
+        ctx.arc(p0[0], p0[1], selectionRadius, 0 , 2 * Math.PI, false);
 
         if (fill)
         {
@@ -186,7 +186,7 @@ function UI() {
         ctx.textBaseline = 'middle';
         ctx.textAlign = 'center';
         ctx.fillStyle = "#f0f0f0";
-        ctx.fillText(cpLabel, Math.round(p0[0]), Math.round(p0[1]));
+        ctx.fillText(cpLabel, p0[0], p0[1]);
     }
     
     
@@ -205,7 +205,7 @@ function UI() {
         }
 
         var w = cr.width();
-        var h = w / aspect;
+        var h = Math.round(w / aspect);
         
         cc.width(w);
         cc.height(h);
