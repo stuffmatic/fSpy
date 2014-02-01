@@ -41,12 +41,22 @@ window.blam.inputParams = (function() {
         reset();
         
         //horizon line
+        var horizStart = blam.math.relIm2ImPlane(uiState.cpHorizonStart, aspectRatio);
+        var horizEnd = blam.math.relIm2ImPlane(uiState.cpHorizonEnd, aspectRatio);
+        
         this.horizonDirection = [1, 0];
+        console.log(uiState.cpHorizonEnd + ", " + uiState.cpHorizonStart);
         if (uiState.manualHorizon) {
-            this.horizonDirection = [uiState.cpHorizonEnd[0] - uiState.cpHorizonStart[0], 
-                                     (uiState.cpHorizonEnd[1] - uiState.cpHorizonStart[1])];
+            this.horizonDirection = [horizEnd[0] - horizStart[0], horizEnd[1] - horizStart[1]];
         }
-        this.horizonDirection = blam.math.relIm2ImPlane(this.horizonDirection, aspectRatio);
+        this.horizonDirection = blam.math.normalize(this.horizonDirection);
+        
+        if (this.horizonDirection[0] < 0) {
+            this.horizonDirection[0] *= -1;
+            this.horizonDirection[1] *= -1;
+        }
+        
+        console.log(this.horizonDirection);
         
         //TODO
         this.relativeFocalLength = 2.2;
