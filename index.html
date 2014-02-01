@@ -8,6 +8,12 @@
     <link rel="stylesheet" href="css/foundation-icons.css" />
     <link rel="stylesheet" href="css/blam.css" />
     <script src="js/modernizr.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open%20Sans">
+        <style>
+          body, h1, h2, h3, h4 {
+            font-family: 'Open Sans', serif;
+          }
+        </style>
   </head>
   <body>
     
@@ -20,7 +26,12 @@
     
     <div id="modal_cheat_sheet" class="reveal-modal" data-reveal>
       <h2>Quick help</h2>
-      <div id="cheat_sheet"></div>
+      <div id="cheat_sheet"><span class="label x_axis">Vanishing line set 1</span>
+    <span class="label y_axis">Vanishing line set 2</span>
+    <span class="label z_axis">Vanishing line set 3</span>
+    <span class="label pp">Principal point</span>
+    <span class="label origin">3D origin</span>
+    <span class="label horizon">Horizon line</span></div>
       <a class="close-reveal-modal">&#215;</a>
     </div>
     
@@ -48,47 +59,87 @@
     <div id="header">
       <div class="row">
         <div class="small-12 columns">
-          <h3>BLAM <small>Interactive HTML5 camera calibration</small></h3>
-          <a href="#" data-reveal-id="modal_cheat_sheet">Quick help</a>
+          <h2>BLAM</h2>
+          <!--a href="#" data-reveal-id="modal_cheat_sheet">Quick help</a-->
         </div>
       </div>
     </div>
     <hr/>
-    
     
     <!-- Image panel -->
     <div class="row">
       <div id="canvas_row" class="small-12 columns">
-        <i class="fi-eye"></i>
-        <span class="label x_axis">1</span>
-        <span class="label y_axis">2</span>
-        <span class="label z_axis">3</span>
-        <span class="label pp">P</span>
-        <span class="label origin">O</span>
-        <span class="label horizon">H</span>
+        <!--i class="fi-eye"></i-->
+        <a href="#" id="button_toggle_cp_visibility"><i class="fi-record"></i></a>
+        <a href="#" id="button_toggle_grid_visibility"><i class="fi-thumbnails"></i></a>
+        <a href="#" id="button_toggle_image_visibility"><i class="fi-photo"></i></a>
+        <a href="#" id="button_toggle_image_contrast"><i class="fi-contrast"></i></a>
         
         <div id="canvas_container">
           <canvas id="canvas_image"></canvas>
           <canvas id="canvas_overlay"></canvas>
-        </div>
-        
-        <!-- Info panel -->
-        <i class="fi-target-two"></i><span class=" label" id="info_label_pos"></span>
-        <i class="fi-alert"></i><span class="label" id="info_label_drag"></span>
-        <i class="fi-info"></i><span class=" label" id="info_label_cp"></span>
+        </div>        
       </div>
     </div>
-    <hr/>
     
+    <!-- Info panel -->
+    <div class="row">
+      <div class="small-3 columns">
+        <div class="fi-target-two" id="info_label_pos"></div>
+      </div>
+      <div class="small-3 columns">
+        <div class="fi-info" id="info_label_cp"></div>
+      </div>
+      <div class="small-3 columns">
+        <div class="fi-camera" id="info_label_calibration_result"></div>
+      </div>
+      <div class="small-3 columns">
+        <div class="fi-alert" id="info_label_error"></div>
+      </div>
+    </div>
+      
     
     <hr/>
     
     <!-- Calibration settings -->
     <div class="row">
       <div class="medium-6 columns">
+        <h2><i class="fi-widget"></i> Settings</h2>
         
         <div class="row">
-          <h3><i class="fi-widget"></i></h3>
+          
+          <div class="small-4 columns">
+            Vanishing line 1  
+            <select>
+              <option value="volvo">Volvo</option>
+              <option value="saab">Saab</option>
+              <option value="mercedes">Mercedes</option>
+              <option value="audi">Audi</option>
+            </select>
+          </div>
+          <div class="small-4 columns">
+            Vanishing line 2
+            <select>
+              <option value="volvo">Volvo</option>
+              <option value="saab">Saab</option>
+              <option value="mercedes">Mercedes</option>
+              <option value="audi">Audi</option>
+            </select>
+          </div>
+          <div class="small-4 columns">
+            Vanishing line 3
+            <select>
+              <option value="volvo">Volvo</option>
+              <option value="saab">Saab</option>
+              <option value="mercedes">Mercedes</option>
+              <option value="audi">Audi</option>
+            </select>
+          </div>
+        </div>
+
+        
+        <div class="row">
+          
           <div class="small-4 columns">
             <a id="button_session_save" data-reveal-id="modal_save_session"  
             href="#" class="button postfix">Save</a>
@@ -103,7 +154,7 @@
           </div>
         </div>
         
-        <div class="row">
+        <!--div class="row">
           <div class="small-12 columns">
             
             <input id="checkbox_view_image" checked="checked" 
@@ -113,7 +164,7 @@
             <input id="checkbox_view_grid" checked="checked" type="checkbox">
             <label for="checkbox_view_grid">Grid</label>
           </div>
-        </div>
+        </div-->
         <div class="row">
           <div class="small-4 columns left inline ">
             <label>Vanishing points</label>
@@ -139,30 +190,11 @@
           </div>
         </div>
         
-        <div class="row">
-          <div class="small-2 columns">
-            <a href="#" class="button tiny expand x_axis">-x</a>
-          </div>
-          <div class="small-2 columns">
-            <a href="#" class="button tiny expand x_axis">+x</a>
-          </div>
-          <div class="small-2 columns">
-            <a href="#" class="button tiny expand y_axis">-y</a>
-          </div>
-          <div class="small-2 columns">
-            <a href="#" class="button tiny expand y_axis">+y</a>
-          </div>
-          <div class="small-2 columns">
-            <a href="#" class="button tiny expand z_axis">-z</a>
-          </div>
-          <div class="small-2 columns">
-            <a href="#" class="button tiny expand z_axis">+z</a>
-          </div>
-        </div>
+        
       </div>
       
       <div class="medium-6 columns">
-        <h3><i class="fi-photo"></i></h3>
+        <h2><i class="fi-photo"></i> Image</h2>
         <div class="row collapse">
           
           <div class="small-10 columns">
@@ -172,7 +204,7 @@
             <a id="button_load_image_url" href="#" class="button postfix">Load</a>
           </div>
         </div>
-        <h3><i class="fi-camera"></i></h3>
+        <h2><i class="fi-camera"></i> Camera data</h2>
         <div id="div_camera_preset_container">
         </div>
         <label>Sensor width (mm)</label>
@@ -189,7 +221,7 @@
     <!-- Calibration results -->
     <div class="row">
       <div class="small-12 columns">
-        <h3><i class="fi-clipboard-notes"></i>Calibration result</h3>    
+        <h2><i class="fi-clipboard-notes"></i> Calibration result</h2>    
       </div>
     </div>
     

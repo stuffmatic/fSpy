@@ -375,17 +375,18 @@ blam.math = (function() {
         //the optical center is the orthocenter of the triangle formed by Fu, Fv and Fw, the 
         //third vanihsing point to compute.
         
-        var FuFv = normalize(vecSubtract(Fv, Fu));
+        var e = normalize(vecSubtract(Fv, Fu));
+        var n = [e[1], -e[0]];
         var PFu = vecSubtract(P, Fu);
-        var proj = dot(FuFv, PFu);
+        var PFuDote = dot(PFu, e);
+        var m = [Fu[0] + PFuDote * e[0], Fu[1] + PFuDote * e[1]];
         
-        var e = [P[1] - proj * FuFv[1], -P[0] + proj * FuFv[0]];
+        var num = (Fu[0] - m[0]) * (Fv[0] - P[0]) + (Fu[1] - m[1]) * (Fv[1] - P[1]);
+        var den = n[0] * (Fv[0] - P[0]) + n[1] * (Fv[1] - P[1]);
         
-        e = normalize(e);
+        var k = num / den;
         
-        var k = (Fu[0] * (Fv[0] - P[0]) + Fu[1] * (Fv[1] - P[1])) / (e[0] * (Fv[0] - P[0]) + e[1] * (Fv[1] - P[1]));
-        
-        return [e[0] * k, e[1] * k];
+        return [m[0] + n[0] * k, m[1] + n[1] * k];
     
         
     }
@@ -436,7 +437,6 @@ blam.math = (function() {
         }
     
         var f = Math.sqrt(fSq);
-        console.log("f " + f);
         //print("dot 1:", dot(normalize(Fu + [f]), normalize(Fv + [f])))
     
         return f

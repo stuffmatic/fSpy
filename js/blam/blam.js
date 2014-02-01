@@ -65,6 +65,7 @@ function createCameraPresets()
     window.blam.cameraPresets =
     [
         ["Custom camera", 36, 24],
+        ["Blender", 32, 24],
         ["APS-C DSLR", 22.3, 14.9],
         ["Canon 1D", 27.9, 18.6],
         ["Canon 1DS", 36, 24],

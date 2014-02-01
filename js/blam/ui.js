@@ -27,10 +27,11 @@ function UI() {
     var errorModal;
     var errorMessageP;
     var infoLabelCP;
-    var infoLabelDrag;
+    var infoLabelError;
     var infoLabelPos;
+    var infoLabelCalibrationResult;
     var imageUrlTextField;
-    var imageUrlTextField;
+    var sensorWidthTextField;
     
     var resultCamOrientationAAP;
     var resultCamOrientationQuatP;
@@ -66,12 +67,13 @@ function UI() {
         res.compute(window.blam.inputParams);
         
         //update result fields
-        
         setResultMatrix(resultCameraMatrixP, res.orientationMatrix, 3); //TODO: actual compound transform
         setResultMatrix(resultProjectionMatrixP, res.projectionMatrix, 4);
         setResultMatrix(resultCamOrientationMatrixP, res.orientationMatrix, 3);
         
-        
+        var sensorWidth = sensorWidthTextField.val();
+        var absFocalLength = sensorWidth * res.focalLengthImagePlaneCoords / 2.0;
+        setCalibrationResultInfoLabelText(Number(absFocalLength).toFixed(2) + " mm");
         
         //redraw canvas
         this.redraw();
@@ -189,7 +191,6 @@ function UI() {
         ctx.fillText(cpLabel, p0[0], p0[1]);
     }
     
-    
     this.redraw = function() {
         var cr = canvasRow;
         var cc = canvasContainer;
@@ -215,13 +216,12 @@ function UI() {
         ic.attr('width', w);
         ic.attr('height', h);
         if (this.image && this.state.drawImage) {
-            
             var r = getCurrentImageRectSc();
             console.log(r);
             var ctx = ic[0].getContext('2d');
-            ctx.globalAlpha=0.2;
+            ctx.globalAlpha = this.state.lowImageContrast ? 0.2 : 1.0;
             ctx.drawImage(this.image, r[0], r[1], r[2], r[3]);
-            ctx.globalAlpha=1.0;
+            ctx.globalAlpha = 1.0;
         }
         else {
             ctx.clearRect(0, 0, w, h);
@@ -380,18 +380,23 @@ function UI() {
          this.recalculateResultAndRedraw();
     }
     
-    this.setImageVisible = function(on) {
-        this.state.drawImage = on;
+    this.toggleImageVisible = function(on) {
+        this.state.drawImage = !this.state.drawImage;
         this.redraw();
     }
     
-    this.setControlPointsVisible = function(on) {
-        this.state.drawCP = on;
+    this.toggleControlPointsVisible = function(on) {
+        this.state.drawCP = !this.state.drawCP;
         this.redraw();
     }
     
-    this.setGridVisible = function(on) {
-        this.state.drawGrid = on;
+    this.toggleGridVisible = function(on) {
+        this.state.drawGrid = !this.state.drawGrid;
+        this.redraw();
+    }
+    
+    this.toggleLowImageContrast = function(on) {
+        this.state.lowImageContrast = !this.state.lowImageContrast;
         this.redraw();
     }
     
@@ -478,8 +483,8 @@ function UI() {
         this.redraw();
     }
     
-    setDragInfoLabelText = function(message) {
-        infoLabelDrag.text(message);
+    setErrorInfoLabelText = function(message) {
+        infoLabelError.text(message);
     }
     
     setPosInfoLabelText = function(message) {
@@ -489,6 +494,10 @@ function UI() {
     setCPInfoLabelText = function(message, color) {
         infoLabelCP.text(message);
         infoLabelCP.css("color", color ? color : "");
+    }
+    
+    setCalibrationResultInfoLabelText = function(message) {
+        infoLabelCalibrationResult.text(message);
     }
     
     this.showErrorMessage = function(message) {
@@ -600,7 +609,7 @@ function UI() {
         var y = event.pageY - $(this).offset().top;
         
         setPosInfoLabelText(x + ", " + y);
-        setDragInfoLabelText("");
+        setErrorInfoLabelText("");
         canvasOverlay.css("cursor", "crosshair");
         //console.log("onMouseEnterCanvas: " + x + ", " + y);
     }
@@ -612,7 +621,7 @@ function UI() {
         draggedControlPoint = null;
         
         setPosInfoLabelText("");
-        setDragInfoLabelText("");
+        setErrorInfoLabelText("");
         canvasOverlay.css("cursor", "default");
         //console.log("onMouseLeaveCanvas: " + x + ", " + y);
     }
@@ -629,7 +638,7 @@ function UI() {
         event.stopPropagation();
         event.preventDefault();
         event.dataTransfer.dropEffect = 'copy'; 
-        setDragInfoLabelText("Drop image to load it");
+        setErrorInfoLabelText("Drop image to load it");
     }
     
     onDropOnCanvas = function(event) {
@@ -672,7 +681,7 @@ function UI() {
             return;
         }
 
-        setDragInfoLabelText("");
+        setErrorInfoLabelText("");
 
         ui.image.onload = function()
         {
@@ -693,8 +702,10 @@ function UI() {
         errorMessageP = $("#p_error_message"); 
         infoLabelCP = $("#info_label_cp");       
         infoLabelPos = $("#info_label_pos");     
-        infoLabelDrag = $("#info_label_drag");     
+        infoLabelError = $("#info_label_error"); 
+        infoLabelCalibrationResult = $("#info_label_calibration_result"); 
         imageUrlTextField = $("#textfield_image_url");
+        sensorWidthTextField = $("#textfield_camera_sensor_width");
         
         resultCamOrientationAAP = $("#camera_orientation_axis_angle");
         resultCamOrientationQuatP = $("camera_orientation_axis_quat");
@@ -772,6 +783,27 @@ function UI() {
             return false;
         });
         
+        //Visibility buttons
+        $("#button_toggle_cp_visibility").click(function(){
+            ui.toggleControlPointsVisible();
+            return false;
+        });
+        
+        $("#button_toggle_grid_visibility").click(function(){
+            ui.toggleGridVisible();
+            return false;
+        });
+        
+        $("#button_toggle_image_visibility").click(function(){
+            ui.toggleImageVisible();
+            return false;
+        });
+        
+        $("#button_toggle_image_contrast").click(function(){
+            ui.toggleLowImageContrast();
+            return false;
+        });
+        
         //canvas mouse events
         canvasOverlay.mousemove(onMouseMoveOnCanvas);
         canvasOverlay.mousedown(onMouseDownOnCanvas);
@@ -793,16 +825,20 @@ function UI() {
                 ui.onNumVanishingPointsChanged();
             }
             else if (code == 72) { //h
-                //TODO: toggle manual horizon
+                ui.state.manualHorizon = !ui.state.manualHorizon;
+                ui.recalculateResultAndRedraw();
             }
             else if (code == 73) { //i
-                //TODO: toggle image
+                ui.toggleImageVisible();
             }
             else if (code == 67) { //c
-                //TODO: toggle control points
+                ui.toggleControlPointsVisible();
             }
             else if (code == 71) { //g
-                //TODO: toggle grid
+                ui.toggleGridVisible();
+            }
+            else if (code == 76) { //l
+                ui.toggleLowImageContrast();
             }
             
         });
@@ -813,9 +849,10 @@ function UI() {
                   
             uiState:
             {
+                /*
                 customSensorWidth: 36,
                 customSensorHeight: 24,
-        
+                
                 cpX0Start: [0.7513812154696132,0.3736493123772102],
                 cpX0End: [0.4276243093922652,0.029837917485265226],
                 cpX1Start: [0.5646408839779006,0.8962426326129665],
@@ -833,6 +870,8 @@ function UI() {
         
                 cpHorizonStart: [0.1, 0.5],
                 cpHorizonEnd: [0.9, 0.5],
+                
+                lowImageContrast: false,
         
                 cpOrigin: [0.46740331491712706,0.075024557956778],
                 cpPP: [0.5, 0.5],
@@ -844,7 +883,8 @@ function UI() {
                 drawCP: true,
                 drawGrid: true,
                 
-                imageUrl: "img/cube.png"
+                imageUrl: "img/cube.png"*/
+                "customSensorWidth":36,"customSensorHeight":24,"cpX0Start":[0.9695876288659794,0.6981456043956044],"cpX0End":[0.5922680412371134,0.4380723443223443],"cpX1Start":[0.6860824742268041,0.8300137362637363],"cpX1End":[0.30876288659793816,0.6377060439560439],"cpY0Start":[0.6582474226804124,0.4179258241758242],"cpY0End":[0.21082474226804124,0.7659111721611722],"cpY1Start":[0.606701030927835,0.8281822344322345],"cpY1End":[0.9345360824742268,0.6505265567765568],"cpZ0Start":[0.38608247422680414,0.029647435897435896],"cpZ0End":[0.34484536082474226,0.6853250915750916],"cpZ1Start":[0.6201030927835052,0.024152930402930404],"cpZ1End":[0.6108247422680413,0.560782967032967],"cpHorizonStart":[0.1,0.5],"cpHorizonEnd":[0.9,0.5],"lowImageContrast":true,"cpOrigin":[0.6149484536082475,0.40327380952380953],"cpPP":[0.6685567010309278,0.3336767399267399],"numVPs":2,"manualHorizon":true,"drawImage":true,"drawCP":true,"drawGrid":true,"imageUrl":"img/cube_pp_offs.png"
             } 
         }
         
