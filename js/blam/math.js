@@ -360,8 +360,10 @@ blam.math = (function() {
         //TODO 2: if the first vanishing point coincides with the image center,
         //        these lines won't work, but this case should be handled somehow.
                 
-        var k = -(Fu[0] * Fu[0] + Fu[1] * Fu[1] + f * f) / (Fu[0] * horizonDir[0] + Fu[1] * horizonDir[1]);
-        var Fv = [Fu[0] + k * horizonDir[0], Fu[1] + k * horizonDir[1]];
+        var F = [Fu[0] - P[0], Fu[1] - P[1]];
+                
+        var k = -(F[0] * F[0] + F[1] * F[1] + f * f) / (F[0] * horizonDir[0] + F[1] * horizonDir[1]);
+        var Fv = [F[0] + k * horizonDir[0], F[1] + k * horizonDir[1]];
         
         return Fv
     }
