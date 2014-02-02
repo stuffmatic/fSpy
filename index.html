@@ -142,33 +142,53 @@
       <div class="medium-6 columns">
         <h2><i class="fi-widget"></i> Settings</h2>
         
+        <div class="row">          
+          <div class="small-12 columns">
+            <p>Vanishing point axes</p>
+          </div>
+        </div>
+            
         <div class="row">
           
-          <div class="small-4 columns">
-            Vanishing line 1  
-            <select>
-              <option value="volvo">Volvo</option>
-              <option value="saab">Saab</option>
-              <option value="mercedes">Mercedes</option>
-              <option value="audi">Audi</option>
+          <div class="small-1 columns">
+            <label class="inline">1</label>
+          </div>
+          <div class="small-3 columns">
+            <select id="select_vp1_axis">
+              <option value="[-1,0,0]">-x</option>
+              <option selected="selected" value="[1, 0, 0]">+x</option>
+              <option value="[0,-1,0]">-y</option>
+              <option value="[0,1,0]">+y</option>
+              <option value="[0,0,-1]">-z</option>
+              <option value="[0,0,1]">+z</option>
             </select>
           </div>
-          <div class="small-4 columns">
-            Vanishing line 2
-            <select>
-              <option value="volvo">Volvo</option>
-              <option value="saab">Saab</option>
-              <option value="mercedes">Mercedes</option>
-              <option value="audi">Audi</option>
+          
+          <div class="small-1 columns">
+            <label class="inline">2</label>
+          </div>
+          <div class="small-3 columns">
+            <select id="select_vp2_axis">
+              <option value="[-1,0,0]">-x</option>
+              <option value="[1,0,0]">+x</option>
+              <option value="[0,-1,0]">-y</option>
+              <option selected="selected" value="[0, 1, 0]">+y</option>
+              <option value="[0,0,-1]">-z</option>
+              <option value="[0,0,1]">+z</option>
             </select>
           </div>
-          <div class="small-4 columns">
-            Vanishing line 3
-            <select>
-              <option value="volvo">Volvo</option>
-              <option value="saab">Saab</option>
-              <option value="mercedes">Mercedes</option>
-              <option value="audi">Audi</option>
+          
+          <div class="small-1 columns">
+            <label class="inline">3</label>
+          </div>
+          <div class="small-3 columns">
+            <select disabled id="select_vp3_axis">
+              <option value="[-1,0,0]">-x</option>
+              <option value="[1,0,0]">+x</option>
+              <option value="[0,-1,0]">-y</option>
+              <option value="[0,1,0]">+y</option>
+              <option value="[0,0,-1]">-z</option>
+              <option value="[0,0,1]">+z</option>
             </select>
           </div>
         </div>
@@ -266,21 +286,21 @@
       <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
         <li>
           <h4>Intrinsics</h4>
-          <p>TODO</p>
           <div class="panel">
             <pre id="result_fov"></pre>
           </div>
+            <p>TODO</p>
         </li>
         
         <li>
             <h4>Camera orientation</h4>
-            <p>Expressed as an axis and an angle.</p>
             <div class="panel">
               <pre id="camera_orientation_axis_angle">x     : 0.65749
 y     : -0.75347
 z     : -0.00000
 angle : -0.92737</pre>
             </div>
+            <p>Expressed as an axis and an angle.</p>
         </li>
         
         <li>
@@ -295,32 +315,32 @@ z = -0.92737</pre>
         
         <li>
           <h4>Camera orientation matrix</h4>
-          <p> (row major)</p>
           <div class="panel text-center">
             <pre id="camera_orientation_matrix">0.65749 -0.75347 -0.00000
 0.28190  0.24599 -0.92737
 0.69874  0.60974  0.37414</pre>
           </div>
+          <p> (row major)</p>          
         </li>
         
         <li>
           <h4>Camera projection matrix</h4>
-          <p> (row major)</p>
           <div class="panel text-center">
             <pre id="camera_projection_matrix">0.65749 -0.75347 -0.00000
 0.28190  0.24599 -0.92737
 0.69874  0.60974  0.37414</pre>
           </div>
+          <p> (row major)</p>
         </li>
         
         <li>
           <h4>Camera matrix</h4>
-          <p> (row major)</p>
           <div class="panel text-center">
             <pre id="camera_matrix">0.65749 -0.75347 -0.00000
 0.28190  0.24599 -0.92737
 0.69874  0.60974  0.37414</pre>
           </div>
+          <p> (row major)</p>
         </li>
       </ul>
       </div>

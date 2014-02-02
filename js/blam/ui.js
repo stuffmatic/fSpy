@@ -13,6 +13,7 @@ function UI() {
     var colXAxis = "#BD3213";
     var colYAxis = "#4D9632";
     var colZAxis = "#2175aa";
+    
     var colHorizon = "#8C568B";
     var colPP = "#E07C09";
     var colOrigin = "#736F6B";
@@ -32,6 +33,12 @@ function UI() {
     var infoLabelPos;
     var infoLabelCalibrationResult;
     var imageUrlTextField;
+    var sensorWidthTextField;
+    
+    var vp1AxisSelect;
+    var vp2AxisSelect;
+    var vp3AxisSelect;
+    
     var sensorWidthTextField;
     
     var resultCamOrientationAAP;
@@ -250,16 +257,45 @@ function UI() {
         
         ctx.lineWidth = 0.5;
         
+        //get axis colors
+        var vp1Axis = JSON.parse(vp1AxisSelect.val());
+        var vp2Axis = JSON.parse(vp2AxisSelect.val());
+        var vp3Axis = JSON.parse(vp3AxisSelect.val());
+        var vp1AxisNeg = vp1Axis.indexOf(-1) >= 0;
+        var vp2AxisNeg = vp2Axis.indexOf(-1) >= 0;
+        var vp3AxisNeg = vp3Axis.indexOf(-1) >= 0;
+        var vp1ColIdx = Math.max(vp1Axis.indexOf(1), vp1Axis.indexOf(-1));
+        var vp2ColIdx = Math.max(vp2Axis.indexOf(1), vp2Axis.indexOf(-1));
+        var vp3ColIdx = Math.max(vp3Axis.indexOf(1), vp3Axis.indexOf(-1));
+        var axisCols = [colXAxis, colYAxis, colZAxis];
+        
         //draw vanishing lines
         if (this.calibrationResult.isDefined && this.state.drawGrid) {
             var cr = this.calibrationResult;
             var o = blam.math.imPlane2RelIm(this.inputParams.origin, aspect);
-            var xVp = blam.math.imPlane2RelIm(cr.xVanishingPoint, aspect);
-            var yVp = blam.math.imPlane2RelIm(cr.yVanishingPoint, aspect);
-            var zVp = blam.math.imPlane2RelIm(cr.zVanishingPoint, aspect);
-            drawLineSegment(ctx, o, xVp, colXAxis, false);
-            drawLineSegment(ctx, o, yVp, colYAxis, false);
-            drawLineSegment(ctx, o, zVp, colZAxis, false);
+            var vp1 = blam.math.imPlane2RelIm(cr.vp1, aspect);
+            var vp2 = blam.math.imPlane2RelIm(cr.vp2, aspect);
+            var vp3 = blam.math.imPlane2RelIm(cr.vp3, aspect);
+            
+            //positive axes
+            var na = 0.2;
+            ctx.globalAlpha = vp1AxisNeg ? na : 1.0;
+            drawLineSegment(ctx, o, vp1, axisCols[vp1ColIdx], false);
+            ctx.globalAlpha = !vp1AxisNeg ? na : 1.0;
+            drawLineSegment(ctx, o, [2 * o[0] - vp1[0], 2 * o[1] - vp1[1]], axisCols[vp1ColIdx], false);
+            
+            ctx.globalAlpha = vp2AxisNeg ? na : 1.0;
+            drawLineSegment(ctx, o, vp2, axisCols[vp2ColIdx], false);
+            ctx.globalAlpha = !vp2AxisNeg ? na : 1.0;
+            drawLineSegment(ctx, o, [2 * o[0] - vp2[0], 2 * o[1] - vp2[1]], axisCols[vp2ColIdx], false);
+            
+            ctx.globalAlpha = vp3AxisNeg ? na : 1.0;
+            drawLineSegment(ctx, o, vp3, axisCols[vp3ColIdx], false);
+            ctx.globalAlpha = !vp3AxisNeg ? na : 1.0;
+            drawLineSegment(ctx, o, [2 * o[0] - vp3[0], 2 * o[1] - vp3[1]], axisCols[vp3ColIdx], false);
+            
+            ctx.globalAlpha = 1.0;
+            //negative axes
             
             if (this.state.numVPs == 3) {
                 //use the computed optical center for 3 VPs
@@ -276,17 +312,17 @@ function UI() {
         //draw control points
         if (this.state.drawCP) {
         
-            drawLineSegment(ctx, this.state.cpX0Start, this.state.cpX0End, colXAxis, true, "1");
-            drawLineSegment(ctx, this.state.cpX1Start, this.state.cpX1End, colXAxis, true, "1");
+            drawLineSegment(ctx, this.state.cpX0Start, this.state.cpX0End, axisCols[vp1ColIdx], true, "1");
+            drawLineSegment(ctx, this.state.cpX1Start, this.state.cpX1End, axisCols[vp1ColIdx], true, "1");
             
             if (this.state.numVPs > 1) {
-                drawLineSegment(ctx, this.state.cpY0Start, this.state.cpY0End, colYAxis, true, "2");
-                drawLineSegment(ctx, this.state.cpY1Start, this.state.cpY1End, colYAxis, true, "2");
+                drawLineSegment(ctx, this.state.cpY0Start, this.state.cpY0End, axisCols[vp2ColIdx], true, "2");
+                drawLineSegment(ctx, this.state.cpY1Start, this.state.cpY1End, axisCols[vp2ColIdx], true, "2");
             }
         
             if (this.state.numVPs > 2) {
-                drawLineSegment(ctx, this.state.cpZ0Start, this.state.cpZ0End, colZAxis, true, "3");
-                drawLineSegment(ctx, this.state.cpZ1Start, this.state.cpZ1End, colZAxis, true, "3");
+                drawLineSegment(ctx, this.state.cpZ0Start, this.state.cpZ0End, axisCols[vp3ColIdx], true, "3");
+                drawLineSegment(ctx, this.state.cpZ1Start, this.state.cpZ1End, axisCols[vp3ColIdx], true, "3");
             }
     
             if (this.state.numVPs == 1) {
@@ -494,6 +530,7 @@ function UI() {
         this.state.cpPP
         ];
         
+        onVPAxisChanged();
         
     }
     
@@ -710,6 +747,33 @@ function UI() {
         };
     }
     
+    onVPAxisChanged = function(selectBox) {
+        
+        
+        var a1 = JSON.parse(vp1AxisSelect.val());
+        var a2 = JSON.parse(vp2AxisSelect.val());
+        var a3 = [a1[1] * a2[2] - a1[2] * a2[1], a1[2] * a2[0] - a1[0] * a2[2], a1[0] * a2[1] - a1[1] * a2[0]];
+        
+        var invalid = a3[0] == 0 && a3[1] == 0 && a3[2] == 0;
+        
+        console.log("a1 " + a1 + ", a2 " + a2 + ", a3 " + a3 + ", invalid " + invalid + ", " + JSON.stringify(a3));
+        
+        if (!invalid) {
+            vp3AxisSelect.val(JSON.stringify(a3));
+        }
+        else {
+            vp3AxisSelect.val("");
+        }
+        
+        var borderCss = (invalid ? "1" : "0") + "px solid red";
+        vp1AxisSelect.css("border", borderCss);
+        vp2AxisSelect.css("border", borderCss);
+        vp3AxisSelect.css("border", borderCss);
+        
+        ui.recalculateResultAndRedraw();
+
+    }
+    
     this.init = function() {
         
         //////////////////////////////////
@@ -736,6 +800,10 @@ function UI() {
         resultCameraMatrixP = $("#camera_matrix");
         resultFovP = $("#result_fov");
         
+        vp1AxisSelect = $("#select_vp1_axis");
+        vp2AxisSelect = $("#select_vp2_axis");
+        vp3AxisSelect = $("#select_vp3_axis");
+        
         //////////////////////////////////
         //   Variables
         //////////////////////////////////
@@ -758,25 +826,12 @@ function UI() {
             ui.redraw();
         });
         
-        //checkboxes
-        $("#checkbox_view_image").change(function(){
-            var on = $(this).is(":checked");
-            ui.setImageVisible(on);
+        //axis selection
+        vp1AxisSelect.change(function() {
+            onVPAxisChanged($(this));
         });
-        
-        $("#checkbox_view_cp").change(function(){
-            var on = $(this).is(":checked");
-            ui.setControlPointsVisible(on);
-        });
-        
-        $("#checkbox_view_grid").change(function(){
-            var on = $(this).is(":checked");
-            ui.setGridVisible(on);
-        });
-        
-        $("#checkbox_manual_horizon").change(function(){
-            var on = $(this).is(":checked");
-            ui.setManualHorizon(on);
+        vp2AxisSelect.change(function() {
+            onVPAxisChanged($(this));
         });
         
         //buttons

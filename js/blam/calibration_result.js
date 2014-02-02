@@ -10,9 +10,9 @@ window.blam.calibrationResult = (function() {
     /** The focal length in image plane coordinates.*/
     this.focalLengthImagePlaneCoords;
     /** The three vanishing points. */
-    this.xVanishingPoint;
-    this.yVanishingPoint;
-    this.zVanishingPoint;
+    this.vp1;
+    this.vp2;
+    this.vp3;
     /** The camera orientation as a 3x3 matrix. */
     this.orientationMatrix;
     /** The camera orientation as a unit quaternion. */
@@ -34,9 +34,9 @@ window.blam.calibrationResult = (function() {
         this.isDefined = false;
         this.errorMessage = null;
         this.focalLengthImagePlaneCoords = 0;
-        this.xVanishingPoint = [0.0, 0.0];
-        this.yVanishingPoint = [0.0, 0.0];
-        this.zVanishingPoint = [0.0, 0.0];
+        this.vp1 = [0.0, 0.0];
+        this.vp2 = [0.0, 0.0];
+        this.vp3 = [0.0, 0.0];
         this.orientationMatrix = window.blam.math.identityMatrix(3);
         console.log(this.orientationMatrix);
         this.orientationQuaternion = window.blam.math.zeroVector(4);
@@ -53,50 +53,50 @@ window.blam.calibrationResult = (function() {
     this.compute = function(params) {
         reset();
         
-        this.xVanishingPoint = blam.math.computeIntersectionPoint(params.xVanishingLine0, 
+        this.vp1 = blam.math.computeIntersectionPoint(params.xVanishingLine0, 
                                                                   params.xVanishingLine1);
                                                                   
         this.opticalCenter = [params.opticalCenter[0], params.opticalCenter[1]]; 
         
         
         if (params.numVanishingPoints == 1) {
-            this.yVanishingPoint = blam.math.computeSecondVanishingPoint(this.xVanishingPoint,
+            this.vp2 = blam.math.computeSecondVanishingPoint(this.vp1,
                                                                          params.relativeFocalLength, 
                                                                          params.opticalCenter, 
                                                                          params.horizonDirection);
 
-            this.focalLengthImagePlaneCoords = blam.math.computeFocalLength(this.xVanishingPoint,
-                                                                            this.yVanishingPoint,
+            this.focalLengthImagePlaneCoords = blam.math.computeFocalLength(this.vp1,
+                                                                            this.vp2,
                                                                             params.opticalCenter);
-            this.zVanishingPoint = blam.math.computeThirdVanishingPoint(this.xVanishingPoint,
-                                                                        this.yVanishingPoint, 
+            this.vp3 = blam.math.computeThirdVanishingPoint(this.vp1,
+                                                                        this.vp2, 
                                                                         params.opticalCenter);
         }
         else if (params.numVanishingPoints == 2) {
-            this.yVanishingPoint = blam.math.computeIntersectionPoint(params.yVanishingLine0, 
+            this.vp2 = blam.math.computeIntersectionPoint(params.yVanishingLine0, 
                                                                       params.yVanishingLine1);
                                                                       
-            this.focalLengthImagePlaneCoords = blam.math.computeFocalLength(this.xVanishingPoint,
-                                                                            this.yVanishingPoint,
+            this.focalLengthImagePlaneCoords = blam.math.computeFocalLength(this.vp1,
+                                                                            this.vp2,
                                                                             params.opticalCenter);
                                                                             
-            this.zVanishingPoint = blam.math.computeThirdVanishingPoint(this.xVanishingPoint,
-                                                                        this.yVanishingPoint, 
+            this.vp3 = blam.math.computeThirdVanishingPoint(this.vp1,
+                                                                        this.vp2, 
                                                                         params.opticalCenter);
             
         }
         else if (params.numVanishingPoints == 3) {
-            this.yVanishingPoint = blam.math.computeIntersectionPoint(params.yVanishingLine0, 
+            this.vp2 = blam.math.computeIntersectionPoint(params.yVanishingLine0, 
                                                                       params.yVanishingLine1);
-            this.zVanishingPoint = blam.math.computeIntersectionPoint(params.zVanishingLine0, 
+            this.vp3 = blam.math.computeIntersectionPoint(params.zVanishingLine0, 
                                                                       params.zVanishingLine1);                                                             
-            var vpx = this.xVanishingPoint;
-            var vpy = this.yVanishingPoint;
-            var vpz = this.zVanishingPoint;
+            var vpx = this.vp1;
+            var vpy = this.vp2;
+            var vpz = this.vp3;
             this.opticalCenter = blam.math.computeTriangleOrthocenter([vpx, vpy, vpz]);
             
-            this.focalLengthImagePlaneCoords = blam.math.computeFocalLength(this.xVanishingPoint,
-                                                                            this.yVanishingPoint,
+            this.focalLengthImagePlaneCoords = blam.math.computeFocalLength(this.vp1,
+                                                                            this.vp2,
                                                                             this.opticalCenter);
         }
         
