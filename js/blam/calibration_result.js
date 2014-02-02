@@ -46,6 +46,8 @@ window.blam.calibrationResult = (function() {
         this.projectionMatrix = window.blam.math.identityMatrix(4);
         this.principalPoint = window.blam.math.zeroVector(2);
         this.aspectRatio = 1.0;
+        this.fovHorizDeg = 0.0;
+        this.fovVertDeg = 0.0;
     }
     
     this.compute = function(params) {

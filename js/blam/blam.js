@@ -1,3 +1,147 @@
+window.blam.cameraPresets =
+{
+    "custom": {
+        name: "Custom camera",
+        width: 36,
+        height: 24
+    },
+    "blender": {
+        name: "Blender default camera",
+        width: 32,
+        height: 24
+    },
+    "aps-c": {
+        name: "APS-C DSLR",
+        width: 22.3,
+        height: 14.9
+    },
+    "canon_1d": {
+        name: "Canon 1D",
+        width: 27.9,
+        height: 18.6
+    },
+    "canon_1ds": {
+        name: "Canon 1DS",
+        width: 36,
+        height: 24
+    },
+    "canon_5d": {
+        name: "Canon 5D",
+        width: 36,
+        height: 24
+    },
+    "canon_7d": {
+        name: "Canon 7D",
+        width: 22.3, 
+        height: 14.9
+    },
+    "canon_60d": {
+        name: "Canon 60D",
+        width: 22.3,
+        height: 14.9
+    },
+    "canon_500d": {
+        name: "Canon 500D",
+        width: 22.3,
+        height: 14.9
+    },
+    "canon_550d": {
+        name: "Canon 550D",
+        width: 22.3,
+        height: 14.9
+    },
+    "canon_600d": {
+        name: "Canon 600D",
+        width: 22.3,
+        height: 14.9
+    },
+    "canon_1100d": {
+        name: "Canon 1100D",
+        width: 22.2, 
+        height: 14.7
+    },
+    "35_mm_film": {
+        name: "35 mm film",
+        width: 36,
+        height: 24
+    },
+    "micro_4_3rds": {
+        name: "Micro four thirds",
+        width: 17.3,
+        height: 14
+    },
+    "nikon_d3s": {
+        name: "Nikon D3S",
+        width: 36,
+        height: 23.9
+    },
+    "nikon_d90": {
+        name: "Nikon D90",
+        width: 23.6,
+        height: 15.8
+    },
+    "nikon_d300s": {
+        name: "Nikon D300S",
+        width: 23.6,
+        height: 15.8
+    },
+    "nikon_d3100": {
+        name: "Nikon D3100",
+        width: 23.1,
+        height: 15.4
+    },
+    "nikon_d5000": {
+        name: "Nikon D5000",
+        width: 23.6,
+        height: 15.8
+    },
+    "nikon_d5100": {
+        name: "Nikon D5100",
+        width: 23.6,
+        height: 15.6
+    },
+    "nikon_d7000": {
+        name: "Nikon D7000",
+        width: 23.6,
+        height: 15.6
+    },
+    "red_epic": {
+        name: "Red Epic",
+        width: 30,
+        height: 15
+    },
+    "red_epic_2k": {
+        name: "Red Epic 2k",
+        width: 11.1,
+        height: 6.24
+    },
+    "red_epic_3k": {
+        name: "Red Epic 3k",
+        width: 16.65,
+        height: 9.36
+    },
+    "red_epic_4k": {
+        name: "Red Epic 4k",
+        width: 22.2,
+        height: 12.6
+    },
+    "sony_a55": {
+        name: "Sony A55",
+        width: 23.4,
+        height: 15.6
+    },
+    "super_16": {
+        name: "Super 16 film",
+        width: 12.52, 
+        height: 7.41
+    },
+    "super_32": {
+        name: "Super 35 film",
+        width: 24.89,
+        height: 18.66
+    },
+};
+
 window.blam = window.blam || {}
 window.blam.inputParams = window.blam.inputParams || {}
 
@@ -36,17 +180,17 @@ function checkBrowserCompatibility()
     return null;
 }
 
-function setCameraPreset(idx)
+function setCameraPreset(key)
 {
-    console.log("setCameraPreset(idx=" + idx + ")");
+    console.log("setCameraPreset(key=" + key + ")");
     
     var widthField = $("#textfield_camera_sensor_width");
     var heightField = $("#textfield_camera_sensor_height");
     
-    widthField.val(window.blam.cameraPresets[idx][1]);
-    heightField.val(window.blam.cameraPresets[idx][2]);
+    widthField.val(window.blam.cameraPresets[key]["width"]);
+    heightField.val(window.blam.cameraPresets[key]["height"]);
     
-    if (idx != 0)
+    if (key != "custom")
     {
         widthField.attr("disabled", "disabled");
         heightField.attr("disabled", "disabled");
@@ -60,45 +204,10 @@ function setCameraPreset(idx)
 
 function createCameraPresets()
 {
-    //TODO: preset IDs
-    //[Name, sensor width in mm, sensor height in mm]
-    window.blam.cameraPresets =
-    [
-        ["Custom camera", 36, 24],
-        ["Blender", 32, 24],
-        ["APS-C DSLR", 22.3, 14.9],
-        ["Canon 1D", 27.9, 18.6],
-        ["Canon 1DS", 36, 24],
-        ["Canon 5D", 36, 24],
-        ["Canon 7D", 22.3, 14.9],
-        ["Canon 60D", 22.3, 14.9],
-        ["Canon 500D", 22.3, 14.9],
-        ["Canon 550D", 22.3, 14.9],
-        ["Canon 600D", 22.3, 14.9],
-        ["Canon 1100D", 22.2, 14.7],
-        ["35 mm film", 36, 24],
-        ["Micro four thirds", 17.3, 14],
-        ["Nikon D3S", 36, 23.9],
-        ["Nikon D90", 23.6, 15.8],
-        ["Nikon D300S", 23.6, 15.8],
-        ["Nikon D3100", 23.1, 15.4],
-        ["Nikon D5000", 23.6, 15.8],
-        ["Nikon D5100", 23.6, 15.6],
-        ["Nikon D7000", 23.6, 15.6],
-        ["Red Epic", 30, 15],
-        ["Red Epic 2k", 11.1, 6.24],
-        ["Red Epic 3k", 16.65, 9.36],
-        ["Red Epic 4k", 22.2, 12.6],
-        ["Sony A55", 23.4, 15.6],
-        ["Super 16 film", 12.52, 7.41],
-        ["Super 35 film", 24.89, 18.66]
-    ];
-    
     //populate the dropdown menu
     var html = '<select id="dropdown_camera_presets">';
-    for (var i = 0; i < window.blam.cameraPresets.length; i++)
-    {
-        html += '<option value="' + i + '">' + window.blam.cameraPresets[i][0] + '</option>';
+    for (var key in window.blam.cameraPresets) {
+        html += '<option value="' + key + '">' + window.blam.cameraPresets[key]["name"] + '</option>';
     }
     html += "</select>";
     
@@ -111,7 +220,7 @@ function createCameraPresets()
         setCameraPreset($(this).val());
     });
     
-    setCameraPreset(0);
+    setCameraPreset("custom");
 }
 
 $(document).ready(function() {

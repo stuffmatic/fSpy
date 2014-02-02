@@ -24,6 +24,7 @@ function UI() {
     var canvasImage;
     var canvasOverlay;
     var canvasRow;
+    var canvasBorder;
     var errorModal;
     var errorMessageP;
     var infoLabelCP;
@@ -55,7 +56,7 @@ function UI() {
         }
         
         
-        console.log(window.blam.inputParams);
+        //console.log(window.blam.inputParams);
         
         //compute input parameters from ui state
         var aspectRatio = canvasContainer.width() / canvasContainer.height();
@@ -72,8 +73,21 @@ function UI() {
         setResultMatrix(resultCamOrientationMatrixP, res.orientationMatrix, 3);
         
         var sensorWidth = sensorWidthTextField.val();
-        var absFocalLength = sensorWidth * res.focalLengthImagePlaneCoords / 2.0;
-        setCalibrationResultInfoLabelText(Number(absFocalLength).toFixed(2) + " mm");
+        var absFocalLength = Number(sensorWidth * res.focalLengthImagePlaneCoords / 2.0).toFixed(2);
+        setCalibrationResultInfoLabelText(absFocalLength + " mm");
+        
+        var fovText = "Focal length   : " + absFocalLength + " mm\n";
+        fovText +=    "FOV horizontal : " + res.fovHorizDeg + " degrees\n";
+        fovText +=    "FOV vertical   : " + res.fovHorizDeg + " degrees\n";
+        
+        if (window.blam.inputParams.numVanishingPoints == 3) {
+            fovText +=    "Optical center : (" + res.principalPoint[0] + "," + res.principalPoint[1] + ") pixels\n";
+        } 
+        else {
+            fovText += "\n"
+        }
+        resultFovP.text(fovText);
+        
         
         //redraw canvas
         this.redraw();
@@ -196,6 +210,7 @@ function UI() {
         var cc = canvasContainer;
         var oc = canvasOverlay;
         var ic = canvasImage;
+        var cb = canvasBorder;
         
         var aspect = 16.0 / 9.0;
         
@@ -205,7 +220,7 @@ function UI() {
             aspect = this.image.naturalWidth / this.image.naturalHeight;
         }
 
-        var w = cr.width();
+        var w = cb.width();
         var h = Math.round(w / aspect);
         
         cc.width(w);
@@ -382,21 +397,25 @@ function UI() {
     
     this.toggleImageVisible = function(on) {
         this.state.drawImage = !this.state.drawImage;
+        $("#button_toggle_image_visibility").css("opacity", this.state.drawImage ? "1.0" : "0.5");
         this.redraw();
     }
     
     this.toggleControlPointsVisible = function(on) {
         this.state.drawCP = !this.state.drawCP;
+        $("#button_toggle_cp_visibility").css("opacity", this.state.drawCP ? "1.0" : "0.5");
         this.redraw();
     }
     
     this.toggleGridVisible = function(on) {
         this.state.drawGrid = !this.state.drawGrid;
+        $("#button_toggle_grid_visibility").css("opacity", this.state.drawGrid ? "1.0" : "0.5");
         this.redraw();
     }
     
     this.toggleLowImageContrast = function(on) {
         this.state.lowImageContrast = !this.state.lowImageContrast;
+        $("#button_toggle_image_contrast").css("opacity", this.state.lowImageContrast ? "0.5" : "1.0");
         this.redraw();
     }
     
@@ -611,6 +630,7 @@ function UI() {
         setPosInfoLabelText(x + ", " + y);
         setErrorInfoLabelText("");
         canvasOverlay.css("cursor", "crosshair");
+    
         //console.log("onMouseEnterCanvas: " + x + ", " + y);
     }
     
@@ -623,6 +643,7 @@ function UI() {
         setPosInfoLabelText("");
         setErrorInfoLabelText("");
         canvasOverlay.css("cursor", "default");
+    
         //console.log("onMouseLeaveCanvas: " + x + ", " + y);
     }
     
@@ -698,6 +719,7 @@ function UI() {
         canvasImage = $("#canvas_image");
         canvasOverlay = $("#canvas_overlay");
         canvasRow = $("#canvas_row");
+        canvasBorder = $("#canvas_border");
         errorModal = $("#modal_error_message");
         errorMessageP = $("#p_error_message"); 
         infoLabelCP = $("#info_label_cp");       
@@ -796,6 +818,7 @@ function UI() {
         
         $("#button_toggle_image_visibility").click(function(){
             ui.toggleImageVisible();
+            
             return false;
         });
         

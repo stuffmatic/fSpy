@@ -3,17 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BLAM</title>
+    <title>f-spy</title>
     <link rel="stylesheet" href="css/foundation.min.css" />
     <link rel="stylesheet" href="css/foundation-icons.css" />
     <link rel="stylesheet" href="css/blam.css" />
     <script src="js/modernizr.js"></script>
-    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open%20Sans">
-        <style>
-          body, h1, h2, h3, h4 {
-            font-family: 'Open Sans', serif;
-          }
-        </style>
   </head>
   <body>
     
@@ -59,47 +53,89 @@
     <div id="header">
       <div class="row">
         <div class="small-12 columns">
-          <h2>BLAM</h2>
+          <h1>f-spy<small>beta</small></h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="medium-6 small-12 columns">
+          <p>Interactive camera calibration in your browser. Brought to you by <a href="http://www.stuffmatic.com">Stuffmatic</a>. <a href="https://github.com/stuffmatic/f-spy">Source code</a></p>
           <!--a href="#" data-reveal-id="modal_cheat_sheet">Quick help</a-->
+        </div>
+        <div class="medium-6 small-12 columns text-right">
+
+          <a href="https://twitter.com/share" class="twitter-share-button"
+           data-lang="en">Tweet</a>
+             <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];
+                   if(!d.getElementById(id)){js=d.createElement(s);
+                     js.id=id;
+                     js.src="https://platform.twitter.com/widgets.js";
+                     fjs.parentNode.insertBefore(js,fjs);}}
+                     (document,"script","twitter-wjs");
+              </script>
+
+
+        <div class="g-plusone" data-width="20"></div>
+
+        <script type="text/javascript">
+        (function() {
+          var po = document.createElement('script'); po.type = 'text/javascript';          po.async = true;
+          po.src = 'https://apis.google.com/js/platform.js';
+          var s = document.getElementsByTagName('script')[0];    
+           s.parentNode.insertBefore(po, s);
+         })();
+        </script>
+  
+          <iframe   src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.nilsbergcinemascope.com%2Fvocals&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=true&amp;share=false&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:95px; height:21px;" allowTransparency="true">
+          </iframe>
         </div>
       </div>
     </div>
-    <hr/>
+    
+
+  
+    
     
     <!-- Image panel -->
     <div class="row">
       <div id="canvas_row" class="small-12 columns">
-        <!--i class="fi-eye"></i-->
-        <a href="#" id="button_toggle_cp_visibility"><i class="fi-record"></i></a>
-        <a href="#" id="button_toggle_grid_visibility"><i class="fi-thumbnails"></i></a>
-        <a href="#" id="button_toggle_image_visibility"><i class="fi-photo"></i></a>
-        <a href="#" id="button_toggle_image_contrast"><i class="fi-contrast"></i></a>
-        
-        <div id="canvas_container">
-          <canvas id="canvas_image"></canvas>
-          <canvas id="canvas_overlay"></canvas>
-        </div>        
+        <div id="canvas_border">
+          <div class="tool_shelf">
+            <a title="Toggle control point visibility - C" 
+            href="#" id="button_toggle_cp_visibility"><i class="fi-record"></i></a>
+            <a title="Toggle 3D grid visibility - G" 
+            href="#" id="button_toggle_grid_visibility"><i class="fi-thumbnails"></i></a>
+            <a title="Toggle image visibility - I"  
+            href="#" id="button_toggle_image_visibility"><i class="fi-photo"></i></a>
+            <a title="Toggle low contrast image - L" 
+             href="#" id="button_toggle_image_contrast"><i class="fi-contrast"></i></a>
+          </div>
+          <div id="canvas_container">
+            <canvas id="canvas_image"></canvas>
+            <canvas id="canvas_overlay"></canvas>
+          </div>        
+          <!-- Info panel -->
+          <div class="row">
+            <div class="tool_shelf">
+              <div class="small-3 columns">
+                <div class="fi-target-two" id="info_label_pos"></div>
+              </div>
+              <div class="small-3 columns">
+                <div class="fi-info" id="info_label_cp"></div>
+              </div>
+              <div class="small-3 columns">
+                <div class="fi-camera" id="info_label_calibration_result"></div>
+              </div>
+              <div class="small-3 columns">
+                <div class="fi-alert" id="info_label_error"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     
-    <!-- Info panel -->
-    <div class="row">
-      <div class="small-3 columns">
-        <div class="fi-target-two" id="info_label_pos"></div>
-      </div>
-      <div class="small-3 columns">
-        <div class="fi-info" id="info_label_cp"></div>
-      </div>
-      <div class="small-3 columns">
-        <div class="fi-camera" id="info_label_calibration_result"></div>
-      </div>
-      <div class="small-3 columns">
-        <div class="fi-alert" id="info_label_error"></div>
-      </div>
-    </div>
+    
       
-    
-    <hr/>
     
     <!-- Calibration settings -->
     <div class="row">
@@ -215,7 +251,7 @@
     </div>
     
     <div class="row text-center">
-    <i style="color: #bbbbbb; font-size: 1000%" class="fi-arrow-down"></i>
+    <i style="font-size: 1200%" class="fi-arrow-down"></i>
     </div>
     
     <!-- Calibration results -->
@@ -229,21 +265,21 @@
       <div class="small-12 columns">
       <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3">
         <li>
-          <h4>Field of view</h4>
+          <h4>Intrinsics</h4>
           <p>TODO</p>
-          <div class="panel text-center">
-            <pre id="result_fov">45 deg (horiz), 23 deg (vert)</pre>
+          <div class="panel">
+            <pre id="result_fov"></pre>
           </div>
         </li>
         
         <li>
             <h4>Camera orientation</h4>
             <p>Expressed as an axis and an angle.</p>
-            <div class="panel text-center">
-              <pre id="camera_orientation_axis_angle">x = 0.65749
-y = -0.75347
-z = -0.00000
-angle = -0.92737</pre>
+            <div class="panel">
+              <pre id="camera_orientation_axis_angle">x     : 0.65749
+y     : -0.75347
+z     : -0.00000
+angle : -0.92737</pre>
             </div>
         </li>
         
@@ -287,18 +323,35 @@ z = -0.92737</pre>
           </div>
         </li>
       </ul>
-      Export results? Export results? Export results? Export results? Export results? Export results? Export results? Export results? 
       </div>
-      
     </div>
     
-    <hr/>
+    <!-- Exporting -->
+    <div class="row">
+      <div class="small-12 columns">
+        <h2><i class="fi-save"></i> Exporting</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="medium-4 columns">
+        <h4>Blender</h4>
+        <p>stry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publis</p>
+      </div>
+      <div class="medium-4 columns">
+        <h4>Maya</h4>
+        <p>stry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centurs with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publis</p>
+      </div>
+      <div class="medium-4 columns">
+        <h4>Cinema 4D</h4>
+        <p>stry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publis</p>
+      </div>
+    </div>
     
     <!-- Footer -->
     <div id="footer">
       <div class="row text-center">
         <div class="medium-12 columns">
-          <img src="img/logo.png">
+          <img src="img/logo.png"/>
         </div>
       </div>
     </div>
@@ -314,5 +367,6 @@ z = -0.92737</pre>
     <script src="js/blam/calibration_result.js"></script>
     <script src="js/blam/ui.js"></script>
     <script src="js/blam/blam.js"></script>
+    <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
   </body>
 </html>
