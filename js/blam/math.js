@@ -66,6 +66,45 @@ blam.math = (function() {
     
         return ret;
     }
+    
+    /**
+     * Computes the cross product of two 2D or 3D vectors.
+     * @param v1 The first vector. 
+     * @param v2 The second vector.
+     * @return The cross product of \c v1 and \c v2.
+     */
+    this.cross = function(v1, v2)
+    {
+        if (v1.length != v2.length) {
+            return null;
+        }
+        
+        if (v1.length < 2 || v1.length > 3) {
+            return null;
+        }
+        
+        //add 0 z component if needed
+        v1e = [0, 0, 0];
+        v2e = [0, 0, 0];
+        
+        for (var i = 0; i < v1.length; i++) {
+            v1e[i] = v1[i];
+            v2e[i] = v2[i];
+        }
+        
+        //
+        cr = [0, 0, 0];
+        cr[0] = v1e[1] * v2e[2] - v1e[2] * v2e[1];
+        cr[1] = v1e[2] * v2e[0] - v1e[0] * v2e[2];
+        cr[2] = v1e[0] * v2e[1] - v1e[1] * v2e[0];
+        
+        //return a 2d or 3d vector
+        if (v1.length == 2) {
+            return [cr[0], cr[1]]; 
+        }
+    
+        return cr;
+    }
 
     /**
      * Computes the difference between two vectors.

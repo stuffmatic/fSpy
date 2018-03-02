@@ -241,7 +241,7 @@ function UI() {
             var r = getCurrentImageRectSc();
             console.log(r);
             var ctx = ic[0].getContext('2d');
-            ctx.globalAlpha = this.state.lowImageContrast ? 0.2 : 1.0;
+            ctx.globalAlpha = this.state.lowImageContrast ? 0.1: 1.0;
             ctx.drawImage(this.image, r[0], r[1], r[2], r[3]);
             ctx.globalAlpha = 1.0;
         }
@@ -257,19 +257,22 @@ function UI() {
         
         ctx.lineWidth = 0.5;
         
-        //get axis colors
+        //get axis colors and figure out if the vanishig points
+        //lie on positive or negative axes.
         var vp1Axis = JSON.parse(vp1AxisSelect.val());
         var vp2Axis = JSON.parse(vp2AxisSelect.val());
         var vp3Axis = JSON.parse(vp3AxisSelect.val());
         var vp1AxisNeg = vp1Axis.indexOf(-1) >= 0;
         var vp2AxisNeg = vp2Axis.indexOf(-1) >= 0;
-        var vp3AxisNeg = vp3Axis.indexOf(-1) >= 0;
+        var vp3AxisNeg = vp3Axis.indexOf(-1) >= 0; //TODO: set this properly
         var vp1ColIdx = Math.max(vp1Axis.indexOf(1), vp1Axis.indexOf(-1));
         var vp2ColIdx = Math.max(vp2Axis.indexOf(1), vp2Axis.indexOf(-1));
         var vp3ColIdx = Math.max(vp3Axis.indexOf(1), vp3Axis.indexOf(-1));
         var axisCols = [colXAxis, colYAxis, colZAxis];
         
-        //draw vanishing lines
+        //draw vanishing lines for the x, y and z axes.
+        //these lines pass through the 3D origin and a
+        //vanishing point.
         if (this.calibrationResult.isDefined && this.state.drawGrid) {
             var cr = this.calibrationResult;
             var o = blam.math.imPlane2RelIm(this.inputParams.origin, aspect);
@@ -277,7 +280,6 @@ function UI() {
             var vp2 = blam.math.imPlane2RelIm(cr.vp2, aspect);
             var vp3 = blam.math.imPlane2RelIm(cr.vp3, aspect);
             
-            //positive axes
             var na = 0.2;
             ctx.globalAlpha = vp1AxisNeg ? na : 1.0;
             drawLineSegment(ctx, o, vp1, axisCols[vp1ColIdx], false);
@@ -295,7 +297,7 @@ function UI() {
             drawLineSegment(ctx, o, [2 * o[0] - vp3[0], 2 * o[1] - vp3[1]], axisCols[vp3ColIdx], false);
             
             ctx.globalAlpha = 1.0;
-            //negative axes
+            
             
             if (this.state.numVPs == 3) {
                 //use the computed optical center for 3 VPs
@@ -752,7 +754,11 @@ function UI() {
         
         var a1 = JSON.parse(vp1AxisSelect.val());
         var a2 = JSON.parse(vp2AxisSelect.val());
-        var a3 = [a1[1] * a2[2] - a1[2] * a2[1], a1[2] * a2[0] - a1[0] * a2[2], a1[0] * a2[1] - a1[1] * a2[0]];
+        var a3 = [
+            a1[1] * a2[2] - a1[2] * a2[1], 
+            a1[2] * a2[0] - a1[0] * a2[2], 
+            a1[0] * a2[1] - a1[1] * a2[0]
+        ];
         
         var invalid = a3[0] == 0 && a3[1] == 0 && a3[2] == 0;
         

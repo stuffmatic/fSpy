@@ -1,5 +1,53 @@
 module("Generic math functions");
 
+/*******************************************************
+ *                   HELPER FUNCTIONS
+ *******************************************************/
+
+/**
+ * Scalar equality within a given epsilon.
+ */
+function scEq(s1, s2, eps) {
+    return Math.abs(s1 - s2) < eps;
+}
+
+/**
+ * Vector equality within a given epsilon.
+ */
+function vecEq(v1, v2, eps) {
+    if (v1.length() != v2.length()) {
+        return false
+    }
+    
+    for (var i = 0; i < v1.length(); i++) {
+        if (!sqEq(v1[i], v2[i], eps)) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+/**
+ * Matrix equality within a given epsilon
+ */
+function vecEq(m1, m2, eps) {
+    if (m1.length() != m2.length()) {
+        return false
+    }
+    
+    for (var i = 0; i < m1.length(); i++) {
+        if (!vecEq(m1[i], m2[i], eps)) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+/*******************************************************
+ *                      TESTS
+ *******************************************************/
 test("Vector length", function() {
     
     var vectors = [
@@ -42,14 +90,39 @@ test("Vector normlize", function() {
         var vec = vectors[i];
         var normVec = blam.math.normalize(vec);
         var l = blam.math.length(normVec);
-        ok(l == 1, "Length of normalized vector [" + normVec + "] should be " + 1);
+        ok(scEq(l, 1, 0.0000000000001), "Length of normalized vector [" + normVec + "] should be " + 1);
     }
-    
-  
 });
 
-module("module 2");
-
-test("test name 2", function() {
-  ok(1 == "1", "Tag 2" );
+test("Vector dot product", function() {
+    ok(false);
 });
+
+test("Vector cross product", function() {
+    ok(false);
+});
+
+test("Vector subtract", function() {
+    ok(false);
+});
+
+test("Matrix to quaternion conversion", function() {
+    ok(false);
+});
+
+test("Matrix to axis angle", function() {
+    ok(false);
+});
+
+test("Matrix multiplication", function() {
+    ok(false);
+});
+
+test("Matrix inverse", function() {
+    ok(false);
+});
+
+test("Line intersection", function() {
+    ok(false);
+});
+
