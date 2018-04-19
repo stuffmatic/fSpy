@@ -26,4 +26,31 @@
 * compute camera rotation matrix from vp 1, vp 2 and P
 * ```Transform``` 4x4
 * ```Vector3D```
-* 
+
+#State
+
+```
+
+{
+    calibrationParams: {
+        
+    },
+    calibrationResult: {
+        cameraTransform
+        relativeFocalLength
+    }
+}
+
+```
+
+#Components
+```
+
+ControlGroup
+ControlRow
+ControlLabel
+Dropdown
+
+
+
+```
