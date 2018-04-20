@@ -1,19 +1,46 @@
 import * as React from 'react';
 import './App.css';
 
-import logo from './logo.svg';
+const SidePanelStyle:any = {
+  backgroundColor: "#f0f0f0",
+  flex: "0 0 160px"
+}
+
+const ImagePanelStyle:any = {
+  backgroundColor: "#333333"
+}
+
+function ControlsPanel() {
+  return (
+    <div style={ SidePanelStyle }>
+      <h1>Controls</h1>
+    </div>
+  )
+}
+
+function ImagePanel() {
+  return (
+    <div style={ ImagePanelStyle } >
+    Hello image! Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!
+    </div>
+  )
+}
+
+function ResultPanel() {
+  return (
+    <div style={ SidePanelStyle }>
+      <h1>Result</h1>
+    </div>
+  )
+}
 
 class App extends React.Component {
   public render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
+      <div style= { {display: "flex", height: "100vh", alignItems: "stretch"} }>
+        <ControlsPanel  />
+        <ImagePanel />
+        <ResultPanel />
       </div>
     );
   }

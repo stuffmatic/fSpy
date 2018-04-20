@@ -33,7 +33,13 @@
 
 {
     calibrationParams: {
-        
+        oneVanishingPointParams: {
+            vanishingPoint
+        },
+        twoVanishingPointsParams: {
+            firstVanishingPoint
+            secondVanishingPoint
+        }
     },
     calibrationResult: {
         cameraTransform
@@ -44,6 +50,25 @@
 ```
 
 #Components
+
+* App
+  * ControlsPanel
+     * OneVanishingPointControls
+     * TwoVanishingPointsControls
+  * ImagePanel
+     * ImageBoundingBox
+         * ImageControlPointsLayer : ImagePlaneLayer
+         * ImageOverlayLayer : ImagePlaneLayer
+         * ImageView
+  * ResultsPanel
+
+```
+
+ImagePlaneLayer
+
+```
+
+
 ```
 
 ControlGroup
@@ -51,6 +76,10 @@ ControlRow
 ControlLabel
 Dropdown
 
+//
+VanishingPointControl
+HorizonLineControl
+PrincipalPointControl
 
 
 ```
