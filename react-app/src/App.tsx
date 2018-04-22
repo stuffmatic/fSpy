@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Measure from 'react-measure';
 import './App.css';
 
 const SidePanelStyle:any = {
@@ -7,7 +8,8 @@ const SidePanelStyle:any = {
 }
 
 const ImagePanelStyle:any = {
-  backgroundColor: "#333333"
+  backgroundColor: "#333333",
+  flexGrow: 1
 }
 
 function ControlsPanel() {
@@ -18,12 +20,29 @@ function ControlsPanel() {
   )
 }
 
-function ImagePanel() {
-  return (
-    <div style={ ImagePanelStyle } >
-    Hello image! Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!Hello image!
-    </div>
-  )
+class ImagePanel extends React.Component  {
+  render() {
+    return (
+      <div style={ ImagePanelStyle }>
+        <Measure
+          bounds
+          onResize={(contentRect) => {
+            console.log(contentRect.bounds);
+            this.setState({ dimensions: contentRect.bounds })
+          }}
+        >
+          {({ measureRef }) =>
+            <div ref={measureRef}>
+              I can do cool things with my dimensions now :D
+            </div>
+        }
+      </Measure>
+      </div>
+
+    )
+
+  }
+
 }
 
 function ResultPanel() {
@@ -35,7 +54,7 @@ function ResultPanel() {
 }
 
 class App extends React.Component {
-  public render() {
+  render() {
     return (
       <div style= { {display: "flex", height: "100vh", alignItems: "stretch"} }>
         <ControlsPanel  />

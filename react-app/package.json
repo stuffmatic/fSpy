@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/react-measure": "^2.0.2",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
+    "react-measure": "^2.0.2",
     "react-scripts-ts": "2.15.1"
   },
   "scripts": {
