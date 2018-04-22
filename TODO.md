@@ -52,15 +52,14 @@
 #Components
 
 * App
-  * ControlsPanel
+  * ControlsContainer
      * OneVanishingPointControls
      * TwoVanishingPointsControls
-  * ImagePanel
-     * ImageBoundingBox
-         * ImageControlPointsLayer : ImagePlaneLayer
-         * ImageOverlayLayer : ImagePlaneLayer
-         * ImageView
-  * ResultsPanel
+  * ImageContainer
+     * ImagePanel
+     * ControlPointsContainer
+     * 
+  * ResultsContainer
 
 ```
 
