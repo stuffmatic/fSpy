@@ -1,6 +1,6 @@
 import * as React from 'react';
 import ControlPointsContainer from './control-points-container'
-import ImagePanel from './../components/image-panel'
+import ResizableImagePanel from './../components/resizable-image-panel'
 
 interface ImageContainerState {
   imageLeft: number
@@ -26,7 +26,7 @@ export default class ImageContainer extends React.Component<any, ImageContainerS
 
     return (
       <div style={{ backgroundColor: "#222222", position: "relative" }}>
-        <ImagePanel
+        <ResizableImagePanel
           onResize={this.onImageResize}
           onImageLoadError={this.onImageLoadError}
         />

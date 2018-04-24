@@ -1,19 +1,19 @@
 import * as React from 'react';
 import Measure, { ContentRect } from 'react-measure';
 
-interface ImagePanelProps {
+interface ResizableImagePanelProps {
   onResize(imageLeft: number, imageTop: number, imageWidth: number, imageHeight: number): void
   onImageLoadError(): void
 }
 
-interface ImagePanelState {
+interface ResizableImagePanelState {
   mostRecentContentRect: ContentRect | null
 }
 
-export default class ImagePanel extends React.Component<ImagePanelProps, ImagePanelState> {
+export default class ResizableImagePanel extends React.Component<ResizableImagePanelProps, ResizableImagePanelState> {
   private imageRef: any //TODO: what type?
 
-  constructor(props: ImagePanelProps) {
+  constructor(props: ResizableImagePanelProps) {
     super(props)
     this.imageRef = React.createRef()
     this.state = {
