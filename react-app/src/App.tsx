@@ -25,12 +25,19 @@ interface ImagePanelProps {
   onImageLoadError(): void
 }
 
-class ImagePanel extends React.Component<ImagePanelProps> {
+interface ImagePanelState {
+  mostRecentContentRect: ContentRect | null
+}
+
+class ImagePanel extends React.Component<ImagePanelProps, ImagePanelState> {
   private imageRef: any //TODO: what type?
 
   constructor(props: ImagePanelProps) {
     super(props)
     this.imageRef = React.createRef()
+    this.state = {
+      mostRecentContentRect: null
+    }
   }
 
   render() {
@@ -58,10 +65,21 @@ class ImagePanel extends React.Component<ImagePanelProps> {
   }
 
   private onImageLoad() {
-    //this.props.onResize()
+    this.fireResizeCallback()
   }
 
   private onResize(contentRect: ContentRect) {
+    this.setState({
+      mostRecentContentRect: contentRect
+    })
+    this.fireResizeCallback()
+  }
+
+  private fireResizeCallback() {
+    let contentRect = this.state.mostRecentContentRect
+    if (!contentRect) {
+      return
+    }
     let w = this.imageRef.current.naturalWidth
     let h = this.imageRef.current.naturalHeight
     if (w && h && contentRect.bounds) {
@@ -91,7 +109,6 @@ class ImagePanel extends React.Component<ImagePanelProps> {
   }
 }
 
-
 interface ImageContainerState {
   imageLeft: number
   imageTop: number
@@ -100,15 +117,15 @@ interface ImageContainerState {
 }
 
 class ImageContainer extends React.Component<any, ImageContainerState> {
+  state = {
+    imageLeft: 0,
+    imageTop: 0,
+    imageWidth: 0,
+    imageHeight: 0
+  }
 
-  constructor() {
-    super({})
-    this.state = {
-      imageLeft: 0,
-      imageTop: 0,
-      imageWidth: 0,
-      imageHeight: 0
-    }
+  constructor(props: any) {
+    super(props)
 
     this.onImageResize = this.onImageResize.bind(this)
   }
@@ -136,10 +153,6 @@ class ImageContainer extends React.Component<any, ImageContainerState> {
     imageWidth: number,
     imageHeight: number
   ) {
-    console.log(this)
-    if (!this.state) {
-      return
-    }
     this.setState({
       imageLeft: imageLeft,
       imageTop: imageTop,
@@ -168,6 +181,45 @@ interface ControlPointsPanelProps {
   height: number
 }
 
+interface ControlPointProps  {
+  x: number
+  y: number
+}
+
+class ControlPoint extends React.Component<ControlPointProps> {
+  constructor(props: ControlPointProps) {
+    super(props)
+  }
+
+  handleMouseDown = (e: any) => { //TODO: event type
+    console.log("handleMouseDown")
+    document.addEventListener('mousemove', this.handleMouseMove);
+    document.addEventListener('mouseup', this.handleMouseUp);
+  };
+
+  handleMouseUp = () => {
+    document.removeEventListener('mousemove', this.handleMouseMove);
+    document.removeEventListener('mouseup', this.handleMouseUp);
+    console.log("handleMouseUp")
+  };
+
+  handleMouseMove = (e: MouseEvent) => {
+    console.log(e.offsetX)
+  };
+
+  render() {
+    return (
+      <circle
+        r="10"
+        cx={this.props.x}
+        cy={this.props.y}
+        onMouseDown={this.handleMouseDown}
+      />
+    )
+  }
+}
+
+
 class ControlPointsPanel extends React.Component<ControlPointsPanelProps> {
 
   constructor(props: ControlPointsPanelProps) {
@@ -188,7 +240,9 @@ class ControlPointsPanel extends React.Component<ControlPointsPanelProps> {
         }
       }
       >
-        <circle r="10" cx="100" cy="100" />
+        <g>
+          <ControlPoint x={100} y={100} />
+        </g>
       </svg>
     )
   }
@@ -197,7 +251,7 @@ class ControlPointsPanel extends React.Component<ControlPointsPanelProps> {
 class App extends React.Component {
   render() {
     return (
-      <div style={ { display: "flex", height: "100vh", alignItems: "stretch" }}>
+      <div style={ { display: "flex", alignItems: "stretch" }}>
         <ControlsPanel />
         <ImageContainer />
         <ResultPanel />

@@ -4,10 +4,13 @@
   "private": true,
   "dependencies": {
     "@types/react-measure": "^2.0.2",
+    "@types/react-redux": "^5.0.16",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-measure": "^2.0.2",
-    "react-scripts-ts": "2.15.1"
+    "react-redux": "^5.0.7",
+    "react-scripts-ts": "2.15.1",
+    "redux": "^4.0.0"
   },
   "scripts": {
     "start": "react-scripts-ts start",
