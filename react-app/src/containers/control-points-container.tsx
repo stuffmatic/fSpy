@@ -19,8 +19,6 @@ interface ControlPointsContainerProps {
 
 
 function ControlPointsContainer(props: ControlPointsContainerProps & ControlPointsContainerOwnProps) {
-  console.log("Rendering with props")
-  console.log(props)
   return (
     <svg style={
       {
@@ -29,8 +27,6 @@ function ControlPointsContainer(props: ControlPointsContainerProps & ControlPoin
         width: props.width,
         height: props.height,
         position: "absolute",
-        backgroundColor: "red",
-        opacity: 0.4
       }
     }
     >
