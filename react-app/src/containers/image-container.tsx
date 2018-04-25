@@ -9,7 +9,7 @@ interface ImageContainerState {
   imageHeight: number
 }
 
-export default class ImageContainer extends React.Component<any, ImageContainerState> {
+export default class ImageContainer extends React.Component<Object, ImageContainerState> {
 
   constructor(props: any) {
     super(props)
