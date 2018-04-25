@@ -13,6 +13,7 @@ interface ControlPointsContainerOwnProps {
 }
 
 interface ControlPointsContainerProps {
+  calibrationMode:CalibrationMode
   controlPointsState:ControlPointsState1VP | ControlPointsState2VP
 }
 
@@ -21,6 +22,7 @@ function ControlPointsContainer(props: ControlPointsContainerProps & ControlPoin
   return (
     <div>
       <ControlPointsPanel1VP
+        isHidden={props.calibrationMode == CalibrationMode.TwoVanishingPoints}
         left={props.left}
         top={props.top}
         width={props.width}
@@ -30,6 +32,7 @@ function ControlPointsContainer(props: ControlPointsContainerProps & ControlPoin
         onPrincipalPointDrag={ () => {} }
       />
       <ControlPointsPanel2VP
+        isHidden={props.calibrationMode == CalibrationMode.OneVanishingPoint}
         left={props.left}
         top={props.top}
         width={props.width}
@@ -45,7 +48,8 @@ function ControlPointsContainer(props: ControlPointsContainerProps & ControlPoin
 export function mapStateToProps(state: StoreState, ownProps:ControlPointsContainerOwnProps):ControlPointsContainerProps {
   let is1VPMode = state.calibrationMode == CalibrationMode.OneVanishingPoint
   let result = {
-    controlPointsState: is1VPMode ? state.controlPointsState1VP : state.controlPointsState2VP
+    controlPointsState: is1VPMode ? state.controlPointsState1VP : state.controlPointsState2VP,
+    calibrationMode: state.calibrationMode
   }
   return result
 }

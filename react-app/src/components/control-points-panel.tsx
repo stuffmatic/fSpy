@@ -2,6 +2,7 @@ import * as React from 'react';
 import ControlPoint from './control-point'
 
 export interface ControlPointsPanelProps {
+  isHidden: boolean
   left: number
   top: number
   width: number
@@ -12,16 +13,19 @@ export interface ControlPointsPanelProps {
 }
 
 function ControlPointsPanel(props:ControlPointsPanelProps) {
+  let svgStyle:React.CSSProperties = {
+    top:  props.top,
+    left: props.left,
+    width: props.width,
+    height: props.height,
+    position: "absolute"
+  }
+  if (props.isHidden) {
+    svgStyle.display = "none"
+  }
+
   return (
-    <svg style={
-      {
-        top:  props.top,
-        left: props.left,
-        width: props.width,
-        height: props.height,
-        position: "absolute",
-      }
-    }
+    <svg style={ svgStyle }
     >
       { (props as any).children }
       <g>
