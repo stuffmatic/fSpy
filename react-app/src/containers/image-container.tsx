@@ -1,6 +1,6 @@
 import * as React from 'react';
-import ControlPointsContainer from './control-points-container'
 import ResizableImagePanel from './../components/resizable-image-panel'
+import ControlPointsContainer from './control-points-container';
 
 interface ImageContainerState {
   imageLeft: number

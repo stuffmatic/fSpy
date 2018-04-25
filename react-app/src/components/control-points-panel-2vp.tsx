@@ -1,4 +1,4 @@
-import * as React from 'react';
+/*import * as React from 'react';
 import ControlPointsPanel, { ControlPointsPanelProps } from './control-points-panel';
 
 function ControlPointsPanel2VP(props: ControlPointsPanelProps) {
@@ -11,4 +11,4 @@ function ControlPointsPanel2VP(props: ControlPointsPanelProps) {
   )
 }
 
-export default ControlPointsPanel2VP
+export default ControlPointsPanel2VP*/

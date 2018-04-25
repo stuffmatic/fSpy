@@ -28,6 +28,7 @@ export interface ControlPointsStateBase {
   vp1
   */
   principalPoint:ControlPointState
+  origin:ControlPointState
 }
 
 export interface ControlPointsState1VP extends ControlPointsStateBase {

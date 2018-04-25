@@ -1,4 +1,4 @@
-import * as React from 'react';
+/*import * as React from 'react';
 import ControlPointsPanel, { ControlPointsPanelProps } from './control-points-panel';
 import HorizonControl from './horizon-control'
 
@@ -16,4 +16,4 @@ function ControlPointsPanel1VP(props: ControlPointsPanelProps) {
   )
 }
 
-export default ControlPointsPanel1VP
+export default ControlPointsPanel1VP*/

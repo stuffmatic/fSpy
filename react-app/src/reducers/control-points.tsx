@@ -5,6 +5,9 @@ export function controlPointsState1VP(state: ControlPointsState1VP, action: AppA
   if (state === undefined) {
     return {
       principalPoint: {
+        x: 0.4, y: 0.2
+      },
+      origin: {
         x: 0.5, y: 0.5
       }
     }
@@ -26,6 +29,9 @@ export function controlPointsState2VP(state: ControlPointsState2VP, action: AppA
   if (state === undefined) {
     return {
       principalPoint: {
+        x: 0.4, y: 0.2
+      },
+      origin: {
         x: 0.5, y: 0.5
       }
     }
