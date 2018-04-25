@@ -34,11 +34,11 @@ interface ControlPointsState2Vp : ControlPointsState
 
 */
 
-interface CalibrationSettings {
-  ppx:number
-  ppy:number
+export interface ControlPointsState {
+  x:number
+  y:number
 }
 
 export interface StoreState {
-  calibrationSettings:CalibrationSettings
+  controlPointsState:ControlPointsState
 }

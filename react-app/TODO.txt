@@ -1,6 +1,11 @@
 Relative image coords: [0, 1] x [0, 1], RIC
 Image plane coords: origin at midpoint, [-1, 1] along largest dimension, IPC
 
+
+ImagePanelContainer
+  ControlPointsContainer ()
+  ResizableImagePanel
+
 UI
 
 SettingsPanel
