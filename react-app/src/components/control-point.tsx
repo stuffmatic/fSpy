@@ -1,11 +1,11 @@
 import * as React from 'react';
+import { Point2D } from '../types/store-state';
 
 interface ControlPointProps {
-  x: number
-  y: number
+  position:Point2D
   fill?: string
   stroke?: string
-  dragCallback(x: number, y: number): void
+  dragCallback(position:Point2D): void
 }
 
 export default class ControlPoint extends React.PureComponent<ControlPointProps> {
@@ -21,15 +21,15 @@ export default class ControlPoint extends React.PureComponent<ControlPointProps>
   };
 
   handleMouseMove = (e: MouseEvent) => {
-    this.props.dragCallback(e.layerX, e.layerY)
+    this.props.dragCallback({x: e.layerX, y: e.layerY})
   };
 
   render() {
     return (
       <circle
         r="8"
-        cx={this.props.x}
-        cy={this.props.y}
+        cx={this.props.position.x}
+        cy={this.props.position.y}
         onMouseDown={this.handleMouseDown}
         fill={this.props.fill ? this.props.fill : "none"}
         stroke={this.props.stroke ? this.props.stroke : "none"}

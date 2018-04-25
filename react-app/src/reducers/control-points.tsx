@@ -9,6 +9,12 @@ export function controlPointsState1VP(state: ControlPointsState1VP, action: AppA
       },
       origin: {
         x: 0.5, y: 0.5
+      },
+      horizonStart: {
+        x: 0.2, y: 0.5
+      },
+      horizonEnd: {
+        x: 0.8, y: 0.5
       }
     }
   }

@@ -1,17 +1,16 @@
 import * as React from 'react';
 import ControlPoint from './control-point'
+import { Point2D } from '../types/store-state';
 
 interface PrincipalPointControlProps {
-  x: number
-  y: number
-  dragCallback(x: number, y: number): void
+  position:Point2D
+  dragCallback(position:Point2D): void
 }
 
 export default function PrincipalPointControl(props: PrincipalPointControlProps) {
 return (
     <ControlPoint
-      x={props.y}
-      y={props.x}
+      position={props.position}
       dragCallback={props.dragCallback}
       fill="orange"
     />

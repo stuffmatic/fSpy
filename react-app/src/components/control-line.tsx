@@ -1,15 +1,20 @@
 import * as React from 'react';
+import { Point2D } from '../types/store-state';
 
 interface ControlLineProps {
-  xStart: number
-  yStart: number
-  xEnd: number
-  yEnd: number
+  start: Point2D
+  end: Point2D
   color: string
 }
 
 export default function ControlLine(props:ControlLineProps) {
   return (
-    <line x1={props.xStart} y1={props.yStart} x2={props.xEnd} y2={props.yEnd} stroke={props.color} strokeWidth={2}/>
+    <line
+      x1={props.start.x}
+      y1={props.start.y}
+      x2={props.end.x}
+      y2={props.end.y}
+      stroke={props.color} strokeWidth={2}
+    />
   )
 }

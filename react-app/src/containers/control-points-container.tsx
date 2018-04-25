@@ -1,8 +1,8 @@
 import * as React from 'react';
-
+import HorizonControl from './../components/horizon-control'
 import OriginControl from './../components/origin-control'
 import PrincipalPointControl from './../components/principal-point-control'
-import { CalibrationMode, StoreState, ControlPointsState1VP, ControlPointsState2VP, ControlPointsStateBase } from '../types/store-state';
+import { CalibrationMode, StoreState, ControlPointsState1VP, ControlPointsState2VP, ControlPointsStateBase, Point2D } from '../types/store-state';
 import { AppAction } from '../actions';
 import { Dispatch, connect } from 'react-redux';
 
@@ -18,11 +18,11 @@ export interface ControlPointsContainerProps {
   controlPointsState1VP: ControlPointsState1VP
   controlPointsState2VP: ControlPointsState2VP
 
-  onPrincipalPointDrag(calibrationMode: CalibrationMode, xRelative: number, yRelative: number): void
-  onOriginDrag(calibrationMode: CalibrationMode, xRelative: number, yRelative: number): void
+  onPrincipalPointDrag(calibrationMode: CalibrationMode, position:Point2D): void
+  onOriginDrag(calibrationMode: CalibrationMode, position:Point2D): void
 
-  onHorizonStartDrag(xRelative: number, yRelative: number): void
-  onHorizonEndDrag(xRelative: number, yRelative: number): void
+  onHorizonStartDrag(calibrationMode: CalibrationMode, position:Point2D): void
+  onHorizonEndDrag(calibrationMode: CalibrationMode, position:Point2D): void
 }
 
 class ControlPointsContainer extends React.PureComponent<ControlPointsContainerProps & ControlPointsContainerOwnProps> {
@@ -35,6 +35,7 @@ class ControlPointsContainer extends React.PureComponent<ControlPointsContainerP
       position: "absolute"
     }
     let is1VPMode = this.props.calibrationMode == CalibrationMode.OneVanishingPoint
+
     return (
       <svg style={svgStyle}>
         {this.renderCommonControls(is1VPMode ? this.props.controlPointsState1VP : this.props.controlPointsState2VP)}
@@ -47,17 +48,15 @@ class ControlPointsContainer extends React.PureComponent<ControlPointsContainerP
     return (
       <g>
         <PrincipalPointControl
-          x={state.principalPoint.x * this.props.width}
-          y={state.principalPoint.y * this.props.height}
-          dragCallback={(x: number, y: number) => {
-            this.invokeDragCallback(this.props.calibrationMode, x, y, this.props.onPrincipalPointDrag)
+          position={this.rel2Abs(state.principalPoint)}
+          dragCallback={(position:Point2D) => {
+            this.invokeDragCallback(this.props.calibrationMode, position, this.props.onPrincipalPointDrag)
           }}
         />
         <OriginControl
-          x={0.5 * state.origin.x * this.props.width}
-          y={0.5 * state.origin.y * this.props.height}
-          dragCallback={(x: number, y: number) => {
-            this.invokeDragCallback(this.props.calibrationMode, x, y, this.props.onOriginDrag)
+          position={this.rel2Abs(state.origin)}
+          dragCallback={(position:Point2D) => {
+            this.invokeDragCallback(this.props.calibrationMode, position, this.props.onOriginDrag)
           }}
         />
       </g>
@@ -65,9 +64,22 @@ class ControlPointsContainer extends React.PureComponent<ControlPointsContainerP
   }
 
   private render1VPControls() {
-    <g>
+    return (
+      <g>
+        <HorizonControl
+          start={this.props.controlPointsState1VP.horizonStart}
+          end={this.props.controlPointsState1VP.horizonEnd}
+          enabled={true}
+          startDragCallback={(position:Point2D) => {
+            this.invokeDragCallback(this.props.calibrationMode, position, this.props.onHorizonStartDrag)
+          }}
+          endDragCallback={(position:Point2D) => {
+            this.invokeDragCallback(this.props.calibrationMode, position, this.props.onHorizonStartDrag)
+          }}
+        />
+      </g>
+    )
 
-    </g>
   }
 
   private render2VPControls() {
@@ -79,11 +91,24 @@ class ControlPointsContainer extends React.PureComponent<ControlPointsContainerP
     )
   }
 
-  private invokeDragCallback(calibrationMode: CalibrationMode, xAbsolute: number, yAbsolute: number, callback: (calibrationMode: CalibrationMode, xRelative: number, yRelative: number) => void) {
+  private abs2Rel(abs:Point2D):Point2D {
+    return {
+      x: abs.x / this.props.width,
+      y: abs.y / this.props.height
+    }
+  }
+
+  private rel2Abs(rel:Point2D):Point2D {
+    return {
+      x: rel.x * this.props.width,
+      y: rel.y * this.props.height
+    }
+  }
+
+  private invokeDragCallback(calibrationMode: CalibrationMode, position:Point2D, callback: (calibrationMode: CalibrationMode, position:Point2D) => void) {
     callback(
       calibrationMode,
-      xAbsolute / this.props.width,
-      yAbsolute / this.props.height
+      this.abs2Rel(position)
     )
   }
 }
@@ -99,16 +124,16 @@ export function mapStateToProps(state: StoreState, ownProps: ControlPointsContai
 
 export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
   return {
-    onPrincipalPointDrag: (calibrationMode: CalibrationMode, xRelative: number, yRelative: number) => {
+    onPrincipalPointDrag: (calibrationMode: CalibrationMode, position:Point2D) => {
       console.log("onPrincipalPointDrag")
     },
-    onOriginDrag: (calibrationMode: CalibrationMode, xRelative: number, yRelative: number) => {
+    onOriginDrag: (calibrationMode: CalibrationMode, position:Point2D) => {
       console.log("onOriginDrag")
     },
-    onHorizonStartDrag: (xRelative: number, yRelative: number) => {
+    onHorizonStartDrag: (calibrationMode: CalibrationMode, position:Point2D) => {
       console.log("onHorizonStartDrag")
     },
-    onHorizonEndDrag: (xRelative: number, yRelative: number) => {
+    onHorizonEndDrag: (calibrationMode: CalibrationMode, position:Point2D) => {
       console.log("onHorizonEndDrag")
     }
   }

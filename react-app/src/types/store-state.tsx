@@ -8,7 +8,10 @@ interface VanshingPointControlState {
   isHidden
 }
 */
-
+export interface Point2D {
+  x:number
+  y:number
+}
 
 /**
  * The state of a single control point
@@ -33,6 +36,8 @@ export interface ControlPointsStateBase {
 
 export interface ControlPointsState1VP extends ControlPointsStateBase {
   /* horizon */
+  horizonStart:ControlPointState
+  horizonEnd:ControlPointState
 }
 
 export interface ControlPointsState2VP extends ControlPointsStateBase {
