@@ -3,7 +3,7 @@ import HorizonControl from './../components/horizon-control'
 import OriginControl from './../components/origin-control'
 import PrincipalPointControl from './../components/principal-point-control'
 import { CalibrationMode, StoreState, ControlPointsState1VP, ControlPointsState2VP, ControlPointsStateBase, Point2D } from '../types/store-state';
-import { AppAction } from '../actions';
+import { AppAction, setHorizonStartPosition, setHorizonEndPosition } from '../actions';
 import { Dispatch, connect } from 'react-redux';
 
 export interface ControlPointsContainerOwnProps {
@@ -118,8 +118,8 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
 
 export function mapStateToProps(state: StoreState, ownProps: ControlPointsContainerOwnProps) {
   let result = {
-    controlPointsState1VP: state.controlPointsState1VP,
-    controlPointsState2VP: state.controlPointsState2VP,
+    controlPointsState1VP: state.controlPointsStates.controlPointsState1VP,
+    controlPointsState2VP: state.controlPointsStates.controlPointsState2VP,
     calibrationMode: state.calibrationMode
   }
   return result
@@ -134,10 +134,10 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
       console.log("onOriginDrag")
     },
     onHorizonStartDrag: (is1VPMode: boolean, position:Point2D) => {
-      console.log("onHorizonStartDrag")
+      dispatch(setHorizonStartPosition(position))
     },
     onHorizonEndDrag: (is1VPMode: boolean, position:Point2D) => {
-      console.log("onHorizonEndDrag")
+      dispatch(setHorizonEndPosition(position))
     }
   }
 }

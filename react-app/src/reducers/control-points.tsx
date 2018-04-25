@@ -1,7 +1,7 @@
-import { AppAction, SET_PRINCIPAL_POINT } from '../actions';
-import { ControlPointsState1VP, ControlPointsState2VP, ControlPointsStateBase } from '../types/store-state';
+import { AppAction, SET_HORIZON_START, SET_HORIZON_END } from '../actions';
+import { ControlPointsState1VP, ControlPointsState2VP, ControlPointsStateBase, ControlPointsStates } from '../types/store-state';
 
-const defaultControlPointsStateBase:ControlPointsStateBase = {
+const defaultControlPointsStateBase: ControlPointsStateBase = {
   principalPoint: {
     x: 0.4, y: 0.2
   },
@@ -10,46 +10,47 @@ const defaultControlPointsStateBase:ControlPointsStateBase = {
   }
 }
 
-const defaultControlPointsState1VP:ControlPointsState1VP = {
+const defaultControlPointsState1VP: ControlPointsState1VP = {
   ...defaultControlPointsStateBase,
-  horizonStart: {
+  horizonStart:  {
     x: 0.2, y: 0.5
   },
-  horizonEnd: {
+  horizonEnd:  {
     x: 0.8, y: 0.5
   }
 }
 
-const defaultControlPointsState2VP:ControlPointsState2VP = {
+const defaultControlPointsState2VP: ControlPointsState2VP = {
   ...defaultControlPointsStateBase
 }
 
-export function controlPointsState1VP(state: ControlPointsState1VP, action: AppAction): ControlPointsState1VP {
+export function controlPointsStates(state: ControlPointsStates, action: AppAction): ControlPointsStates {
   if (state === undefined) {
-    return defaultControlPointsState1VP
-  }
-
-  switch (action.type) {
-    case SET_PRINCIPAL_POINT:
-      return {
-        ...state,
-        principalPoint: action.position
-      }
-  }
-  return state;
-}
-
-export function controlPointsState2VP(state: ControlPointsState2VP, action: AppAction): ControlPointsState2VP {
-  if (state === undefined) {
-    return defaultControlPointsState2VP
-  }
-
-  switch (action.type) {
-    case SET_PRINCIPAL_POINT:
     return {
-      ...state,
-      principalPoint: action.position
+      controlPointsState1VP: defaultControlPointsState1VP,
+      controlPointsState2VP: defaultControlPointsState2VP
     }
   }
+
+  switch (action.type) {
+    case SET_HORIZON_START:
+      return {
+        ...state,
+        controlPointsState1VP: {
+          ...state.controlPointsState1VP,
+          horizonStart: action.position
+        }
+      }
+    case SET_HORIZON_END:
+      return {
+        ...state,
+        controlPointsState1VP: {
+          ...state.controlPointsState1VP,
+          horizonEnd: action.position
+        }
+      }
+  }
+
   return state;
+
 }

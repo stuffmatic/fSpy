@@ -45,7 +45,6 @@ export interface ControlPointsState2VP extends ControlPointsStateBase {
   /* vp2 */
   /* vp3 */
   /* vpCouplingMode */
-
 }
 
 export enum CalibrationMode {
@@ -53,8 +52,12 @@ export enum CalibrationMode {
   TwoVanishingPoints = "TwoVanishingPoints"
 }
 
-export interface StoreState {
-  calibrationMode:CalibrationMode
+export interface ControlPointsStates {
   controlPointsState1VP:ControlPointsState1VP
   controlPointsState2VP:ControlPointsState2VP
+}
+
+export interface StoreState {
+  calibrationMode:CalibrationMode
+  controlPointsStates: ControlPointsStates
 }

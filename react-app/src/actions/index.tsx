@@ -42,15 +42,13 @@ export type SET_HORIZON_START = typeof SET_HORIZON_START;
 
 export interface SetHorizonStartPosition {
   type: SET_HORIZON_START
-  calibrationMode: CalibrationMode
   position:Point2D
 }
 
-export function setHorizonStartPosition(calibrationMode: CalibrationMode, position:Point2D): SetHorizonStartPosition {
+export function setHorizonStartPosition(position:Point2D): SetHorizonStartPosition {
   return {
     type: SET_HORIZON_START,
-    position: position,
-    calibrationMode: calibrationMode
+    position: position
   }
 }
 
@@ -60,15 +58,13 @@ export type SET_HORIZON_END = typeof SET_HORIZON_END;
 
 export interface SetHorizonEndPosition {
   type: SET_HORIZON_END
-  calibrationMode: CalibrationMode
   position:Point2D
 }
 
-export function setHorizonEndPosition(calibrationMode: CalibrationMode, position:Point2D): SetHorizonEndPosition {
+export function setHorizonEndPosition(position:Point2D): SetHorizonEndPosition {
   return {
     type: SET_HORIZON_END,
-    position: position,
-    calibrationMode: calibrationMode
+    position: position
   }
 }
 
@@ -89,4 +85,4 @@ export function setCalibrationMode(calibrationMode: CalibrationMode): SetCalibra
 }
 
 //Define a type covering all actions
-export type AppAction = SetPrincipalPointPosition | SetCalibrationMode
+export type AppAction = SetPrincipalPointPosition | SetCalibrationMode | SetHorizonStartPosition | SetHorizonEndPosition
