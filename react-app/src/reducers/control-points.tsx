@@ -1,4 +1,4 @@
-import { AppAction, SET_PRINCIPAL_POINT_POSITION } from '../actions';
+import { AppAction, SET_PRINCIPAL_POINT } from '../actions';
 import { ControlPointsState1VP, ControlPointsState2VP } from '../types/store-state';
 
 export function controlPointsState1VP(state: ControlPointsState1VP, action: AppAction): ControlPointsState1VP {
@@ -20,12 +20,10 @@ export function controlPointsState1VP(state: ControlPointsState1VP, action: AppA
   }
 
   switch (action.type) {
-    case SET_PRINCIPAL_POINT_POSITION:
+    case SET_PRINCIPAL_POINT:
       return {
         ...state,
-        principalPoint: {
-          x: action.x, y: action.y
-        }
+        principalPoint: action.position
       }
   }
   return state;
@@ -44,12 +42,10 @@ export function controlPointsState2VP(state: ControlPointsState2VP, action: AppA
   }
 
   switch (action.type) {
-    case SET_PRINCIPAL_POINT_POSITION:
+    case SET_PRINCIPAL_POINT:
     return {
       ...state,
-      principalPoint: {
-        x: action.x, y: action.y
-      }
+      principalPoint: action.position
     }
   }
   return state;

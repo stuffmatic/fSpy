@@ -1,30 +1,84 @@
-import { CalibrationMode } from "../types/store-state";
+import { CalibrationMode, Point2D } from "../types/store-state";
 
-export const SET_PRINCIPAL_POINT_POSITION = 'SET_PRINCIPAL_POINT_POSITION';
-export type SET_PRINCIPAL_POINT_POSITION = typeof SET_PRINCIPAL_POINT_POSITION;
-
-export const SET_CALIBRATION_MODE = 'SET_CALIBRATION_MODE';
-export type SET_CALIBRATION_MODE = typeof SET_CALIBRATION_MODE;
+//Set principal point
+export const SET_PRINCIPAL_POINT = 'SET_PRINCIPAL_POINT';
+export type SET_PRINCIPAL_POINT = typeof SET_PRINCIPAL_POINT;
 
 export interface SetPrincipalPointPosition {
-  type: SET_PRINCIPAL_POINT_POSITION
-  x: number
-  y: number
+  type: SET_PRINCIPAL_POINT
+  calibrationMode: CalibrationMode
+  position:Point2D
 }
+
+export function setPrincipalPointPosition(calibrationMode: CalibrationMode, position:Point2D): SetPrincipalPointPosition {
+  return {
+    type: SET_PRINCIPAL_POINT,
+    position: position,
+    calibrationMode: calibrationMode
+  }
+}
+
+//Set origin
+export const SET_ORIGIN = 'SET_ORIGIN';
+export type SET_ORIGIN = typeof SET_ORIGIN;
+
+export interface SetOrigin {
+  type: SET_ORIGIN
+  calibrationMode: CalibrationMode
+  position:Point2D
+}
+
+export function setOrigin(calibrationMode: CalibrationMode, position:Point2D): SetOrigin {
+  return {
+    type: SET_ORIGIN,
+    position: position,
+    calibrationMode: calibrationMode
+  }
+}
+
+//Set horizon start
+export const SET_HORIZON_START = 'SET_HORIZON_START';
+export type SET_HORIZON_START = typeof SET_HORIZON_START;
+
+export interface SetHorizonStartPosition {
+  type: SET_HORIZON_START
+  calibrationMode: CalibrationMode
+  position:Point2D
+}
+
+export function setHorizonStartPosition(calibrationMode: CalibrationMode, position:Point2D): SetHorizonStartPosition {
+  return {
+    type: SET_HORIZON_START,
+    position: position,
+    calibrationMode: calibrationMode
+  }
+}
+
+//Set horizon end
+export const SET_HORIZON_END = 'SET_HORIZON_END';
+export type SET_HORIZON_END = typeof SET_HORIZON_END;
+
+export interface SetHorizonEndPosition {
+  type: SET_HORIZON_END
+  calibrationMode: CalibrationMode
+  position:Point2D
+}
+
+export function setHorizonEndPosition(calibrationMode: CalibrationMode, position:Point2D): SetHorizonEndPosition {
+  return {
+    type: SET_HORIZON_END,
+    position: position,
+    calibrationMode: calibrationMode
+  }
+}
+
+//Set active calibration mode
+export const SET_CALIBRATION_MODE = 'SET_CALIBRATION_MODE';
+export type SET_CALIBRATION_MODE = typeof SET_CALIBRATION_MODE;
 
 export interface SetCalibrationMode {
   type: SET_CALIBRATION_MODE
   calibrationMode: CalibrationMode
-}
-
-export type AppAction = SetPrincipalPointPosition | SetCalibrationMode
-
-export function setPrincipalPointPosition(x: number, y: number): SetPrincipalPointPosition {
-  return {
-    type: SET_PRINCIPAL_POINT_POSITION,
-    x: x,
-    y: y
-  }
 }
 
 export function setCalibrationMode(calibrationMode: CalibrationMode): SetCalibrationMode {
@@ -33,3 +87,6 @@ export function setCalibrationMode(calibrationMode: CalibrationMode): SetCalibra
     calibrationMode: calibrationMode
   }
 }
+
+//Define a type covering all actions
+export type AppAction = SetPrincipalPointPosition | SetCalibrationMode

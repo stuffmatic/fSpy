@@ -67,14 +67,14 @@ class ControlPointsContainer extends React.PureComponent<ControlPointsContainerP
     return (
       <g>
         <HorizonControl
-          start={this.props.controlPointsState1VP.horizonStart}
-          end={this.props.controlPointsState1VP.horizonEnd}
+          start={ this.rel2Abs(this.props.controlPointsState1VP.horizonStart) }
+          end={ this.rel2Abs(this.props.controlPointsState1VP.horizonEnd) }
           enabled={true}
           startDragCallback={(position:Point2D) => {
             this.invokeDragCallback(this.props.calibrationMode, position, this.props.onHorizonStartDrag)
           }}
           endDragCallback={(position:Point2D) => {
-            this.invokeDragCallback(this.props.calibrationMode, position, this.props.onHorizonStartDrag)
+            this.invokeDragCallback(this.props.calibrationMode, position, this.props.onHorizonEndDrag)
           }}
         />
       </g>
