@@ -51,7 +51,9 @@ export function mapStateToProps(state: StoreState, ownProps: ControlPointsContai
 
 export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
   return {
-    onPrincipalPointDrag: (x: number, y: number) => dispatch(setPrincipalPointPosition(x, y)),
+    onPrincipalPointDrag: (x: number, y: number) => {
+      dispatch(setPrincipalPointPosition(x, y))
+    }
   }
 }
 

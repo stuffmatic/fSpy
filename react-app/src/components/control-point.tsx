@@ -3,6 +3,8 @@ import * as React from 'react';
 interface ControlPointProps {
   x: number
   y: number
+  fill?: string
+  stroke?: string
   dragCallback(x: number, y: number): void
 }
 
@@ -29,6 +31,8 @@ export default class ControlPoint extends React.PureComponent<ControlPointProps>
         cx={this.props.x}
         cy={this.props.y}
         onMouseDown={this.handleMouseDown}
+        fill={this.props.fill ? this.props.fill : "none"}
+        stroke={this.props.stroke ? this.props.stroke : "none"}
       />
     )
   }
