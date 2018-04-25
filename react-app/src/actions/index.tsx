@@ -1,25 +1,35 @@
-export const MOVE_CONTROL_POINT = 'MOVE_CONTROL_POINT';
-export type MOVE_CONTROL_POINT = typeof MOVE_CONTROL_POINT;
+import { CalibrationMode } from "../types/store-state";
 
-export const DUMMY = 'DUMMY';
-export type DUMMY = typeof DUMMY;
+export const SET_PRINCIPAL_POINT_POSITION = 'SET_PRINCIPAL_POINT_POSITION';
+export type SET_PRINCIPAL_POINT_POSITION = typeof SET_PRINCIPAL_POINT_POSITION;
 
-export interface MoveControlPoint {
-  type: MOVE_CONTROL_POINT
+export const SET_CALIBRATION_MODE = 'SET_CALIBRATION_MODE';
+export type SET_CALIBRATION_MODE = typeof SET_CALIBRATION_MODE;
+
+export interface SetPrincipalPointPosition {
+  type: SET_PRINCIPAL_POINT_POSITION
   x: number
   y: number
 }
 
-export interface DummyAction {
-  type: DUMMY
+export interface SetCalibrationMode {
+  type: SET_CALIBRATION_MODE
+  calibrationMode: CalibrationMode
 }
 
-export type Action = MoveControlPoint | DummyAction
+export type AppAction = SetPrincipalPointPosition | SetCalibrationMode
 
-export function moveControlPoint(x: number, y: number): MoveControlPoint {
+export function setPrincipalPointPosition(x: number, y: number): SetPrincipalPointPosition {
   return {
-    type: MOVE_CONTROL_POINT,
+    type: SET_PRINCIPAL_POINT_POSITION,
     x: x,
     y: y
+  }
+}
+
+export function setCalibrationMode(calibrationMode: CalibrationMode): SetCalibrationMode {
+  return {
+    type: SET_CALIBRATION_MODE,
+    calibrationMode: calibrationMode
   }
 }

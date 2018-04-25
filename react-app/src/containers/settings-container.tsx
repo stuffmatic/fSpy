@@ -14,7 +14,6 @@ interface SettingsContainerProps {
 }
 
 function SettingsContainer(props:SettingsContainerProps) {
-  console.log("Rendering settings panel")
   return (
     <div style={SidePanelStyle}>
 

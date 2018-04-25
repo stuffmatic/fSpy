@@ -1,44 +1,53 @@
 /*
-interface ControlPointState {
-  id:string
-  isHidden?:string
-  x:number
-  y:number
-}
-
 interface VanshingPointControlState {
   controlPoint1:ControlPointsState
   controlPoint2:ControlPointsState
   controlPoint3:ControlPointsState
   controlPoint4:ControlPointsState
   controlPoint4:ControlPointsState
+  isHidden
 }
-
-interface ControlPointsState {
-  * referenceDistanceVpIndex
-  * referenceDistance
-  * referenceDistanceUnit
-  * pp
-  * origin
-  * vp1
-}
-
-
-interface ControlPointsState1Vp : ControlPointsState
-  * horizon
-
-interface ControlPointsState2Vp : ControlPointsState
-  * vp2
-  * vp3
-  * vpCouplingMode
-
 */
 
-export interface ControlPointsState {
+
+/**
+ * The state of a single control point
+ */
+export interface ControlPointState {
+  /** Relative image coordinates [0, 1] */
   x:number
+  /** Relative image coordinates [0, 1] */
   y:number
 }
 
+export interface ControlPointsStateBase {
+  /*
+  referenceDistance
+  referenceDistanceUnit
+  origin
+  vp1
+  */
+  principalPoint:ControlPointState
+}
+
+export interface ControlPointsState1VP extends ControlPointsStateBase {
+  /* horizon */
+}
+
+export interface ControlPointsState2VP extends ControlPointsStateBase {
+  /*  referenceDistanceVpIndex */
+  /* vp2 */
+  /* vp3 */
+  /* vpCouplingMode */
+}
+
+export enum CalibrationMode {
+  OneVanishingPoint,
+  TwoVanishingPoints
+}
+
 export interface StoreState {
-  controlPointsState:ControlPointsState
+  calibrationMode:CalibrationMode
+  controlPointsState1VP:ControlPointsState1VP
+  controlPointsState2VP:ControlPointsState2VP
 }

@@ -8,9 +8,9 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { StoreState } from './types/store-state';
 import rootReducer from './reducers/root'
-import { Action } from './actions';
+import { AppAction } from './actions';
 
-const store = createStore<StoreState, Action, {}, {}>(
+const store = createStore<StoreState, AppAction, {}, {}>(
   rootReducer,
   //TODO: only in dev builds
   (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__()

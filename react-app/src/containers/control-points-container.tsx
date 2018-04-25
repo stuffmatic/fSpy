@@ -2,7 +2,7 @@ import * as React from 'react';
 import ControlPoint from './../components/control-point'
 import { connect, Dispatch } from 'react-redux';
 import { StoreState } from '../types/store-state';
-import { Action, moveControlPoint } from '../actions';
+import { AppAction, setPrincipalPointPosition } from '../actions';
 
 interface ControlPointsContainerOwnProps {
   left: number
@@ -16,7 +16,6 @@ interface ControlPointsContainerProps {
   y: number
   onControlPointMove(x:number, y:number):void
 }
-
 
 function ControlPointsContainer(props: ControlPointsContainerProps & ControlPointsContainerOwnProps) {
   return (
@@ -49,9 +48,9 @@ export function mapStateToProps(state: StoreState, ownProps:ControlPointsContain
   return result
 }
 
-export function mapDispatchToProps(dispatch: Dispatch<Action>) {
+export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
   return {
-    onControlPointMove: (x: number, y: number) => dispatch(moveControlPoint(x, y)),
+    onControlPointMove: (x: number, y: number) => dispatch(setPrincipalPointPosition(x, y)),
   }
 }
 
