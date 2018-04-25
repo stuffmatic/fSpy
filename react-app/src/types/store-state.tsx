@@ -32,6 +32,7 @@ export interface ControlPointsStateBase {
 
 export interface ControlPointsState1VP extends ControlPointsStateBase {
   /* horizon */
+  dummy:string
 }
 
 export interface ControlPointsState2VP extends ControlPointsStateBase {
@@ -39,11 +40,12 @@ export interface ControlPointsState2VP extends ControlPointsStateBase {
   /* vp2 */
   /* vp3 */
   /* vpCouplingMode */
+  dummy:number
 }
 
 export enum CalibrationMode {
-  OneVanishingPoint,
-  TwoVanishingPoints
+  OneVanishingPoint = "OneVanishingPoint",
+  TwoVanishingPoints = "TwoVanishingPoints"
 }
 
 export interface StoreState {

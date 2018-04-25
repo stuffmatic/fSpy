@@ -6,10 +6,7 @@ interface ControlPointProps {
   dragCallback(x: number, y: number): void
 }
 
-export default class ControlPoint extends React.Component<ControlPointProps> {
-  constructor(props: ControlPointProps) {
-    super(props)
-  }
+export default class ControlPoint extends React.PureComponent<ControlPointProps> {
 
   handleMouseDown = (e: any) => { //TODO: event type
     document.addEventListener('mousemove', this.handleMouseMove);

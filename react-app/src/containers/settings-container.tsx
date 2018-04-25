@@ -23,8 +23,8 @@ function SettingsContainer(props:SettingsContainerProps) {
 
 export function mapStateToProps(state: StoreState) {
   let result = {
-    x: state.controlPointsState.x,
-    y: state.controlPointsState.y
+    x: 666,//state.controlPointsState.x,
+    y: 666 //state.controlPointsState.y
   }
   return result
 }

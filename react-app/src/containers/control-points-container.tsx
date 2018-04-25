@@ -1,56 +1,58 @@
 import * as React from 'react';
-import ControlPoint from './../components/control-point'
 import { connect, Dispatch } from 'react-redux';
-import { StoreState } from '../types/store-state';
+import { StoreState, ControlPointsState2VP, ControlPointsState1VP, CalibrationMode } from '../types/store-state';
 import { AppAction, setPrincipalPointPosition } from '../actions';
+import ControlPointsPanel1VP from '../components/control-points-panel-1vp';
+import ControlPointsPanel2VP from '../components/control-points-panel-2vp';
 
 interface ControlPointsContainerOwnProps {
-  left: number
-  top: number
-  width: number
-  height: number
+  top:number
+  left:number
+  width:number
+  height:number
 }
 
 interface ControlPointsContainerProps {
-  x: number,
-  y: number
-  onControlPointMove(x:number, y:number):void
+  controlPointsState:ControlPointsState1VP | ControlPointsState2VP
 }
 
 function ControlPointsContainer(props: ControlPointsContainerProps & ControlPointsContainerOwnProps) {
+
   return (
-    <svg style={
-      {
-        top:  props.top,
-        left: props.left,
-        width: props.width,
-        height: props.height,
-        position: "absolute",
-      }
-    }
-    >
-      <g>
-        <ControlPoint
-          x={props.x * props.width}
-          y={props.y * props.height}
-          dragCallback={(x: number, y: number) => props.onControlPointMove(x / props.width, y / props.height)}
-        />
-      </g>
-    </svg>
+    <div>
+      <ControlPointsPanel1VP
+        left={props.left}
+        top={props.top}
+        width={props.width}
+        height={props.height}
+        x={props.controlPointsState.principalPoint.x}
+        y={props.controlPointsState.principalPoint.y}
+        onPrincipalPointDrag={ () => {} }
+      />
+      <ControlPointsPanel2VP
+        left={props.left}
+        top={props.top}
+        width={props.width}
+        height={props.height}
+        x={props.controlPointsState.principalPoint.x}
+        y={props.controlPointsState.principalPoint.y}
+        onPrincipalPointDrag={ () => {} }
+      />
+    </div>
   )
 }
 
-export function mapStateToProps(state: StoreState, ownProps:ControlPointsContainerOwnProps) {
+export function mapStateToProps(state: StoreState, ownProps:ControlPointsContainerOwnProps):ControlPointsContainerProps {
+  let is1VPMode = state.calibrationMode == CalibrationMode.OneVanishingPoint
   let result = {
-    x: state.controlPointsState.x,
-    y: state.controlPointsState.y
+    controlPointsState: is1VPMode ? state.controlPointsState1VP : state.controlPointsState2VP
   }
   return result
 }
 
 export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
   return {
-    onControlPointMove: (x: number, y: number) => dispatch(setPrincipalPointPosition(x, y)),
+    onPrincipalPointDrag: (x: number, y: number) => dispatch(setPrincipalPointPosition(x, y)),
   }
 }
 
