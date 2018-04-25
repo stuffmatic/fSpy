@@ -9,9 +9,9 @@ interface ImageContainerState {
   imageHeight: number
 }
 
-export default class ImageContainer extends React.Component<Object, ImageContainerState> {
+export default class ImageContainer extends React.Component<{}, ImageContainerState> {
 
-  constructor(props: any) {
+  constructor(props: {}) {
     super(props)
     this.state = {
       imageLeft: 0,
@@ -31,10 +31,10 @@ export default class ImageContainer extends React.Component<Object, ImageContain
           onImageLoadError={this.onImageLoadError}
         />
         <ControlPointsContainer
-          /*top={this.state.imageTop}
+          top={this.state.imageTop}
           left={this.state.imageLeft}
           width={this.state.imageWidth}
-          height={this.state.imageHeight}*/
+          height={this.state.imageHeight}
         />
       </div>
     )

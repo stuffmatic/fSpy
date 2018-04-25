@@ -4,27 +4,30 @@ import { connect, Dispatch } from 'react-redux';
 import { StoreState } from '../types/store-state';
 import { Action, moveControlPoint } from '../actions';
 
-interface ControlPointsContainerProps {
-  /*left: number
+interface ControlPointsContainerOwnProps {
+  left: number
   top: number
   width: number
-  height: number*/
+  height: number
+}
+
+interface ControlPointsContainerProps {
   x: number,
   y: number
   onControlPointMove(x:number, y:number):void
 }
 
 
-function ControlPointsContainer(props: ControlPointsContainerProps) {
+function ControlPointsContainer(props: ControlPointsContainerProps & ControlPointsContainerOwnProps) {
   console.log("Rendering with props")
   console.log(props)
   return (
     <svg style={
       {
-        top:  0,//props.top,
-        left: 0,//props.left,
-        width: 200,//props.width,
-        height: 200,//props.height,
+        top:  props.top,
+        left: props.left,
+        width: props.width,
+        height: props.height,
         position: "absolute",
         backgroundColor: "red",
         opacity: 0.4
@@ -33,31 +36,20 @@ function ControlPointsContainer(props: ControlPointsContainerProps) {
     >
       <g>
         <ControlPoint
-          x={props.x ? props.x : 50}
-          y={props.y ? props.y : 50}
-          dragCallback={(x: number, y: number) => props.onControlPointMove(x, y)}
+          x={props.x * props.width}
+          y={props.y * props.height}
+          dragCallback={(x: number, y: number) => props.onControlPointMove(x / props.width, y / props.height)}
         />
       </g>
     </svg>
   )
 }
 
-
-  /*onControlPointMove(x: number, y: number) {
-    console.log("controlPointDragCallback " + x + ", " + y)
-    //TODO: dispatch
-    TODO: dispatch
-  }*/
-
-export function mapStateToProps(state: StoreState) {
-  console.log("Mapping")
-  console.log(state)
+export function mapStateToProps(state: StoreState, ownProps:ControlPointsContainerOwnProps) {
   let result = {
     x: state.controlPointsState.x,
     y: state.controlPointsState.y
   }
-  console.log("to")
-  console.log(result)
   return result
 }
 

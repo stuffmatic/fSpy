@@ -1,7 +1,7 @@
 import * as React from 'react';
 import ImageContainer from './containers/image-container';
-import ResultPanelContainer from './containers/result-panel-container';
-import SettingsPanelContainer from './containers/settings-panel-container';
+import ResultContainer from './containers/result-container';
+import SettingsContainer from './containers/settings-container';
 
 import './App.css';
 
@@ -11,16 +11,15 @@ const AppStyle: React.CSSProperties = {
   alignItems: "stretch"
 }
 
-class App extends React.Component {
-  render() {
-    return (
-      <div style={ AppStyle}>
-        <SettingsPanelContainer />
-        <ImageContainer />
-        <ResultPanelContainer />
-      </div>
-    );
-  }
+function App() {
+  return (
+    <div style={ AppStyle}>
+      <SettingsContainer />
+      <ImageContainer  />
+      <ResultContainer />
+    </div>
+  );
+
 }
 
 export default App;
