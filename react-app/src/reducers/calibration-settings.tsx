@@ -1,5 +1,5 @@
 import { CalibrationSettings, CalibrationMode } from "../types/store-state";
-import { AppAction, SET_CALIBRATION_MODE } from "../actions";
+import { AppAction, ActionTypes } from "../actions";
 
 export function calibrationSettings(state: CalibrationSettings, action: AppAction): CalibrationSettings {
   if (state === undefined) {
@@ -9,7 +9,7 @@ export function calibrationSettings(state: CalibrationSettings, action: AppActio
   }
 
   switch (action.type) {
-    case SET_CALIBRATION_MODE:
+    case ActionTypes.SET_CALIBRATION_MODE:
       return {
         ...state,
         calibrationMode: action.calibrationMode
