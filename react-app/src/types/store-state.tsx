@@ -1,13 +1,4 @@
-/*
-interface VanshingPointControlState {
-  controlPoint1:ControlPointsState
-  controlPoint2:ControlPointsState
-  controlPoint3:ControlPointsState
-  controlPoint4:ControlPointsState
-  controlPoint4:ControlPointsState
-  isHidden
-}
-*/
+
 export interface Point2D {
   x:number
   y:number
@@ -23,6 +14,13 @@ export interface ControlPointState {
   y:number
 }
 
+export interface VanishingPointControlState {
+  vanishingLine1Start: Point2D
+  vanishingLine1End: Point2D
+  vanishingLine2Start: Point2D
+  vanishingLine2End: Point2D
+}
+
 export interface ControlPointsStateBase {
   /*
   referenceDistance
@@ -32,6 +30,7 @@ export interface ControlPointsStateBase {
   */
   principalPoint:ControlPointState
   origin:ControlPointState
+  vanishingPointControl1:VanishingPointControlState
 }
 
 export interface ControlPointsState1VP extends ControlPointsStateBase {
@@ -42,9 +41,9 @@ export interface ControlPointsState1VP extends ControlPointsStateBase {
 
 export interface ControlPointsState2VP extends ControlPointsStateBase {
   /*  referenceDistanceVpIndex */
-  /* vp2 */
-  /* vp3 */
   /* vpCouplingMode */
+  vanishingPointControl2:VanishingPointControlState
+  vanishingPointControl3:VanishingPointControlState
 }
 
 export enum CalibrationMode {
