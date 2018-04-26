@@ -22,7 +22,7 @@ export function mapStateToProps(state: StoreState) {
   let result = {
     x: 666, //state.controlPointsState.x,
     y: 666, //state.controlPointsState.y
-    calibrationMode: state.calibrationMode
+    calibrationMode: state.calibrationSettings.calibrationMode
   }
   return result
 }

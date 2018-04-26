@@ -51,12 +51,16 @@ export enum CalibrationMode {
   TwoVanishingPoints = "TwoVanishingPoints"
 }
 
+export interface CalibrationSettings {
+  calibrationMode:CalibrationMode
+}
+
 export interface ControlPointsStates {
   controlPointsState1VP:ControlPointsState1VP
   controlPointsState2VP:ControlPointsState2VP
 }
 
 export interface StoreState {
-  calibrationMode:CalibrationMode
+  calibrationSettings:CalibrationSettings
   controlPointsStates: ControlPointsStates
 }
