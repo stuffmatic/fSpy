@@ -1,4 +1,4 @@
-import { CalibrationMode, Point2D } from "../types/store-state";
+import { CalibrationMode, Point2D, ControlPointPairIndex } from "../types/store-state";
 
 export enum ActionTypes {
   SET_PRINCIPAL_POINT = "SET_PRINCIPAL_POINT",
@@ -11,10 +11,10 @@ export enum ActionTypes {
 export interface SetPrincipalPoint {
   type: ActionTypes.SET_PRINCIPAL_POINT
   calibrationMode: CalibrationMode
-  position:Point2D
+  position: Point2D
 }
 
-export function setPrincipalPoint(calibrationMode: CalibrationMode, position:Point2D): SetPrincipalPoint {
+export function setPrincipalPoint(calibrationMode: CalibrationMode, position: Point2D): SetPrincipalPoint {
   return {
     type: ActionTypes.SET_PRINCIPAL_POINT,
     position: position,
@@ -26,10 +26,10 @@ export function setPrincipalPoint(calibrationMode: CalibrationMode, position:Poi
 export interface SetOrigin {
   type: ActionTypes.SET_ORIGIN
   calibrationMode: CalibrationMode
-  position:Point2D
+  position: Point2D
 }
 
-export function setOrigin(calibrationMode: CalibrationMode, position:Point2D): SetOrigin {
+export function setOrigin(calibrationMode: CalibrationMode, position: Point2D): SetOrigin {
   return {
     type: ActionTypes.SET_ORIGIN,
     position: position,
@@ -40,14 +40,14 @@ export function setOrigin(calibrationMode: CalibrationMode, position:Point2D): S
 //Set horizon
 export interface SetHorizon {
   type: ActionTypes.SET_HORIZON,
-  adjustStartingPoint:boolean,
-  position:Point2D
+  pointIndex: ControlPointPairIndex,
+  position: Point2D
 }
 
-export function setHorizon(adjustStartingPoint:boolean, position:Point2D): SetHorizon {
+export function setHorizon(pointIndex: ControlPointPairIndex, position: Point2D): SetHorizon {
   return {
     type: ActionTypes.SET_HORIZON,
-    adjustStartingPoint: adjustStartingPoint,
+    pointIndex: pointIndex,
     position: position
   }
 }
@@ -66,4 +66,4 @@ export function setCalibrationMode(calibrationMode: CalibrationMode): SetCalibra
 }
 
 //Define a type covering all actions
-export type AppAction = SetPrincipalPoint| SetCalibrationMode | SetHorizon
+export type AppAction = SetPrincipalPoint | SetCalibrationMode | SetHorizon

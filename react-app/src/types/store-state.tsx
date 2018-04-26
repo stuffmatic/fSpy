@@ -16,12 +16,13 @@ export interface ControlPointState {
 
 export type ControlPointPairState = [ControlPointState, ControlPointState]
 
+export enum ControlPointPairIndex {
+  First = 0,
+  Second = 1
+}
 
 export interface VanishingPointControlState {
-  vanishingLine1Start: Point2D
-  vanishingLine1End: Point2D
-  vanishingLine2Start: Point2D
-  vanishingLine2End: Point2D
+  vanishingLines:[ControlPointPairState, ControlPointPairState]
 }
 
 export interface ControlPointsStateBase {
@@ -33,19 +34,22 @@ export interface ControlPointsStateBase {
   */
   principalPoint:ControlPointState
   origin:ControlPointState
-  vanishingPointControl1:VanishingPointControlState
 }
 
 export interface ControlPointsState1VP extends ControlPointsStateBase {
   /* horizon */
   horizon:ControlPointPairState
+  vanishingPoint:VanishingPointControlState
 }
 
 export interface ControlPointsState2VP extends ControlPointsStateBase {
   /*  referenceDistanceVpIndex */
   /* vpCouplingMode */
-  vanishingPointControl2:VanishingPointControlState
-  vanishingPointControl3:VanishingPointControlState
+  vanishingPoints:[
+    VanishingPointControlState,
+    VanishingPointControlState,
+    VanishingPointControlState
+  ]
 }
 
 export enum CalibrationMode {

@@ -8,60 +8,68 @@ const defaultControlPointsStateBase: ControlPointsStateBase = {
   origin: {
     x: 0.5, y: 0.5
   },
-  vanishingPointControl1: {
-    vanishingLine1Start: {
-      x: 0.3, y: 0.9
-    },
-    vanishingLine1End: {
-      x: 0.35, y: 0.7
-    },
-    vanishingLine2Start: {
-      x: 0.5, y: 0.7
-    },
-    vanishingLine2End: {
-      x: 0.55, y: 0.8
-    }
-  }
 }
 
 const defaultControlPointsState1VP: ControlPointsState1VP = {
   ...defaultControlPointsStateBase,
   horizon: [
-    { x: 0.2, y: 0.5  },
+    { x: 0.2, y: 0.5 },
     { x: 0.8, y: 0.5 }
-  ]
+  ],
+  vanishingPoint: {
+    vanishingLines: [
+      [
+        { x: 0.3, y: 0.9 },
+        { x: 0.35, y: 0.7 }
+      ],
+      [
+        { x: 0.5, y: 0.7 },
+        { x: 0.55, y: 0.8 }
+      ]
+    ]
+  }
 }
 
 const defaultControlPointsState2VP: ControlPointsState2VP = {
   ...defaultControlPointsStateBase,
-  vanishingPointControl2: {
-    vanishingLine1Start: {
-      x: 0.3, y: 0.3
+  vanishingPoints: [
+    {
+      vanishingLines: [
+        [
+          { x: 0.3, y: 0.9 },
+          { x: 0.35, y: 0.7 }
+        ],
+        [
+          { x: 0.5, y: 0.7 },
+          { x: 0.55, y: 0.8 }
+        ]
+      ]
     },
-    vanishingLine1End: {
-      x: 0.35, y: 0.1
+    {
+      vanishingLines: [
+        [
+          { x: 0.3, y: 0.3 },
+          { x: 0.35, y: 0.1 }
+        ],
+        [
+          { x: 0.5, y: 0.1 },
+          { x: 0.55, y: 0.3 }
+        ]
+      ]
     },
-    vanishingLine2Start: {
-      x: 0.5, y: 0.1
-    },
-    vanishingLine2End: {
-      x: 0.55, y: 0.3
+    {
+      vanishingLines: [
+        [
+          { x: 0.7, y: 0.9 },
+          { x: 0.75, y: 0.7 }
+        ],
+        [
+          { x: 0.9, y: 0.7 },
+          { x: 0.95, y: 0.8 }
+        ]
+      ]
     }
-  },
-  vanishingPointControl3: {
-    vanishingLine1Start: {
-      x: 0.7, y: 0.9
-    },
-    vanishingLine1End: {
-      x: 0.75, y: 0.7
-    },
-    vanishingLine2Start: {
-      x: 0.9, y: 0.7
-    },
-    vanishingLine2End: {
-      x: 0.95, y: 0.8
-    }
-  }
+  ]
 }
 
 export function controlPointsStates(state: ControlPointsStates, action: AppAction): ControlPointsStates {
@@ -76,7 +84,7 @@ export function controlPointsStates(state: ControlPointsStates, action: AppActio
   switch (action.type) {
     case ActionTypes.SET_HORIZON:
       let horizon = { ...state.controlPointsState1VP.horizon }
-      horizon[action.adjustStartingPoint ? 0 : 1] = action.position
+      horizon[action.pointIndex] = action.position
       return {
         ...state,
         controlPointsState1VP: {
