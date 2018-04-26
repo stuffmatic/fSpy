@@ -3,8 +3,7 @@ import { CalibrationMode, Point2D } from "../types/store-state";
 export enum ActionTypes {
   SET_PRINCIPAL_POINT = "SET_PRINCIPAL_POINT",
   SET_ORIGIN = "SET_ORIGIN",
-  SET_HORIZON_START = "SET_HORIZON_START",
-  SET_HORIZON_END = "SET_HORIZON_END",
+  SET_HORIZON = "SET_HORIZON",
   SET_CALIBRATION_MODE = "SET_CALIBRATION_MODE"
 }
 
@@ -38,28 +37,17 @@ export function setOrigin(calibrationMode: CalibrationMode, position:Point2D): S
   }
 }
 
-//Set horizon start
-export interface SetHorizonStartPosition {
-  type: ActionTypes.SET_HORIZON_START
+//Set horizon
+export interface SetHorizon {
+  type: ActionTypes.SET_HORIZON,
+  adjustStartingPoint:boolean,
   position:Point2D
 }
 
-export function setHorizonStartPosition(position:Point2D): SetHorizonStartPosition {
+export function setHorizon(adjustStartingPoint:boolean, position:Point2D): SetHorizon {
   return {
-    type: ActionTypes.SET_HORIZON_START,
-    position: position
-  }
-}
-
-//Set horizon end
-export interface SetHorizonEndPosition {
-  type: ActionTypes.SET_HORIZON_END
-  position:Point2D
-}
-
-export function setHorizonEndPosition(position:Point2D): SetHorizonEndPosition {
-  return {
-    type: ActionTypes.SET_HORIZON_END,
+    type: ActionTypes.SET_HORIZON,
+    adjustStartingPoint: adjustStartingPoint,
     position: position
   }
 }
@@ -78,4 +66,4 @@ export function setCalibrationMode(calibrationMode: CalibrationMode): SetCalibra
 }
 
 //Define a type covering all actions
-export type AppAction = SetPrincipalPoint| SetCalibrationMode | SetHorizonStartPosition | SetHorizonEndPosition
+export type AppAction = SetPrincipalPoint| SetCalibrationMode | SetHorizon

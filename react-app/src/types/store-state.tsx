@@ -14,6 +14,9 @@ export interface ControlPointState {
   y:number
 }
 
+export type ControlPointPairState = [ControlPointState, ControlPointState]
+
+
 export interface VanishingPointControlState {
   vanishingLine1Start: Point2D
   vanishingLine1End: Point2D
@@ -35,8 +38,7 @@ export interface ControlPointsStateBase {
 
 export interface ControlPointsState1VP extends ControlPointsStateBase {
   /* horizon */
-  horizonStart:ControlPointState
-  horizonEnd:ControlPointState
+  horizon:ControlPointPairState
 }
 
 export interface ControlPointsState2VP extends ControlPointsStateBase {

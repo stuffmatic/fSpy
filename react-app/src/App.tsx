@@ -19,7 +19,6 @@ function App() {
       <ResultContainer />
     </div>
   );
-
 }
 
 export default App;

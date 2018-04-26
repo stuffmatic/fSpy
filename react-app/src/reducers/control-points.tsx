@@ -26,12 +26,10 @@ const defaultControlPointsStateBase: ControlPointsStateBase = {
 
 const defaultControlPointsState1VP: ControlPointsState1VP = {
   ...defaultControlPointsStateBase,
-  horizonStart: {
-    x: 0.2, y: 0.5
-  },
-  horizonEnd: {
-    x: 0.8, y: 0.5
-  }
+  horizon: [
+    { x: 0.2, y: 0.5  },
+    { x: 0.8, y: 0.5 }
+  ]
 }
 
 const defaultControlPointsState2VP: ControlPointsState2VP = {
@@ -76,27 +74,21 @@ export function controlPointsStates(state: ControlPointsStates, action: AppActio
 
   //First, handle actions specific to a calibration mode
   switch (action.type) {
-    case ActionTypes.SET_HORIZON_START:
+    case ActionTypes.SET_HORIZON:
+      let horizon = { ...state.controlPointsState1VP.horizon }
+      horizon[action.adjustStartingPoint ? 0 : 1] = action.position
       return {
         ...state,
         controlPointsState1VP: {
           ...state.controlPointsState1VP,
-          horizonStart: action.position
-        }
-      }
-    case ActionTypes.SET_HORIZON_END:
-      return {
-        ...state,
-        controlPointsState1VP: {
-          ...state.controlPointsState1VP,
-          horizonEnd: action.position
+          horizon: horizon
         }
       }
   }
 
   //If we made it here, we could have an action that is common for all calibration modes
   switch (action.type) {
-    case ActionTypes.SET_PRINCIPAL_POINT:  {
+    case ActionTypes.SET_PRINCIPAL_POINT: {
       //let stateToChange = action.calibrationMode == CalibrationMode.OneVanishingPoint ? state.controlPointsState1VP : state.controlPointsState2VP
 
     }

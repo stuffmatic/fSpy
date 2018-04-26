@@ -4,7 +4,7 @@ import { AppAction, ActionTypes } from "../actions";
 export function calibrationSettings(state: CalibrationSettings, action: AppAction): CalibrationSettings {
   if (state === undefined) {
     return {
-      calibrationMode: CalibrationMode.TwoVanishingPoints
+      calibrationMode: CalibrationMode.OneVanishingPoint
     }
   }
 

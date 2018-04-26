@@ -4,7 +4,7 @@ import OriginControl from './../components/origin-control'
 import PrincipalPointControl from './../components/principal-point-control'
 import VanishingPointControl from './../components/vanishing-point-control'
 import { CalibrationMode, StoreState, ControlPointsState1VP, ControlPointsState2VP, ControlPointsStateBase, Point2D } from '../types/store-state';
-import { AppAction, setHorizonStartPosition, setHorizonEndPosition } from '../actions';
+import { AppAction, setHorizon } from '../actions';
 import { Dispatch, connect } from 'react-redux';
 
 export interface ControlPointsContainerOwnProps {
@@ -93,8 +93,8 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
     return (
       <g>
         <HorizonControl
-          start={this.rel2Abs(this.props.controlPointsState1VP.horizonStart)}
-          end={this.rel2Abs(this.props.controlPointsState1VP.horizonEnd)}
+          start={this.rel2Abs(this.props.controlPointsState1VP.horizon[0])}
+          end={this.rel2Abs(this.props.controlPointsState1VP.horizon[1])}
           enabled={true}
           startDragCallback={(position: Point2D) => {
             this.invokeDragCallback(this.is1VPMode, position, this.props.onHorizonStartDrag)
@@ -198,10 +198,10 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
       console.log("onOriginDrag")
     },
     onHorizonStartDrag: (is1VPMode: boolean, position: Point2D) => {
-      dispatch(setHorizonStartPosition(position))
+      dispatch(setHorizon(true, position))
     },
     onHorizonEndDrag: (is1VPMode: boolean, position: Point2D) => {
-      dispatch(setHorizonEndPosition(position))
+      dispatch(setHorizon(false, position))
     },
     onVanishingLine1StartDrag: (is1VPMode: boolean, position: Point2D, vpIndex: number) => {
       console.log("onVanishingLine1StartDrag")
