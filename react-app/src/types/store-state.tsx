@@ -29,15 +29,12 @@ export interface ControlPointsStateBase {
   /*
   referenceDistance
   referenceDistanceUnit
-  origin
-  vp1
   */
   principalPoint:ControlPointState
   origin:ControlPointState
 }
 
 export interface ControlPointsState1VP extends ControlPointsStateBase {
-  /* horizon */
   horizon:ControlPointPairState
   vanishingPoint:VanishingPointControlState
 }

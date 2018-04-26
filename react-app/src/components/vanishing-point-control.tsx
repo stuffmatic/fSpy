@@ -1,14 +1,11 @@
 import * as React from 'react';
 import ControlLine from './control-line'
 import ControlPoint from './control-point'
-import { Point2D } from '../types/store-state';
+import { Point2D, VanishingPointControlState } from '../types/store-state';
 
 interface VanishingPointControlProps {
   //TODO: use VanishingPointControlState instead here?
-  vanishingLine1Start: Point2D
-  vanishingLine1End: Point2D
-  vanishingLine2Start: Point2D
-  vanishingLine2End: Point2D
+  controlState:VanishingPointControlState
 
   vanishingLine1StartDragCallback(position: Point2D): void
   vanishingLine1EndDragCallback(position: Point2D): void
@@ -21,33 +18,32 @@ export default function VanishingPointControl(props: VanishingPointControlProps)
   return (
     <g>
       <ControlLine
-        start={props.vanishingLine1Start}
-        end={props.vanishingLine1End}
+        start={props.controlState.vanishingLines[0][0]}
+        end={props.controlState.vanishingLines[0][1]}
         color={props.color}
       />
       <ControlPoint
-        position={props.vanishingLine1Start}
+        position={props.controlState.vanishingLines[0][0]}
         dragCallback={props.vanishingLine1StartDragCallback}
         fill={props.color}
       />
       <ControlPoint
-        position={props.vanishingLine1End}
+        position={props.controlState.vanishingLines[0][1]}
         dragCallback={props.vanishingLine1EndDragCallback}
         fill={props.color}
       />
-
       <ControlLine
-        start={props.vanishingLine2Start}
-        end={props.vanishingLine2End}
+        start={props.controlState.vanishingLines[1][0]}
+        end={props.controlState.vanishingLines[1][1]}
         color={props.color}
       />
       <ControlPoint
-        position={props.vanishingLine2Start}
+        position={props.controlState.vanishingLines[1][0]}
         dragCallback={props.vanishingLine2StartDragCallback}
         fill={props.color}
       />
       <ControlPoint
-        position={props.vanishingLine2End}
+        position={props.controlState.vanishingLines[1][1]}
         dragCallback={props.vanishingLine2EndDragCallback}
         fill={props.color}
       />
