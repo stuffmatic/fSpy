@@ -16,18 +16,20 @@ const defaultControlPointsState1VP: ControlPointsState1VP = {
     { x: 0.2, y: 0.5 },
     { x: 0.8, y: 0.5 }
   ],
-  vanishingPoint: {
-    vanishingLines: [
-      [
-        { x: 0.3, y: 0.9 },
-        { x: 0.35, y: 0.7 }
-      ],
-      [
-        { x: 0.5, y: 0.7 },
-        { x: 0.55, y: 0.8 }
+  vanishingPoints: [
+    {
+      vanishingLines: [
+        [
+          { x: 0.3, y: 0.9 },
+          { x: 0.35, y: 0.7 }
+        ],
+        [
+          { x: 0.5, y: 0.7 },
+          { x: 0.55, y: 0.8 }
+        ]
       ]
-    ]
-  }
+    }
+  ]
 }
 
 const defaultControlPointsState2VP: ControlPointsState2VP = {

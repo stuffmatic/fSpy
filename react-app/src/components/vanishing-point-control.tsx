@@ -4,17 +4,20 @@ import ControlPoint from './control-point'
 import { Point2D, VanishingPointControlState } from '../types/store-state';
 
 interface VanishingPointControlProps {
-  //TODO: use VanishingPointControlState instead here?
+  color:string
+  vanishingPointIndex:number
   controlState:VanishingPointControlState
 
-  vanishingLine1StartDragCallback(position: Point2D): void
-  vanishingLine1EndDragCallback(position: Point2D): void
-  vanishingLine2StartDragCallback(position: Point2D): void
-  vanishingLine2EndDragCallback(position: Point2D): void
-  color:string
+  onControlPointDrag(
+    vanishingPointIndex:number,
+    vanishingLineIndex:number,
+    pointPairIndex:number,
+    position: Point2D
+  ):void
 }
 
 export default function VanishingPointControl(props: VanishingPointControlProps) {
+  //TODO: two nested for loops?
   return (
     <g>
       <ControlLine
@@ -24,12 +27,16 @@ export default function VanishingPointControl(props: VanishingPointControlProps)
       />
       <ControlPoint
         position={props.controlState.vanishingLines[0][0]}
-        dragCallback={props.vanishingLine1StartDragCallback}
+        dragCallback={ (position:Point2D) => {
+          props.onControlPointDrag(props.vanishingPointIndex, 0, 0, position)
+        }}
         fill={props.color}
       />
       <ControlPoint
         position={props.controlState.vanishingLines[0][1]}
-        dragCallback={props.vanishingLine1EndDragCallback}
+        dragCallback={ (position:Point2D) => {
+          props.onControlPointDrag(props.vanishingPointIndex, 0, 1, position)
+        }}
         fill={props.color}
       />
       <ControlLine
@@ -39,12 +46,16 @@ export default function VanishingPointControl(props: VanishingPointControlProps)
       />
       <ControlPoint
         position={props.controlState.vanishingLines[1][0]}
-        dragCallback={props.vanishingLine2StartDragCallback}
+        dragCallback={ (position:Point2D) => {
+          props.onControlPointDrag(props.vanishingPointIndex, 1, 0, position)
+        }}
         fill={props.color}
       />
       <ControlPoint
         position={props.controlState.vanishingLines[1][1]}
-        dragCallback={props.vanishingLine2EndDragCallback}
+        dragCallback={ (position:Point2D) => {
+          props.onControlPointDrag(props.vanishingPointIndex, 1, 1, position)
+        }}
         fill={props.color}
       />
     </g>

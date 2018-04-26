@@ -36,7 +36,9 @@ export interface ControlPointsStateBase {
 
 export interface ControlPointsState1VP extends ControlPointsStateBase {
   horizon:ControlPointPairState
-  vanishingPoint:VanishingPointControlState
+  vanishingPoints:[
+    VanishingPointControlState
+  ]
 }
 
 export interface ControlPointsState2VP extends ControlPointsStateBase {
