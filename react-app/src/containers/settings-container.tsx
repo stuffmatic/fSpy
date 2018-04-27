@@ -2,7 +2,7 @@ import * as React from 'react';
 import { SidePanelStyle } from './../styles/styles';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode } from '../actions';
+import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled } from '../actions';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { StoreState } from '../types/store-state';
 import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode } from '../types/calibration-settings';
@@ -16,6 +16,7 @@ interface SettingsContainerProps {
   onHorizonModeChange(horizonMode: HorizonMode): void
   onPrincipalPointModeChange1VP(principalPointMode: PrincipalPointMode1VP): void
   onPrincipalPointModeChange2VP(principalPointMode: PrincipalPointMode2VP): void
+  onQuadModeEnabledChange(quadModeEnabled: boolean): void
 
 }
 
@@ -81,16 +82,27 @@ class SettingsContainer extends React.PureComponent<SettingsContainerProps> {
     }
     else {
       return (
-        <select
-          value={this.props.calibrationSettings2VP.principalPointMode}
-          onChange={(event: any) => {
-            this.props.onPrincipalPointModeChange2VP(event.target.value)
-          }}
-        >
-          <option value={PrincipalPointMode2VP.Default}>Default</option>
-          <option value={PrincipalPointMode2VP.Manual}>Manual</option>
-          <option value={PrincipalPointMode2VP.FromThirdVanishingPoint}>From 3rd vanishing point</option>
-        </select>
+        <div>
+          <select
+            value={this.props.calibrationSettings2VP.principalPointMode}
+            onChange={(event: any) => {
+              this.props.onPrincipalPointModeChange2VP(event.target.value)
+            }}
+          >
+            <option value={PrincipalPointMode2VP.Default}>Default</option>
+            <option value={PrincipalPointMode2VP.Manual}>Manual</option>
+            <option value={PrincipalPointMode2VP.FromThirdVanishingPoint}>From 3rd vanishing point</option>
+          </select>
+
+          Quad mode: <input
+            name="quadModeEnabled"
+            type="checkbox"
+            checked={this.props.calibrationSettings2VP.quadModeEnabled}
+            onChange={(event: any) => {
+              this.props.onQuadModeEnabledChange(event.target.checked)
+            }}
+          />
+        </div>
       )
     }
   }
@@ -120,6 +132,9 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     },
     onPrincipalPointModeChange2VP: (principalPointMode: PrincipalPointMode2VP) => {
       dispatch(setPrincipalPointMode2VP(principalPointMode))
+    },
+    onQuadModeEnabledChange: (quadModeEnabled: boolean) => {
+      dispatch(setQuadModeEnabled(quadModeEnabled))
     }
   }
 }

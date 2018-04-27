@@ -13,6 +13,11 @@ export function calibrationSettings2VP(state: CalibrationSettings2VP, action: Ap
         ...state,
         principalPointMode: action.principalPointMode
       }
+    case ActionTypes.SET_QUAD_MODE_ENABLED:
+      return {
+        ...state,
+        quadModeEnabled: action.quadModeEnabled
+      }
   }
 
   return state

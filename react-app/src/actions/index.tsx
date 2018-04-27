@@ -9,6 +9,7 @@ export enum ActionTypes {
 
   //Calibration settings actions
   SET_HORIZON_MODE = "SET_HORIZON_MODE",
+  SET_QUAD_MODE_ENABLED = "SET_QUAD_MODE_ENABLED",
   SET_PRINCIPAL_POINT_MODE_1VP = "SET_PRINCIPAL_POINT_MODE_1VP",
   SET_PRINCIPAL_POINT_MODE_2VP = "SET_PRINCIPAL_POINT_MODE_2VP",
 
@@ -59,6 +60,19 @@ export function setHorizonMode(horizonMode: HorizonMode): SetHorizonMode {
   return {
     type: ActionTypes.SET_HORIZON_MODE,
     horizonMode: horizonMode
+  }
+}
+
+//
+export interface SetQuadModeEnabled {
+  type: ActionTypes.SET_QUAD_MODE_ENABLED
+  quadModeEnabled: boolean
+}
+
+export function setQuadModeEnabled(quadModeEnabled: boolean): SetQuadModeEnabled {
+  return {
+    type: ActionTypes.SET_QUAD_MODE_ENABLED,
+    quadModeEnabled: quadModeEnabled
   }
 }
 
@@ -179,6 +193,7 @@ export type AppAction =
   SetCalibrationMode |
   SetImageOpacity |
   SetHorizonMode |
+  SetQuadModeEnabled |
   SetPrincipalPointMode1VP |
   SetPrincipalPointMode2VP |
   SetOrigin |
