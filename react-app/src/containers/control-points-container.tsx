@@ -21,10 +21,8 @@ export interface ControlPointsContainerProps {
   controlPointsState1VP: ControlPointsState1VP
   controlPointsState2VP: ControlPointsState2VP
 
-  //common
   onPrincipalPointDrag(calibrationMode: CalibrationMode, position: Point2D): void
   onOriginDrag(calibrationMode: CalibrationMode, position: Point2D): void
-
   onVanishingPointControlPointDrag(
     calibrationMode: CalibrationMode,
     vanishingPointIndex: number,
@@ -33,14 +31,11 @@ export interface ControlPointsContainerProps {
     position: Point2D
   ): void
 
-  //
   onHorizonDrag(
     calibrationMode: CalibrationMode,
     controlPointIndex:ControlPointPairIndex,
     position: Point2D
   ): void
-
-
 }
 
 
@@ -68,7 +63,9 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
     return (
       <g>
         <PrincipalPointControl
-          position={this.rel2AbsPoint(state.principalPoint)}
+          position={
+            this.rel2AbsPoint(state.principalPoint)
+          }
           dragCallback={(position: Point2D) => {
             this.invokeControlPointDragCallback(
               position,
