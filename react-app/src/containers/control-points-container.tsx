@@ -4,7 +4,7 @@ import OriginControl from './../components/origin-control'
 import PrincipalPointControl from './../components/principal-point-control'
 import VanishingPointControl from './../components/vanishing-point-control'
 import { StoreState } from '../types/store-state';
-import { AppAction, adjustHorizon, setOrigin, setPrincipalPoint, adjustVanishingLine } from '../actions';
+import { AppAction, adjustHorizon, setOrigin, setPrincipalPoint, adjustVanishingLine, computeCalibrationResult } from '../actions';
 import { Dispatch, connect } from 'react-redux';
 import { CalibrationMode } from '../types/global-settings';
 import { ControlPointsState1VP, ControlPointsState2VP, Point2D, ControlPointPairIndex, ControlPointsStateBase, VanishingPointControlState, ControlPointPairState } from '../types/control-points-state';
@@ -275,12 +275,15 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
   return {
     onPrincipalPointDrag: (calibrationMode: CalibrationMode, position: Point2D) => {
       dispatch(setPrincipalPoint(calibrationMode, position))
+      dispatch(computeCalibrationResult())
     },
     onOriginDrag: (calibrationMode: CalibrationMode, position: Point2D) => {
       dispatch(setOrigin(calibrationMode, position))
+      dispatch(computeCalibrationResult())
     },
     onHorizonDrag: (calibrationMode: CalibrationMode, controlPointIndex:ControlPointPairIndex, position: Point2D) => {
       dispatch(adjustHorizon(controlPointIndex, position))
+      dispatch(computeCalibrationResult())
     },
     onVanishingPointControlPointDrag: (calibrationMode: CalibrationMode,
       vanishingPointIndex: number,
@@ -296,6 +299,7 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
             position
           )
         )
+        dispatch(computeCalibrationResult())
     }
   }
 }

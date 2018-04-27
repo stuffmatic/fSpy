@@ -10,7 +10,10 @@ export enum ActionTypes {
   SET_PRINCIPAL_POINT = "SET_PRINCIPAL_POINT",
   SET_ORIGIN = "SET_ORIGIN",
   ADJUST_HORIZON = "ADJUST_HORIZON",
-  ADJUST_VANISHING_LINE = "ADJUST_VANISHING_LINE"
+  ADJUST_VANISHING_LINE = "ADJUST_VANISHING_LINE",
+
+  //
+  COMPUTE_CALIBRATION_RESULT = "COMPUTE_CALIBRATION_RESULT"
 }
 
 
@@ -115,6 +118,17 @@ export function adjustVanishingLine(
   }
 }
 
+//Compute calibration result
+export interface ComputeCalibrationResult {
+  type: ActionTypes.COMPUTE_CALIBRATION_RESULT
+}
+
+export function computeCalibrationResult(): ComputeCalibrationResult {
+  return {
+    type: ActionTypes.COMPUTE_CALIBRATION_RESULT
+  }
+}
+
 //Define a type covering all actions
 export type AppAction =
   SetCalibrationMode |
@@ -122,4 +136,5 @@ export type AppAction =
   SetOrigin |
   SetPrincipalPoint |
   AdjustHorizon |
-  AdjustVanishingLine
+  AdjustVanishingLine | 
+  ComputeCalibrationResult

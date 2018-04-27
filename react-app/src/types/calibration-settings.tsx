@@ -26,6 +26,7 @@ export enum ReferenceDistanceUnit {
 export interface CalibrationSettingsBase {
   referenceDistanceUnit:ReferenceDistanceUnit
   referenceDistance:number
+  referenceDistanceVanishingPointIndex?:number
 }
 
 export interface CalibrationSettings1VP extends CalibrationSettingsBase {
