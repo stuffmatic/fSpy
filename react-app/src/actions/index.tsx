@@ -1,14 +1,42 @@
 import { CalibrationMode, Point2D, ControlPointPairIndex } from "../types/store-state";
 
 export enum ActionTypes {
-  //Settings action
+  //Global settings action
   SET_CALIBRATION_MODE = "SET_CALIBRATION_MODE",
+  SET_IMAGE_OPACITY = "SET_IMAGE_OPACITY",
 
   //Control point actions
   SET_PRINCIPAL_POINT = "SET_PRINCIPAL_POINT",
   SET_ORIGIN = "SET_ORIGIN",
   ADJUST_HORIZON = "ADJUST_HORIZON",
   ADJUST_VANISHING_LINE = "ADJUST_VANISHING_LINE"
+}
+
+
+//Set image opacity
+export interface SetImageOpacity {
+  type: ActionTypes.SET_IMAGE_OPACITY
+  opacity: number
+}
+
+export function setImageOpacity(opacity: number): SetImageOpacity {
+  return {
+    type: ActionTypes.SET_IMAGE_OPACITY,
+    opacity: opacity
+  }
+}
+
+//Set active calibration mode
+export interface SetCalibrationMode {
+  type: ActionTypes.SET_CALIBRATION_MODE
+  calibrationMode: CalibrationMode
+}
+
+export function setCalibrationMode(calibrationMode: CalibrationMode): SetCalibrationMode {
+  return {
+    type: ActionTypes.SET_CALIBRATION_MODE,
+    calibrationMode: calibrationMode
+  }
 }
 
 //Set principal point
@@ -86,23 +114,11 @@ export function adjustVanishingLine(
   }
 }
 
-//Set active calibration mode
-export interface SetCalibrationMode {
-  type: ActionTypes.SET_CALIBRATION_MODE
-  calibrationMode: CalibrationMode
-}
-
-export function setCalibrationMode(calibrationMode: CalibrationMode): SetCalibrationMode {
-  return {
-    type: ActionTypes.SET_CALIBRATION_MODE,
-    calibrationMode: calibrationMode
-  }
-}
-
 //Define a type covering all actions
 export type AppAction =
+  SetCalibrationMode |
+  SetImageOpacity |
   SetOrigin |
   SetPrincipalPoint |
-  SetCalibrationMode |
   AdjustHorizon |
   AdjustVanishingLine

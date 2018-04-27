@@ -16,7 +16,7 @@ export interface ControlPointState {
 
 export type ControlPointPairState = [ControlPointState, ControlPointState]
 
-//Rename to BinaryIndex or something?
+//Rename to BinaryIndex or something? Or remove if it doesnt provide type info
 export enum ControlPointPairIndex {
   First = 0,
   Second = 1
@@ -57,12 +57,52 @@ export enum CalibrationMode {
   TwoVanishingPoints = "TwoVanishingPoints"
 }
 
-export interface CalibrationSettings {
+export interface GlobalSettings {
   calibrationMode:CalibrationMode
+  imageOpacity:number
 }
 
+
+/*
+export enum PrincipalPointMode1VP {
+  Default = "Default",
+  Manual = "Manual"
+}
+
+export enum Axis {
+  PositiveX = "PositiveX",
+  NegativeX = "NegativeX",
+  PositiveY = "PositiveY",
+  NegativeY = "NegativeY",
+  PositiveZ = "PositiveZ",
+  NegativeZ = "NegativeZ",
+}
+
+export interface CalibrationSettings1VP {
+  principalPointMode:PrincipalPointMode1VP
+}
+
+
+
+export enum PrincipalPointMode2VP {
+  Default = "Default",
+  Manual = "Manual",
+  FromThirdVanishingPoint = "FromThirdVanishingPoint"
+}
+
+export interface CalibrationSettings2VP {
+  principalPointMode:PrincipalPointMode2VP
+
+}
+*/
+
+
 export interface StoreState {
-  calibrationSettings:CalibrationSettings
+  globalSettings:GlobalSettings
+
+  //calibrationSettings1VP:CalibrationSettings1VP
   controlPointsState1VP:ControlPointsState1VP
+
+  //calibrationSettings2VP:CalibrationSettings2VP
   controlPointsState2VP:ControlPointsState2VP
 }

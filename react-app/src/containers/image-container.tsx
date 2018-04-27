@@ -27,6 +27,7 @@ export default class ImageContainer extends React.Component<{}, ImageContainerSt
     return (
       <div style={{ backgroundColor: "#222222", position: "relative" }}>
         <ResizableImagePanel
+          imageOpacity={ 0.2 }
           onResize={this.onImageResize}
           onImageLoadError={this.onImageLoadError}
         />

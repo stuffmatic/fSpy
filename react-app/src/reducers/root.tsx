@@ -2,10 +2,10 @@ import { combineReducers } from 'redux'
 import { StoreState } from '../types/store-state';
 import { controlPointsState1VP } from './control-points-1-vp'
 import { controlPointsState2VP } from './control-points-2-vp'
-import { calibrationSettings } from './calibration-settings'
+import { globalSettings } from './global-settings'
 
 const rootReducer = combineReducers<StoreState>({
-  calibrationSettings,
+  globalSettings,
   controlPointsState1VP,
   controlPointsState2VP
 })

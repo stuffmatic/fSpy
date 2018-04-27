@@ -264,7 +264,7 @@ export function mapStateToProps(state: StoreState, ownProps: ControlPointsContai
   let result = {
     controlPointsState1VP: state.controlPointsState1VP,
     controlPointsState2VP: state.controlPointsState2VP,
-    calibrationMode: state.calibrationSettings.calibrationMode
+    calibrationMode: state.globalSettings.calibrationMode
   }
   return result
 }
