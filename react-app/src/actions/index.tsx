@@ -1,10 +1,16 @@
 import { CalibrationMode } from "../types/global-settings";
 import { Point2D, ControlPointPairIndex } from "../types/control-points-state";
+import { PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode } from "../types/calibration-settings";
 
 export enum ActionTypes {
   //Global settings action
   SET_CALIBRATION_MODE = "SET_CALIBRATION_MODE",
   SET_IMAGE_OPACITY = "SET_IMAGE_OPACITY",
+
+  //Calibration settings actions
+  SET_HORIZON_MODE = "SET_HORIZON_MODE",
+  SET_PRINCIPAL_POINT_MODE_1VP = "SET_PRINCIPAL_POINT_MODE_1VP",
+  SET_PRINCIPAL_POINT_MODE_2VP = "SET_PRINCIPAL_POINT_MODE_2VP",
 
   //Control point actions
   SET_PRINCIPAL_POINT = "SET_PRINCIPAL_POINT",
@@ -40,6 +46,45 @@ export function setCalibrationMode(calibrationMode: CalibrationMode): SetCalibra
   return {
     type: ActionTypes.SET_CALIBRATION_MODE,
     calibrationMode: calibrationMode
+  }
+}
+
+//
+export interface SetHorizonMode {
+  type: ActionTypes.SET_HORIZON_MODE
+  horizonMode: HorizonMode
+}
+
+export function setHorizonMode(horizonMode: HorizonMode): SetHorizonMode {
+  return {
+    type: ActionTypes.SET_HORIZON_MODE,
+    horizonMode: horizonMode
+  }
+}
+
+//
+export interface SetPrincipalPointMode1VP {
+  type: ActionTypes.SET_PRINCIPAL_POINT_MODE_1VP
+  principalPointMode: PrincipalPointMode1VP
+}
+
+export function setPrincipalPointMode1VP(principalPointMode: PrincipalPointMode1VP): SetPrincipalPointMode1VP {
+  return {
+    type: ActionTypes.SET_PRINCIPAL_POINT_MODE_1VP,
+    principalPointMode: principalPointMode
+  }
+}
+
+//
+export interface SetPrincipalPointMode2VP {
+  type: ActionTypes.SET_PRINCIPAL_POINT_MODE_2VP
+  principalPointMode: PrincipalPointMode2VP
+}
+
+export function setPrincipalPointMode2VP(principalPointMode: PrincipalPointMode2VP): SetPrincipalPointMode2VP {
+  return {
+    type: ActionTypes.SET_PRINCIPAL_POINT_MODE_2VP,
+    principalPointMode: principalPointMode
   }
 }
 
@@ -133,6 +178,9 @@ export function computeCalibrationResult(): ComputeCalibrationResult {
 export type AppAction =
   SetCalibrationMode |
   SetImageOpacity |
+  SetHorizonMode |
+  SetPrincipalPointMode1VP |
+  SetPrincipalPointMode2VP |
   SetOrigin |
   SetPrincipalPoint |
   AdjustHorizon |

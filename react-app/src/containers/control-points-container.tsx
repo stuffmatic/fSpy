@@ -132,8 +132,6 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
 
   private render2VPControls() {
     let state = this.props.controlPointsState2VP
-    //TODO: render in a for loop
-    //TODO: make a renderVanishingPoints method that renders a 1 or 3 tuple
     return (
       <g>
         <VanishingPointControl
