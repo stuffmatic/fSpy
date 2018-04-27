@@ -16,6 +16,7 @@ export interface ControlPointState {
 
 export type ControlPointPairState = [ControlPointState, ControlPointState]
 
+//Rename to BinaryIndex or something?
 export enum ControlPointPairIndex {
   First = 0,
   Second = 1
@@ -60,12 +61,8 @@ export interface CalibrationSettings {
   calibrationMode:CalibrationMode
 }
 
-export interface ControlPointsStates {
-  controlPointsState1VP:ControlPointsState1VP
-  controlPointsState2VP:ControlPointsState2VP
-}
-
 export interface StoreState {
   calibrationSettings:CalibrationSettings
-  controlPointsStates: ControlPointsStates
+  controlPointsState1VP:ControlPointsState1VP
+  controlPointsState2VP:ControlPointsState2VP
 }

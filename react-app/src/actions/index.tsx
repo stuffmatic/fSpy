@@ -1,10 +1,14 @@
 import { CalibrationMode, Point2D, ControlPointPairIndex } from "../types/store-state";
 
 export enum ActionTypes {
+  //Settings action
+  SET_CALIBRATION_MODE = "SET_CALIBRATION_MODE",
+
+  //Control point actions
   SET_PRINCIPAL_POINT = "SET_PRINCIPAL_POINT",
   SET_ORIGIN = "SET_ORIGIN",
-  SET_HORIZON = "SET_HORIZON",
-  SET_CALIBRATION_MODE = "SET_CALIBRATION_MODE"
+  ADJUST_HORIZON = "ADJUST_HORIZON",
+  ADJUST_VANISHING_LINE = "ADJUST_VANISHING_LINE"
 }
 
 //Set principal point
@@ -37,17 +41,47 @@ export function setOrigin(calibrationMode: CalibrationMode, position: Point2D): 
   }
 }
 
-//Set horizon
-export interface SetHorizon {
-  type: ActionTypes.SET_HORIZON,
-  pointIndex: ControlPointPairIndex,
+//Adjust horizon (i.e set the position one endpoint of the horizon line)
+export interface AdjustHorizon {
+  type: ActionTypes.ADJUST_HORIZON,
+  controlPointIndex: ControlPointPairIndex,
   position: Point2D
 }
 
-export function setHorizon(pointIndex: ControlPointPairIndex, position: Point2D): SetHorizon {
+export function adjustHorizon(
+  controlPointIndex: ControlPointPairIndex,
+  position: Point2D
+): AdjustHorizon {
   return {
-    type: ActionTypes.SET_HORIZON,
-    pointIndex: pointIndex,
+    type: ActionTypes.ADJUST_HORIZON,
+    controlPointIndex: controlPointIndex,
+    position: position
+  }
+}
+
+//Adjust vanishing line (i.e set the position of one endpoint of a vanishing line)
+export interface AdjustVanishingLine {
+  type: ActionTypes.ADJUST_VANISHING_LINE,
+  calibrationMode: CalibrationMode,
+  vanishingPointIndex: number,
+  vanishingLineIndex: number,
+  controlPointIndex: ControlPointPairIndex,
+  position: Point2D
+}
+
+export function adjustVanishingLine(
+  calibrationMode: CalibrationMode,
+  vanshingPointIndex: number,
+  vanishingLineIndex: number,
+  controlPointIndex: ControlPointPairIndex,
+  position: Point2D
+): AdjustVanishingLine {
+  return {
+    type: ActionTypes.ADJUST_VANISHING_LINE,
+    calibrationMode: calibrationMode,
+    vanishingPointIndex: vanshingPointIndex,
+    vanishingLineIndex: vanishingLineIndex,
+    controlPointIndex: controlPointIndex,
     position: position
   }
 }
@@ -66,4 +100,9 @@ export function setCalibrationMode(calibrationMode: CalibrationMode): SetCalibra
 }
 
 //Define a type covering all actions
-export type AppAction = SetPrincipalPoint | SetCalibrationMode | SetHorizon
+export type AppAction =
+  SetOrigin |
+  SetPrincipalPoint |
+  SetCalibrationMode |
+  AdjustHorizon |
+  AdjustVanishingLine

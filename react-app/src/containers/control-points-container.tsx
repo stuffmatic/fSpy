@@ -4,7 +4,7 @@ import OriginControl from './../components/origin-control'
 import PrincipalPointControl from './../components/principal-point-control'
 import VanishingPointControl from './../components/vanishing-point-control'
 import { CalibrationMode, StoreState, ControlPointsState1VP, ControlPointsState2VP, ControlPointsStateBase, Point2D, ControlPointPairIndex, VanishingPointControlState, ControlPointPairState } from '../types/store-state';
-import { AppAction, setHorizon } from '../actions';
+import { AppAction, adjustHorizon, setOrigin, setPrincipalPoint, adjustVanishingLine } from '../actions';
 import { Dispatch, connect } from 'react-redux';
 
 export interface ControlPointsContainerOwnProps {
@@ -19,20 +19,28 @@ export interface ControlPointsContainerProps {
   controlPointsState1VP: ControlPointsState1VP
   controlPointsState2VP: ControlPointsState2VP
 
-  onPrincipalPointDrag(is1VPMode: boolean, position: Point2D): void
-  onOriginDrag(is1VPMode: boolean, position: Point2D): void
-
-  onHorizonStartDrag(is1VPMode: boolean, position: Point2D): void
-  onHorizonEndDrag(is1VPMode: boolean, position: Point2D): void
+  //common
+  onPrincipalPointDrag(calibrationMode: CalibrationMode, position: Point2D): void
+  onOriginDrag(calibrationMode: CalibrationMode, position: Point2D): void
 
   onVanishingPointControlPointDrag(
-    is1VPMode: boolean,
-    vanishingPointIndex:number,
-    vanishingLineIndex:number,
-    pointPairIndex:number,
+    calibrationMode: CalibrationMode,
+    vanishingPointIndex: number,
+    vanishingLineIndex: number,
+    controlPointIndex: ControlPointPairIndex,
     position: Point2D
-  ):void
+  ): void
+
+  //
+  onHorizonDrag(
+    calibrationMode: CalibrationMode,
+    controlPointIndex:ControlPointPairIndex,
+    position: Point2D
+  ): void
+
+
 }
+
 
 export class ControlPointsContainer extends React.PureComponent<ControlPointsContainerProps & ControlPointsContainerOwnProps> {
   render() {
@@ -60,13 +68,19 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
         <PrincipalPointControl
           position={this.rel2AbsPoint(state.principalPoint)}
           dragCallback={(position: Point2D) => {
-            this.invokeDragCallback(this.is1VPMode, position, this.props.onPrincipalPointDrag)
+            this.invokeControlPointDragCallback(
+              position,
+              this.props.onPrincipalPointDrag
+            )
           }}
         />
         <OriginControl
           position={this.rel2AbsPoint(state.origin)}
           dragCallback={(position: Point2D) => {
-            this.invokeDragCallback(this.is1VPMode, position, this.props.onOriginDrag)
+            this.invokeControlPointDragCallback(
+              position,
+              this.props.onOriginDrag
+            )
           }}
         />
       </g>
@@ -81,22 +95,33 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
           color={"blue"}
           vanishingPointIndex={0}
           controlState={
-            this.rel2AbsVanishingPointControlState(state.vanishingPoints[0])
+            this.rel2AbsVanishingPointControlState(
+              state.vanishingPoints[0]
+            )
           }
-          onControlPointDrag={(vanishingPointIndex:number, vanishingLineIndex:number, pointPairIndex:number, position: Point2D) => {
-
+          onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: ControlPointPairIndex, position: Point2D) => {
+            this.invokeVanishingLineEndpointDragCallback(
+              vanishingPointIndex,
+              vanishingLineIndex,
+              controlPointIndex,
+              position,
+              this.props.onVanishingPointControlPointDrag
+            )
           }}
         />
         <HorizonControl
           pointPair={
-            this.rel2AbsControlPointPairState(this.props.controlPointsState1VP.horizon)
+            this.rel2AbsControlPointPairState(
+              this.props.controlPointsState1VP.horizon
+            )
           }
           enabled={true}
-          startDragCallback={(position: Point2D) => {
-            this.invokeDragCallback(this.is1VPMode, position, this.props.onHorizonStartDrag)
-          }}
-          endDragCallback={(position: Point2D) => {
-            this.invokeDragCallback(this.is1VPMode, position, this.props.onHorizonEndDrag)
+          dragCallback={(controlPointIndex:ControlPointPairIndex, position: Point2D) => {
+            this.invokeEndpointDragCallback(
+              controlPointIndex,
+              position,
+              this.props.onHorizonDrag
+            )
           }}
         />
       </g>
@@ -111,41 +136,55 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
       <g>
         <VanishingPointControl
           color={"red"}
-          vanishingPointIndex={ 0 }
+          vanishingPointIndex={0}
           controlState={
             this.rel2AbsVanishingPointControlState(state.vanishingPoints[0])
           }
-          onControlPointDrag={(vanishingPointIndex:number, vanishingLineIndex:number, pointPairIndex:number, position: Point2D) => {
-
+          onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: number, position: Point2D) => {
+            this.invokeVanishingLineEndpointDragCallback(
+              vanishingPointIndex,
+              vanishingLineIndex,
+              controlPointIndex,
+              position,
+              this.props.onVanishingPointControlPointDrag
+            )
           }}
         />
         <VanishingPointControl
           color={"green"}
-          vanishingPointIndex={ 1 }
+          vanishingPointIndex={1}
           controlState={
             this.rel2AbsVanishingPointControlState(state.vanishingPoints[1])
           }
-          onControlPointDrag={(vanishingPointIndex:number, vanishingLineIndex:number, pointPairIndex:number, position: Point2D) => {
-
+          onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: number, position: Point2D) => {
+            this.invokeVanishingLineEndpointDragCallback(
+              vanishingPointIndex,
+              vanishingLineIndex,
+              controlPointIndex,
+              position,
+              this.props.onVanishingPointControlPointDrag
+            )
           }}
         />
         <VanishingPointControl
           color={"orange"}
-          vanishingPointIndex={ 2 }
+          vanishingPointIndex={2}
           controlState={
             this.rel2AbsVanishingPointControlState(state.vanishingPoints[2])
           }
-          onControlPointDrag={(vanishingPointIndex:number, vanishingLineIndex:number, pointPairIndex:number, position: Point2D) => {
-
+          onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: number, position: Point2D) => {
+            this.invokeVanishingLineEndpointDragCallback(
+              vanishingPointIndex,
+              vanishingLineIndex,
+              controlPointIndex,
+              position,
+              this.props.onVanishingPointControlPointDrag
+            )
           }}
         />
 
       </g>
     )
-  }
-
-  private get is1VPMode(): boolean {
-    return this.props.calibrationMode == CalibrationMode.OneVanishingPoint
   }
 
   private abs2Rel(abs: Point2D): Point2D {
@@ -155,7 +194,7 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
     }
   }
 
-  private rel2AbsVanishingPointControlState(state:VanishingPointControlState):VanishingPointControlState {
+  private rel2AbsVanishingPointControlState(state: VanishingPointControlState): VanishingPointControlState {
     return {
       vanishingLines: [
         this.rel2AbsControlPointPairState(state.vanishingLines[0]),
@@ -178,9 +217,44 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
     }
   }
 
-  private invokeDragCallback(is1VPMode: boolean, position: Point2D, callback: (is1VPMode: boolean, position: Point2D) => void) {
+  private invokeControlPointDragCallback(
+    position: Point2D,
+    callback: (calibrationMode: CalibrationMode, position: Point2D) => void
+  ) {
     callback(
-      is1VPMode,
+      this.props.calibrationMode,
+      this.abs2Rel(position)
+    )
+  }
+
+  private invokeEndpointDragCallback(
+    controlPointIndex: ControlPointPairIndex,
+    position: Point2D,
+    callback: (calibrationMode: CalibrationMode, controlPointIndex: ControlPointPairIndex, position: Point2D) => void
+  ) {
+    callback(
+      this.props.calibrationMode,
+      controlPointIndex,
+      this.abs2Rel(position)
+    )
+  }
+
+  private invokeVanishingLineEndpointDragCallback(
+    vanishingPointIndex:number,
+    vanishingLineIndex:number,
+    controlPointIndex: ControlPointPairIndex,
+    position: Point2D,
+    callback: (calibrationMode: CalibrationMode,
+      vanishingPointIndex:number,
+      vanishingLineIndex:number,
+      controlPointIndex: ControlPointPairIndex,
+      position: Point2D) => void
+  ) {
+    callback(
+      this.props.calibrationMode,
+      vanishingPointIndex,
+      vanishingLineIndex,
+      controlPointIndex,
       this.abs2Rel(position)
     )
   }
@@ -188,8 +262,8 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
 
 export function mapStateToProps(state: StoreState, ownProps: ControlPointsContainerOwnProps) {
   let result = {
-    controlPointsState1VP: state.controlPointsStates.controlPointsState1VP,
-    controlPointsState2VP: state.controlPointsStates.controlPointsState2VP,
+    controlPointsState1VP: state.controlPointsState1VP,
+    controlPointsState2VP: state.controlPointsState2VP,
     calibrationMode: state.calibrationSettings.calibrationMode
   }
   return result
@@ -197,24 +271,29 @@ export function mapStateToProps(state: StoreState, ownProps: ControlPointsContai
 
 export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
   return {
-    onPrincipalPointDrag: (is1VPMode: boolean, position: Point2D) => {
-      console.log("onPrincipalPointDrag")
+    onPrincipalPointDrag: (calibrationMode: CalibrationMode, position: Point2D) => {
+      dispatch(setPrincipalPoint(calibrationMode, position))
     },
-    onOriginDrag: (is1VPMode: boolean, position: Point2D) => {
-      console.log("onOriginDrag")
+    onOriginDrag: (calibrationMode: CalibrationMode, position: Point2D) => {
+      dispatch(setOrigin(calibrationMode, position))
     },
-    onHorizonStartDrag: (is1VPMode: boolean, position: Point2D) => {
-      dispatch(setHorizon(ControlPointPairIndex.First, position))
+    onHorizonDrag: (calibrationMode: CalibrationMode, controlPointIndex:ControlPointPairIndex, position: Point2D) => {
+      dispatch(adjustHorizon(controlPointIndex, position))
     },
-    onHorizonEndDrag: (is1VPMode: boolean, position: Point2D) => {
-      dispatch(setHorizon(ControlPointPairIndex.Second, position))
-    },
-    onVanishingPointControlPointDrag: (is1VPMode: boolean,
-      vanishingPointIndex:number,
-      vanishingLineIndex:number,
-      pointPairIndex:number,
+    onVanishingPointControlPointDrag: (calibrationMode: CalibrationMode,
+      vanishingPointIndex: number,
+      vanishingLineIndex: number,
+      controlPointIndex: ControlPointPairIndex,
       position: Point2D) => {
-      console.log("onVanishingPointControlPointDrag p " + vanishingPointIndex + ", l " + vanishingLineIndex + ", pp " + pointPairIndex)
+        dispatch(
+          adjustVanishingLine(
+            calibrationMode,
+            vanishingPointIndex,
+            vanishingLineIndex,
+            controlPointIndex,
+            position
+          )
+        )
     }
   }
 }

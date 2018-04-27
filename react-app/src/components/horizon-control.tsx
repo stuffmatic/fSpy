@@ -1,13 +1,12 @@
 import * as React from 'react';
 import ControlLine from './control-line'
 import ControlPoint from './control-point'
-import { Point2D, ControlPointPairState } from '../types/store-state';
+import { Point2D, ControlPointPairState, ControlPointPairIndex } from '../types/store-state';
 
 interface HorizonControlProps {
   enabled:boolean
   pointPair:ControlPointPairState
-  startDragCallback(position:Point2D): void
-  endDragCallback(position:Point2D): void
+  dragCallback(controlPointIndex:ControlPointPairIndex, position:Point2D): void
 }
 
 export default function HorizonControl(props: HorizonControlProps) {
@@ -20,12 +19,16 @@ export default function HorizonControl(props: HorizonControlProps) {
       />
       <ControlPoint
         position={props.pointPair[0]}
-        dragCallback={props.startDragCallback}
+        dragCallback={(position:Point2D) => {
+          props.dragCallback(ControlPointPairIndex.First, position)
+        }}
         fill="yellow"
       />
       <ControlPoint
         position={props.pointPair[1]}
-        dragCallback={props.endDragCallback}
+        dragCallback={(position:Point2D) => {
+          props.dragCallback(ControlPointPairIndex.Second, position)
+        }}
         fill="yellow"
       />
     </g>

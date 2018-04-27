@@ -14,7 +14,7 @@ export default function ControlLine(props:ControlLineProps) {
       y1={props.start.y}
       x2={props.end.x}
       y2={props.end.y}
-      stroke={props.color} strokeWidth={2}
+      stroke={props.color} strokeWidth={1}
     />
   )
 }
