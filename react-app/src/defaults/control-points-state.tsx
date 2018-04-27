@@ -1,11 +1,4 @@
-import { ControlPointsStateBase, ControlPointsState1VP, ControlPointsState2VP, GlobalSettings, CalibrationMode } from "./store-state";
-
-//TODO: move this to a better place
-
-export const defaultGlobalSettings:GlobalSettings = {
-  calibrationMode: CalibrationMode.TwoVanishingPoints,
-  imageOpacity: 1
-}
+import { ControlPointsStateBase, ControlPointsState1VP, ControlPointsState2VP } from "../types/control-points-state";
 
 const defaultControlPointsStateBase: ControlPointsStateBase = {
   principalPoint: {

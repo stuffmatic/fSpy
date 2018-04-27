@@ -1,4 +1,5 @@
-import { CalibrationMode, Point2D, ControlPointPairIndex } from "../types/store-state";
+import { CalibrationMode } from "../types/global-settings";
+import { Point2D, ControlPointPairIndex } from "../types/control-points-state";
 
 export enum ActionTypes {
   //Global settings action

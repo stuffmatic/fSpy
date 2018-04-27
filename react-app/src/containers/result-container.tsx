@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { SidePanelStyle } from './../styles/styles';
-import { StoreState, CalibrationMode } from '../types/store-state';
+import { StoreState } from '../types/store-state';
 import { connect } from 'react-redux';
+import { CalibrationMode } from '../types/global-settings';
 
 interface ResultContainerProps {
   x: number

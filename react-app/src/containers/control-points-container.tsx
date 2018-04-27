@@ -3,9 +3,11 @@ import HorizonControl from './../components/horizon-control'
 import OriginControl from './../components/origin-control'
 import PrincipalPointControl from './../components/principal-point-control'
 import VanishingPointControl from './../components/vanishing-point-control'
-import { CalibrationMode, StoreState, ControlPointsState1VP, ControlPointsState2VP, ControlPointsStateBase, Point2D, ControlPointPairIndex, VanishingPointControlState, ControlPointPairState } from '../types/store-state';
+import { StoreState } from '../types/store-state';
 import { AppAction, adjustHorizon, setOrigin, setPrincipalPoint, adjustVanishingLine } from '../actions';
 import { Dispatch, connect } from 'react-redux';
+import { CalibrationMode } from '../types/global-settings';
+import { ControlPointsState1VP, ControlPointsState2VP, Point2D, ControlPointPairIndex, ControlPointsStateBase, VanishingPointControlState, ControlPointPairState } from '../types/control-points-state';
 
 export interface ControlPointsContainerOwnProps {
   left: number

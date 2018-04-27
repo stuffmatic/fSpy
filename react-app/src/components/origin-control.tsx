@@ -1,6 +1,6 @@
 import * as React from 'react';
 import ControlPoint from './control-point'
-import { Point2D } from '../types/store-state';
+import { Point2D } from '../types/control-points-state';
 
 interface OriginControlProps {
   position:Point2D

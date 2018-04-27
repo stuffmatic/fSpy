@@ -1,6 +1,6 @@
-import { GlobalSettings } from "../types/store-state";
 import { AppAction, ActionTypes } from "../actions";
-import { defaultGlobalSettings } from "../types/defaults";
+import { GlobalSettings } from "../types/global-settings";
+import { defaultGlobalSettings } from "../defaults/global-settings";
 
 export function globalSettings(state: GlobalSettings, action: AppAction): GlobalSettings {
   if (state === undefined) {

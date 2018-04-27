@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Point2D } from '../types/store-state';
+import { Point2D } from '../types/control-points-state';
 
 interface ControlPointProps {
   position:Point2D

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import ControlLine from './control-line'
 import ControlPoint from './control-point'
-import { Point2D, VanishingPointControlState } from '../types/store-state';
+import { VanishingPointControlState, Point2D } from '../types/control-points-state';
 
 interface VanishingPointControlProps {
   color:string

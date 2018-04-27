@@ -1,6 +1,7 @@
 import { AppAction, ActionTypes } from '../actions';
-import { ControlPointsState1VP, CalibrationMode, VanishingPointControlState } from '../types/store-state';
-import { defaultControlPointsState1VP } from '../types/defaults'
+import { ControlPointsState1VP, VanishingPointControlState } from '../types/control-points-state';
+import { CalibrationMode } from '../types/global-settings';
+import { defaultControlPointsState1VP } from '../defaults/control-points-state';
 
 export function controlPointsState1VP(state: ControlPointsState1VP, action: AppAction): ControlPointsState1VP {
   if (state === undefined) {

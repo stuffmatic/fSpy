@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { SidePanelStyle } from './../styles/styles';
-import { CalibrationMode } from '../types/store-state';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { AppAction, setCalibrationMode, setImageOpacity } from '../actions';
+import { CalibrationMode } from '../types/global-settings';
 
 interface SettingsContainerProps {
   onCalibrationModeChange(calibrationMode:CalibrationMode):void
