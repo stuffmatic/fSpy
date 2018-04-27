@@ -6,8 +6,9 @@ import VanishingPointControl from './../components/vanishing-point-control'
 import { StoreState } from '../types/store-state';
 import { AppAction, adjustHorizon, setOrigin, setPrincipalPoint, adjustVanishingLine, computeCalibrationResult } from '../actions';
 import { Dispatch, connect } from 'react-redux';
-import { CalibrationMode } from '../types/global-settings';
+import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { ControlPointsState1VP, ControlPointsState2VP, Point2D, ControlPointPairIndex, ControlPointsStateBase, VanishingPointControlState, ControlPointPairState } from '../types/control-points-state';
+import { CalibrationSettings1VP, CalibrationSettings2VP } from '../types/calibration-settings';
 
 export interface ControlPointsContainerOwnProps {
   left: number
@@ -17,8 +18,10 @@ export interface ControlPointsContainerOwnProps {
 }
 
 export interface ControlPointsContainerProps {
-  calibrationMode: CalibrationMode
+  globalSettings: GlobalSettings
+  calibrationSettings1VP:CalibrationSettings1VP
   controlPointsState1VP: ControlPointsState1VP
+  calibrationSettings2VP:CalibrationSettings2VP
   controlPointsState2VP: ControlPointsState2VP
 
   onPrincipalPointDrag(calibrationMode: CalibrationMode, position: Point2D): void
@@ -49,7 +52,7 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
       position: "absolute",
       overflow: "visible"
     }
-    let is1VPMode = this.props.calibrationMode == CalibrationMode.OneVanishingPoint
+    let is1VPMode = this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint
 
     return (
       <svg style={svgStyle}>
@@ -129,8 +132,45 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
 
   private render2VPControls() {
     let state = this.props.controlPointsState2VP
+    let vp2Points = state.vanishingPoints[1]
+    let quadModeEnabled = this.props.calibrationSettings2VP.quadModeEnabled
+    if (quadModeEnabled) {
+      vp2Points = {
+        vanishingLines: [
+          [
+            state.vanishingPoints[0].vanishingLines[0][0],
+            state.vanishingPoints[0].vanishingLines[1][0]
+          ],
+          [
+            state.vanishingPoints[0].vanishingLines[0][1],
+            state.vanishingPoints[0].vanishingLines[1][1]
+          ]
+        ]
+      }
+    }
+
     return (
       <g>
+        <VanishingPointControl
+          color={"green"}
+          vanishingPointIndex={1}
+          controlState={
+            this.rel2AbsVanishingPointControlState(vp2Points)
+          }
+          onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: number, position: Point2D) => {
+            if (quadModeEnabled) {
+              this.invokeVanishingLineEndpointDragCallback(
+                vanishingPointIndex,
+                vanishingLineIndex,
+                controlPointIndex,
+                position,
+                this.props.onVanishingPointControlPointDrag
+              )
+            }
+
+          }}
+        />
+
         <VanishingPointControl
           color={"red"}
           vanishingPointIndex={0}
@@ -147,22 +187,7 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
             )
           }}
         />
-        <VanishingPointControl
-          color={"green"}
-          vanishingPointIndex={1}
-          controlState={
-            this.rel2AbsVanishingPointControlState(state.vanishingPoints[1])
-          }
-          onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: number, position: Point2D) => {
-            this.invokeVanishingLineEndpointDragCallback(
-              vanishingPointIndex,
-              vanishingLineIndex,
-              controlPointIndex,
-              position,
-              this.props.onVanishingPointControlPointDrag
-            )
-          }}
-        />
+
         <VanishingPointControl
           color={"orange"}
           vanishingPointIndex={2}
@@ -219,7 +244,7 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
     callback: (calibrationMode: CalibrationMode, position: Point2D) => void
   ) {
     callback(
-      this.props.calibrationMode,
+      this.props.globalSettings.calibrationMode,
       this.abs2Rel(position)
     )
   }
@@ -230,7 +255,7 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
     callback: (calibrationMode: CalibrationMode, controlPointIndex: ControlPointPairIndex, position: Point2D) => void
   ) {
     callback(
-      this.props.calibrationMode,
+      this.props.globalSettings.calibrationMode,
       controlPointIndex,
       this.abs2Rel(position)
     )
@@ -248,7 +273,7 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
       position: Point2D) => void
   ) {
     callback(
-      this.props.calibrationMode,
+      this.props.globalSettings.calibrationMode,
       vanishingPointIndex,
       vanishingLineIndex,
       controlPointIndex,
@@ -259,9 +284,11 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
 
 export function mapStateToProps(state: StoreState, ownProps: ControlPointsContainerOwnProps) {
   let result = {
+    globalSettings: state.globalSettings,
+    calibrationSettings1VP: state.calibrationSettings1VP,
     controlPointsState1VP: state.controlPointsState1VP,
+    calibrationSettings2VP: state.calibrationSettings2VP,
     controlPointsState2VP: state.controlPointsState2VP,
-    calibrationMode: state.globalSettings.calibrationMode
   }
   return result
 }
