@@ -1,6 +1,7 @@
 import { CalibrationMode } from "../types/global-settings";
 import { Point2D, ControlPointPairIndex } from "../types/control-points-state";
 import { PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode } from "../types/calibration-settings";
+import CalibrationResult from "../types/calibration-result";
 
 export enum ActionTypes {
   //Global settings actions
@@ -24,7 +25,7 @@ export enum ActionTypes {
   ADJUST_VANISHING_LINE = "ADJUST_VANISHING_LINE",
 
   //
-  COMPUTE_CALIBRATION_RESULT = "COMPUTE_CALIBRATION_RESULT"
+  SET_CALIBRATION_RESULT = "SET_CALIBRATION_RESULT"
 }
 
 
@@ -209,14 +210,16 @@ export function adjustVanishingLine(
   }
 }
 
-//Compute calibration result
-export interface ComputeCalibrationResult {
-  type: ActionTypes.COMPUTE_CALIBRATION_RESULT
+//Set calibration result
+export interface SetCalibrationResult {
+  type: ActionTypes.SET_CALIBRATION_RESULT,
+  result: CalibrationResult
 }
 
-export function computeCalibrationResult(): ComputeCalibrationResult {
+export function setCalibrationResult(result:CalibrationResult): SetCalibrationResult {
   return {
-    type: ActionTypes.COMPUTE_CALIBRATION_RESULT
+    type: ActionTypes.SET_CALIBRATION_RESULT,
+    result: result
   }
 }
 
@@ -234,4 +237,4 @@ export type AppAction =
   SetPrincipalPoint |
   AdjustHorizon |
   AdjustVanishingLine |
-  ComputeCalibrationResult
+  SetCalibrationResult

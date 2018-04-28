@@ -1,26 +1,70 @@
 import * as React from 'react';
-import { SidePanelStyle } from './../styles/styles';
-import { StoreState } from '../types/store-state';
-import { connect } from 'react-redux';
+import { connect, Dispatch } from 'react-redux';
+import Solver from '../solver/solver';
 import CalibrationResult from '../types/calibration-result';
+import { AppAction, setCalibrationResult } from '../actions';
+import { CalibrationSettings1VP, CalibrationSettings2VP } from '../types/calibration-settings';
+import { ControlPointsState1VP, ControlPointsState2VP } from '../types/control-points-state';
+import { ImageState } from '../types/image-state';
+import { StoreState } from '../types/store-state';
+import { CalibrationMode } from '../types/global-settings';
+import ResultPanel from '../components/result-panel'
 
 interface ResultContainerProps {
-  result:CalibrationResult | null
+  calibrationMode:CalibrationMode
+  calibrationSettings1VP: CalibrationSettings1VP
+  controlPointsState1VP: ControlPointsState1VP
+
+  calibrationSettings2VP: CalibrationSettings2VP
+  controlPointsState2VP: ControlPointsState2VP
+
+  image: ImageState
+  onComputedResult(result: CalibrationResult): void
 }
 
-function ResultContainer(props:ResultContainerProps) {
-  return (
-    <div style={SidePanelStyle}>
-    <p>TODO</p>
-    </div>
-  )
+class ResultContainer extends React.PureComponent<ResultContainerProps> {
+  render() {
+    let result: CalibrationResult = {
+      calibrationResult1VP: Solver.solve1VP(
+        this.props.calibrationSettings1VP,
+        this.props.controlPointsState1VP,
+        this.props.image
+      ),
+      calibrationResult2VP: Solver.solve2VP(
+        this.props.calibrationSettings2VP,
+        this.props.controlPointsState2VP,
+        this.props.image
+      )
+    }
+
+    this.props.onComputedResult(result)
+
+    return (
+      <ResultPanel
+        calibrationMode={this.props.calibrationMode}
+        calibrationResult={result}
+      />
+    )
+  }
 }
 
 export function mapStateToProps(state: StoreState) {
   return {
-    result: state.calibrationResult
+    calibrationMode: state.globalSettings.calibrationMode,
+    calibrationSettings1VP: state.calibrationSettings1VP,
+    controlPointsState1VP: state.controlPointsState1VP,
+    calibrationSettings2VP: state.calibrationSettings2VP,
+    controlPointsState2VP: state.controlPointsState2VP,
+    image: state.image
   }
 }
 
+export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
+  return {
+    onComputedResult: (result: CalibrationResult) => {
+      dispatch(setCalibrationResult(result))
+    }
+  }
+}
 
-export default connect(mapStateToProps, null)(ResultContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(ResultContainer);

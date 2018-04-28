@@ -2,7 +2,7 @@ import * as React from 'react';
 import { SidePanelStyle } from './../styles/styles';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, computeCalibrationResult, setImageUrl } from '../actions';
+import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl } from '../actions';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { StoreState } from '../types/store-state';
 import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode } from '../types/calibration-settings';
@@ -139,26 +139,21 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
   return {
     onCalibrationModeChange: (calibrationMode: CalibrationMode) => {
       dispatch(setCalibrationMode(calibrationMode))
-      dispatch(computeCalibrationResult())
     },
     onImageOpacityChange: (opacity: number) => {
       dispatch(setImageOpacity(opacity))
     },
     onHorizonModeChange: (horizonMode: HorizonMode) => {
       dispatch(setHorizonMode(horizonMode))
-      dispatch(computeCalibrationResult())
     },
     onPrincipalPointModeChange1VP: (principalPointMode: PrincipalPointMode1VP) => {
       dispatch(setPrincipalPointMode1VP(principalPointMode))
-      dispatch(computeCalibrationResult())
     },
     onPrincipalPointModeChange2VP: (principalPointMode: PrincipalPointMode2VP) => {
       dispatch(setPrincipalPointMode2VP(principalPointMode))
-      dispatch(computeCalibrationResult())
     },
     onQuadModeEnabledChange: (quadModeEnabled: boolean) => {
       dispatch(setQuadModeEnabled(quadModeEnabled))
-      dispatch(computeCalibrationResult())
     },
     onLoadTestImage: (imageIndex:number | null) => {
       let url = "omg fel url!"

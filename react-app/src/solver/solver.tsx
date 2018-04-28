@@ -21,7 +21,7 @@ export default class Solver {
     }
 
     return {
-      errors: ["1VP calibration has not been implemented"],
+      errors: ["1VP calibration has not been implemented " + Math.random()],
       warnings: [],
       cameraParameters: null
     }
@@ -43,7 +43,7 @@ export default class Solver {
     }
 
     return {
-      errors: ["2VP calibration has not been implemented"],
+      errors: ["2VP calibration has not been implemented " + Math.random()],
       warnings: [],
       cameraParameters: null
     }
@@ -51,7 +51,6 @@ export default class Solver {
 
   private static validateImage(image:ImageState):string[] {
     let errors:string[] = []
-    console.log(image)
     if (image.width == null || image.height == null) {
       errors.push("No image loaded")
     }
