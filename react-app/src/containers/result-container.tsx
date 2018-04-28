@@ -11,7 +11,7 @@ interface ResultContainerProps {
 function ResultContainer(props:ResultContainerProps) {
   return (
     <div style={SidePanelStyle}>
-    <p>{props.result ? props.result.dummy : "null result"}</p>
+    <p>TODO</p>
     </div>
   )
 }

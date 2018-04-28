@@ -14,7 +14,7 @@ const rootReducer = combineReducers<StoreState>({
   controlPointsState1VP,
   calibrationSettings2VP,
   controlPointsState2VP,
-  calibrationResult,
+  calibrationResult: calibrationResult,
   image: imageState
 })
 export default rootReducer;
