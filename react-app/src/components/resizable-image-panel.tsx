@@ -2,8 +2,10 @@ import * as React from 'react';
 import Measure, { ContentRect } from 'react-measure';
 
 interface ResizableImagePanelProps {
-  imageOpacity:number
+  imageOpacity: number
+  imageUrl: string
   onResize(imageLeft: number, imageTop: number, imageWidth: number, imageHeight: number): void
+  onImageLoad(width: number, height: number): void
   onImageLoadError(): void
 }
 
@@ -36,9 +38,14 @@ export default class ResizableImagePanel extends React.Component<ResizableImageP
           <div style={{ height: "100vh", flexGrow: 1 }} ref={measureRef} >
             <img ref={this.imageRef}
               style={{ width: "100%", height: "100%", objectFit: "contain", opacity: this.props.imageOpacity }}
-              src="https://upload.wikimedia.org/wikipedia/commons/f/f8/Tall_Palm_in_Napier.png"
+              src={ this.props.imageUrl }
               onLoad={() => this.onImageLoad()}
-              onError={() => this.props.onImageLoadError()}
+              onError={
+                (e:any) => {
+                  console.log(e)
+                  this.props.onImageLoadError()
+                }
+              }
             />
           </div>
         }
@@ -47,6 +54,9 @@ export default class ResizableImagePanel extends React.Component<ResizableImageP
   }
 
   private onImageLoad() {
+    let w = this.imageRef.current.naturalWidth
+    let h = this.imageRef.current.naturalHeight
+    this.props.onImageLoad(w, h)
     this.fireResizeCallback()
   }
 

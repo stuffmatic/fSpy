@@ -158,7 +158,7 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
             this.rel2AbsVanishingPointControlState(vp2Points)
           }
           onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: number, position: Point2D) => {
-            if (quadModeEnabled) {
+            if (!quadModeEnabled) {
               this.invokeVanishingLineEndpointDragCallback(
                 vanishingPointIndex,
                 vanishingLineIndex,

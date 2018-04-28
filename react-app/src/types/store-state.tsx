@@ -2,6 +2,7 @@ import { GlobalSettings } from "./global-settings";
 import { ControlPointsState2VP, ControlPointsState1VP } from "./control-points-state";
 import { CalibrationSettings2VP, CalibrationSettings1VP } from "./calibration-settings";
 import CalibrationResult from "./calibration-result";
+import { ImageState } from "./image-state";
 
 export interface StoreState {
   globalSettings:GlobalSettings
@@ -13,4 +14,5 @@ export interface StoreState {
   controlPointsState2VP:ControlPointsState2VP
 
   calibrationResult:CalibrationResult | null
+  image:ImageState
 }

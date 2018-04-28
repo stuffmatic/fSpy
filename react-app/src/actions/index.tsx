@@ -3,9 +3,13 @@ import { Point2D, ControlPointPairIndex } from "../types/control-points-state";
 import { PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode } from "../types/calibration-settings";
 
 export enum ActionTypes {
-  //Global settings action
+  //Global settings actions
   SET_CALIBRATION_MODE = "SET_CALIBRATION_MODE",
   SET_IMAGE_OPACITY = "SET_IMAGE_OPACITY",
+
+  //Image loading actions
+  SET_IMAGE_URL = "SET_IMAGE_URL",
+  SET_IMAGE_SIZE = "SET_IMAGE_SIZE",
 
   //Calibration settings actions
   SET_HORIZON_MODE = "SET_HORIZON_MODE",
@@ -47,6 +51,34 @@ export function setCalibrationMode(calibrationMode: CalibrationMode): SetCalibra
   return {
     type: ActionTypes.SET_CALIBRATION_MODE,
     calibrationMode: calibrationMode
+  }
+}
+
+//
+export interface SetImageURL {
+  type: ActionTypes.SET_IMAGE_URL
+  url: string
+}
+
+export function setImageUrl(url: string): SetImageURL {
+  return {
+    type: ActionTypes.SET_IMAGE_URL,
+    url: url
+  }
+}
+
+//
+export interface SetImageSize {
+  type: ActionTypes.SET_IMAGE_SIZE
+  width: number | null
+  height: number | null
+}
+
+export function setImageSize(width: number | null, height: number | null): SetImageSize {
+  return {
+    type: ActionTypes.SET_IMAGE_SIZE,
+    width: width,
+    height: height
   }
 }
 
@@ -192,6 +224,8 @@ export function computeCalibrationResult(): ComputeCalibrationResult {
 export type AppAction =
   SetCalibrationMode |
   SetImageOpacity |
+  SetImageURL |
+  SetImageSize |
   SetHorizonMode |
   SetQuadModeEnabled |
   SetPrincipalPointMode1VP |
@@ -199,5 +233,5 @@ export type AppAction =
   SetOrigin |
   SetPrincipalPoint |
   AdjustHorizon |
-  AdjustVanishingLine | 
+  AdjustVanishingLine |
   ComputeCalibrationResult

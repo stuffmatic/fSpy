@@ -6,6 +6,7 @@ import { calibrationSettings2VP } from './calibration-settings-2-vp'
 import { controlPointsState2VP } from './control-points-2-vp'
 import { calibrationResult } from './calibration-result'
 import { globalSettings } from './global-settings'
+import { imageState } from './image-state';
 
 const rootReducer = combineReducers<StoreState>({
   globalSettings,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers<StoreState>({
   controlPointsState1VP,
   calibrationSettings2VP,
   controlPointsState2VP,
-  calibrationResult
+  calibrationResult,
+  image: imageState
 })
 export default rootReducer;

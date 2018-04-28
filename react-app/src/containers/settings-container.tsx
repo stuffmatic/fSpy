@@ -2,7 +2,7 @@ import * as React from 'react';
 import { SidePanelStyle } from './../styles/styles';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, computeCalibrationResult } from '../actions';
+import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, computeCalibrationResult, setImageUrl } from '../actions';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { StoreState } from '../types/store-state';
 import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode } from '../types/calibration-settings';
@@ -17,6 +17,7 @@ interface SettingsContainerProps {
   onPrincipalPointModeChange1VP(principalPointMode: PrincipalPointMode1VP): void
   onPrincipalPointModeChange2VP(principalPointMode: PrincipalPointMode2VP): void
   onQuadModeEnabledChange(quadModeEnabled: boolean): void
+  onLoadTestImage(imageIndex:number | null):void
 
 }
 
@@ -48,6 +49,24 @@ class SettingsContainer extends React.PureComponent<SettingsContainerProps> {
               this.props.onImageOpacityChange(event.target.checked ? 0.2 : 1)
             }}
           />
+        </div>
+        <div>
+
+          <button onClick={() => {
+            this.props.onLoadTestImage(0)
+          }}>
+            Load test image 1
+          </button>
+          <button onClick={() => {
+            this.props.onLoadTestImage(1)
+          }}>
+            Load test image 2
+          </button>
+          <button onClick={() => {
+            this.props.onLoadTestImage(null)
+          }}>
+            Load broken test image
+          </button>
         </div>
       </div>
     )
@@ -140,6 +159,17 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     onQuadModeEnabledChange: (quadModeEnabled: boolean) => {
       dispatch(setQuadModeEnabled(quadModeEnabled))
       dispatch(computeCalibrationResult())
+    },
+    onLoadTestImage: (imageIndex:number | null) => {
+      let url = "omg fel url!"
+      if (imageIndex != null) {
+        url = [
+          "https://upload.wikimedia.org/wikipedia/commons/f/f8/Tall_Palm_in_Napier.png",
+          "https://image.freepik.com/free-photo/wide-road-with-buildings-on-either-side_1127-2188.jpg"
+        ][imageIndex]
+      }
+      console.log("loading url " + url)
+      dispatch(setImageUrl(url))
     }
   }
 }

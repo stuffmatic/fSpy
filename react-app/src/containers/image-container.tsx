@@ -1,6 +1,17 @@
 import * as React from 'react';
 import ResizableImagePanel from './../components/resizable-image-panel'
 import ControlPointsContainer from './control-points-container';
+import { StoreState } from '../types/store-state';
+import { Dispatch } from 'redux';
+import { AppAction, setImageSize } from '../actions';
+import { connect } from 'react-redux';
+import { ImageState } from '../types/image-state';
+
+interface ImageContainerProps {
+  imageOpacity: number
+  imageState:ImageState
+  onImageLoad(width: number, height: number): void
+}
 
 interface ImageContainerState {
   imageLeft: number
@@ -9,9 +20,9 @@ interface ImageContainerState {
   imageHeight: number
 }
 
-export default class ImageContainer extends React.Component<{}, ImageContainerState> {
+class ImageContainer extends React.Component<ImageContainerProps, ImageContainerState> {
 
-  constructor(props: {}) {
+  constructor(props: ImageContainerProps) {
     super(props)
     this.state = {
       imageLeft: 0,
@@ -26,17 +37,33 @@ export default class ImageContainer extends React.Component<{}, ImageContainerSt
 
     return (
       <div style={{ backgroundColor: "#222222", position: "relative" }}>
-        <ResizableImagePanel
-          imageOpacity={ 0.2 }
-          onResize={this.onImageResize}
-          onImageLoadError={this.onImageLoadError}
-        />
+        {this.renderImagePanelOrPlaceholder() }
         <ControlPointsContainer
           top={this.state.imageTop}
           left={this.state.imageLeft}
           width={this.state.imageWidth}
           height={this.state.imageHeight}
         />
+      </div>
+    )
+  }
+
+  private renderImagePanelOrPlaceholder() {
+    if (this.props.imageState.url) {
+      return (
+        <ResizableImagePanel
+          imageOpacity={this.props.imageOpacity}
+          imageUrl= {this.props.imageState.url}
+          onResize={this.onImageResize}
+          onImageLoad={this.props.onImageLoad}
+          onImageLoadError={this.onImageLoadError}
+        />
+      )
+    }
+
+    return (
+      <div style={{ height: "100vh", flexGrow: 1 }} >
+        Load an image vetja!
       </div>
     )
   }
@@ -56,6 +83,24 @@ export default class ImageContainer extends React.Component<{}, ImageContainerSt
   }
 
   private onImageLoadError() {
+    alert("Failed to load the image")
+  }
+}
+
+export function mapStateToProps(state: StoreState) {
+  return {
+    imageOpacity: state.globalSettings.imageOpacity,
+    imageState: state.image
+  }
+}
+
+export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
+  return {
+    onImageLoad: (width: number, height: number) => {
+      dispatch(setImageSize(width, height))
+    }
 
   }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(ImageContainer);
