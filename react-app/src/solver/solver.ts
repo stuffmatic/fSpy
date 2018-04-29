@@ -5,6 +5,7 @@ import { CalibrationResult1VP, CalibrationResult2VP } from "./calibration-result
 import MathUtil from "./math-util";
 import Point2D from "./point-2d";
 import Transform from "./transform";
+import Vector3D from "./vector-3d";
 
 /*
 The solver handles estimation of focal length and camera orientation
@@ -74,7 +75,7 @@ export default class Solver extends SolverBase {
     }
 
     return {
-      errors: ["1VP calibration has not been implemented " + Math.random()],
+      errors: [],
       warnings: [],
       cameraParameters: {
         cameraTransform: new Transform(),
@@ -150,7 +151,7 @@ export default class Solver extends SolverBase {
 
 
     return {
-      errors: ["2VP calibration has not been implemented " + Math.random()],
+      errors: [],
       warnings: [],
       cameraParameters: {
         cameraTransform: cameraTransform,
@@ -211,36 +212,39 @@ export default class Solver extends SolverBase {
 
     Fv[0] -= P[0]
     Fv[1] -= P[1]
-
-    let OFu = [Fu.x - P.x, Fu.y, f]
-    let OFv = [Fv[0], Fv[1], f]
-
-    #print("matrix dot", dot(OFu, OFv))
-
-    s1 = length(OFu)
-    upRc = normalize(OFu)
-
-    s2 = length(OFv)
-    vpRc = normalize(OFv)
-
-    wpRc = [upRc[1] * vpRc[2] - upRc[2] * vpRc[1], upRc[2] * vpRc[0] - upRc[0] * vpRc[2], upRc[0] * vpRc[1] - upRc[1] * vpRc[0]]
-
-    M = mathutils.Matrix()
-    M[0][0] = Fu[0] / s1
-    M[0][1] = Fv[0] / s2
-    M[0][2] = wpRc[0]
-
-    M[1][0] = Fu[1] / s1
-    M[1][1] = Fv[1] / s2
-    M[1][2] = wpRc[1]
-
-    M[2][0] = f / s1
-    M[2][1] = f / s2
-    M[2][2] = wpRc[2]
-
     */
 
-    return new Transform()
+    let OFu = new Vector3D(Fu.x - P.x, Fu.y - P.y, f)
+    let OFv = new Vector3D(Fv.x - P.x, Fv.y - P.y, f)
+
+    //print("matrix dot", dot(OFu, OFv))
+
+    let s1 = OFu.length
+    let upRc = OFu.normalized()
+
+    let s2 = OFv.length
+    let vpRc = OFv.normalized()
+
+    let wpRc = new Vector3D(
+      upRc.y * vpRc.z - upRc.z * vpRc.y,
+      upRc.z * vpRc.x - upRc.x * vpRc.z,
+      upRc.x * vpRc.y - upRc.y * vpRc.x
+    )
+
+    let M = new Transform()
+    M.matrix[0][0] = Fu.x / s1
+    M.matrix[0][1] = Fv.x / s2
+    M.matrix[0][2] = wpRc.x
+
+    M.matrix[1][0] = Fu.y / s1
+    M.matrix[1][1] = Fv.y / s2
+    M.matrix[1][2] = wpRc.y
+
+    M.matrix[2][0] = f / s1
+    M.matrix[2][1] = f / s2
+    M.matrix[2][2] = wpRc.z
+
+    return M
   }
 
 

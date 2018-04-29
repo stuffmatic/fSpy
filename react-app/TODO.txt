@@ -1,7 +1,7 @@
-Relative image coords: [0, 1] x [0, 1], RIC
-Image plane coords: origin at midpoint, [-1, 1] along largest dimension, IPC
+Relative image coords: [0, 1] x [0, 1], y axis down. RIC
+Image plane coords: origin at midpoint, [-1, 1] along largest dimension, y axis up IPC
 
-action name spaces
+actions name space
 
 use redux thunk for re-computing calibration result once https://github.com/gaearon/redux-thunk/issues/169 is fixed
 rename tsx to ts where appropriate

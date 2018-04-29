@@ -12,7 +12,7 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> 
 
     return (
       <div id="result-container">
-        <pre style= {{fontSize: "8px" }}>
+        <pre style= {{fontSize: "7px" }}>
           { JSON.stringify(this.props.calibrationResult, null, 2) }
         </pre>
       </div>
