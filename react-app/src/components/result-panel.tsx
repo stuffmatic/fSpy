@@ -12,13 +12,9 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> 
 
     return (
       <div id="result-container">
-        <p> {this.props.calibrationMode} </p>
-        <p>
-          1VP errors: {this.props.calibrationResult.calibrationResult1VP.errors}
-        </p>
-        <p>
-          2VP errors: {this.props.calibrationResult.calibrationResult2VP.errors}
-        </p>
+        <pre style= {{fontSize: "8px" }}>
+          { JSON.stringify(this.props.calibrationResult, null, 2) }
+        </pre>
       </div>
     )
   }

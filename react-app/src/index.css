@@ -14,6 +14,7 @@ body {
 
 #left-panel {
   flex: 0 0 250px;
+  max-width: 250px;
 }
 
 #settings-container {
@@ -37,6 +38,7 @@ body {
 
 #right-panel {
   flex: 0 0 250px;
+  max-width: 250px;
 }
 
 #image-panel img {
