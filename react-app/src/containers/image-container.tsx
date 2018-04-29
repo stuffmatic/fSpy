@@ -36,7 +36,7 @@ class ImageContainer extends React.Component<ImageContainerProps, ImageContainer
   render() {
 
     return (
-      <div style={{ backgroundColor: "#222222", position: "relative" }}>
+      <div id="center-panel">
         {this.renderImagePanelOrPlaceholder() }
         <ControlPointsContainer
           top={this.state.imageTop}
@@ -62,7 +62,7 @@ class ImageContainer extends React.Component<ImageContainerProps, ImageContainer
     }
 
     return (
-      <div style={{ height: "100vh", flexGrow: 1 }} >
+      <div >
         Load an image vetja!
       </div>
     )

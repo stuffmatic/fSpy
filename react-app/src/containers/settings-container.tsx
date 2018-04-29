@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { SidePanelStyle } from './../styles/styles';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl } from '../actions';
@@ -17,58 +16,67 @@ interface SettingsContainerProps {
   onPrincipalPointModeChange1VP(principalPointMode: PrincipalPointMode1VP): void
   onPrincipalPointModeChange2VP(principalPointMode: PrincipalPointMode2VP): void
   onQuadModeEnabledChange(quadModeEnabled: boolean): void
-  onLoadTestImage(imageIndex:number | null):void
+  onLoadTestImage(imageIndex: number | null): void
 
 }
 
 class SettingsContainer extends React.PureComponent<SettingsContainerProps> {
   render() {
     return (
-      <div style={SidePanelStyle}>
-        <div>
-          <button onClick={() => {
-            this.props.onCalibrationModeChange(CalibrationMode.OneVanishingPoint)
-          }}>
-            1 VP
-        </button>
-          <button onClick={() => {
-            this.props.onCalibrationModeChange(CalibrationMode.TwoVanishingPoints)
-          }}>
-            2 VP
-        </button>
-        </div>
+      <div id="left-panel" className="side-panel">
+        <div id="settings-container">
+          <div id="settings-top-container">
+            <button onClick={() => {
+              this.props.onCalibrationModeChange(CalibrationMode.OneVanishingPoint)
+            }}>
+              1 VP
+            </button>
+            <button onClick={() => {
+              this.props.onCalibrationModeChange(CalibrationMode.TwoVanishingPoints)
+            }}>
+              2 VP
+            </button>
+            {this.renderCalibrationSettings()}
+          </div>
 
-        {this.renderCalibrationSettings()}
+          <div>
+            <div>
+              Dimmed:
+            <input
+                name="imageIsDimmed"
+                type="checkbox"
+                checked={this.props.globalSettings.imageOpacity < 1}
+                onChange={(event: any) => {
+                  this.props.onImageOpacityChange(event.target.checked ? 0.2 : 1)
+                }}
+              />
+            </div>
+            <div>
 
-        <div>
-          Dimmed: <input
-            name="imageIsDimmed"
-            type="checkbox"
-            checked={this.props.globalSettings.imageOpacity < 1}
-            onChange={(event: any) => {
-              this.props.onImageOpacityChange(event.target.checked ? 0.2 : 1)
-            }}
-          />
-        </div>
-        <div>
-
-          <button onClick={() => {
-            this.props.onLoadTestImage(0)
-          }}>
-            Load test image 1
+              <button onClick={() => {
+                this.props.onLoadTestImage(0)
+              }}>
+                Load test image 1
           </button>
-          <button onClick={() => {
-            this.props.onLoadTestImage(1)
-          }}>
-            Load test image 2
+              <button onClick={() => {
+                this.props.onLoadTestImage(1)
+              }}>
+                Load test image 2
           </button>
-          <button onClick={() => {
-            this.props.onLoadTestImage(null)
-          }}>
-            Load broken test image
+              <button onClick={() => {
+                this.props.onLoadTestImage(null)
+              }}>
+                Load broken test image
           </button>
+            </div>
+          </div>
         </div>
       </div>
+
+
+
+
+
     )
   }
 
@@ -155,7 +163,7 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     onQuadModeEnabledChange: (quadModeEnabled: boolean) => {
       dispatch(setQuadModeEnabled(quadModeEnabled))
     },
-    onLoadTestImage: (imageIndex:number | null) => {
+    onLoadTestImage: (imageIndex: number | null) => {
       let url = "omg fel url!"
       if (imageIndex != null) {
         url = [

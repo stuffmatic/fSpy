@@ -5,15 +5,15 @@ import SettingsContainer from './containers/settings-container';
 
 import './App.css';
 
-const AppStyle: React.CSSProperties = {
+/*const AppStyle: React.CSSProperties = {
   userSelect: "none",
   display: "flex",
   alignItems: "stretch"
-}
+}*/
 
 function App() {
   return (
-    <div style={ AppStyle}>
+    <div id="app-container">
       <SettingsContainer />
       <ImageContainer  />
       <ResultContainer />

@@ -40,10 +40,13 @@ class ResultContainer extends React.PureComponent<ResultContainerProps> {
     this.props.onComputedResult(result)
 
     return (
-      <ResultPanel
-        calibrationMode={this.props.calibrationMode}
-        calibrationResult={result}
-      />
+      <div id="right-panel" className="side-panel">
+        <ResultPanel
+          calibrationMode={this.props.calibrationMode}
+          calibrationResult={result}
+        />
+      </div>
+
     )
   }
 }

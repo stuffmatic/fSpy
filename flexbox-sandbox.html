@@ -5,25 +5,30 @@
   <meta charset="utf-8">
   <title>title</title>
   <style>
-
     body {
       margin: 0;
-
     }
 
-    #container {
+    #app-container {
       display: flex;
       height: 100vh;
       overflow: hidden;
     }
 
-    .side-panel {
-      color: green;
-    }
-
     #left-panel {
       background-color: #ff0000;
-      flex: 0 0 160px;
+      flex: 0 0 200px;
+    }
+
+    #settings-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    #settings-top-container {
+      flex-grow: 1;
+      overflow-y: auto;
     }
 
     #center-panel {
@@ -33,12 +38,8 @@
 
     #right-panel {
       background-color: #0000ff;
-      flex: 0 0 160px;
+      flex: 0 0 200px;
     }
-
-    #image-panel-container {}
-
-    #image-panel {}
 
     #image-panel img {
       width: 100%;
@@ -49,29 +50,27 @@
 </head>
 
 <body>
-  <div id="container">
+  <div id="app-container">
     <div id="left-panel" class="side-panel">
-      <div style="display: flex; flex-direction: column; height: 100vh;">
-        <div style="flex-grow: 0; overflow-y: auto;">
+      <div id="settings-container">
+        <div id="settings-top-container">
+          Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello
           Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello
-          Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello
-          Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello
+          Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello
         </div>
-        <div style="flex-grow: 1;">
-          Top div hello
-        </div>
-        <div style="flex-grow: 0;">
+
+        <div>
           Bottom div hello
         </div>
       </div>
     </div>
+
     <div id="center-panel" class="side-panel">
-      <div id="image-panel-container">
-        <div id="image-panel">
-          <img src="https://lh3.googleusercontent.com/5EfQBHDb47tchiART6U6yk3yYS9qBYr6VUssB5wHE1AgavqV5E2SSuzyiNkc7UgVng=s360-rw" />
-        </div>
+      <div id="image-panel">
+        <img src="https://lh3.googleusercontent.com/5EfQBHDb47tchiART6U6yk3yYS9qBYr6VUssB5wHE1AgavqV5E2SSuzyiNkc7UgVng=s360-rw" />
       </div>
     </div>
+
     <div id="right-panel" class="side-panel">
       right
     </div>

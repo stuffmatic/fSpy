@@ -1,7 +1,6 @@
 import * as React from 'react';
 import CalibrationResult from '../types/calibration-result';
 import { CalibrationMode } from '../types/global-settings';
-import { SidePanelStyle } from './../styles/styles';
 
 interface ResultPanelProps {
   calibrationMode: CalibrationMode
@@ -10,7 +9,7 @@ interface ResultPanelProps {
 
 export default function ResultPanel(props: ResultPanelProps)  {
   return (
-    <div style={SidePanelStyle}>
+    <div id="result-container">
       <p> {props.calibrationMode} </p>
       <p>
         1VP errors: {props.calibrationResult.calibrationResult1VP.errors}

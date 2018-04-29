@@ -35,9 +35,9 @@ export default class ResizableImagePanel extends React.Component<ResizableImageP
         }}
       >
         {({ measureRef }) =>
-          <div style={{ height: "100vh", flexGrow: 1 }} ref={measureRef} >
+          <div id="image-panel" ref={measureRef} >
             <img ref={this.imageRef}
-              style={{ width: "100%", height: "100%", objectFit: "contain", opacity: this.props.imageOpacity }}
+              style={{ opacity: this.props.imageOpacity }}
               src={ this.props.imageUrl }
               onLoad={() => this.onImageLoad()}
               onError={
