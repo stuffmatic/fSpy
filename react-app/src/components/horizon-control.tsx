@@ -1,7 +1,8 @@
 import * as React from 'react';
 import ControlLine from './control-line'
 import ControlPoint from './control-point'
-import { ControlPointPairState, ControlPointPairIndex, Point2D } from '../types/control-points-state';
+import { ControlPointPairState, ControlPointPairIndex } from '../types/control-points-state';
+import Point2D from '../solver/point-2d';
 
 interface HorizonControlProps {
   enabled:boolean

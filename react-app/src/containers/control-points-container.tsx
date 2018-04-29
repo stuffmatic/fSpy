@@ -7,10 +7,11 @@ import { StoreState } from '../types/store-state';
 import { AppAction, adjustHorizon, setOrigin, setPrincipalPoint, adjustVanishingLine } from '../actions';
 import { Dispatch, connect } from 'react-redux';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
-import { ControlPointsState1VP, ControlPointsState2VP, Point2D, ControlPointPairIndex, ControlPointsStateBase, VanishingPointControlState, ControlPointPairState } from '../types/control-points-state';
+import { ControlPointsState1VP, ControlPointsState2VP, ControlPointPairIndex, ControlPointsStateBase, VanishingPointControlState, ControlPointPairState } from '../types/control-points-state';
 import { CalibrationSettings1VP, CalibrationSettings2VP } from '../types/calibration-settings';
 import MathUtil from '../solver/math-util';
 import CalibrationResult from '../types/calibration-result';
+import Point2D from '../solver/point-2d';
 
 export interface ControlPointsContainerOwnProps {
   left: number

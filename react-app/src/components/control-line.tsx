@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Point2D } from '../types/control-points-state';
+import Point2D from '../solver/point-2d';
 
 interface ControlLineProps {
   start: Point2D

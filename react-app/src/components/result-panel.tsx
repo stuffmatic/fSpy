@@ -7,16 +7,20 @@ interface ResultPanelProps {
   calibrationResult: CalibrationResult
 }
 
-export default function ResultPanel(props: ResultPanelProps)  {
-  return (
-    <div id="result-container">
-      <p> {props.calibrationMode} </p>
-      <p>
-        1VP errors: {props.calibrationResult.calibrationResult1VP.errors}
-      </p>
-      <p>
-        2VP errors: {props.calibrationResult.calibrationResult2VP.errors}
-      </p>
-    </div>
-  )
+export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
+  render() {
+
+    return (
+      <div id="result-container">
+        <p> {this.props.calibrationMode} </p>
+        <p>
+          1VP errors: {this.props.calibrationResult.calibrationResult1VP.errors}
+        </p>
+        <p>
+          2VP errors: {this.props.calibrationResult.calibrationResult2VP.errors}
+        </p>
+      </div>
+    )
+  }
+
 }

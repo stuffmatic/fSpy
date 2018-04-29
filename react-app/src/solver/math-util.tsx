@@ -1,6 +1,4 @@
-import { Point2D } from "../types/control-points-state";
-
-
+import Point2D from "./point-2d";
 
 export default class MathUtil {
 

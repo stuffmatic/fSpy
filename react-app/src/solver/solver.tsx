@@ -1,8 +1,10 @@
 import { CalibrationSettings1VP, CalibrationSettings2VP } from "../types/calibration-settings";
-import { ControlPointsState1VP, ControlPointsState2VP } from "../types/control-points-state";
+import { ControlPointsState1VP, ControlPointsState2VP, VanishingPointControlState } from "../types/control-points-state";
 import { ImageState } from "../types/image-state";
 import { CalibrationResult1VP, CalibrationResult2VP } from "./calibration-result";
 import MathUtil from "./math-util";
+import Point2D from "./point-2d";
+import Transform from "./transform";
 
 
 export default class Solver {
@@ -22,13 +24,12 @@ export default class Solver {
       }
     }
 
-    let vp1 = MathUtil.lineIntersection(
-      controlPoints.vanishingPoints[0].vanishingLines[0],
-      controlPoints.vanishingPoints[0].vanishingLines[1]
+    let vanishingPoints = this.computeVanishingPoints(
+      controlPoints.vanishingPoints,
+      errors
     )
 
-    if (vp1 == null) {
-      errors.push("Failed to compute vanishing point 1")
+    if (!vanishingPoints) {
       return {
         errors: errors,
         warnings: [],
@@ -40,8 +41,8 @@ export default class Solver {
       errors: ["1VP calibration has not been implemented " + Math.random()],
       warnings: [],
       cameraParameters: {
-        cameraTransform: {},
-        vanishingPoint: vp1
+        cameraTransform: new Transform(),
+        vanishingPoint: vanishingPoints[0]
       }
     }
 
@@ -61,10 +62,29 @@ export default class Solver {
       }
     }
 
+    let vanishingPoints = this.computeVanishingPoints(
+      controlPoints.vanishingPoints,
+      errors
+    )
+
+    if (!vanishingPoints) {
+      return {
+        errors: errors,
+        warnings: [],
+        cameraParameters: null
+      }
+    }
+
+
     return {
       errors: ["2VP calibration has not been implemented " + Math.random()],
       warnings: [],
-      cameraParameters: null
+      cameraParameters: {
+        cameraTransform: new Transform(),
+        vanishingPoints: vanishingPoints as [Point2D, Point2D] | [Point2D, Point2D, Point2D],
+        relativeFocalLength: 0,
+        computedPrincipalPoint: null
+      }
     }
   }
 
@@ -74,6 +94,24 @@ export default class Solver {
       errors.push("No image loaded")
     }
     return errors
+  }
+
+  private static computeVanishingPoints(controlPointStates:VanishingPointControlState[], errors:string[]):Point2D[] | null {
+    let result:Point2D[] = []
+    for (let i = 0; i < controlPointStates.length; i++) {
+      let vanishingPoint = MathUtil.lineIntersection(
+        controlPointStates[i].vanishingLines[0],
+        controlPointStates[i].vanishingLines[1]
+      )
+      if (vanishingPoint) {
+        result.push(vanishingPoint)
+      }
+      else {
+        errors.push("Failed to compute vanishing point " + (i + 1))
+      }
+    }
+
+    return errors.length == 0 ? result : null
   }
 
 }

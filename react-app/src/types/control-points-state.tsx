@@ -1,7 +1,3 @@
-export interface Point2D {
-  x:number
-  y:number
-}
 
 /**
  * The state of a single control point

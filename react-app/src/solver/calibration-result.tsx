@@ -1,8 +1,5 @@
-import { Point2D } from "../types/control-points-state";
-
-interface Transform {
-
-}
+import Transform from "./transform";
+import Point2D from "./point-2d";
 
 export interface CameraParametersBase {
   cameraTransform:Transform

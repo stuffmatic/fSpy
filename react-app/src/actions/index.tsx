@@ -1,7 +1,8 @@
 import { CalibrationMode } from "../types/global-settings";
-import { Point2D, ControlPointPairIndex } from "../types/control-points-state";
+import { ControlPointPairIndex } from "../types/control-points-state";
 import { PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode } from "../types/calibration-settings";
 import CalibrationResult from "../types/calibration-result";
+import Point2D from "../solver/point-2d";
 
 export enum ActionTypes {
   //Global settings actions

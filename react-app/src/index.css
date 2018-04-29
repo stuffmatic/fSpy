@@ -13,7 +13,7 @@ body {
 }
 
 #left-panel {
-  flex: 0 0 200px;
+  flex: 0 0 250px;
 }
 
 #settings-container {
@@ -36,7 +36,7 @@ body {
 }
 
 #right-panel {
-  flex: 0 0 200px;
+  flex: 0 0 250px;
 }
 
 #image-panel img {
