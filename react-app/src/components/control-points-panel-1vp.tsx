@@ -7,6 +7,7 @@ import OriginControl from './../components/origin-control'
 import PrincipalPointControl from './../components/principal-point-control'
 import VanishingPointControl from './../components/vanishing-point-control'
 import { ControlPointPairIndex } from '../types/control-points-state';
+import { HorizonMode } from '../types/calibration-settings';
 
 export default class ControlPointsPanel1VP extends ControlPointsPanelBase {
   render() {
@@ -87,7 +88,7 @@ export default class ControlPointsPanel1VP extends ControlPointsPanelBase {
               this.props.controlPointsState1VP.horizon
             )
           }
-          enabled={true}
+          enabled={ this.props.calibrationSettings1VP.horizonMode == HorizonMode.Manual }
           dragCallback={(controlPointIndex: ControlPointPairIndex, position: Point2D) => {
             this.invokeEndpointDragCallback(
               controlPointIndex,
