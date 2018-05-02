@@ -9,9 +9,9 @@ import { Dispatch, connect } from 'react-redux';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { ControlPointsState1VP, ControlPointsState2VP, ControlPointPairIndex, ControlPointsStateBase, VanishingPointControlState, ControlPointPairState } from '../types/control-points-state';
 import { CalibrationSettings1VP, CalibrationSettings2VP } from '../types/calibration-settings';
-import MathUtil from '../solver/math-util';
 import CalibrationResult from '../types/calibration-result';
 import Point2D from '../solver/point-2d';
+import CoordinatesUtil, { ImageCoordinateFrame } from '../solver/coordinates-util';
 
 export interface ControlPointsContainerOwnProps {
   left: number
@@ -71,8 +71,10 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
       <g>
         <PrincipalPointControl
           position={
-            MathUtil.relativeToAbsoluteImageCoords(
+            CoordinatesUtil.convert(
               state.principalPoint,
+              ImageCoordinateFrame.Relative,
+              ImageCoordinateFrame.Absolute,
               this.props.width,
               this.props.height
             )
@@ -86,8 +88,10 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
         />
         <OriginControl
           position={
-            MathUtil.relativeToAbsoluteImageCoords(
+            CoordinatesUtil.convert(
               state.origin,
+              ImageCoordinateFrame.Relative,
+              ImageCoordinateFrame.Absolute,
               this.props.width,
               this.props.height
             )
@@ -108,12 +112,15 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
     let params = this.props.calibrationResult.calibrationResult1VP.cameraParameters
     let vpPosition:Point2D | null = null
     if (params) {
-      vpPosition = MathUtil.relativeToAbsoluteImageCoords(
+      vpPosition = CoordinatesUtil.convert(
         params.vanishingPoint,
+        ImageCoordinateFrame.ImagePlane,
+        ImageCoordinateFrame.Absolute,
         this.props.width,
         this.props.height
       )
     }
+
     return (
       <g>
         <VanishingPointControl
@@ -125,7 +132,7 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
             )
           }
           vanishingPointPosition={
-            vpPosition
+             vpPosition
           }
           onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: ControlPointPairIndex, position: Point2D) => {
             this.invokeVanishingLineEndpointDragCallback(
@@ -249,8 +256,20 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
 
   private rel2AbsControlPointPairState(rel: ControlPointPairState): ControlPointPairState {
     return [
-      MathUtil.relativeToAbsoluteImageCoords(rel[0], this.props.width, this.props.height),
-      MathUtil.relativeToAbsoluteImageCoords(rel[1], this.props.width, this.props.height)
+      CoordinatesUtil.convert(
+        rel[0],
+        ImageCoordinateFrame.Relative,
+        ImageCoordinateFrame.Absolute,
+        this.props.width,
+        this.props.height
+      ),
+      CoordinatesUtil.convert(
+        rel[1],
+        ImageCoordinateFrame.Relative,
+        ImageCoordinateFrame.Absolute,
+        this.props.width,
+        this.props.height
+      )
     ]
   }
 
@@ -260,7 +279,13 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
   ) {
     callback(
       this.props.globalSettings.calibrationMode,
-      MathUtil.absoluteToRelativeImageCoords(position, this.props.width, this.props.height)
+      CoordinatesUtil.convert(
+        position,
+        ImageCoordinateFrame.Absolute,
+        ImageCoordinateFrame.Relative,
+        this.props.width,
+        this.props.height
+      )
     )
   }
 
@@ -272,7 +297,13 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
     callback(
       this.props.globalSettings.calibrationMode,
       controlPointIndex,
-      MathUtil.absoluteToRelativeImageCoords(position, this.props.width, this.props.height)
+      CoordinatesUtil.convert(
+        position,
+        ImageCoordinateFrame.Absolute,
+        ImageCoordinateFrame.Relative,
+        this.props.width,
+        this.props.height
+      )
     )
   }
 
@@ -292,7 +323,13 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
       vanishingPointIndex,
       vanishingLineIndex,
       controlPointIndex,
-      MathUtil.absoluteToRelativeImageCoords(position, this.props.width, this.props.height)
+      CoordinatesUtil.convert(
+        position,
+        ImageCoordinateFrame.Absolute,
+        ImageCoordinateFrame.Relative,
+        this.props.width,
+        this.props.height
+      )
     )
   }
 }

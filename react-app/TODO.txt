@@ -5,3 +5,10 @@ actions name space
 
 use redux thunk for re-computing calibration result once https://github.com/gaearon/redux-thunk/issues/169 is fixed
 rename tsx to ts where appropriate
+full screen mode for projector use
+see if vanishing line means what it should mean
+
+unknown translation vector T = x, y, z
+
+M = world 2 screen
+M(0, 0, 0) = (ox, oy) given ->  x, y +

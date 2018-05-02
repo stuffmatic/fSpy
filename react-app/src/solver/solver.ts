@@ -6,6 +6,7 @@ import MathUtil from "./math-util";
 import Point2D from "./point-2d";
 import Transform from "./transform";
 import Vector3D from "./vector-3d";
+import CoordinatesUtil, { ImageCoordinateFrame } from "./coordinates-util";
 
 /*
 The solver handles estimation of focal length and camera orientation
@@ -32,7 +33,15 @@ class SolverBase {
         controlPointStates[i].vanishingLines[1]
       )
       if (vanishingPoint) {
-        result.push(MathUtil.relativeToImagePlaneCoords(vanishingPoint, image.width!, image.height!) )
+        result.push(
+          CoordinatesUtil.convert(
+            vanishingPoint,
+            ImageCoordinateFrame.Relative,
+            ImageCoordinateFrame.ImagePlane,
+            image.width!,
+            image.height!
+          )
+        )
       }
       else {
         errors.push("Failed to compute vanishing point")
@@ -119,7 +128,13 @@ export default class Solver extends SolverBase {
     let computedPrincipalPoint:Point2D | null = null
     switch (settings.principalPointMode) {
       case PrincipalPointMode2VP.Manual:
-        principalPoint = MathUtil.relativeToImagePlaneCoords(controlPoints.principalPoint, image.width!, image.height!)
+        principalPoint = CoordinatesUtil.convert(
+          controlPoints.principalPoint,
+          ImageCoordinateFrame.Relative,
+          ImageCoordinateFrame.ImagePlane,
+          image.width!,
+          image.height!
+        )
         break
       case PrincipalPointMode2VP.FromThirdVanishingPoint:
         let result = this.computeVanishingPoints(image, [controlPoints.vanishingPoints[2]], errors)

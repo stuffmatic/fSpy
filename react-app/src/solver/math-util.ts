@@ -75,55 +75,7 @@ export default class MathUtil {
     }
   }
 
-  static relativeToImagePlaneCoords(point: Point2D, imageWidth: number, imageHeight: number): Point2D {
-    let aspectRatio = imageWidth / imageHeight
-    if (aspectRatio <= 1) {
-      //tall image. [0, 1] x [0, 1] => [-aspect, aspect] x [-1, 1]
-      return {
-        x: (-1 + 2 * point.x) * aspectRatio,
-        y: -1 + 2 * point.y
-      }
-    }
-    else {
-      //wide image. [0, 1] x [0, 1] => [-1, 1] x [-1 / aspect, 1 / aspect]
-      return {
-        x: -1 + 2 * point.x,
-        y: (-1 + 2 * point.y) / aspectRatio
-      }
-    }
-  }
 
-  static imagePlaneCoordsToRelative(point: Point2D, imageWidth: number, imageHeight: number): Point2D {
-    let imageAspect = imageWidth / imageHeight
-    if (imageAspect <= 1) {
-      //tall image. [-aspect, aspect] x [-1, 1] => [0, 1] x [0, 1]
-      return {
-        x: 0.5 * (point.x / imageAspect + 1),
-        y: 0.5 * (point.y + 1)
-      }
-    }
-    else {
-      //wide image. [-1, 1] x [-1 / aspect, 1 / aspect] => [0, 1] x [0, 1]
-      return {
-        x: 0.5 * (point.x + 1),
-        y: 0.5 * (point.y * imageAspect + 1)
-      }
-    }
-  }
-
-  static absoluteToRelativeImageCoords(point: Point2D, imageWidth: number, imageHeight: number): Point2D {
-    return {
-      x: point.x / imageWidth,
-      y: point.y / imageHeight,
-    }
-  }
-
-  static relativeToAbsoluteImageCoords(point: Point2D, imageWidth: number, imageHeight: number): Point2D {
-    return {
-      x: point.x * imageWidth,
-      y: point.y * imageHeight,
-    }
-  }
 
   static triangleOrthoCenter(k: Point2D, l: Point2D, m: Point2D): Point2D {
     let a = k.x

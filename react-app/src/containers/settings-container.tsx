@@ -22,10 +22,13 @@ interface SettingsContainerProps {
 
 class SettingsContainer extends React.PureComponent<SettingsContainerProps> {
   render() {
+
     return (
       <div id="left-panel" className="side-panel">
         <div id="settings-container">
           <div id="settings-top-container">
+
+
             <button onClick={() => {
               this.props.onCalibrationModeChange(CalibrationMode.OneVanishingPoint)
             }}>
@@ -38,6 +41,8 @@ class SettingsContainer extends React.PureComponent<SettingsContainerProps> {
             </button>
             {this.renderCalibrationSettings()}
           </div>
+
+
 
           <div>
             <div>
