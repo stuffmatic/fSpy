@@ -1,6 +1,6 @@
 import * as React from 'react';
-import ControlPointsPanel1VP from './../components/control-points-panel-1vp'
-import ControlPointsPanel2VP from './../components/control-points-panel-2vp'
+import ControlPointsPanel1VP from './../components/control-points-panel-1-vp'
+import ControlPointsPanel2VP from './../components/control-points-panel-2-vp'
 
 import { StoreState } from '../types/store-state';
 import { AppAction, adjustHorizon, setOrigin, setPrincipalPoint, adjustVanishingLine } from '../actions';
