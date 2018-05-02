@@ -56,20 +56,14 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
       overflow: "visible"
     }
 
-    if (this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint) {
-      return (
-        <svg style={svgStyle}>
-          <ControlPointsPanel1VP {...this.props} />
-        </svg>
-      )
-    }
-    else {
-      return (
-        <svg style={svgStyle}>
-          <ControlPointsPanel2VP  {...this.props} />
-        </svg>
-      )
-    }
+    let is1VPMode = this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint
+    let controlPointsPanel = is1VPMode ? (<ControlPointsPanel1VP {...this.props} />) :
+                                         (<ControlPointsPanel2VP  {...this.props} />)
+    return (
+      <svg style={svgStyle}>
+        {controlPointsPanel}
+      </svg>
+    )
   }
 }
 
