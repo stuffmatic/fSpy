@@ -7,8 +7,8 @@ import { StoreState } from '../types/store-state';
 import { AppAction, adjustHorizon, setOrigin, setPrincipalPoint, adjustVanishingLine } from '../actions';
 import { Dispatch, connect } from 'react-redux';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
-import { ControlPointsState1VP, ControlPointsState2VP, ControlPointPairIndex, ControlPointsStateBase, VanishingPointControlState, ControlPointPairState } from '../types/control-points-state';
-import { CalibrationSettings1VP, CalibrationSettings2VP } from '../types/calibration-settings';
+import { ControlPointsState1VP, ControlPointsState2VP, ControlPointPairIndex, VanishingPointControlState, ControlPointPairState } from '../types/control-points-state';
+import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode2VP } from '../types/calibration-settings';
 import CalibrationResult from '../types/calibration-result';
 import Point2D from '../solver/point-2d';
 import CoordinatesUtil, { ImageCoordinateFrame } from '../solver/coordinates-util';
@@ -37,7 +37,6 @@ export interface ControlPointsContainerProps {
     controlPointIndex: ControlPointPairIndex,
     position: Point2D
   ): void
-
   onHorizonDrag(
     calibrationMode: CalibrationMode,
     controlPointIndex:ControlPointPairIndex,
@@ -60,13 +59,25 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
 
     return (
       <svg style={svgStyle}>
-        {this.renderCommonControls(is1VPMode ? this.props.controlPointsState1VP : this.props.controlPointsState2VP)}
         {is1VPMode ? this.render1VPControls() : this.render2VPControls()}
       </svg>
     )
   }
 
-  private renderCommonControls(state: ControlPointsStateBase) {
+  private render1VPControls() {
+    let state = this.props.controlPointsState1VP
+    let params = this.props.calibrationResult.calibrationResult1VP.cameraParameters
+    let vpPosition:Point2D | null = null
+    if (params) {
+      vpPosition = CoordinatesUtil.convert(
+        params.vanishingPoint,
+        ImageCoordinateFrame.ImagePlane,
+        ImageCoordinateFrame.Absolute,
+        this.props.width,
+        this.props.height
+      )
+    }
+
     return (
       <g>
         <PrincipalPointControl
@@ -103,26 +114,7 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
             )
           }}
         />
-      </g>
-    )
-  }
 
-  private render1VPControls() {
-    let state = this.props.controlPointsState1VP
-    let params = this.props.calibrationResult.calibrationResult1VP.cameraParameters
-    let vpPosition:Point2D | null = null
-    if (params) {
-      vpPosition = CoordinatesUtil.convert(
-        params.vanishingPoint,
-        ImageCoordinateFrame.ImagePlane,
-        ImageCoordinateFrame.Absolute,
-        this.props.width,
-        this.props.height
-      )
-    }
-
-    return (
-      <g>
         <VanishingPointControl
           color={"blue"}
           vanishingPointIndex={0}
@@ -184,6 +176,41 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
 
     return (
       <g>
+        <PrincipalPointControl
+          position={
+            CoordinatesUtil.convert(
+              state.principalPoint,
+              ImageCoordinateFrame.Relative,
+              ImageCoordinateFrame.Absolute,
+              this.props.width,
+              this.props.height
+            )
+          }
+          dragCallback={(position: Point2D) => {
+            this.invokeControlPointDragCallback(
+              position,
+              this.props.onPrincipalPointDrag
+            )
+          }}
+        />
+        <OriginControl
+          position={
+            CoordinatesUtil.convert(
+              state.origin,
+              ImageCoordinateFrame.Relative,
+              ImageCoordinateFrame.Absolute,
+              this.props.width,
+              this.props.height
+            )
+          }
+          dragCallback={(position: Point2D) => {
+            this.invokeControlPointDragCallback(
+              position,
+              this.props.onOriginDrag
+            )
+          }}
+        />
+
         <VanishingPointControl
           color={"green"}
           vanishingPointIndex={1}
@@ -223,26 +250,42 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
           }}
         />
 
-        <VanishingPointControl
-          color={"orange"}
-          vanishingPointIndex={2}
-          controlState={
-            this.rel2AbsVanishingPointControlState(state.vanishingPoints[2])
-          }
-          vanishingPointPosition={null}
-          onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: number, position: Point2D) => {
-            this.invokeVanishingLineEndpointDragCallback(
-              vanishingPointIndex,
-              vanishingLineIndex,
-              controlPointIndex,
-              position,
-              this.props.onVanishingPointControlPointDrag
-            )
-          }}
-        />
+        { this.renderThirdVanishingPoint() }
 
       </g>
     )
+  }
+
+  private renderThirdVanishingPoint() {
+
+    let settings = this.props.calibrationSettings2VP
+    let state = this.props.controlPointsState2VP
+    if (settings.principalPointMode == PrincipalPointMode2VP.FromThirdVanishingPoint) {
+      return (
+        <g>
+          <VanishingPointControl
+            color={"orange"}
+            vanishingPointIndex={2}
+            controlState={
+              this.rel2AbsVanishingPointControlState(state.vanishingPoints[2])
+            }
+            vanishingPointPosition={null}
+            onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: number, position: Point2D) => {
+              this.invokeVanishingLineEndpointDragCallback(
+                vanishingPointIndex,
+                vanishingLineIndex,
+                controlPointIndex,
+                position,
+                this.props.onVanishingPointControlPointDrag
+              )
+            }}
+          />
+        </g>
+      )
+    }
+    else {
+      return null
+    }
   }
 
   private rel2AbsVanishingPointControlState(state: VanishingPointControlState): VanishingPointControlState {
