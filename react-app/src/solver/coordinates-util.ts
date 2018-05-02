@@ -29,7 +29,14 @@ export enum ImageCoordinateFrame {
 }
 
 export default class CoordinatesUtil {
-
+  /**
+   * Convert a point from one image coordinate frame to another
+   * @param point The point to convert
+   * @param sourceFrame The coordinate frame of the input point
+   * @param targetFrame The frame to convert to
+   * @param imageWidth The image width in pixels
+   * @param imageHeight The image height in pixels
+   */
   static convert(
     point: Point2D,
     sourceFrame: ImageCoordinateFrame,
