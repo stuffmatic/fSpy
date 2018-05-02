@@ -36,6 +36,7 @@ export default class ControlPointsPanel1VP extends ControlPointsPanelBase {
               this.props.height
             )
           }
+          enabled={true}
           dragCallback={(position: Point2D) => {
             this.invokeControlPointDragCallback(
               position,
@@ -88,7 +89,15 @@ export default class ControlPointsPanel1VP extends ControlPointsPanelBase {
               this.props.controlPointsState1VP.horizon
             )
           }
-          enabled={ this.props.calibrationSettings1VP.horizonMode == HorizonMode.Manual }
+          pointPairDisabled={
+            this.rel2AbsControlPointPairState(
+              [
+                { x: 0.2, y: 0.5 },
+                { x: 0.8, y: 0.5 }
+              ]
+            )
+          }
+          enabled={this.props.calibrationSettings1VP.horizonMode == HorizonMode.Manual}
           dragCallback={(controlPointIndex: ControlPointPairIndex, position: Point2D) => {
             this.invokeEndpointDragCallback(
               controlPointIndex,

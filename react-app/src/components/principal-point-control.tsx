@@ -4,6 +4,7 @@ import Point2D from '../solver/point-2d';
 
 interface PrincipalPointControlProps {
   position:Point2D
+  enabled:boolean
   dragCallback(position:Point2D): void
 }
 

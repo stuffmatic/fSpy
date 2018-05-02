@@ -39,6 +39,7 @@ export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
               this.props.height
             )
           }
+          enabled= {true}
           dragCallback={(position: Point2D) => {
             this.invokeControlPointDragCallback(
               position,

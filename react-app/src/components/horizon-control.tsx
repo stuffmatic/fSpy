@@ -7,30 +7,41 @@ import Point2D from '../solver/point-2d';
 interface HorizonControlProps {
   enabled:boolean
   pointPair:ControlPointPairState
+  pointPairDisabled:ControlPointPairState
   dragCallback(controlPointIndex:ControlPointPairIndex, position:Point2D): void
 }
 
 export default function HorizonControl(props: HorizonControlProps) {
+  let controlPointStroke = props.enabled ? "none" : "yellow"
+  let controlPointFill = props.enabled ? "yellow" : "none"
+  let start = props.enabled ? props.pointPair[0] : props.pointPairDisabled[0]
+  let end = props.enabled ? props.pointPair[1] : props.pointPairDisabled[1]
   return (
     <g>
       <ControlLine
-        start={props.pointPair[0]}
-        end={props.pointPair[1]}
+        start={start}
+        end={end}
         color="yellow"
       />
       <ControlPoint
-        position={props.pointPair[0]}
+        position={start}
         dragCallback={(position:Point2D) => {
-          props.dragCallback(ControlPointPairIndex.First, position)
+          if (props.enabled) {
+            props.dragCallback(ControlPointPairIndex.First, position)
+          }
         }}
-        fill="yellow"
+        fill={controlPointFill}
+        stroke={controlPointStroke}
       />
       <ControlPoint
-        position={props.pointPair[1]}
+        position={end}
         dragCallback={(position:Point2D) => {
-          props.dragCallback(ControlPointPairIndex.Second, position)
+          if (props.enabled) {
+            props.dragCallback(ControlPointPairIndex.Second, position)
+          }
         }}
-        fill="yellow"
+        fill={controlPointFill}
+        stroke={controlPointStroke}
       />
     </g>
   )
