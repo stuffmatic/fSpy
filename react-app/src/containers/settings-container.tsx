@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl } from '../actions';
+import Dropdown from '../components/dropdown';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { StoreState } from '../types/store-state';
 import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode } from '../types/calibration-settings';
@@ -27,7 +28,7 @@ class SettingsContainer extends React.PureComponent<SettingsContainerProps> {
       <div id="left-panel" className="side-panel">
         <div id="settings-container">
           <div id="settings-top-container">
-
+            <Dropdown />
 
             <button onClick={() => {
               this.props.onCalibrationModeChange(CalibrationMode.OneVanishingPoint)

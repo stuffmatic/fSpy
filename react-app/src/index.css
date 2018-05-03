@@ -51,13 +51,45 @@ body {
   background-color: #f5f5f5;
 }
 
-select {
-  -webkit-appearance:none;
+/* react-select overrides */
+.Select-control {
+  height: 20px;
   border-radius: 0;
   border: 0;
-  background-color: #ffffff;
-  font-family: 'Roboto', sans-serif;
-  font-size: 14px;
-  text-indent:2px;
-  height: 20px;
 }
+
+.Select-control .Select-placeholder {
+    line-height: 20px;
+  }
+
+  .Select-control .Select-value {
+    line-height: 20px !important;
+    padding-left: 5px;
+  }
+
+  .Select-control .Select-value .Select-value-label {
+      line-height: 20px;
+
+  }
+
+  .Select-control .Select-input {
+    height: 20px;
+  }
+
+  .Select-menu-outer {
+    border: 0;
+    border-radius: 0;
+  }
+
+  .Select-menu .Select-option {
+    padding: 5px;
+  }
+
+  .Select-control:hover {
+    box-shadow: 0;
+  }
+
+  .Select.is-open > .Select-Control {
+    border: 0px;
+    border-color: none;
+  }
