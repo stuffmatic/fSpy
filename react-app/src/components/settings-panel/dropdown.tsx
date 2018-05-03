@@ -1,29 +1,44 @@
 import * as React from 'react';
-import Select from 'react-select';
+import Select, { Option } from 'react-select';
 
-export default class Dropdown extends React.Component {
-  state = {
-    selectedOption: 'two',
-  }
-  handleChange = (selectedOption:any) => {
+interface DropdownProps<T> {
+  options: DropdownOption<T>[]
+  selectedOptionId: string
+  onChange(selectedOption: T): void
+}
+
+export interface DropdownOption<T> {
+  value: T
+  id: string
+  label: string
+  dotColor?: string
+}
+
+export default class Dropdown<T> extends React.Component<DropdownProps<T>> {
+  handleChange = (selectedOption: any) => {
     this.setState({ selectedOption });
-    console.log('Selected: ${selectedOption.label}');
   }
   render() {
-  	const { selectedOption } = this.state;
-
     return (
       <Select
         clearable={false}
-        name="form-field-name"
-        value={selectedOption}
-        onChange={this.handleChange}
+        name=""
+        value={this.props.selectedOptionId}
+        onChange={ (selectedOption:Option) => {
+          for (let option of this.props.options) {
+            if (option.id == selectedOption.value) {
+              this.props.onChange(option.value)
+            }
+          }
+        }}
         searchable={false}
-
-        options={[
-          { value: 'one', label: 'One' },
-          { value: 'two', label: 'Two' },
-        ]}
+        options={
+          this.props.options.map(
+            (option: DropdownOption<T>) => {
+              return { value: option.id, label: option.label }
+            }
+          )
+        }
       />
     );
   }

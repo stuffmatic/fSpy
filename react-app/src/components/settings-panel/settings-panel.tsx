@@ -4,6 +4,7 @@ import { CalibrationMode } from '../../types/global-settings';
 import SettingsSection1VP from './settings-section-1-vp'
 import SettingsSection2VP from './settings-section-2-vp'
 import SettingsSectionBottom from './settings-section-bottom'
+import Dropdown from './dropdown'
 
 export default class SettingsPanel extends React.PureComponent<SettingsContainerProps> {
   render() {
@@ -18,18 +19,27 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
           <div id="panel-top-container">
             <div className="panel-section bottom-border">
               <div className="panel-row">Number of vanishing points</div>
-              <div className="panel-row">
-                <button onClick={() => {
-                  this.props.onCalibrationModeChange(CalibrationMode.OneVanishingPoint)
-                }}>
-                  1 VP
-            </button>
-                <button onClick={() => {
-                  this.props.onCalibrationModeChange(CalibrationMode.TwoVanishingPoints)
-                }}>
-                  2 VP
-            </button>
-              </div>
+              <Dropdown
+                options={
+                  [
+                    {
+                      value: CalibrationMode.OneVanishingPoint,
+                      id: CalibrationMode.OneVanishingPoint,
+                      label: "1"
+                    },
+                    {
+                      value: CalibrationMode.TwoVanishingPoints,
+                      id: CalibrationMode.TwoVanishingPoints,
+                      label: "2"
+                    }
+                  ]
+                }
+                selectedOptionId={ this.props.globalSettings.calibrationMode }
+                onChange={ (selectedValue:CalibrationMode) => {
+                  this.props.onCalibrationModeChange(selectedValue)
+                }}
+               />
+
             </div>
             {settingsSection}
           </div>

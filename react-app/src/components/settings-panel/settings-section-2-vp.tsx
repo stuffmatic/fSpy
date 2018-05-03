@@ -1,35 +1,71 @@
 import * as React from 'react';
 import { SettingsContainerProps } from '../../containers/settings-container';
-import { PrincipalPointMode2VP } from '../../types/calibration-settings';
+import { PrincipalPointMode2VP, Axis } from '../../types/calibration-settings';
+import Checkbox from './checkbox'
+import Dropdown from './dropdown'
+import AxisDropdown from './axis-dropdown'
 
-export default class SettingsSection1VP extends React.PureComponent<SettingsContainerProps> {
+export default class SettingsSection2VP extends React.PureComponent<SettingsContainerProps> {
   render() {
     return (
       <div className="panel-section">
         <div className="panel-row">
           Principal point
-      </div>
+        </div>
         <div className="panel-row">
-          <select
-            value={this.props.calibrationSettings2VP.principalPointMode}
-            onChange={(event: any) => {
-              this.props.onPrincipalPointModeChange2VP(event.target.value)
+          <Dropdown
+            options={
+              [
+                {
+                  value: PrincipalPointMode2VP.Default,
+                  id: PrincipalPointMode2VP.Default,
+                  label: "Image midpoint"
+                },
+                {
+                  value: PrincipalPointMode2VP.Manual,
+                  id: PrincipalPointMode2VP.Manual,
+                  label: PrincipalPointMode2VP.Manual
+                },
+                {
+                  value: PrincipalPointMode2VP.FromThirdVanishingPoint,
+                  id: PrincipalPointMode2VP.FromThirdVanishingPoint,
+                  label: PrincipalPointMode2VP.FromThirdVanishingPoint
+                }
+              ]
+            }
+            selectedOptionId={this.props.calibrationSettings2VP.principalPointMode}
+            onChange={(selectedValue: PrincipalPointMode2VP) => {
+              this.props.onPrincipalPointModeChange2VP(selectedValue)
             }}
-          >
-            <option value={PrincipalPointMode2VP.Default}>Default</option>
-            <option value={PrincipalPointMode2VP.Manual}>Manual</option>
-            <option value={PrincipalPointMode2VP.FromThirdVanishingPoint}>From 3rd vanishing point</option>
-          </select>
+          />
         </div>
 
         <div className="panel-row">
-          Quad mode <input
-            name="quadModeEnabled"
-            type="checkbox"
-            checked={this.props.calibrationSettings2VP.quadModeEnabled}
-            onChange={(event: any) => {
-              this.props.onQuadModeEnabledChange(event.target.checked)
-            }}
+          Vanishing point axes
+        </div>
+
+        <div className="panel-row">
+          <AxisDropdown
+            selectedAxis={ Axis.PositiveX }
+            onChange={
+              (axis:Axis) => console.log("selected axis " + axis)
+            }
+          />
+        </div>
+        <div className="panel-row">
+          <AxisDropdown
+            selectedAxis={ Axis.PositiveX }
+            onChange={
+              (axis:Axis) => console.log("selected axis " + axis)
+            }
+          />
+        </div>
+
+        <div className="panel-row">
+          <Checkbox
+            title="Quad mode"
+            isSelected={this.props.calibrationSettings2VP.quadModeEnabled}
+            onChange={(isSelected: boolean) => this.props.onQuadModeEnabledChange(isSelected)}
           />
         </div>
       </div>

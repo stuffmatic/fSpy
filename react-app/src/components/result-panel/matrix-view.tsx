@@ -24,7 +24,7 @@ export default class MatrixView extends React.PureComponent<MatrixViewProps> {
   private renderRow(row: number[]) {
     return (
       <div style={{display: "flex"}}>
-        {row.map((element: number, i: number) => <span style={{width: "25%", textAlign: "right"}} key={i}>{element.toPrecision(5)}</span>)}
+        {row.map((element: number, i: number) => <span style={{width: "25%", textAlign: "left"}} key={i}>{element.toPrecision(5)}</span>)}
       </div>
     )
 

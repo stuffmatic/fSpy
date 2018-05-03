@@ -6,7 +6,7 @@ body {
 
 textarea, body, button {
   font-family: 'Roboto', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   color: #333333;
 }
 
@@ -90,8 +90,8 @@ textarea {
 }
 
 .panel-row {
-  height: 22px;
-  line-height: 22px;
+  height: 20px;
+  line-height: 20px;
 }
 
 .bottom-border {

@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { SettingsContainerProps } from '../../containers/settings-container';
-import { PrincipalPointMode1VP, HorizonMode } from '../../types/calibration-settings';
+import { PrincipalPointMode1VP, HorizonMode, Axis } from '../../types/calibration-settings';
+import Dropdown from './dropdown'
+import AxisDropdown from './axis-dropdown'
 
 export default class SettingsSection1VP extends React.PureComponent<SettingsContainerProps> {
   render() {
@@ -11,30 +13,75 @@ export default class SettingsSection1VP extends React.PureComponent<SettingsCont
           Principal point
         </div>
         <div className="panel-row">
-          <select
-            value={this.props.calibrationSettings1VP.principalPointMode}
-            onChange={(event: any) => {
-              this.props.onPrincipalPointModeChange1VP(event.target.value)
+          <Dropdown
+            options={
+              [
+                {
+                  value: PrincipalPointMode1VP.Default,
+                  id: PrincipalPointMode1VP.Default,
+                  label: "Image midpoint"
+                },
+                {
+                  value: PrincipalPointMode1VP.Manual,
+                  id: PrincipalPointMode1VP.Manual,
+                  label: PrincipalPointMode1VP.Manual
+                }
+              ]
+            }
+            selectedOptionId={this.props.calibrationSettings1VP.principalPointMode}
+            onChange={(selectedValue: PrincipalPointMode1VP) => {
+              this.props.onPrincipalPointModeChange1VP(selectedValue)
             }}
-          >
-            <option value={PrincipalPointMode1VP.Default}>Default</option>
-            <option value={PrincipalPointMode1VP.Manual}>Manual</option>
-          </select>
+          />
+        </div>
+        <div className="panel-row">
+          Vanishing point axis
+        </div>
+        <div className="panel-row">
+          <AxisDropdown
+            selectedAxis={ Axis.PositiveX }
+            onChange={
+              (axis:Axis) => console.log("selected axis " + axis)
+            }
+          />
+        </div>
+
+        <div className="panel-row">
+          Up axis
+        </div>
+        <div className="panel-row">
+          <AxisDropdown
+            selectedAxis={ Axis.PositiveZ }
+            onChange={
+              (axis:Axis) => console.log("selected axis " + axis)
+            }
+          />
         </div>
 
         <div className="panel-row">
           Horizon
         </div>
         <div className="panel-row">
-          <select
-            value={this.props.calibrationSettings1VP.horizonMode}
-            onChange={(event: any) => {
-              this.props.onHorizonModeChange(event.target.value)
+        <Dropdown
+            options={
+              [
+                {
+                  value: HorizonMode.Default,
+                  id: HorizonMode.Default,
+                  label: "Flat"
+                },
+                {
+                  value: HorizonMode.Manual,
+                  id: HorizonMode.Manual,
+                  label: HorizonMode.Manual
+                }
+              ]
+            }
+            selectedOptionId={this.props.calibrationSettings1VP.horizonMode}
+            onChange={(selectedValue: HorizonMode) => {
+              this.props.onHorizonModeChange(selectedValue)
             }}
-          >
-            <option value={HorizonMode.Default}>Default</option>
-            <option value={HorizonMode.Manual}>Manual</option>
-          </select>
+          />
         </div>
       </div>
     )
