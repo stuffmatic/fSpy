@@ -2,21 +2,32 @@ import * as React from 'react';
 import Transform from '../../solver/transform';
 
 interface MatrixViewProps {
-  transform: Transform | null
+  transform: Transform | null
 }
 
-export default function MatrixView(props: MatrixViewProps) {
+export default class MatrixView extends React.PureComponent<MatrixViewProps> {
+  render() {
+    if (!this.props.transform) {
+      return null
+    }
 
-  if (!props.transform) {
-    return null
+    return (
+      <div style={{ fontFamily:"Roboto Mono", fontSize: "10px", color: "gray" }}>
+        {this.renderRow(this.props.transform.matrix[0])}
+        {this.renderRow(this.props.transform.matrix[1])}
+        {this.renderRow(this.props.transform.matrix[2])}
+        {this.renderRow(this.props.transform.matrix[3])}
+      </div>
+    )
   }
 
-  return (
-    <div style={{ fontSize: "7px", color: "gray" }}>
-      {props.transform.matrix[0][0]}, {props.transform.matrix[0][1]}, {props.transform.matrix[0][2]}, {props.transform.matrix[0][3]} <br />
-      {props.transform.matrix[1][0]}, {props.transform.matrix[1][1]}, {props.transform.matrix[1][2]}, {props.transform.matrix[1][3]} <br />
-      {props.transform.matrix[2][0]}, {props.transform.matrix[2][1]}, {props.transform.matrix[2][2]}, {props.transform.matrix[2][3]} <br />
-      {props.transform.matrix[3][0]}, {props.transform.matrix[2][1]}, {props.transform.matrix[3][2]}, {props.transform.matrix[3][3]}
-    </div>
-  )
+  private renderRow(row: number[]) {
+    return (
+      <div style={{display: "flex"}}>
+        {row.map((element: number, i: number) => <span style={{width: "25%", textAlign: "right"}} key={i}>{element.toPrecision(5)}</span>)}
+      </div>
+    )
+
+  }
+
 }
