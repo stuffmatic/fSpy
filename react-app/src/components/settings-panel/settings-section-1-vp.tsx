@@ -6,7 +6,7 @@ export default class SettingsSection1VP extends React.PureComponent<SettingsCont
   render() {
 
     return (
-      <div>
+      <div className="panel-section">
         <select
           value={this.props.calibrationSettings1VP.principalPointMode}
           onChange={(event: any) => {

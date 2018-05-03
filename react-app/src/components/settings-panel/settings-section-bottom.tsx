@@ -5,7 +5,7 @@ import NotesTextArea from './notes-text-area'
 export default class SettingsSectionBottom extends React.PureComponent<SettingsContainerProps> {
   render() {
     return (
-      <div>
+      <div className="panel-section top-border">
         <div>
           Dimmed:
             <input

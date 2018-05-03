@@ -10,25 +10,28 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
 
     let is1VPMode = this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint
     let settingsSection = is1VPMode ? (<SettingsSection1VP {...this.props} />) :
-                                      (<SettingsSection2VP {...this.props} />)
+      (<SettingsSection2VP {...this.props} />)
 
     return (
       <div id="left-panel" className="side-panel">
-        <div id="settings-container">
-          <div id="settings-top-container">
-            <button onClick={() => {
-              this.props.onCalibrationModeChange(CalibrationMode.OneVanishingPoint)
-            }}>
-              1 VP
+        <div id="panel-container">
+          <div id="panel-top-container">
+            <div className="panel-section bottom-border">
+            <div>Number of vanishing points</div>
+              <button onClick={() => {
+                this.props.onCalibrationModeChange(CalibrationMode.OneVanishingPoint)
+              }}>
+                1 VP
             </button>
-            <button onClick={() => {
-              this.props.onCalibrationModeChange(CalibrationMode.TwoVanishingPoints)
-            }}>
-              2 VP
+              <button onClick={() => {
+                this.props.onCalibrationModeChange(CalibrationMode.TwoVanishingPoints)
+              }}>
+                2 VP
             </button>
+            </div>
             {settingsSection}
           </div>
-          <SettingsSectionBottom { ...this.props } />
+          <SettingsSectionBottom {...this.props} />
         </div>
       </div>
     )
