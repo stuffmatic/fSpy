@@ -52,6 +52,7 @@ class SolverBase {
   }
 }
 
+
 export default class Solver extends SolverBase {
 
   static solve1VP(
@@ -60,13 +61,23 @@ export default class Solver extends SolverBase {
     image: ImageState
   ): CalibrationResult1VP {
 
+    //TODO: use default instead of creating empty object again here?
+    let result:CalibrationResult1VP = {
+      errors: [],
+      warnings: [],
+      cameraParameters: {
+        cameraTransform: null,
+        horizontalFieldOfView: null,
+        verticalFieldOfView: null,
+        relativeFocalLength: null,
+        vanishingPoint: null
+      }
+    }
+
     let errors = this.validateImage(image)
     if (errors.length > 0) {
-      return {
-        errors: errors,
-        warnings: [],
-        cameraParameters: null
-      }
+      result.errors = errors
+      return result
     }
 
     let vanishingPoints = this.computeVanishingPoints(
@@ -76,22 +87,17 @@ export default class Solver extends SolverBase {
     )
 
     if (!vanishingPoints) {
-      return {
-        errors: errors,
-        warnings: [],
-        cameraParameters: null
-      }
+      result.errors = errors
+      return result
     }
 
-    return {
-      errors: [],
-      warnings: [],
-      cameraParameters: {
-        cameraTransform: new Transform(),
-        vanishingPoint: vanishingPoints[0]
-      }
-    }
+    result.cameraParameters.cameraTransform = new Transform()
+    result.cameraParameters.vanishingPoint = vanishingPoints[0]
+    result.cameraParameters.horizontalFieldOfView = 0
+    result.cameraParameters.verticalFieldOfView = 0
+    result.cameraParameters.relativeFocalLength = 0
 
+    return result
   }
 
   static solve2VP(
@@ -99,13 +105,25 @@ export default class Solver extends SolverBase {
     controlPoints: ControlPointsState2VP,
     image: ImageState
   ): CalibrationResult2VP {
+    //TODO: use default instead of creating empty object again here?
+    let result:CalibrationResult2VP = {
+      errors: [],
+      warnings: [],
+      cameraParameters: {
+        cameraTransform: null,
+        horizontalFieldOfView: null,
+        verticalFieldOfView: null,
+        relativeFocalLength: null,
+        vanishingPoints: null,
+        computedPrincipalPoint: null
+      }
+    }
+
+
     let errors = this.validateImage(image)
     if (errors.length > 0) {
-      return {
-        errors: errors,
-        warnings: [],
-        cameraParameters: null
-      }
+      result.errors = errors
+      return result
     }
 
     //Compute the two vanishing points specified using control points
@@ -116,16 +134,13 @@ export default class Solver extends SolverBase {
     )
 
     if (!vanishingPoints) {
-      return {
-        errors: errors,
-        warnings: [],
-        cameraParameters: null
-      }
+      result.errors = errors
+      return result
     }
 
     //Get the principal point
     let principalPoint: Point2D = { x: 0, y: 0 }
-    let computedPrincipalPoint:Point2D | null = null
+    let computedPrincipalPoint: Point2D | null = null
     switch (settings.principalPointMode) {
       case PrincipalPointMode2VP.Manual:
         principalPoint = CoordinatesUtil.convert(
@@ -149,32 +164,61 @@ export default class Solver extends SolverBase {
     }
 
     if (errors.length > 0) {
-      return {
-        errors: errors,
-        warnings: [],
-        cameraParameters: null
-      }
+      result.errors = errors
+      return result
     }
+
+    result.cameraParameters.computedPrincipalPoint = computedPrincipalPoint
 
     let fRelative = this.computeFocalLength(
       vanishingPoints[0], vanishingPoints[1], principalPoint
     )! //TODO: check for null
+    result.cameraParameters.relativeFocalLength = fRelative
 
     let cameraTransform = this.computeCameraRotationMatrix(
       vanishingPoints[0], vanishingPoints[1], fRelative, principalPoint
     )
+    result.cameraParameters.cameraTransform = cameraTransform
 
+    result.cameraParameters.horizontalFieldOfView = this.computeFieldOfView(
+      image.width!,
+      image.height!,
+      fRelative,
+      false
+    )
+    result.cameraParameters.verticalFieldOfView = this.computeFieldOfView(
+      image.width!,
+      image.height!,
+      fRelative,
+      true
+    )
 
-    return {
-      errors: [],
-      warnings: [],
-      cameraParameters: {
-        cameraTransform: cameraTransform,
-        vanishingPoints: vanishingPoints as [Point2D, Point2D] |  [Point2D, Point2D, Point2D],
-        relativeFocalLength: fRelative,
-        computedPrincipalPoint: computedPrincipalPoint
+    return result
+  }
+
+  static computeFieldOfView(
+    imageWidth: number,
+    imageHeight: number,
+    fRelative: number,
+    vertical: boolean
+  ): number {
+    let aspectRatio = imageWidth / imageHeight
+    let d = 2
+    if (aspectRatio < 1) {
+      //tall image
+      if (!vertical) {
+        d = 2 * aspectRatio
       }
     }
+    else {
+      //wide image
+      if (vertical) {
+        d = 2 / aspectRatio
+      }
+    }
+
+    return 2 * Math.atan(d / 2 * fRelative)
+
   }
 
   /**
@@ -185,7 +229,7 @@ export default class Solver extends SolverBase {
    * @param P the center of projection in normalized image coordinates.
    * @returns The relative focal length.
    */
-  static computeFocalLength(Fu: Point2D, Fv: Point2D, P: Point2D): number |  null {
+  static computeFocalLength(Fu: Point2D, Fv: Point2D, P: Point2D): number | null {
     //compute Puv, the orthogonal projection of P onto FuFv
     let dirFuFv = MathUtil.normalized(MathUtil.difference(Fu, Fv)) //  normalize([x - y for x, y in zip(Fu, Fv)])
     let FvP = MathUtil.difference(P, Fv) //FvP = [x - y for x, y in zip(P, Fv)]
@@ -205,7 +249,7 @@ export default class Solver extends SolverBase {
     let fSq = FvPuv * FuPuv - PPuv * PPuv
     //print("FuPuv", FuPuv, "FvPuv", FvPuv, "PPuv", PPuv, "OPuv", FvPuv * FuPuv)
     //print("fSq = ", fSq, " = ", FvPuv * FuPuv, " - ", PPuv * PPuv)
-    if (fSq <= 0)  {
+    if (fSq <= 0) {
       return null
     }
 
@@ -221,7 +265,7 @@ export default class Solver extends SolverBase {
    * @param P the principal point
    * @returns The matrix Moc
    */
-  static computeCameraRotationMatrix(Fu: Point2D, Fv: Point2D, f: number, P: Point2D): Transform  {
+  static computeCameraRotationMatrix(Fu: Point2D, Fv: Point2D, f: number, P: Point2D): Transform {
     /*Fu[0] -= P[0]
     Fu[1] -= P[1]
 

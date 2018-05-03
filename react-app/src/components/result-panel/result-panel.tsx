@@ -6,7 +6,7 @@ import TableRow from './table-row'
 import MatrixView from './matrix-view'
 import WarningsList from './warnings-list'
 import { ImageState } from '../../types/image-state';
-import Transform from '../../solver/transform';
+
 
 interface ResultPanelProps {
   calibrationMode: CalibrationMode
@@ -49,9 +49,7 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> 
             </div>
             <div className="panel-section bottom-border">
               <div className="panel-row" >Camera transform matrix</div>
-              <MatrixView transform={new Transform()} />
-              <div className="panel-row">Camera projection matrix</div>
-              <MatrixView transform={new Transform()} />
+              <MatrixView transform={this.props.calibrationResult.calibrationResult2VP.cameraParameters.cameraTransform} />
             </div>
             <div className="panel-section bottom-border">
               <WarningsList

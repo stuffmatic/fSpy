@@ -14,7 +14,7 @@ export default class ControlPointsPanel1VP extends ControlPointsPanelBase {
     let state = this.props.controlPointsState1VP
     let params = this.props.calibrationResult.calibrationResult1VP.cameraParameters
     let vpPosition: Point2D | null = null
-    if (params) {
+    if (params.vanishingPoint) {
       vpPosition = CoordinatesUtil.convert(
         params.vanishingPoint,
         ImageCoordinateFrame.ImagePlane,

@@ -2,16 +2,18 @@ import Transform from "./transform";
 import Point2D from "./point-2d";
 
 export interface CameraParametersBase {
-  cameraTransform:Transform
+  cameraTransform:Transform | null
+  horizontalFieldOfView:number | null
+  verticalFieldOfView:number | null
+  relativeFocalLength:number | null
 }
 
 export interface CameraParameters1VP extends CameraParametersBase {
-  vanishingPoint:Point2D
+  vanishingPoint:Point2D | null
 }
 
 export interface CameraParameters2VP extends CameraParametersBase {
-  vanishingPoints:[Point2D, Point2D] | [Point2D, Point2D, Point2D]
-  relativeFocalLength:number
+  vanishingPoints:[Point2D, Point2D] | [Point2D, Point2D, Point2D] | null
   computedPrincipalPoint:Point2D | null
 }
 
@@ -21,9 +23,9 @@ interface CalibrationResultBase {
 }
 
 export interface CalibrationResult1VP extends CalibrationResultBase {
-  cameraParameters:CameraParameters1VP | null
+  cameraParameters:CameraParameters1VP
 }
 
 export interface CalibrationResult2VP extends CalibrationResultBase {
-  cameraParameters:CameraParameters2VP | null
+  cameraParameters:CameraParameters2VP
 }
