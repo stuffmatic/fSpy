@@ -1,7 +1,7 @@
 import * as React from 'react';
 import ControlPointsPanel1VP from './../components/image-panel/control-points-panel-1-vp'
 import ControlPointsPanel2VP from './../components/image-panel/control-points-panel-2-vp'
-
+import Overlay3DPanel from './../components/image-panel/overlay-3d-panel'
 import { StoreState } from '../types/store-state';
 import { AppAction, adjustHorizon, setOrigin, setPrincipalPoint, adjustVanishingLine } from '../actions';
 import { Dispatch, connect } from 'react-redux';
@@ -61,6 +61,7 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
                                          (<ControlPointsPanel2VP  {...this.props} />)
     return (
       <svg style={svgStyle}>
+        <Overlay3DPanel width={this.props.width} height={this.props.height}/>
         {controlPointsPanel}
       </svg>
     )
