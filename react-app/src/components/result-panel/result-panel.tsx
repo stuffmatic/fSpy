@@ -53,10 +53,9 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> 
             </div>
             <div className="panel-section bottom-border">
               <WarningsList
-                warnings={[
-                  "Se upp med en grej!",
-                  "Se upp med en grej till annars kan det gå riktigt snett!"
-                ]}
+                warnings={
+                  this.props.calibrationResult.calibrationResult2VP.warnings
+                }
               />
             </div>
           </div>

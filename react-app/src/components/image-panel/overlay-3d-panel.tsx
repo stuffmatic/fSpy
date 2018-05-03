@@ -64,7 +64,10 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   }
 
   private project(point:Vector3D):Point2D {
-    let scaled = point.multipliedByScalar(0.001 * this.props.width)
+    let scaled = point.multipliedByScalar(0.0005 * this.props.width)
+    if (this.props.cameraTransform) {
+      this.props.cameraTransform.transformVector(scaled)
+    }
     return CoordinatesUtil.convert(
       scaled,
       ImageCoordinateFrame.ImagePlane,

@@ -193,6 +193,10 @@ export default class Solver extends SolverBase {
       true
     )
 
+    if (Math.abs(cameraTransform.determinant - 1) > 1e-5) {
+      result.warnings.push("Unreliable camera transform, determinant " + cameraTransform.determinant.toFixed(5))
+    }
+
     return result
   }
 
