@@ -24,6 +24,8 @@ interface ResultContainerProps {
 
 class ResultContainer extends React.PureComponent<ResultContainerProps> {
   render() {
+
+    //TODO: move this somewhere else
     let result: CalibrationResult = {
       calibrationResult1VP: Solver.solve1VP(
         this.props.calibrationSettings1VP,
