@@ -7,25 +7,35 @@ export default class SettingsSection1VP extends React.PureComponent<SettingsCont
 
     return (
       <div className="panel-section">
-        <select
-          value={this.props.calibrationSettings1VP.principalPointMode}
-          onChange={(event: any) => {
-            this.props.onPrincipalPointModeChange1VP(event.target.value)
-          }}
-        >
-          <option value={PrincipalPointMode1VP.Default}>Default</option>
-          <option value={PrincipalPointMode1VP.Manual}>Manual</option>
-        </select>
+        <div className="panel-row">
+          Principal point
+        </div>
+        <div className="panel-row">
+          <select
+            value={this.props.calibrationSettings1VP.principalPointMode}
+            onChange={(event: any) => {
+              this.props.onPrincipalPointModeChange1VP(event.target.value)
+            }}
+          >
+            <option value={PrincipalPointMode1VP.Default}>Default</option>
+            <option value={PrincipalPointMode1VP.Manual}>Manual</option>
+          </select>
+        </div>
 
-        <select
-          value={this.props.calibrationSettings1VP.horizonMode}
-          onChange={(event: any) => {
-            this.props.onHorizonModeChange(event.target.value)
-          }}
-        >
-          <option value={HorizonMode.Default}>Default</option>
-          <option value={HorizonMode.Manual}>Manual</option>
-        </select>
+        <div className="panel-row">
+          Horizon
+        </div>
+        <div className="panel-row">
+          <select
+            value={this.props.calibrationSettings1VP.horizonMode}
+            onChange={(event: any) => {
+              this.props.onHorizonModeChange(event.target.value)
+            }}
+          >
+            <option value={HorizonMode.Default}>Default</option>
+            <option value={HorizonMode.Manual}>Manual</option>
+          </select>
+        </div>
       </div>
     )
   }

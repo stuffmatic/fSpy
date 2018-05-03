@@ -11,7 +11,7 @@ import { CalibrationMode } from '../types/global-settings';
 import ResultPanel from '../components/result-panel/result-panel'
 
 interface ResultContainerProps {
-  calibrationMode:CalibrationMode
+  calibrationMode: CalibrationMode
   calibrationSettings1VP: CalibrationSettings1VP
   controlPointsState1VP: ControlPointsState1VP
 
@@ -42,13 +42,11 @@ class ResultContainer extends React.PureComponent<ResultContainerProps> {
     this.props.onComputedResult(result)
 
     return (
-      <div id="right-panel" className="side-panel">
-        <ResultPanel
-          calibrationMode={this.props.calibrationMode}
-          calibrationResult={result}
-        />
-      </div>
-
+      <ResultPanel
+        calibrationMode={this.props.calibrationMode}
+        calibrationResult={result}
+        image={this.props.image}
+      />
     )
   }
 }

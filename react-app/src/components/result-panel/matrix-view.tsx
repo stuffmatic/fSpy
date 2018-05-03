@@ -7,7 +7,7 @@ interface MatrixViewProps {
 
 export default function MatrixView(props: MatrixViewProps) {
   return (
-    <div >
+    <div style={{ color: "gray" }}>
       {props.transform.matrix[0][0]}, {props.transform.matrix[0][1]}, {props.transform.matrix[0][2]}, {props.transform.matrix[0][3]} <br />
       {props.transform.matrix[1][0]}, {props.transform.matrix[1][1]}, {props.transform.matrix[1][2]}, {props.transform.matrix[1][3]} <br />
       {props.transform.matrix[2][0]}, {props.transform.matrix[2][1]}, {props.transform.matrix[2][2]}, {props.transform.matrix[2][3]} <br />

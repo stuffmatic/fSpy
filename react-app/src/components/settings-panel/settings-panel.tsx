@@ -17,17 +17,19 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
         <div id="panel-container">
           <div id="panel-top-container">
             <div className="panel-section bottom-border">
-            <div>Number of vanishing points</div>
-              <button onClick={() => {
-                this.props.onCalibrationModeChange(CalibrationMode.OneVanishingPoint)
-              }}>
-                1 VP
+              <div className="panel-row">Number of vanishing points</div>
+              <div className="panel-row">
+                <button onClick={() => {
+                  this.props.onCalibrationModeChange(CalibrationMode.OneVanishingPoint)
+                }}>
+                  1 VP
             </button>
-              <button onClick={() => {
-                this.props.onCalibrationModeChange(CalibrationMode.TwoVanishingPoints)
-              }}>
-                2 VP
+                <button onClick={() => {
+                  this.props.onCalibrationModeChange(CalibrationMode.TwoVanishingPoints)
+                }}>
+                  2 VP
             </button>
+              </div>
             </div>
             {settingsSection}
           </div>

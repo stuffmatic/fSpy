@@ -2,10 +2,16 @@ import * as React from 'react';
 import CalibrationResult from '../../types/calibration-result';
 import { CalibrationMode } from '../../types/global-settings';
 import ResultSectionBottom from './result-section-bottom'
+import TableRow from './table-row'
+import MatrixView from './matrix-view'
+import WarningsList from './warnings-list'
+import { ImageState } from '../../types/image-state';
+import Transform from '../../solver/transform';
 
 interface ResultPanelProps {
   calibrationMode: CalibrationMode
   calibrationResult: CalibrationResult
+  image: ImageState
 }
 
 export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
@@ -16,13 +22,44 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> 
         <div id="panel-container">
           <div id="panel-top-container">
             <div className="panel-section bottom-border">
-              a
+              <TableRow
+                title={"Image size"}
+                value={this.props.image.width + " x " + this.props.image.height}
+              />
             </div>
             <div className="panel-section bottom-border">
-              a
+              <TableRow
+                title={"Horizontal field of view"}
+                value={"x°"}
+              />
+              <TableRow
+                title={"Vertical field of view"}
+                value={"x°"}
+              />
             </div>
             <div className="panel-section bottom-border">
-              a
+              <TableRow
+                title={"Relative focal length"}
+                value={"x"}
+              />
+              <TableRow
+                title={"Absolute focal length"}
+                value={"y"}
+              />
+            </div>
+            <div className="panel-section bottom-border">
+              <div className="panel-row" >Camera transform matrix</div>
+              <MatrixView transform={new Transform()} />
+              <div className="panel-row">Camera projection matrix</div>
+              <MatrixView transform={new Transform()} />
+            </div>
+            <div className="panel-section bottom-border">
+              <WarningsList
+                warnings={[
+                  "Se upp med en grej!",
+                  "Se upp med en grej till annars kan det gå riktigt snett!"
+                ]}
+              />
             </div>
           </div>
           <div>
