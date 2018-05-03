@@ -8,6 +8,7 @@ export enum ActionTypes {
   //Global settings actions
   SET_CALIBRATION_MODE = "SET_CALIBRATION_MODE",
   SET_IMAGE_OPACITY = "SET_IMAGE_OPACITY",
+  SET_NOTES = "SET_NOTES",
 
   //Image loading actions
   SET_IMAGE_URL = "SET_IMAGE_URL",
@@ -30,6 +31,19 @@ export enum ActionTypes {
 }
 
 
+//Set active calibration mode
+export interface SetCalibrationMode {
+  type: ActionTypes.SET_CALIBRATION_MODE
+  calibrationMode: CalibrationMode
+}
+
+export function setCalibrationMode(calibrationMode: CalibrationMode): SetCalibrationMode {
+  return {
+    type: ActionTypes.SET_CALIBRATION_MODE,
+    calibrationMode: calibrationMode
+  }
+}
+
 //Set image opacity
 export interface SetImageOpacity {
   type: ActionTypes.SET_IMAGE_OPACITY
@@ -43,16 +57,16 @@ export function setImageOpacity(opacity: number): SetImageOpacity {
   }
 }
 
-//Set active calibration mode
-export interface SetCalibrationMode {
-  type: ActionTypes.SET_CALIBRATION_MODE
-  calibrationMode: CalibrationMode
+//Set notes
+export interface SetNotes {
+  type: ActionTypes.SET_NOTES
+  notes: string
 }
 
-export function setCalibrationMode(calibrationMode: CalibrationMode): SetCalibrationMode {
+export function setNotes(notes: string): SetNotes {
   return {
-    type: ActionTypes.SET_CALIBRATION_MODE,
-    calibrationMode: calibrationMode
+    type: ActionTypes.SET_NOTES,
+    notes: notes
   }
 }
 
@@ -228,6 +242,7 @@ export function setCalibrationResult(result:CalibrationResult): SetCalibrationRe
 export type AppAction =
   SetCalibrationMode |
   SetImageOpacity |
+  SetNotes |
   SetImageURL |
   SetImageSize |
   SetHorizonMode |

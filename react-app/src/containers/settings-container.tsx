@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl } from '../actions';
+import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setNotes } from '../actions';
 import SettingsPanel from '../components/settings-panel/settings-panel';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { StoreState } from '../types/store-state';
@@ -13,6 +13,7 @@ export interface SettingsContainerProps {
   calibrationSettings2VP: CalibrationSettings2VP
   onCalibrationModeChange(calibrationMode: CalibrationMode): void
   onImageOpacityChange(opacity: number): void
+  onNotesChange(notes: string): void
   onHorizonModeChange(horizonMode: HorizonMode): void
   onPrincipalPointModeChange1VP(principalPointMode: PrincipalPointMode1VP): void
   onPrincipalPointModeChange2VP(principalPointMode: PrincipalPointMode2VP): void
@@ -43,6 +44,9 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     },
     onImageOpacityChange: (opacity: number) => {
       dispatch(setImageOpacity(opacity))
+    },
+    onNotesChange: (notes: string) => {
+      dispatch(setNotes(notes))
     },
     onHorizonModeChange: (horizonMode: HorizonMode) => {
       dispatch(setHorizonMode(horizonMode))

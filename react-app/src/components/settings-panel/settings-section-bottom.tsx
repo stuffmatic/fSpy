@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { SettingsContainerProps } from '../../containers/settings-container';
+import NotesTextArea from './notes-text-area'
 
 export default class SettingsSectionBottom extends React.PureComponent<SettingsContainerProps> {
   render() {
@@ -16,8 +17,15 @@ export default class SettingsSectionBottom extends React.PureComponent<SettingsC
             }}
           />
         </div>
-        <div>
 
+        <div>
+          <NotesTextArea
+            value={this.props.globalSettings.notes}
+            onValueChange={(notes: string) => { this.props.onNotesChange(notes) }}
+          />
+        </div>
+
+        <div>
           <button onClick={() => {
             this.props.onLoadTestImage(0)
           }}>

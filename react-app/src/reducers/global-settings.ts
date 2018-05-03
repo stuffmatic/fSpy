@@ -18,6 +18,11 @@ export function globalSettings(state: GlobalSettings, action: AppAction): Global
         ...state,
         imageOpacity: action.opacity
       }
+    case ActionTypes.SET_NOTES:
+      return {
+        ...state,
+        notes: action.notes
+      }
   }
 
   return state;

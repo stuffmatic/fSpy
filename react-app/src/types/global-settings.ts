@@ -6,4 +6,5 @@ export enum CalibrationMode {
 export interface GlobalSettings {
   calibrationMode:CalibrationMode
   imageOpacity:number
+  notes:string
 }
