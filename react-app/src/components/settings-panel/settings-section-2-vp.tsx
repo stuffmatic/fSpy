@@ -4,6 +4,7 @@ import { PrincipalPointMode2VP, Axis } from '../../types/calibration-settings';
 import Checkbox from './checkbox'
 import Dropdown from './dropdown'
 import AxisDropdown from './axis-dropdown'
+import PanelSpacer from './../common/panel-spacer'
 
 export default class SettingsSection2VP extends React.PureComponent<SettingsContainerProps> {
   render() {
@@ -29,7 +30,7 @@ export default class SettingsSection2VP extends React.PureComponent<SettingsCont
                 {
                   value: PrincipalPointMode2VP.FromThirdVanishingPoint,
                   id: PrincipalPointMode2VP.FromThirdVanishingPoint,
-                  label: PrincipalPointMode2VP.FromThirdVanishingPoint
+                  label: "From 3rd vanishing point"
                 }
               ]
             }
@@ -40,6 +41,7 @@ export default class SettingsSection2VP extends React.PureComponent<SettingsCont
           />
         </div>
 
+        <PanelSpacer />
         <div className="panel-row">
           Vanishing point axes
         </div>
@@ -52,6 +54,7 @@ export default class SettingsSection2VP extends React.PureComponent<SettingsCont
             }
           />
         </div>
+        <PanelSpacer />
         <div className="panel-row">
           <AxisDropdown
             selectedAxis={ Axis.PositiveX }
@@ -60,7 +63,7 @@ export default class SettingsSection2VP extends React.PureComponent<SettingsCont
             }
           />
         </div>
-
+        <PanelSpacer />
         <div className="panel-row">
           <Checkbox
             title="Quad mode"
