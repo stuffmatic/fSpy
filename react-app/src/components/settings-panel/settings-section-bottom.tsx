@@ -6,8 +6,8 @@ export default class SettingsSectionBottom extends React.PureComponent<SettingsC
   render() {
     return (
       <div className="panel-section top-border">
-        <div>
-          Dimmed:
+        <div className="panel-row">
+
             <input
             name="imageIsDimmed"
             type="checkbox"
@@ -15,9 +15,12 @@ export default class SettingsSectionBottom extends React.PureComponent<SettingsC
             onChange={(event: any) => {
               this.props.onImageOpacityChange(event.target.checked ? 0.2 : 1)
             }}
-          />
+          /> Dimmed
         </div>
 
+        <div className="panel-row">
+          Notes
+        </div>
         <div>
           <NotesTextArea
             value={this.props.globalSettings.notes}
