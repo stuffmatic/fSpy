@@ -1,5 +1,5 @@
 import * as React from 'react';
-import ResizableImagePanel from './../components/resizable-image-panel'
+import ResizableImagePanel from './../components/image-panel/resizable-image-panel'
 import ControlPointsContainer from './control-points-container';
 import { StoreState } from '../types/store-state';
 import { Dispatch } from 'redux';

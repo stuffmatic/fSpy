@@ -1,13 +1,13 @@
 import * as React from 'react';
 import ControlPointsPanelBase from './control-points-panel-base';
-import Point2D from '../solver/point-2d';
-import CoordinatesUtil, { ImageCoordinateFrame } from '../solver/coordinates-util';
-import HorizonControl from './../components/horizon-control'
-import OriginControl from './../components/origin-control'
-import PrincipalPointControl from './../components/principal-point-control'
-import VanishingPointControl from './../components/vanishing-point-control'
-import { ControlPointPairIndex } from '../types/control-points-state';
-import { HorizonMode } from '../types/calibration-settings';
+import Point2D from '../../solver/point-2d';
+import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util';
+import HorizonControl from './horizon-control'
+import OriginControl from './origin-control'
+import PrincipalPointControl from './principal-point-control'
+import VanishingPointControl from './vanishing-point-control'
+import { ControlPointPairIndex } from '../../types/control-points-state';
+import { HorizonMode } from '../../types/calibration-settings';
 
 export default class ControlPointsPanel1VP extends ControlPointsPanelBase {
   render() {

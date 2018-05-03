@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl } from '../actions';
-import Dropdown from '../components/dropdown';
+import Dropdown from '../components/settings-panel/dropdown';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { StoreState } from '../types/store-state';
 import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode } from '../types/calibration-settings';

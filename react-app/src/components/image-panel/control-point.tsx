@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Point2D from '../solver/point-2d';
+import Point2D from '../../solver/point-2d';
 
 interface ControlPointProps {
   position:Point2D

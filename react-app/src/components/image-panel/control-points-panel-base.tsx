@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { ControlPointsContainerDimensionProps, ControlPointsContainerCallbacks, ControlPointsContainerProps } from '../containers/control-points-container';
-import { VanishingPointControlState, ControlPointPairState, ControlPointPairIndex } from '../types/control-points-state';
-import CoordinatesUtil, { ImageCoordinateFrame } from '../solver/coordinates-util';
-import Point2D from '../solver/point-2d';
-import { CalibrationMode } from '../types/global-settings';
+import { ControlPointsContainerDimensionProps, ControlPointsContainerCallbacks, ControlPointsContainerProps } from '../../containers/control-points-container';
+import { VanishingPointControlState, ControlPointPairState, ControlPointPairIndex } from '../../types/control-points-state';
+import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util';
+import Point2D from '../../solver/point-2d';
+import { CalibrationMode } from '../../types/global-settings';
 
 type ControlPointsPanelProps = ControlPointsContainerDimensionProps & ControlPointsContainerCallbacks & ControlPointsContainerProps
 

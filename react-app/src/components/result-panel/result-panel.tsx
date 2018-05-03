@@ -1,6 +1,6 @@
 import * as React from 'react';
-import CalibrationResult from '../types/calibration-result';
-import { CalibrationMode } from '../types/global-settings';
+import CalibrationResult from '../../types/calibration-result';
+import { CalibrationMode } from '../../types/global-settings';
 
 interface ResultPanelProps {
   calibrationMode: CalibrationMode

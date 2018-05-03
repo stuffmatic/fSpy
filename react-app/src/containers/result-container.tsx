@@ -8,7 +8,7 @@ import { ControlPointsState1VP, ControlPointsState2VP } from '../types/control-p
 import { ImageState } from '../types/image-state';
 import { StoreState } from '../types/store-state';
 import { CalibrationMode } from '../types/global-settings';
-import ResultPanel from '../components/result-panel'
+import ResultPanel from '../components/result-panel/result-panel'
 
 interface ResultContainerProps {
   calibrationMode:CalibrationMode
