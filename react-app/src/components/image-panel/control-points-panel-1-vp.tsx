@@ -3,13 +3,14 @@ import ControlPointsPanelBase from './control-points-panel-base';
 import Point2D from '../../solver/point-2d';
 import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util';
 import HorizonControl from './horizon-control'
-import OriginControl from './origin-control'
-import PrincipalPointControl from './principal-point-control'
 import VanishingPointControl from './vanishing-point-control'
 import { ControlPointPairIndex } from '../../types/control-points-state';
-import { HorizonMode } from '../../types/calibration-settings';
+import { HorizonMode, PrincipalPointMode1VP } from '../../types/calibration-settings';
+import { Palette } from '../../style/palette';
 
 export default class ControlPointsPanel1VP extends ControlPointsPanelBase {
+
+
   render() {
     let state = this.props.controlPointsState1VP
     let params = this.props.calibrationResult.calibrationResult1VP.cameraParameters
@@ -26,44 +27,19 @@ export default class ControlPointsPanel1VP extends ControlPointsPanelBase {
 
     return (
       <g>
-        <PrincipalPointControl
-          position={
-            CoordinatesUtil.convert(
-              state.principalPoint,
-              ImageCoordinateFrame.Relative,
-              ImageCoordinateFrame.Absolute,
-              this.props.width,
-              this.props.height
-            )
-          }
-          enabled={true}
-          dragCallback={(position: Point2D) => {
-            this.invokeControlPointDragCallback(
-              position,
-              this.props.onPrincipalPointDrag
-            )
-          }}
-        />
-        <OriginControl
-          position={
-            CoordinatesUtil.convert(
-              state.origin,
-              ImageCoordinateFrame.Relative,
-              ImageCoordinateFrame.Absolute,
-              this.props.width,
-              this.props.height
-            )
-          }
-          dragCallback={(position: Point2D) => {
-            this.invokeControlPointDragCallback(
-              position,
-              this.props.onOriginDrag
-            )
-          }}
-        />
+        {
+          this.renderPrincipalPointControl(
+            state.principalPoint,
+            this.props.calibrationSettings1VP.principalPointMode == PrincipalPointMode1VP.Manual
+          )
+        }
+
+        {
+          this.renderOriginControl(state.origin)
+        }
 
         <VanishingPointControl
-          color={"blue"}
+          color={Palette.blue}
           vanishingPointIndex={0}
           controlState={
             this.rel2AbsVanishingPointControlState(
@@ -87,14 +63,6 @@ export default class ControlPointsPanel1VP extends ControlPointsPanelBase {
           pointPair={
             this.rel2AbsControlPointPairState(
               this.props.controlPointsState1VP.horizon
-            )
-          }
-          pointPairDisabled={
-            this.rel2AbsControlPointPairState(
-              [
-                { x: 0.2, y: 0.5 },
-                { x: 0.8, y: 0.5 }
-              ]
             )
           }
           enabled={this.props.calibrationSettings1VP.horizonMode == HorizonMode.Manual}

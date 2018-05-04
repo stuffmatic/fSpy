@@ -51,14 +51,7 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> 
               <div className="panel-row" >Camera transform matrix</div>
               <MatrixView transform={this.props.calibrationResult.calibrationResult2VP.cameraParameters.cameraTransform} />
             </div>
-            <div className="panel-section bottom-border">
-              <BulletList
-                messages={
-                  this.props.calibrationResult.calibrationResult2VP.warnings
-                }
-                type={BulletListType.Errors}
-              />
-            </div>
+
             <div className="panel-section bottom-border">
               <BulletList
                 messages={

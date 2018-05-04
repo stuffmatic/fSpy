@@ -1,11 +1,9 @@
 import * as React from 'react';
 import ControlPointsPanelBase from './control-points-panel-base';
-import OriginControl from './origin-control'
-import PrincipalPointControl from './principal-point-control'
 import VanishingPointControl from './vanishing-point-control'
-import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util';
 import Point2D from '../../solver/point-2d';
 import { PrincipalPointMode2VP } from '../../types/calibration-settings';
+import { Palette } from '../../style/palette';
 
 export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
   render() {
@@ -29,44 +27,18 @@ export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
 
     return (
       <g>
-        <PrincipalPointControl
-          position={
-            CoordinatesUtil.convert(
-              state.principalPoint,
-              ImageCoordinateFrame.Relative,
-              ImageCoordinateFrame.Absolute,
-              this.props.width,
-              this.props.height
-            )
-          }
-          enabled= {true}
-          dragCallback={(position: Point2D) => {
-            this.invokeControlPointDragCallback(
-              position,
-              this.props.onPrincipalPointDrag
-            )
-          }}
-        />
-        <OriginControl
-          position={
-            CoordinatesUtil.convert(
-              state.origin,
-              ImageCoordinateFrame.Relative,
-              ImageCoordinateFrame.Absolute,
-              this.props.width,
-              this.props.height
-            )
-          }
-          dragCallback={(position: Point2D) => {
-            this.invokeControlPointDragCallback(
-              position,
-              this.props.onOriginDrag
-            )
-          }}
-        />
+        {
+          this.renderPrincipalPointControl(
+            state.principalPoint,
+            this.props.calibrationSettings2VP.principalPointMode == PrincipalPointMode2VP.Manual
+          )
+        }
+        {
+          this.renderOriginControl(state.origin)
+        }
 
         <VanishingPointControl
-          color={"green"}
+          color={Palette.green}
           vanishingPointIndex={1}
           controlState={
             this.rel2AbsVanishingPointControlState(vp2Points)
@@ -87,7 +59,7 @@ export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
         />
 
         <VanishingPointControl
-          color={"red"}
+          color={Palette.red}
           vanishingPointIndex={0}
           controlState={
             this.rel2AbsVanishingPointControlState(state.vanishingPoints[0])
@@ -118,7 +90,7 @@ export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
       return (
         <g>
           <VanishingPointControl
-            color={"orange"}
+            color={Palette.orange}
             vanishingPointIndex={2}
             controlState={
               this.rel2AbsVanishingPointControlState(state.vanishingPoints[2])

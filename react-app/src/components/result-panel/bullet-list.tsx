@@ -17,7 +17,7 @@ export default function BulletList(props: BulletListProps) {
       {
         margin: 0,
         paddingLeft: "15px",
-        color: props.type == BulletListType.Errors ? Palette.Red : Palette.Orange
+        color: props.type == BulletListType.Errors ? Palette.red : Palette.orange
       }
     }>
       { props.messages.map((message:string, i:number) => <li key={i}>{message}</li>) }

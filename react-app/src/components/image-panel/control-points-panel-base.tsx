@@ -4,10 +4,58 @@ import { VanishingPointControlState, ControlPointPairState, ControlPointPairInde
 import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util';
 import Point2D from '../../solver/point-2d';
 import { CalibrationMode } from '../../types/global-settings';
+import PrincipalPointControl from './principal-point-control'
+import OriginControl from './origin-control'
 
 type ControlPointsPanelProps = ControlPointsContainerDimensionProps & ControlPointsContainerCallbacks & ControlPointsContainerProps
 
 export default class ControlPointsPanelBase extends React.PureComponent<ControlPointsPanelProps> {
+
+  protected renderPrincipalPointControl(position: Point2D, isEnabled: boolean) {
+    return (
+      <PrincipalPointControl
+          position={
+            CoordinatesUtil.convert(
+              isEnabled ? position : {x: 0.5, y: 0.5 },
+              ImageCoordinateFrame.Relative,
+              ImageCoordinateFrame.Absolute,
+              this.props.width,
+              this.props.height
+            )
+          }
+          enabled={isEnabled}
+          dragCallback={(position: Point2D) => {
+            this.invokeControlPointDragCallback(
+              position,
+              this.props.onPrincipalPointDrag
+            )
+          }}
+      />
+    )
+  }
+
+  protected renderOriginControl(position:Point2D) {
+    return (
+      <OriginControl
+          position={
+            CoordinatesUtil.convert(
+              position,
+              ImageCoordinateFrame.Relative,
+              ImageCoordinateFrame.Absolute,
+              this.props.width,
+              this.props.height
+            )
+          }
+          dragCallback={(position: Point2D) => {
+            this.invokeControlPointDragCallback(
+              position,
+              this.props.onOriginDrag
+            )
+          }}
+        />
+    )
+  }
+
   protected rel2AbsVanishingPointControlState(state: VanishingPointControlState): VanishingPointControlState {
     return {
       vanishingLines: [

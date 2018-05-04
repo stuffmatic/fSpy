@@ -1,6 +1,7 @@
 import * as React from 'react';
 import ControlPoint from './control-point'
 import Point2D from '../../solver/point-2d';
+import { Palette } from '../../style/palette';
 
 interface PrincipalPointControlProps {
   position:Point2D
@@ -13,7 +14,8 @@ return (
     <ControlPoint
       position={props.position}
       dragCallback={props.dragCallback}
-      fill="orange"
+      fill={props.enabled ? Palette.orange : "none"}
+      stroke={props.enabled ? "none" : Palette.orange}
     />
   )
 }

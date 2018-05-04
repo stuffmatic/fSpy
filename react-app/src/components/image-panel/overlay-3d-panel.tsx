@@ -3,6 +3,7 @@ import Vector3D from '../../solver/vector-3d';
 import Point2D from '../../solver/point-2d';
 import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util';
 import Transform from '../../solver/transform';
+import { Palette } from '../../style/palette';
 
 interface Overlay3DPanelProps {
   width: number
@@ -43,21 +44,21 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
           y1={projectedOrigin.y}
           x2={projectedAxisEndpoints[0].x}
           y2={projectedAxisEndpoints[0].y}
-          stroke="red"
+          stroke={Palette.red}
         />
         <line
           x1={projectedOrigin.x}
           y1={projectedOrigin.y}
           x2={projectedAxisEndpoints[1].x}
           y2={projectedAxisEndpoints[1].y}
-          stroke="green"
+          stroke={Palette.green}
         />
         <line
           x1={projectedOrigin.x}
           y1={projectedOrigin.y}
           x2={projectedAxisEndpoints[2].x}
           y2={projectedAxisEndpoints[2].y}
-          stroke="blue"
+          stroke={Palette.blue}
         />
       </g>
     )

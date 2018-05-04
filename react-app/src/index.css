@@ -7,7 +7,7 @@ body {
 textarea, body, button {
   font-family: 'Roboto', sans-serif;
   font-size: 13px;
-  color: #333333;
+  color: #303030;
 }
 
 textarea {
@@ -104,6 +104,7 @@ textarea {
 
 
 /* react-select overrides */
+
 .Select-control {
   height: 20px;
   border-radius: 0;
