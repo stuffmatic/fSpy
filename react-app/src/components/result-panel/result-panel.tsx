@@ -4,7 +4,7 @@ import { CalibrationMode } from '../../types/global-settings';
 import ResultSectionBottom from './result-section-bottom'
 import TableRow from './table-row'
 import MatrixView from './matrix-view'
-import WarningsList from './warnings-list'
+import BulletList, { BulletListType } from './bullet-list'
 import { ImageState } from '../../types/image-state';
 
 
@@ -52,10 +52,19 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> 
               <MatrixView transform={this.props.calibrationResult.calibrationResult2VP.cameraParameters.cameraTransform} />
             </div>
             <div className="panel-section bottom-border">
-              <WarningsList
-                warnings={
+              <BulletList
+                messages={
                   this.props.calibrationResult.calibrationResult2VP.warnings
                 }
+                type={BulletListType.Errors}
+              />
+            </div>
+            <div className="panel-section bottom-border">
+              <BulletList
+                messages={
+                  this.props.calibrationResult.calibrationResult2VP.warnings
+                }
+                type={BulletListType.Warnings}
               />
             </div>
           </div>
