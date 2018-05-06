@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setNotes } from '../actions';
+import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setNotes, setVanishingPointAxis1VP, setVanishingPointAxis2VP } from '../actions';
 import SettingsPanel from '../components/settings-panel/settings-panel';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { StoreState } from '../types/store-state';
-import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode } from '../types/calibration-settings';
+import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode, Axis } from '../types/calibration-settings';
 
 export interface SettingsContainerProps {
   globalSettings: GlobalSettings
@@ -19,6 +19,8 @@ export interface SettingsContainerProps {
   onPrincipalPointModeChange2VP(principalPointMode: PrincipalPointMode2VP): void
   onQuadModeEnabledChange(quadModeEnabled: boolean): void
   onLoadTestImage(imageIndex: number | null): void
+  onVanishingPointAxisChange1VP(axis:Axis):void
+  onVanishingPointAxisChange2VP(vanishingPointIndex:number, axis:Axis):void
 }
 
 class SettingsContainer extends React.PureComponent<SettingsContainerProps> {
@@ -70,6 +72,12 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
       }
       console.log("loading url " + url)
       dispatch(setImageUrl(url))
+    },
+    onVanishingPointAxisChange1VP: (axis:Axis):void => {
+      dispatch(setVanishingPointAxis1VP(axis))
+    },
+    onVanishingPointAxisChange2VP: (vanishingPointIndex:number, axis:Axis) => {
+      dispatch(setVanishingPointAxis2VP(vanishingPointIndex, axis))
     }
   }
 }

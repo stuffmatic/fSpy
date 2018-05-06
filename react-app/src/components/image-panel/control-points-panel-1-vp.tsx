@@ -39,7 +39,7 @@ export default class ControlPointsPanel1VP extends ControlPointsPanelBase {
         }
 
         <VanishingPointControl
-          color={Palette.blue}
+          color={Palette.colorForAxis(this.props.calibrationSettings1VP.vanishingPointAxis)}
           vanishingPointIndex={0}
           controlState={
             this.rel2AbsVanishingPointControlState(

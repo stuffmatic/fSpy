@@ -1,6 +1,6 @@
 import { CalibrationMode } from "../types/global-settings";
 import { ControlPointPairIndex } from "../types/control-points-state";
-import { PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode } from "../types/calibration-settings";
+import { PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode, Axis } from "../types/calibration-settings";
 import CalibrationResult from "../types/calibration-result";
 import Point2D from "../solver/point-2d";
 
@@ -19,6 +19,8 @@ export enum ActionTypes {
   SET_QUAD_MODE_ENABLED = "SET_QUAD_MODE_ENABLED",
   SET_PRINCIPAL_POINT_MODE_1VP = "SET_PRINCIPAL_POINT_MODE_1VP",
   SET_PRINCIPAL_POINT_MODE_2VP = "SET_PRINCIPAL_POINT_MODE_2VP",
+  SET_VANISHING_POINT_AXIS_1VP = "SET_VANISHING_POINT_AXIS_1VP",
+  SET_VANISHING_POINT_AXIS_2VP = "SET_VANISHING_POINT_AXIS_2VP",
 
   //Control point actions
   SET_PRINCIPAL_POINT = "SET_PRINCIPAL_POINT",
@@ -150,6 +152,34 @@ export function setPrincipalPointMode2VP(principalPointMode: PrincipalPointMode2
   }
 }
 
+//
+export interface SetVanishingPointAxis1VP {
+  type: ActionTypes.SET_VANISHING_POINT_AXIS_1VP
+  axis: Axis
+}
+
+export function setVanishingPointAxis1VP(axis: Axis): SetVanishingPointAxis1VP {
+  return {
+    type: ActionTypes.SET_VANISHING_POINT_AXIS_1VP,
+    axis: axis
+  }
+}
+
+//
+export interface SetVanishingPointAxis2VP {
+  type: ActionTypes.SET_VANISHING_POINT_AXIS_2VP,
+  vanishingPointIndex:number,
+  axis: Axis
+}
+
+export function setVanishingPointAxis2VP(vanishingPointIndex: number, axis: Axis): SetVanishingPointAxis2VP {
+  return {
+    type: ActionTypes.SET_VANISHING_POINT_AXIS_2VP,
+    vanishingPointIndex: vanishingPointIndex,
+    axis: axis
+  }
+}
+
 //Set principal point
 export interface SetPrincipalPoint {
   type: ActionTypes.SET_PRINCIPAL_POINT
@@ -249,6 +279,8 @@ export type AppAction =
   SetQuadModeEnabled |
   SetPrincipalPointMode1VP |
   SetPrincipalPointMode2VP |
+  SetVanishingPointAxis1VP | 
+  SetVanishingPointAxis2VP | 
   SetOrigin |
   SetPrincipalPoint |
   AdjustHorizon |

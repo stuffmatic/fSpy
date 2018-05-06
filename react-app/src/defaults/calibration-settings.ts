@@ -9,11 +9,13 @@ export const defaultCalibrationSettings1VP: CalibrationSettings1VP = {
   ...defaultCalibrationSettingsBase,
   principalPointMode: PrincipalPointMode1VP.Default,
   upAxis: Axis.PositiveY,
-  horizonMode: HorizonMode.Default
+  horizonMode: HorizonMode.Default,
+  vanishingPointAxis: Axis.PositiveX
 }
 
 export const defaultCalibrationSettings2VP: CalibrationSettings2VP = {
   ...defaultCalibrationSettingsBase,
   principalPointMode: PrincipalPointMode2VP.Default,
-  quadModeEnabled: false
+  quadModeEnabled: false,
+  vanishingPointAxes: [Axis.PositiveX, Axis.PositiveY]
 }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Axis } from '../../types/calibration-settings';
-import Dropdown from './dropdown'
+import Dropdown from './../common/dropdown'
 
 interface AxisDropdownProps {
   selectedAxis: Axis

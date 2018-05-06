@@ -4,7 +4,7 @@ body {
   user-select: none;
 }
 
-textarea, body, button {
+textarea, body, button, input {
   font-family: 'Roboto', sans-serif;
   font-size: 13px;
   color: #303030;

@@ -1,4 +1,4 @@
-import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode2VP } from "../types/calibration-settings";
+import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode2VP, Axis } from "../types/calibration-settings";
 import { ControlPointsState1VP, ControlPointsState2VP, VanishingPointControlState } from "../types/control-points-state";
 import { ImageState } from "../types/image-state";
 import { CalibrationResult1VP, CalibrationResult2VP } from "./calibration-result";
@@ -178,7 +178,22 @@ export default class Solver extends SolverBase {
     let cameraTransform = this.computeCameraRotationMatrix(
       vanishingPoints[0], vanishingPoints[1], fRelative, principalPoint
     )
-    result.cameraParameters.cameraTransform = cameraTransform
+
+    let basisChangeTransform = new Transform()
+    let row1 = this.axisVector(settings.vanishingPointAxes[0])
+    let row2 = this.axisVector(settings.vanishingPointAxes[1])
+    let row3 = row1.cross(row2)
+    basisChangeTransform.matrix[0][0] = row1.x
+    basisChangeTransform.matrix[0][1] = row1.y
+    basisChangeTransform.matrix[0][2] = row1.z
+    basisChangeTransform.matrix[1][0] = row2.x
+    basisChangeTransform.matrix[1][1] = row2.y
+    basisChangeTransform.matrix[1][2] = row2.z
+    basisChangeTransform.matrix[2][0] = row3.x
+    basisChangeTransform.matrix[2][1] = row3.y
+    basisChangeTransform.matrix[2][2] = row3.z
+
+    result.cameraParameters.cameraTransform = basisChangeTransform.leftMultiplied(cameraTransform)
 
     result.cameraParameters.horizontalFieldOfView = this.computeFieldOfView(
       image.width!,
@@ -310,6 +325,21 @@ export default class Solver extends SolverBase {
     return M
   }
 
-
+  private static axisVector(axis:Axis):Vector3D {
+    switch (axis) {
+      case Axis.NegativeX:
+        return new Vector3D(-1, 0, 0)
+      case Axis.PositiveX:
+        return new Vector3D(1, 0, 0)
+      case Axis.NegativeY:
+        return new Vector3D(0, -1, 0)
+      case Axis.PositiveY:
+        return new Vector3D(0, 1, 0)
+      case Axis.NegativeZ:
+        return new Vector3D(0, 0, -1)
+      case Axis.PositiveZ:
+        return new Vector3D(0, 0, 1)
+    }
+  }
 
 }

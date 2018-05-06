@@ -4,7 +4,7 @@ import { CalibrationMode } from '../../types/global-settings';
 import SettingsSection1VP from './settings-section-1-vp'
 import SettingsSection2VP from './settings-section-2-vp'
 import SettingsSectionBottom from './settings-section-bottom'
-import Dropdown from './dropdown'
+import Dropdown from './../common/dropdown'
 
 export default class SettingsPanel extends React.PureComponent<SettingsContainerProps> {
   render() {

@@ -36,6 +36,7 @@ export interface CalibrationSettingsBase {
 
 export interface CalibrationSettings1VP extends CalibrationSettingsBase {
   principalPointMode:PrincipalPointMode1VP
+  vanishingPointAxis:Axis
   upAxis:Axis
   horizonMode:HorizonMode
 }
@@ -43,4 +44,5 @@ export interface CalibrationSettings1VP extends CalibrationSettingsBase {
 export interface CalibrationSettings2VP extends CalibrationSettingsBase {
   principalPointMode:PrincipalPointMode2VP
   quadModeEnabled:boolean
+  vanishingPointAxes:[Axis, Axis]
 }
