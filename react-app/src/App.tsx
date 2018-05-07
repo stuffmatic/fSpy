@@ -2,6 +2,7 @@ import * as React from 'react';
 import ImageContainer from './containers/image-container';
 import ResultContainer from './containers/result-container';
 import SettingsContainer from './containers/settings-container';
+import ExportDialog from './components/export-dialog/export-dialog';
 
 import './App.css';
 
@@ -14,6 +15,7 @@ import './App.css';
 function App() {
   return (
     <div id="app-container">
+      <ExportDialog />
       <SettingsContainer />
       <ImageContainer  />
       <ResultContainer />

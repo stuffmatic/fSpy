@@ -30,6 +30,8 @@ textarea {
 
 .button {
   width: 100%;
+  min-width: 80px;
+  max-width: 230px;
   height: 25px;
   background-color: #e0e0e0;
   outline: none;
