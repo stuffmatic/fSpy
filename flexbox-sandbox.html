@@ -7,6 +7,8 @@
   <style>
     body {
       margin: 0;
+      font-family: "Roboto";
+      font-size: 14px;
     }
 
     #app-container {
@@ -46,11 +48,112 @@
       height: 100vh;
       object-fit: contain
     }
+
+    #modal {
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #modal-content {
+      background-color: #fefefe;
+    }
+
+    #modal-columns {
+      display: flex;
+
+      width: 800px;
+      height: 500px;
+      padding: 20px;
+    }
+
+    .modal-column {
+      width: 50%;
+    }
+
+    .modal-code {
+      margin-left: 10px;
+      margin: 0;
+      background-color: darkgray;
+      overflow: auto;
+      height: 100%;
+    }
+
+    .code {
+      font-family: 'Roboto Mono';
+      white-space: pre;
+      padding: 10px;
+      font-size: 12px;
+    }
+
+    #modal-bottom-button {
+      text-align: center;
+    }
   </style>
 </head>
 
 <body>
   <div id="app-container">
+    <div id="modal">
+      <div id="modal-tab-buttons">
+        <button>Hello</button>
+        <button>Herro</button>
+        <button>Lol</button>
+      </div>
+      <div id="modal-content">
+          <div id="modal-columns">
+              <div class="modal-column">
+                  Det är ett välkänt faktum att läsare distraheras av läsbar text på en sida när man skall studera layouten. Poängen med Lorem Ipsum är att det ger ett normalt ordflöde, till skillnad från "Text här, Text här", och ger intryck av att vara läsbar text. Många publiseringprogram och webbutvecklare använder Lorem Ipsum som test-text, och en sökning efter "Lorem Ipsum" avslöjar många webbsidor under uteckling. Olika versioner har dykt upp under åren, ibland av olyckshändelse, ibland med flit (mer eller mindre humoristiska).
+              </div>
+              <div class="modal-column">
+                <div class="modal-code">
+                  <div class="code">class LolFace {
+        omg herro
+class LolFace {
+        omg herro
+      }
+
+      //
+      //
+      //
+      //
+      //
+      //
+
+      //
+      //
+      //
+      //
+      //
+      //
+
+      //
+      //
+      //
+      //
+      //
+      //
+                  </div>
+                </div>
+              </div>
+            </div>
+          <div id="modal-bottom-button">
+            <button>Close</button>
+          </div>
+      </div>
+
+    </div>
+
+
+
     <div id="left-panel" class="side-panel">
       <div id="settings-container">
         <div id="settings-top-container">
