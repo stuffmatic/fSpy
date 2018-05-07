@@ -49,7 +49,8 @@
       object-fit: contain
     }
 
-    #modal {
+
+    #modal-container {
       position: fixed;
       z-index: 1;
       left: 0;
@@ -63,20 +64,26 @@
       align-items: center;
       justify-content: center;
     }
+
     #modal-content {
       background-color: #fefefe;
+      width: 500px;
+      height: 300px;
+      display: flex;
+      flex-direction: column;
     }
 
     #modal-columns {
+      height: 250px;
       display: flex;
-
-      width: 800px;
-      height: 500px;
-      padding: 20px;
+      flex-direction: row;
+      justify-content: center;
     }
 
     .modal-column {
-      width: 50%;
+      flex-basis: 50%;
+      overflow: auto;
+      padding: 20px;
     }
 
     .modal-code {
@@ -85,74 +92,51 @@
       background-color: darkgray;
       overflow: auto;
       height: 100%;
-    }
-
-    .code {
       font-family: 'Roboto Mono';
-      white-space: pre;
-      padding: 10px;
-      font-size: 12px;
     }
 
     #modal-bottom-button {
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1;
     }
   </style>
 </head>
 
 <body>
   <div id="app-container">
-    <div id="modal">
-      <div id="modal-tab-buttons">
+
+    <div id="modal-container">
+      <div id="modal-top-buttons">
         <button>Hello</button>
         <button>Herro</button>
         <button>Lol</button>
       </div>
       <div id="modal-content">
-          <div id="modal-columns">
-              <div class="modal-column">
-                  Det är ett välkänt faktum att läsare distraheras av läsbar text på en sida när man skall studera layouten. Poängen med Lorem Ipsum är att det ger ett normalt ordflöde, till skillnad från "Text här, Text här", och ger intryck av att vara läsbar text. Många publiseringprogram och webbutvecklare använder Lorem Ipsum som test-text, och en sökning efter "Lorem Ipsum" avslöjar många webbsidor under uteckling. Olika versioner har dykt upp under åren, ibland av olyckshändelse, ibland med flit (mer eller mindre humoristiska).
-              </div>
-              <div class="modal-column">
-                <div class="modal-code">
-                  <div class="code">class LolFace {
-        omg herro
-class LolFace {
-        omg herro
-      }
+        <div id="modal-columns">
+          <div class="modal-column">
+              Det är ett välkänt faktum att läsare distraheras av läsbar text på en sida när man skall studera layouten. Poängen med Lorem
+              Ipsum är att det ger ett normalt ordflöde, till skillnad från "Text här, Text här", och ger intryck av att
+              efter "Lorem Ipsum" avslöjar många webbsidor under uteckling. Olika versioner har dykt upp under åren, ibland
+              av olyckshändelse, ibland med flit (mer eller mindre humoristiska). av olyckshändelse, ibland med flit (mer eller mindre humoristiska). av olyckshändelse, ibland med flit (mer eller mindre humoristiska).
+              vara läsbar text. Många publiseringprogram och webbutvecklare använder Lorem Ipsum som test-text, och en sökning
+              avslöjar många webbsidor under uteckling. Olika versioner har dykt upp under åren, ibland
+              av olyckshändelse, ibland med flit (mer eller mindre humoristiska). av olyckshändelse, ibland med flit (mer eller mindre humoristiska). av olyckshändelse, ibland med flit (mer eller mindre humoristiska).
+              vara läsbar text. Många publiseringprogram och webbutvecklare använder Lorem Ipsum som test-text, och en sökning
 
-      //
-      //
-      //
-      //
-      //
-      //
-
-      //
-      //
-      //
-      //
-      //
-      //
-
-      //
-      //
-      //
-      //
-      //
-      //
-                  </div>
-                </div>
-              </div>
-            </div>
-          <div id="modal-bottom-button">
-            <button>Close</button>
           </div>
+          <div class="modal-column">
+
+              class LolFace { omg herro class LolFace { omg herro } // // // // // // // // // // // // // // // // // //
+
+          </div>
+        </div>
+        <div id="modal-bottom-button">
+          <button>Close</button>
+        </div>
       </div>
-
     </div>
-
-
 
     <div id="left-panel" class="side-panel">
       <div id="settings-container">
