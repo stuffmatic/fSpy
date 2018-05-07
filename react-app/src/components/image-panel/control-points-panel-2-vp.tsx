@@ -43,7 +43,6 @@ export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
           controlState={
             this.rel2AbsVanishingPointControlState(vp2Points)
           }
-          vanishingPointPosition={null}
           onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: number, position: Point2D) => {
             if (!quadModeEnabled) {
               this.invokeVanishingLineEndpointDragCallback(
@@ -64,7 +63,6 @@ export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
           controlState={
             this.rel2AbsVanishingPointControlState(state.vanishingPoints[0])
           }
-          vanishingPointPosition={null}
           onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: number, position: Point2D) => {
             this.invokeVanishingLineEndpointDragCallback(
               vanishingPointIndex,
@@ -95,7 +93,6 @@ export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
             controlState={
               this.rel2AbsVanishingPointControlState(state.vanishingPoints[2])
             }
-            vanishingPointPosition={null}
             onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: number, position: Point2D) => {
               this.invokeVanishingLineEndpointDragCallback(
                 vanishingPointIndex,
