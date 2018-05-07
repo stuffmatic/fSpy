@@ -27,7 +27,7 @@ export default class ControlPoint extends React.PureComponent<ControlPointProps>
   render() {
     return (
       <circle
-        r="4"
+        r="5"
         cx={this.props.position.x}
         cy={this.props.position.y}
         onMouseDown={this.handleMouseDown}
