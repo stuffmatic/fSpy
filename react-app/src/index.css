@@ -28,20 +28,6 @@ textarea {
             box-sizing: border-box;
 }
 
-.button {
-  width: 100%;
-  min-width: 80px;
-  max-width: 230px;
-  height: 25px;
-  background-color: #e0e0e0;
-  outline: none;
-  border: none;
-
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-}
-
 #app-container {
   display: flex;
   height: 100vh;
