@@ -11,6 +11,7 @@ import { CalibrationMode } from '../types/global-settings';
 import ResultPanel from '../components/result-panel/result-panel'
 
 interface ResultContainerProps {
+  isVisible:boolean
   calibrationMode: CalibrationMode
   calibrationSettings1VP: CalibrationSettings1VP
   controlPointsState1VP: ControlPointsState1VP
@@ -25,6 +26,9 @@ interface ResultContainerProps {
 
 class ResultContainer extends React.PureComponent<ResultContainerProps> {
   render() {
+    if (!this.props.isVisible) {
+      return null
+    }
 
     //TODO: move this somewhere else
     let result: CalibrationResult = {

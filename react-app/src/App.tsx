@@ -11,6 +11,7 @@ import { AppAction, setExportDialogVisibility } from './actions';
 
 interface AppProps {
   isExportDialogOpen: boolean
+  sidePanelsAreVisible: boolean
   onExportDialogVisiblityChange(isVisible: boolean): void
 }
 
@@ -21,9 +22,9 @@ function App(props: AppProps) {
         isVisible={props.isExportDialogOpen}
         onOpen={() => props.onExportDialogVisiblityChange(true)}
         onClose={() => props.onExportDialogVisiblityChange(false)} />
-      <SettingsContainer />
+      <SettingsContainer isVisible={props.sidePanelsAreVisible} />
       <ImageContainer />
-      <ResultContainer />
+      <ResultContainer isVisible={props.sidePanelsAreVisible} />
     </div>
   );
 }

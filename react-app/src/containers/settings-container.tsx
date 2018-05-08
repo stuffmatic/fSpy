@@ -8,6 +8,7 @@ import { StoreState } from '../types/store-state';
 import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode, Axis } from '../types/calibration-settings';
 
 export interface SettingsContainerProps {
+  isVisible:boolean
   globalSettings: GlobalSettings
   calibrationSettings1VP: CalibrationSettings1VP
   calibrationSettings2VP: CalibrationSettings2VP
@@ -25,6 +26,9 @@ export interface SettingsContainerProps {
 
 class SettingsContainer extends React.PureComponent<SettingsContainerProps> {
   render() {
+    if (!this.props.isVisible) {
+      return null
+    }
     return (
       <SettingsPanel { ...this.props }/>
     )
