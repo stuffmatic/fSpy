@@ -292,8 +292,8 @@ export default class Solver extends SolverBase {
     Fv[1] -= P[1]
     */
 
-    let OFu = new Vector3D(Fu.x - P.x, Fu.y - P.y, f)
-    let OFv = new Vector3D(Fv.x - P.x, Fv.y - P.y, f)
+    let OFu = new Vector3D(Fu.x - P.x, Fu.y - P.y, -f)
+    let OFv = new Vector3D(Fv.x - P.x, Fv.y - P.y, -f)
 
     //print("matrix dot", dot(OFu, OFv))
 
@@ -303,23 +303,19 @@ export default class Solver extends SolverBase {
     let s2 = OFv.length
     let vpRc = OFv.normalized()
 
-    let wpRc = new Vector3D(
-      upRc.y * vpRc.z - upRc.z * vpRc.y,
-      upRc.z * vpRc.x - upRc.x * vpRc.z,
-      upRc.x * vpRc.y - upRc.y * vpRc.x
-    )
+    let wpRc =  upRc.cross(vpRc)
 
     let M = new Transform()
-    M.matrix[0][0] = Fu.x / s1
-    M.matrix[0][1] = Fv.x / s2
+    M.matrix[0][0] = OFu.x / s1
+    M.matrix[0][1] = OFv.x / s2
     M.matrix[0][2] = wpRc.x
 
-    M.matrix[1][0] = Fu.y / s1
-    M.matrix[1][1] = Fv.y / s2
+    M.matrix[1][0] = OFu.y / s1
+    M.matrix[1][1] = OFv.y / s2
     M.matrix[1][2] = wpRc.y
 
-    M.matrix[2][0] = f / s1
-    M.matrix[2][1] = f / s2
+    M.matrix[2][0] = -f / s1
+    M.matrix[2][1] = -f / s2
     M.matrix[2][2] = wpRc.z
 
     return M

@@ -36,6 +36,7 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
     let projectedAxisEndpoints = axisEndpoints.map((vector:Vector3D) => this.project(vector))
     let origin = new Vector3D()
     let projectedOrigin = this.project(origin)
+
     //TODO: DRY
     return (
       <g>
@@ -65,12 +66,12 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   }
 
   private project(point:Vector3D):Point2D {
-    let scaled = point.multipliedByScalar(0.0005 * this.props.width)
     if (this.props.cameraTransform) {
-      this.props.cameraTransform.transformVector(scaled)
+      this.props.cameraTransform.transformVector(point)
     }
+
     return CoordinatesUtil.convert(
-      scaled,
+      point,
       ImageCoordinateFrame.ImagePlane,
       ImageCoordinateFrame.Absolute,
       this.props.width,

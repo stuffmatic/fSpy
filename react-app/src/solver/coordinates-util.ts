@@ -24,6 +24,7 @@ export enum ImageCoordinateFrame {
    * the image. 0,0 corresponds to the image midoint.
    * For a tall image, x min = -r, x max = r, y min = -1 and y max = 1
    * For a wide image, x min = -1, x max = 1, y min = -1/aspect and y max = 1/aspect
+   * The positive y direction is up
    */
   ImagePlane
 }
@@ -102,14 +103,14 @@ export default class CoordinatesUtil {
       //tall image. [0, 1] x [0, 1] => [-aspect, aspect] x [-1, 1]
       return {
         x: (-1 + 2 * point.x) * aspectRatio,
-        y: -1 + 2 * point.y
+        y: 1 - 2 * point.y
       }
     }
     else {
       //wide image. [0, 1] x [0, 1] => [-1, 1] x [-1 / aspect, 1 / aspect]
       return {
         x: -1 + 2 * point.x,
-        y: (-1 + 2 * point.y) / aspectRatio
+        y: (1 - 2 * point.y) / aspectRatio
       }
     }
   }
@@ -120,14 +121,14 @@ export default class CoordinatesUtil {
       //tall image. [-aspect, aspect] x [-1, 1] => [0, 1] x [0, 1]
       return {
         x: 0.5 * (point.x / imageAspect + 1),
-        y: 0.5 * (point.y + 1)
+        y: 0.5 * (-point.y + 1)
       }
     }
     else {
       //wide image. [-1, 1] x [-1 / aspect, 1 / aspect] => [0, 1] x [0, 1]
       return {
         x: 0.5 * (point.x + 1),
-        y: 0.5 * (point.y * imageAspect + 1)
+        y: 0.5 * (-point.y * imageAspect + 1)
       }
     }
   }
