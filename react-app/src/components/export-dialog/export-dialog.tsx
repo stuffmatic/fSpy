@@ -1,9 +1,11 @@
 import * as React from 'react';
+
 import Button from './../common/button'
 import { Palette } from '../../style/palette';
 import Exporter from '../../exporters/exporter';
 import BlenderExporter from '../../exporters/blender-exporter';
 import JSONExporter from '../../exporters/json-exporter';
+import * as hljs from 'highlight.js'
 
 interface ExportDialogProps {
   isVisible: boolean
@@ -28,9 +30,17 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
 
   constructor(props: ExportDialogProps) {
     super(props)
-
-
   }
+
+  componentDidMount() {
+    hljs.configure(
+      {
+        useBR: true,
+        languages: this.state.exporters.map((exporter:Exporter) => exporter.codeLanguage)
+      }
+    )
+  }
+
 
   render() {
     let modalColumnStyle: React.CSSProperties = {
@@ -50,6 +60,7 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
       color: Palette.white,
       fontFamily: "Roboto Mono"
     }
+
 
     return (
       <div id="modal-container" style={{
@@ -71,6 +82,7 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
           { this.state.exporters.map((exporter:Exporter, index:number) => {
             return (
               <Button
+                isSelected= {index == this.state.selectedExporterIndex}
                 title={exporter.name}
                 onClick={() => {
                   this.setState(
@@ -96,15 +108,24 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
           }}>
             <div style={modalColumnStyle}>
               <div style={modalColumnContentStyle} >
-                { this.state.exporters[this.state.selectedExporterIndex].instructions }
+                {  this.state.exporters[this.state.selectedExporterIndex].instructions }
               </div>
             </div>
 
             <div style={modalColumnStyle}>
               <div style={modalColumnCodeContentStyle}>
-                <div style={{ padding: "10px" }}>
-                { this.state.exporters[this.state.selectedExporterIndex].code }
-                </div>
+                <div
+                  dangerouslySetInnerHTML={
+                    {
+                      __html: hljs.highlight(
+                        this.state.exporters[this.state.selectedExporterIndex].codeLanguage,
+                          this.state.exporters[this.state.selectedExporterIndex].code
+                        ).value
+                    }
+                  }
+                  id="code"
+                  style={{ padding: "10px" }} />
+
               </div>
             </div>
           </div>

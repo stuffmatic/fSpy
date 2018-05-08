@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/highlight.js": "^9.12.2",
     "@types/react-measure": "^2.0.2",
     "@types/react-redux": "^5.0.16",
     "@types/react-select": "^1.2.6",
+    "highlight.js": "^9.12.0",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-measure": "^2.0.2",

@@ -1,9 +1,11 @@
 import * as React from 'react';
+import { Palette } from '../../style/palette';
 
 interface ButtonProps {
   title: string
   onClick(): void
   fillWidth?: boolean
+  isSelected?:boolean
 }
 
 export default function Button(props: ButtonProps) {
@@ -11,7 +13,7 @@ export default function Button(props: ButtonProps) {
   let style = {
     minWidth: "90px",
     height: "25px",
-    backgroundColor: "#e0e0e0",
+    backgroundColor: props.isSelected ? Palette.white : Palette.gray,
     outline: "none",
     border: "none",
     boxShadow: "none"

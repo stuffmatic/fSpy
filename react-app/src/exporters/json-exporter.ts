@@ -8,6 +8,10 @@ export default class JSONExporter extends Exporter {
     return "Here's JSON!"
   }
   get code():string {
-    return '{ omg: "Check out this json code" }'
+    return `{"omg": "hello!" }
+    `
+  }
+  get codeLanguage(): string {
+    return "json"
   }
 }
