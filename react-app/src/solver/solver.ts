@@ -236,7 +236,7 @@ export default class Solver extends SolverBase {
       }
     }
 
-    return 2 * Math.atan(d / 2 * fRelative)
+    return 2 * Math.atan(d / (2 * fRelative))
 
   }
 
