@@ -10,12 +10,16 @@ import { Palette } from '../../style/palette';
 export default class ControlPointsPanel1VP extends ControlPointsPanelBase {
   render() {
     let state = this.props.controlPointsState1VP
+    let principalPoint:Point2D | null = null
+    if (this.props.calibrationSettings1VP.principalPointMode == PrincipalPointMode1VP.Manual) {
+      principalPoint = state.principalPoint
+    }
 
     return (
       <g>
         {
           this.renderPrincipalPointControl(
-            state.principalPoint,
+            principalPoint,
             this.props.calibrationSettings1VP.principalPointMode == PrincipalPointMode1VP.Manual
           )
         }

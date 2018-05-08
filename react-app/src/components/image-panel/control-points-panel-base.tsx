@@ -11,48 +11,48 @@ type ControlPointsPanelProps = ControlPointsContainerDimensionProps & ControlPoi
 
 export default class ControlPointsPanelBase extends React.PureComponent<ControlPointsPanelProps> {
 
-  protected renderPrincipalPointControl(position: Point2D, isEnabled: boolean) {
+  protected renderPrincipalPointControl(position: Point2D | null, isEnabled: boolean) {
     return (
       <PrincipalPointControl
-          position={
-            CoordinatesUtil.convert(
-              isEnabled ? position : {x: 0.5, y: 0.5 },
-              ImageCoordinateFrame.Relative,
-              ImageCoordinateFrame.Absolute,
-              this.props.width,
-              this.props.height
-            )
-          }
-          enabled={isEnabled}
-          dragCallback={(position: Point2D) => {
-            this.invokeControlPointDragCallback(
-              position,
-              this.props.onPrincipalPointDrag
-            )
-          }}
+        position={
+          CoordinatesUtil.convert(
+            position ? position : { x: 0.5, y: 0.5 }, //use default position if no position is specified
+            ImageCoordinateFrame.Relative,
+            ImageCoordinateFrame.Absolute,
+            this.props.width,
+            this.props.height
+          )
+        }
+        enabled={isEnabled}
+        dragCallback={(position: Point2D) => {
+          this.invokeControlPointDragCallback(
+            position,
+            this.props.onPrincipalPointDrag
+          )
+        }}
       />
     )
   }
 
-  protected renderOriginControl(position:Point2D) {
+  protected renderOriginControl(position: Point2D) {
     return (
       <OriginControl
-          position={
-            CoordinatesUtil.convert(
-              position,
-              ImageCoordinateFrame.Relative,
-              ImageCoordinateFrame.Absolute,
-              this.props.width,
-              this.props.height
-            )
-          }
-          dragCallback={(position: Point2D) => {
-            this.invokeControlPointDragCallback(
-              position,
-              this.props.onOriginDrag
-            )
-          }}
-        />
+        position={
+          CoordinatesUtil.convert(
+            position,
+            ImageCoordinateFrame.Relative,
+            ImageCoordinateFrame.Absolute,
+            this.props.width,
+            this.props.height
+          )
+        }
+        dragCallback={(position: Point2D) => {
+          this.invokeControlPointDragCallback(
+            position,
+            this.props.onOriginDrag
+          )
+        }}
+      />
     )
   }
 

@@ -4,6 +4,7 @@ import VanishingPointControl from './vanishing-point-control'
 import Point2D from '../../solver/point-2d';
 import { PrincipalPointMode2VP } from '../../types/calibration-settings';
 import { Palette } from '../../style/palette';
+import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util';
 
 export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
   render() {
@@ -25,11 +26,32 @@ export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
       }
     }
 
+    let principalPoint:Point2D | null = null
+    switch (this.props.calibrationSettings2VP.principalPointMode) {
+      case PrincipalPointMode2VP.FromThirdVanishingPoint:
+        principalPoint = this.props.calibrationResult.calibrationResult2VP.cameraParameters.computedPrincipalPoint
+        if (principalPoint) {
+          principalPoint = CoordinatesUtil.convert(
+            principalPoint,
+            ImageCoordinateFrame.ImagePlane,
+            ImageCoordinateFrame.Relative,
+            this.props.width,
+            this.props.height
+          )
+        }
+        break
+      case PrincipalPointMode2VP.Manual:
+        principalPoint = state.principalPoint
+        break
+      default:
+        principalPoint = null
+    }
+
     return (
       <g>
         {
           this.renderPrincipalPointControl(
-            state.principalPoint,
+            principalPoint!,
             this.props.calibrationSettings2VP.principalPointMode == PrincipalPointMode2VP.Manual
           )
         }
