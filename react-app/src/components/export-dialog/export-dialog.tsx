@@ -3,7 +3,13 @@ import Button from './../common/button'
 import { Palette } from '../../style/palette';
 
 
-export default function ExportDialog() {
+interface ExportDialogProps {
+  isVisible:boolean
+  onOpen():void
+  onClose():void
+}
+
+export default function ExportDialog(props: ExportDialogProps) {
   let modalColumnStyle: React.CSSProperties = {
     flexBasis: "50%",
     padding: "25px",
@@ -33,7 +39,7 @@ export default function ExportDialog() {
       height: "100%",
       overflow: "hidden",
       backgroundColor: "rgba(0, 0, 0, 0.8)",
-      display: "flex",
+      display: props.isVisible ? "flex" : "none",
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "center"
@@ -118,7 +124,7 @@ export default function ExportDialog() {
           justifyContent: "center",
           flexGrow: 1
         }}>
-          <Button title="Close" onClick={() => { }} />
+          <Button title="Close" onClick={() => { props.onClose() }} />
         </div>
       </div>
     </div>

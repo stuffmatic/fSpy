@@ -1,7 +1,7 @@
 import * as React from 'react';
 import CalibrationResult from '../../types/calibration-result';
 import { CalibrationMode } from '../../types/global-settings';
-import ResultSectionBottom from './result-section-bottom'
+import Button from './../common/button'
 import TableRow from './table-row'
 import MatrixView from './matrix-view'
 import BulletList, { BulletListType } from './bullet-list'
@@ -12,6 +12,7 @@ interface ResultPanelProps {
   calibrationMode: CalibrationMode
   calibrationResult: CalibrationResult
   image: ImageState
+  onExportClicked():void
 }
 
 export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
@@ -63,7 +64,9 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> 
           </div>
           <div>
             <div>
-              <ResultSectionBottom />
+              <div className="panel-section top-border">
+                <Button title={"Export"} onClick={() => {this.props.onExportClicked() }} />
+              </div>
             </div>
 
           </div>

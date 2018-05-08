@@ -29,7 +29,10 @@ export enum ActionTypes {
   ADJUST_VANISHING_LINE = "ADJUST_VANISHING_LINE",
 
   //
-  SET_CALIBRATION_RESULT = "SET_CALIBRATION_RESULT"
+  SET_CALIBRATION_RESULT = "SET_CALIBRATION_RESULT",
+
+  //
+  SET_EXPORT_DIALOG_VISIBILITY = "SET_EXPORT_DIALOG_VISIBILITY"
 }
 
 
@@ -268,6 +271,20 @@ export function setCalibrationResult(result:CalibrationResult): SetCalibrationRe
   }
 }
 
+//
+export interface SetExportDialogVisibility {
+  type: ActionTypes.SET_EXPORT_DIALOG_VISIBILITY,
+  isVisible: boolean
+}
+
+export function setExportDialogVisibility(isVisible:boolean): SetExportDialogVisibility {
+  return {
+    type: ActionTypes.SET_EXPORT_DIALOG_VISIBILITY,
+    isVisible: isVisible
+  }
+}
+
+
 //Define a type covering all actions
 export type AppAction =
   SetCalibrationMode |
@@ -285,4 +302,5 @@ export type AppAction =
   SetPrincipalPoint |
   AdjustHorizon |
   AdjustVanishingLine |
-  SetCalibrationResult
+  SetCalibrationResult | 
+  SetExportDialogVisibility

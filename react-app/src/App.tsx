@@ -5,22 +5,39 @@ import SettingsContainer from './containers/settings-container';
 import ExportDialog from './components/export-dialog/export-dialog';
 
 import './App.css';
+import { StoreState } from './types/store-state';
+import { Dispatch, connect } from 'react-redux';
+import { AppAction, setExportDialogVisibility } from './actions';
 
-/*const AppStyle: React.CSSProperties = {
-  userSelect: "none",
-  display: "flex",
-  alignItems: "stretch"
-}*/
+interface AppProps {
+  isExportDialogOpen: boolean
+  onExportDialogVisiblityChange(isVisible: boolean): void
+}
 
-function App() {
+function App(props: AppProps) {
   return (
     <div id="app-container">
-      <ExportDialog />
+      <ExportDialog
+        isVisible={props.isExportDialogOpen}
+        onOpen={() => props.onExportDialogVisiblityChange(true)}
+        onClose={() => props.onExportDialogVisiblityChange(false)} />
       <SettingsContainer />
-      <ImageContainer  />
+      <ImageContainer />
       <ResultContainer />
     </div>
   );
 }
 
-export default App;
+export function mapStateToProps(state: StoreState) {
+  return state.uiState
+}
+
+export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
+  return {
+    onExportDialogVisiblityChange: (isVisible: boolean) => {
+      dispatch(setExportDialogVisibility(isVisible))
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

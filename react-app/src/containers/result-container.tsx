@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import Solver from '../solver/solver';
 import CalibrationResult from '../types/calibration-result';
-import { AppAction, setCalibrationResult } from '../actions';
+import { AppAction, setCalibrationResult, setExportDialogVisibility } from '../actions';
 import { CalibrationSettings1VP, CalibrationSettings2VP } from '../types/calibration-settings';
 import { ControlPointsState1VP, ControlPointsState2VP } from '../types/control-points-state';
 import { ImageState } from '../types/image-state';
@@ -20,6 +20,7 @@ interface ResultContainerProps {
 
   image: ImageState
   onComputedResult(result: CalibrationResult): void
+  onExportClicked():void
 }
 
 class ResultContainer extends React.PureComponent<ResultContainerProps> {
@@ -46,6 +47,7 @@ class ResultContainer extends React.PureComponent<ResultContainerProps> {
         calibrationMode={this.props.calibrationMode}
         calibrationResult={result}
         image={this.props.image}
+        onExportClicked={this.props.onExportClicked}
       />
     )
   }
@@ -66,6 +68,9 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
   return {
     onComputedResult: (result: CalibrationResult) => {
       dispatch(setCalibrationResult(result))
+    },
+    onExportClicked: () => {
+      dispatch(setExportDialogVisibility(true))
     }
   }
 }
