@@ -9,8 +9,13 @@ export default class BlenderExporter extends Exporter {
   }
   get code(): string {
     return `import lolface
-    a = "hello!"
-    `
+a = "hello!"
+b = [1, 2, 3]
+print "OMG"
+
+def hello():
+  print "Hello"
+`
   }
   get codeLanguage(): string {
     return "python"

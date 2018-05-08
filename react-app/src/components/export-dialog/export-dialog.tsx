@@ -35,7 +35,6 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
   componentDidMount() {
     hljs.configure(
       {
-        useBR: true,
         languages: this.state.exporters.map((exporter:Exporter) => exporter.codeLanguage)
       }
     )
@@ -56,6 +55,7 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
     let modalColumnCodeContentStyle: React.CSSProperties = {
       overflow: "auto",
       height: "100%",
+      whiteSpace: "pre",
       backgroundColor: Palette.black,
       color: Palette.white,
       fontFamily: "Roboto Mono"
