@@ -58,7 +58,8 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
       whiteSpace: "pre",
       backgroundColor: Palette.black,
       color: Palette.white,
-      fontFamily: "Roboto Mono"
+      fontFamily: "Roboto Mono",
+      userSelect: "text"
     }
 
 

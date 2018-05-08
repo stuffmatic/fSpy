@@ -13,6 +13,8 @@ a = "hello!"
 b = [1, 2, 3]
 print "OMG"
 
+#OMG
+#hello
 def hello():
   print "Hello"
 `
