@@ -5,6 +5,7 @@ export default abstract class Exporter {
   }
 
   abstract get name():string
+  //TODO: return react element
   abstract get instructions():string
   abstract get code():string
 

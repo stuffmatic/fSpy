@@ -8,6 +8,7 @@ import Transform from "./transform";
 import Vector3D from "./vector-3d";
 import CoordinatesUtil, { ImageCoordinateFrame } from "./coordinates-util";
 
+
 /*
 The solver handles estimation of focal length and camera orientation
 from input line segments. All sections numbers, equations numbers etc
@@ -179,6 +180,9 @@ export default class Solver extends SolverBase {
       vanishingPoints[0], vanishingPoints[1], fRelative, principalPoint
     )
 
+
+
+    //Assign axes to vanishing point
     let basisChangeTransform = new Transform()
     let row1 = this.axisVector(settings.vanishingPointAxes[0])
     let row2 = this.axisVector(settings.vanishingPointAxes[1])
@@ -195,6 +199,7 @@ export default class Solver extends SolverBase {
 
     result.cameraParameters.cameraTransform = basisChangeTransform.leftMultiplied(cameraTransform)
 
+
     result.cameraParameters.horizontalFieldOfView = this.computeFieldOfView(
       image.width!,
       image.height!,
@@ -207,6 +212,26 @@ export default class Solver extends SolverBase {
       fRelative,
       true
     )
+
+
+    //TODO: REMOVE THIS
+    let lol = CoordinatesUtil.convert(
+      controlPoints.origin,
+      ImageCoordinateFrame.Relative,
+      ImageCoordinateFrame.ImagePlane,
+      image.width!,
+      image.height!
+    )
+
+    let k = Math.tan(0.5 * result.cameraParameters.horizontalFieldOfView)
+    let lolz = new Vector3D(k * lol.x, k * lol.y, -1)
+
+
+    //result.cameraParameters.cameraTransform.transposed().transformVector(lolz)
+    result.cameraParameters.cameraTransform.matrix[0][3] = 10 * lolz.x
+    result.cameraParameters.cameraTransform.matrix[1][3] = 10 * lolz.y
+    result.cameraParameters.cameraTransform.matrix[2][3] = 10 * lolz.z
+
 
     if (Math.abs(cameraTransform.determinant - 1) > 1e-5) {
       result.warnings.push("Unreliable camera transform, determinant " + cameraTransform.determinant.toFixed(5))

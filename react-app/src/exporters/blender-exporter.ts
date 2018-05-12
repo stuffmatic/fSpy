@@ -5,18 +5,42 @@ export default class BlenderExporter extends Exporter {
     return "Blender"
   }
   get instructions(): string {
-    return "Do stuff in Blender, copy paste etc omg lolz"
+    return `This is a simple lol
+    lol
+
+    get it?
+`
   }
   get code(): string {
-    return `import lolface
-a = "hello!"
-b = [1, 2, 3]
-print "OMG"
+    return `import bpy
 
-#OMG
-#hello
-def hello():
-  print "Hello"
+#Get the active object, assuming it's a camera
+camera = bpy.context.active_object
+
+#Set the camera field of view
+camera.data.lens_unit = 'FOV'
+fov_in_degrees = 40
+camera.data.lens = fov_in_degrees
+
+#Set the orientation and location
+#of the camera
+camera.matrix_world = [
+  [1, 0, 0, 1],
+  [0, 1, 0, 2],
+  [0, 0, 1, 3],
+  [0, 0, 0, 1]
+]
+
+#Set the principal point
+camera.data.shift_x = 0
+camera.data.shift_y = 0
+
+#Set the rendered image size
+#to match the calibration image
+render_settings = bpy.context.scene.render
+render_settings.resolution_x = 100
+render_settings.resolution_y = 100
+
 `
   }
   get codeLanguage(): string {

@@ -28,8 +28,8 @@ export default class Transform {
       [
         [s, 0, 0, 0],
         [0, s, 0, 0],
-        [0, 0, -(far + near) / (far - near), -1],
-        [0, 0, -2 * far * near / (far - near), 0]
+        [0, 0, -(far) / (far - near), -far * near / (far - near)],
+        [0, 0, -1, 0]
       ]
     )
   }

@@ -66,9 +66,25 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   }
 
   private project(point:Vector3D):Point2D {
+    let ctm = new Transform()
+    console.log("projecting point " + JSON.stringify(point))
+
     if (this.props.cameraTransform) {
-      this.props.cameraTransform.transformVector(point)
+      ctm.leftMultiply(this.props.cameraTransform)
     }
+    console.log("   transformed point " + JSON.stringify(ctm.transformedVector(point)))
+
+    //let transformed = ctm.transformedVector(point)
+
+    let fov = this.props.horizontalFieldOfView!
+    let t = Transform.perspectiveProjection(
+      fov, 0.1, 10
+    )
+    ctm.leftMultiply(t)
+    ctm.transformVector(point, true)
+
+    console.log("   projected point " + JSON.stringify(point))
+    //point.multiplyByScalar(0.1)
 
     return CoordinatesUtil.convert(
       point,
