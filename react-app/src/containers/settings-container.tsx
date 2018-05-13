@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setNotes, setVanishingPointAxis1VP, setVanishingPointAxis2VP } from '../actions';
+import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setNotes, setVanishingPointAxis1VP, setVanishingPointAxis2VP, setGridFloorNormal } from '../actions';
 import SettingsPanel from '../components/settings-panel/settings-panel';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { StoreState } from '../types/store-state';
@@ -14,6 +14,7 @@ export interface SettingsContainerProps {
   calibrationSettings2VP: CalibrationSettings2VP
   onCalibrationModeChange(calibrationMode: CalibrationMode): void
   onImageOpacityChange(opacity: number): void
+  onGridFloorNormalChange(axis:Axis | null):void
   onNotesChange(notes: string): void
   onHorizonModeChange(horizonMode: HorizonMode): void
   onPrincipalPointModeChange1VP(principalPointMode: PrincipalPointMode1VP): void
@@ -50,6 +51,9 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     },
     onImageOpacityChange: (opacity: number) => {
       dispatch(setImageOpacity(opacity))
+    },
+    onGridFloorNormalChange: (axis:Axis | null) => {
+      dispatch(setGridFloorNormal(axis))
     },
     onNotesChange: (notes: string) => {
       dispatch(setNotes(notes))

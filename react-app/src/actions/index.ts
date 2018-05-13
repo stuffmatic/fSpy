@@ -8,6 +8,7 @@ export enum ActionTypes {
   //Global settings actions
   SET_CALIBRATION_MODE = "SET_CALIBRATION_MODE",
   SET_IMAGE_OPACITY = "SET_IMAGE_OPACITY",
+  SET_GRID_FLOOR_NORMAL = "SET_GRID_FLOOR_NORMAL",
   SET_NOTES = "SET_NOTES",
 
   //Image loading actions
@@ -59,6 +60,19 @@ export function setImageOpacity(opacity: number): SetImageOpacity {
   return {
     type: ActionTypes.SET_IMAGE_OPACITY,
     opacity: opacity
+  }
+}
+
+//Set grid floor noraml
+export interface SetGridFloorNormal {
+  type: ActionTypes.SET_GRID_FLOOR_NORMAL
+  axis: Axis | null
+}
+
+export function setGridFloorNormal(axis: Axis | null): SetGridFloorNormal {
+  return {
+    type: ActionTypes.SET_GRID_FLOOR_NORMAL,
+    axis: axis
   }
 }
 
@@ -289,6 +303,7 @@ export function setExportDialogVisibility(isVisible:boolean): SetExportDialogVis
 export type AppAction =
   SetCalibrationMode |
   SetImageOpacity |
+  SetGridFloorNormal |
   SetNotes |
   SetImageURL |
   SetImageSize |

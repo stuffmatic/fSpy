@@ -4,13 +4,13 @@ import Point2D from '../../solver/point-2d';
 import { Palette } from '../../style/palette';
 
 interface PrincipalPointControlProps {
-  position:Point2D
-  enabled:boolean
-  dragCallback(position:Point2D): void
+  position: Point2D
+  enabled: boolean
+  dragCallback(position: Point2D): void
 }
 
 export default function PrincipalPointControl(props: PrincipalPointControlProps) {
-return (
+  return (
     <ControlPoint
       position={props.position}
       dragCallback={props.dragCallback}

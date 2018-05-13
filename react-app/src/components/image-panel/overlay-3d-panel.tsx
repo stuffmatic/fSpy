@@ -5,24 +5,30 @@ import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-
 import { Palette } from '../../style/palette';
 import { CameraParametersBase } from '../../solver/calibration-result';
 import { Axis } from '../../types/calibration-settings';
+import { GlobalSettings } from '../../types/global-settings';
 
 interface Overlay3DPanelProps {
   width: number
   height: number
   cameraParameters:CameraParametersBase
+  globalSettings:GlobalSettings
 }
 
 export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelProps> {
   render() {
     return (
       <g>
-        {this.renderGridFloor(Axis.PositiveX)}
+        {this.renderGridFloor(this.props.globalSettings.gridFloorNormal)}
         {this.renderAxes()}
       </g>
     )
   }
 
-  private renderGridFloor(normalAxis:Axis) {
+  private renderGridFloor(normalAxis:Axis | null) {
+    if (!normalAxis) {
+      return null
+    }
+
     let cellCount = 10
     let cellSize = 0.5
     let gridLines3D:[Vector3D, Vector3D][] = []
@@ -73,6 +79,7 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
       </g>
     )
   }
+
 
   private renderAxes() {
     let axisLength = 1

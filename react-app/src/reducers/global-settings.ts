@@ -23,6 +23,11 @@ export function globalSettings(state: GlobalSettings, action: AppAction): Global
         ...state,
         notes: action.notes
       }
+    case ActionTypes.SET_GRID_FLOOR_NORMAL:
+      return {
+        ...state,
+        gridFloorNormal: action.axis
+      }
   }
 
   return state;

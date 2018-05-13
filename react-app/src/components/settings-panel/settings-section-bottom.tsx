@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { SettingsContainerProps } from '../../containers/settings-container';
 import NotesTextArea from './notes-text-area'
+import GridFloorNormalDropdown from './grid-floor-normal-dropdown'
+import { Axis } from '../../types/calibration-settings';
 
 export default class SettingsSectionBottom extends React.PureComponent<SettingsContainerProps> {
   render() {
@@ -16,6 +18,18 @@ export default class SettingsSectionBottom extends React.PureComponent<SettingsC
               this.props.onImageOpacityChange(event.target.checked ? 0.2 : 1)
             }}
           /> Dimmed
+        </div>
+
+        <div className="panel-row">
+          Grid floor
+        </div>
+        <div className="panel-row">
+          <GridFloorNormalDropdown
+            selectedAxis={this.props.globalSettings.gridFloorNormal}
+            onChange={(axis:Axis | null) => {
+              this.props.onGridFloorNormalChange(axis)
+            }}
+          />
         </div>
 
         <div className="panel-row">
