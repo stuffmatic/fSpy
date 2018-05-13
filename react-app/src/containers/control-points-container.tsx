@@ -64,8 +64,7 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
         <Overlay3DPanel
           width={this.props.width}
           height={this.props.height}
-          cameraTransform={this.props.calibrationResult.calibrationResult2VP.cameraParameters.cameraTransform}
-          horizontalFieldOfView={this.props.calibrationResult.calibrationResult2VP.cameraParameters.horizontalFieldOfView} />
+          cameraParameters={this.props.calibrationResult.calibrationResult2VP.cameraParameters} />
         {controlPointsPanel}
       </svg>
     )

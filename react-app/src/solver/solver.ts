@@ -71,7 +71,8 @@ export default class Solver extends SolverBase {
         horizontalFieldOfView: null,
         verticalFieldOfView: null,
         relativeFocalLength: null,
-        vanishingPoint: null
+        vanishingPoint: null,
+        principalPoint: {x: 0, y: 0}
       }
     }
 
@@ -116,7 +117,7 @@ export default class Solver extends SolverBase {
         verticalFieldOfView: null,
         relativeFocalLength: null,
         vanishingPoints: null,
-        computedPrincipalPoint: null
+        principalPoint: {x: 0, y: 0}
       }
     }
 
@@ -140,11 +141,10 @@ export default class Solver extends SolverBase {
     }
 
     //Get the principal point
-    let principalPoint: Point2D = { x: 0, y: 0 }
-    let computedPrincipalPoint: Point2D | null = null
+
     switch (settings.principalPointMode) {
       case PrincipalPointMode2VP.Manual:
-        principalPoint = CoordinatesUtil.convert(
+        result.cameraParameters.principalPoint = CoordinatesUtil.convert(
           controlPoints.principalPoint,
           ImageCoordinateFrame.Relative,
           ImageCoordinateFrame.ImagePlane,
@@ -153,13 +153,12 @@ export default class Solver extends SolverBase {
         )
         break
       case PrincipalPointMode2VP.FromThirdVanishingPoint:
-        let result = this.computeVanishingPoints(image, [controlPoints.vanishingPoints[2]], errors)
-        if (result) {
-          let thirdVanishingPoint = result[0]
-          principalPoint = MathUtil.triangleOrthoCenter(
+        let vanishingPointz = this.computeVanishingPoints(image, [controlPoints.vanishingPoints[2]], errors)
+        if (vanishingPointz) {
+          let thirdVanishingPoint = vanishingPointz[0]
+          result.cameraParameters.principalPoint = MathUtil.triangleOrthoCenter(
             vanishingPoints[0], vanishingPoints[1], thirdVanishingPoint
           )
-          computedPrincipalPoint = principalPoint
         }
         break
     }
@@ -169,15 +168,14 @@ export default class Solver extends SolverBase {
       return result
     }
 
-    result.cameraParameters.computedPrincipalPoint = computedPrincipalPoint
 
     let fRelative = this.computeFocalLength(
-      vanishingPoints[0], vanishingPoints[1], principalPoint
+      vanishingPoints[0], vanishingPoints[1], result.cameraParameters.principalPoint
     )! //TODO: check for null
     result.cameraParameters.relativeFocalLength = fRelative
 
     let cameraTransform = this.computeCameraRotationMatrix(
-      vanishingPoints[0], vanishingPoints[1], fRelative, principalPoint
+      vanishingPoints[0], vanishingPoints[1], fRelative, result.cameraParameters.principalPoint
     )
 
 
@@ -214,9 +212,12 @@ export default class Solver extends SolverBase {
     )
 
 
-    //TODO: REMOVE THIS
+    //TODO: FIX THIS
     let lol = CoordinatesUtil.convert(
-      controlPoints.origin,
+      {
+        x: controlPoints.origin.x,
+        y: controlPoints.origin.y
+      },
       ImageCoordinateFrame.Relative,
       ImageCoordinateFrame.ImagePlane,
       image.width!,
@@ -224,7 +225,11 @@ export default class Solver extends SolverBase {
     )
 
     let k = Math.tan(0.5 * result.cameraParameters.horizontalFieldOfView)
-    let lolz = new Vector3D(k * lol.x, k * lol.y, -1)
+    let lolz = new Vector3D(
+      k * (lol.x - result.cameraParameters.principalPoint.x),
+      k * (lol.y - result.cameraParameters.principalPoint.y),
+      -1
+    )
 
 
     //result.cameraParameters.cameraTransform.transposed().transformVector(lolz)
@@ -233,7 +238,7 @@ export default class Solver extends SolverBase {
     result.cameraParameters.cameraTransform.matrix[2][3] = 10 * lolz.z
 
 
-    if (Math.abs(cameraTransform.determinant - 1) > 1e-5) {
+    if (Math.abs(cameraTransform.determinant - 1) > 1e-7) {
       result.warnings.push("Unreliable camera transform, determinant " + cameraTransform.determinant.toFixed(5))
     }
 
@@ -268,25 +273,24 @@ export default class Solver extends SolverBase {
   /**
    * Computes the focal length based on two vanishing points and a center of projection.
    * See 3.2 "Determining the focal length from a single image"
-   * @param Fu the first vanishing point in normalized image coordinates.
-   * @param Fv the second vanishing point in normalized image coordinates.
-   * @param P the center of projection in normalized image coordinates.
+   * @param Fu the first vanishing point in image plane coordinates.
+   * @param Fv the second vanishing point in image plane coordinates.
+   * @param P the center of projection in image plane coordinates.
    * @returns The relative focal length.
    */
   static computeFocalLength(Fu: Point2D, Fv: Point2D, P: Point2D): number | null {
     //compute Puv, the orthogonal projection of P onto FuFv
-    let dirFuFv = MathUtil.normalized(MathUtil.difference(Fu, Fv)) //  normalize([x - y for x, y in zip(Fu, Fv)])
-    let FvP = MathUtil.difference(P, Fv) //FvP = [x - y for x, y in zip(P, Fv)]
-    let proj = MathUtil.dot(dirFuFv, FvP)
-    let Puv = { // [proj * x + y for x, y in zip(dirFuFv, Fv)]
+    let dirFuFv = new Vector3D(Fu.x - Fv.x, Fu.y - Fv.y).normalized()
+    let FvP = new Vector3D(P.x - Fv.x, P.y - Fv.y)
+    let proj = dirFuFv.dot(FvP)
+    let Puv = {
       x: proj * dirFuFv.x + Fv.x,
       y: proj * dirFuFv.y + Fv.y
     }
 
-    let PPuv = MathUtil.distance({ x: 0, y: 0 }, MathUtil.difference(P, Puv)) // length([x - y for x, y in zip(P, Puv)])
-
-    let FvPuv = MathUtil.distance({ x: 0, y: 0 }, MathUtil.difference(Fv, Puv)) //length([x - y for x, y in zip(Fv, Puv)])
-    let FuPuv = MathUtil.distance({ x: 0, y: 0 }, MathUtil.difference(Fu, Puv)) //length([x - y for x, y in zip(Fu, Puv)])
+    let PPuv = new Vector3D(P.x - Puv.x, P.y - Puv.y).length
+    let FvPuv = new Vector3D(Fv.x - Puv.x, Fv.y - Puv.y).length
+    let FuPuv = new Vector3D(Fu.x - Puv.x, Fu.y - Puv.y).length
     //let FuFv = MathUtil.distance({ x: 0, y: 0 }, MathUtil.difference(Fu, Fv))//length([x - y for x, y in zip(Fu, Fv)])
     //print("FuFv", FuFv, "FvPuv + FuPuv", FvPuv + FuPuv)
 
@@ -298,7 +302,6 @@ export default class Solver extends SolverBase {
     }
 
     return Math.sqrt(fSq)
-    //print("dot 1:", dot(normalize(Fu + [f]), normalize(Fv + [f])))
   }
   /**
    * Computes the camera rotation matrix based on two vanishing points
@@ -310,17 +313,10 @@ export default class Solver extends SolverBase {
    * @returns The matrix Moc
    */
   static computeCameraRotationMatrix(Fu: Point2D, Fv: Point2D, f: number, P: Point2D): Transform {
-    /*Fu[0] -= P[0]
-    Fu[1] -= P[1]
-
-    Fv[0] -= P[0]
-    Fv[1] -= P[1]
-    */
-
+    //
     let OFu = new Vector3D(Fu.x - P.x, Fu.y - P.y, -f)
+    //
     let OFv = new Vector3D(Fv.x - P.x, Fv.y - P.y, -f)
-
-    //print("matrix dot", dot(OFu, OFv))
 
     let s1 = OFu.length
     let upRc = OFu.normalized()

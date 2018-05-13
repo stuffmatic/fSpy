@@ -2,14 +2,13 @@ import * as React from 'react';
 import Vector3D from '../../solver/vector-3d';
 import Point2D from '../../solver/point-2d';
 import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util';
-import Transform from '../../solver/transform';
 import { Palette } from '../../style/palette';
+import { CameraParametersBase } from '../../solver/calibration-result';
 
 interface Overlay3DPanelProps {
   width: number
   height: number
-  cameraTransform:Transform | null
-  horizontalFieldOfView:number | null
+  cameraParameters:CameraParametersBase
 }
 
 export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelProps> {
@@ -66,25 +65,16 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   }
 
   private project(point:Vector3D):Point2D {
-    let ctm = new Transform()
-    console.log("projecting point " + JSON.stringify(point))
-
-    if (this.props.cameraTransform) {
-      ctm.leftMultiply(this.props.cameraTransform)
+    let projected = point
+    if (this.props.cameraParameters.cameraTransform) {
+      //ctm.leftMultiply(this.props.cameraParameters.cameraTransform)
+      this.props.cameraParameters.cameraTransform.transformVector(projected)
     }
-    console.log("   transformed point " + JSON.stringify(ctm.transformedVector(point)))
 
-    //let transformed = ctm.transformedVector(point)
-
-    let fov = this.props.horizontalFieldOfView!
-    let t = Transform.perspectiveProjection(
-      fov, 0.1, 10
-    )
-    ctm.leftMultiply(t)
-    ctm.transformVector(point, true)
-
-    console.log("   projected point " + JSON.stringify(point))
-    //point.multiplyByScalar(0.1)
+    let fov = this.props.cameraParameters.horizontalFieldOfView!
+    let s = 1 / Math.tan(0.5 * fov)
+    projected.x = s * projected.x / (-projected.z) + this.props.cameraParameters.principalPoint.x
+    projected.y = s * projected.y / (-projected.z) + this.props.cameraParameters.principalPoint.y
 
     return CoordinatesUtil.convert(
       point,

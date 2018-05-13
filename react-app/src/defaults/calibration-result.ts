@@ -9,7 +9,8 @@ export const defaultCalibrationResult: CalibrationResult = {
       horizontalFieldOfView: null,
       verticalFieldOfView: null,
       relativeFocalLength: null,
-      vanishingPoint: null
+      vanishingPoint: null,
+      principalPoint: {x: 0, y: 0}
     }
   },
   calibrationResult2VP: {
@@ -21,7 +22,7 @@ export const defaultCalibrationResult: CalibrationResult = {
       verticalFieldOfView: null,
       relativeFocalLength: null,
       vanishingPoints: null,
-      computedPrincipalPoint: null
+      principalPoint: {x: 0, y: 0}
     }
   }
 }

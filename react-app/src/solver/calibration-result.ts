@@ -6,6 +6,7 @@ export interface CameraParametersBase {
   horizontalFieldOfView:number | null
   verticalFieldOfView:number | null
   relativeFocalLength:number | null
+  principalPoint:Point2D
 }
 
 export interface CameraParameters1VP extends CameraParametersBase {
@@ -14,7 +15,6 @@ export interface CameraParameters1VP extends CameraParametersBase {
 
 export interface CameraParameters2VP extends CameraParametersBase {
   vanishingPoints:[Point2D, Point2D] | [Point2D, Point2D, Point2D] | null
-  computedPrincipalPoint:Point2D | null
 }
 
 interface CalibrationResultBase {
