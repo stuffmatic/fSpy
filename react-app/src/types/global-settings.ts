@@ -9,5 +9,6 @@ export interface GlobalSettings {
   calibrationMode:CalibrationMode
   gridFloorNormal:Axis | null
   imageOpacity:number
+  showControlPoints:boolean
   notes:string
 }

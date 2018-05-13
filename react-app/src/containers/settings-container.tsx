@@ -1,28 +1,29 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setNotes, setVanishingPointAxis1VP, setVanishingPointAxis2VP, setGridFloorNormal } from '../actions';
+import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setNotes, setVanishingPointAxis1VP, setVanishingPointAxis2VP, setGridFloorNormal, setControlPointsVisible } from '../actions';
 import SettingsPanel from '../components/settings-panel/settings-panel';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { StoreState } from '../types/store-state';
 import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode, Axis } from '../types/calibration-settings';
 
 export interface SettingsContainerProps {
-  isVisible:boolean
+  isVisible: boolean
   globalSettings: GlobalSettings
   calibrationSettings1VP: CalibrationSettings1VP
   calibrationSettings2VP: CalibrationSettings2VP
   onCalibrationModeChange(calibrationMode: CalibrationMode): void
   onImageOpacityChange(opacity: number): void
-  onGridFloorNormalChange(axis:Axis | null):void
+  onShowControlPointsChange(visible: boolean): void
+  onGridFloorNormalChange(axis: Axis | null): void
   onNotesChange(notes: string): void
   onHorizonModeChange(horizonMode: HorizonMode): void
   onPrincipalPointModeChange1VP(principalPointMode: PrincipalPointMode1VP): void
   onPrincipalPointModeChange2VP(principalPointMode: PrincipalPointMode2VP): void
   onQuadModeEnabledChange(quadModeEnabled: boolean): void
   onLoadTestImage(imageIndex: number | null): void
-  onVanishingPointAxisChange1VP(axis:Axis):void
-  onVanishingPointAxisChange2VP(vanishingPointIndex:number, axis:Axis):void
+  onVanishingPointAxisChange1VP(axis: Axis): void
+  onVanishingPointAxisChange2VP(vanishingPointIndex: number, axis: Axis): void
 }
 
 class SettingsContainer extends React.PureComponent<SettingsContainerProps> {
@@ -31,7 +32,7 @@ class SettingsContainer extends React.PureComponent<SettingsContainerProps> {
       return null
     }
     return (
-      <SettingsPanel { ...this.props }/>
+      <SettingsPanel {...this.props} />
     )
   }
 }
@@ -52,7 +53,10 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     onImageOpacityChange: (opacity: number) => {
       dispatch(setImageOpacity(opacity))
     },
-    onGridFloorNormalChange: (axis:Axis | null) => {
+    onShowControlPointsChange: (visible: boolean) => {
+      dispatch(setControlPointsVisible(visible))
+    },
+    onGridFloorNormalChange: (axis: Axis | null) =>  {
       dispatch(setGridFloorNormal(axis))
     },
     onNotesChange: (notes: string) => {
@@ -81,10 +85,10 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
       console.log("loading url " + url)
       dispatch(setImageUrl(url))
     },
-    onVanishingPointAxisChange1VP: (axis:Axis):void => {
+    onVanishingPointAxisChange1VP: (axis: Axis): void => {
       dispatch(setVanishingPointAxis1VP(axis))
     },
-    onVanishingPointAxisChange2VP: (vanishingPointIndex:number, axis:Axis) => {
+    onVanishingPointAxisChange2VP: (vanishingPointIndex: number, axis: Axis) => {
       dispatch(setVanishingPointAxis2VP(vanishingPointIndex, axis))
     }
   }

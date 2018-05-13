@@ -19,6 +19,17 @@ export default class SettingsSectionBottom extends React.PureComponent<SettingsC
             }}
           /> Dimmed
         </div>
+        <div className="panel-row">
+
+            <input
+            name="showControlPoints"
+            type="checkbox"
+            checked={this.props.globalSettings.showControlPoints}
+            onChange={(event: any) => {
+              this.props.onShowControlPointsChange(event.target.checked ? true : false)
+            }}
+          /> Control points
+        </div>
 
         <div className="panel-row">
           Grid floor

@@ -67,7 +67,7 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
           cameraParameters={this.props.calibrationResult.calibrationResult2VP.cameraParameters}
           globalSettings={this.props.globalSettings}
         />
-        {controlPointsPanel}
+        { this.props.globalSettings.showControlPoints ? controlPointsPanel : null}
       </svg>
     )
   }

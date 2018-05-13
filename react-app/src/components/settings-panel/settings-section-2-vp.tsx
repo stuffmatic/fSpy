@@ -78,7 +78,7 @@ export default class SettingsSection2VP extends React.PureComponent<SettingsCont
         <PanelSpacer />
         <div className="panel-row">
           <Checkbox
-            title="Quad mode"
+            title="Rectangle mode"
             isSelected={this.props.calibrationSettings2VP.quadModeEnabled}
             onChange={(isSelected: boolean) => this.props.onQuadModeEnabledChange(isSelected)}
           />

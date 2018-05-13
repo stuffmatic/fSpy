@@ -28,6 +28,11 @@ export function globalSettings(state: GlobalSettings, action: AppAction): Global
         ...state,
         gridFloorNormal: action.axis
       }
+    case ActionTypes.SET_CONTROL_POINTS_VISIBLE:
+      return {
+        ...state,
+        showControlPoints: action.visible
+      }
   }
 
   return state;
