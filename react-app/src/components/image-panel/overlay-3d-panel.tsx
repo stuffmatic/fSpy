@@ -4,6 +4,7 @@ import Point2D from '../../solver/point-2d';
 import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util';
 import { Palette } from '../../style/palette';
 import { CameraParametersBase } from '../../solver/calibration-result';
+import { Axis } from '../../types/calibration-settings';
 
 interface Overlay3DPanelProps {
   width: number
@@ -15,14 +16,62 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   render() {
     return (
       <g>
-        {this.renderGridFloor()}
+        {this.renderGridFloor(Axis.PositiveX)}
         {this.renderAxes()}
       </g>
     )
   }
 
-  private renderGridFloor() {
-    return null
+  private renderGridFloor(normalAxis:Axis) {
+    let cellCount = 10
+    let cellSize = 0.5
+    let gridLines3D:[Vector3D, Vector3D][] = []
+    let min = -0.5 * cellCount * cellSize
+    let max = min + cellCount * cellSize
+
+    function gridPoint(u:number, v:number):Vector3D {
+      switch (normalAxis) {
+        case Axis.NegativeX, Axis.PositiveX:
+          return new Vector3D(0, u, v)
+        case Axis.NegativeY, Axis.PositiveY:
+          return new Vector3D(u, 0, v)
+        case Axis.NegativeZ, Axis.PositiveZ:
+          return new Vector3D(u, v, 0)
+      }
+      throw "Should not end up here"
+    }
+
+    for (let i = 0; i <= cellCount; i++) {
+      let linePosition = min + i * cellSize
+      gridLines3D.push(
+        [
+          gridPoint(min, linePosition),
+          gridPoint(max, linePosition)
+        ]
+      ),
+      gridLines3D.push(
+        [
+          gridPoint(linePosition, min),
+          gridPoint(linePosition, max)
+        ]
+      )
+    }
+
+    let gridLines2D:[Point2D, Point2D][] = []
+    for (let gridLine3D of gridLines3D) {
+      gridLines2D.push([
+        this.project(gridLine3D[0]),
+        this.project(gridLine3D[1])
+      ])
+    }
+
+    return (
+      <g stroke={Palette.lightGray} opacity={0.25}>
+        { gridLines2D.map((endpoints:[Point2D, Point2D]) => {
+          return <line x1={endpoints[0].x} y1={endpoints[0].y} x2={endpoints[1].x} y2={endpoints[1].y} />
+        })}
+      </g>
+    )
   }
 
   private renderAxes() {
@@ -67,7 +116,6 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   private project(point:Vector3D):Point2D {
     let projected = point
     if (this.props.cameraParameters.cameraTransform) {
-      //ctm.leftMultiply(this.props.cameraParameters.cameraTransform)
       this.props.cameraParameters.cameraTransform.transformVector(projected)
     }
 

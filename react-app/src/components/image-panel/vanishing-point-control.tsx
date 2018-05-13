@@ -76,7 +76,7 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
           points={p1.x + ", " + p1.y + " " + p2.x + ", " + p2.y + " " + p3.x + ", " + p3.y}
           fill="none"
           stroke={this.props.color}
-          strokeWidth={0.5}
+
           opacity={0.5}
         />
       )
