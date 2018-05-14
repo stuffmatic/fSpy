@@ -38,8 +38,6 @@ export interface ControlPointsState1VP extends ControlPointsStateBase {
 }
 
 export interface ControlPointsState2VP extends ControlPointsStateBase {
-  /*  referenceDistanceVpIndex */
-  /* vpCouplingMode */
   vanishingPoints:[
     VanishingPointControlState,
     VanishingPointControlState,

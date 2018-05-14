@@ -65,6 +65,18 @@ export default class Solver {
       return result
     }
 
+    let vanishingPointControlStates: VanishingPointControlState[] = [
+      controlPoints.vanishingPoints[0],
+      controlPoints.vanishingPoints[1]
+    ]
+
+    if (settings.quadModeEnabled) {
+      vanishingPointControlStates[1].lineSegments[0][0] = controlPoints.vanishingPoints[0].lineSegments[1][0]
+      vanishingPointControlStates[1].lineSegments[0][1] = controlPoints.vanishingPoints[0].lineSegments[0][0]
+      vanishingPointControlStates[1].lineSegments[1][0] = controlPoints.vanishingPoints[0].lineSegments[1][1]
+      vanishingPointControlStates[1].lineSegments[1][1] = controlPoints.vanishingPoints[0].lineSegments[0][1]
+    }
+
     //Compute the two vanishing points specified using control points
     let vanishingPoints = this.computeVanishingPointsFromControlPoints(
       image,
