@@ -10,8 +10,8 @@ import { SolverResult } from '../../solver/solver-result';
 interface Overlay3DPanelProps {
   width: number
   height: number
-  solverResult:SolverResult
-  globalSettings:GlobalSettings
+  solverResult: SolverResult
+  globalSettings: GlobalSettings
 }
 
 export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelProps> {
@@ -24,18 +24,18 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
     )
   }
 
-  private renderGridFloor(normalAxis:Axis | null) {
+  private renderGridFloor(normalAxis: Axis | null) {
     if (!normalAxis) {
       return null
     }
 
     let cellCount = 10
     let cellSize = 0.5
-    let gridLines3D:[Vector3D, Vector3D][] = []
+    let gridLines3D: [Vector3D, Vector3D][] = []
     let min = -0.5 * cellCount * cellSize
     let max = min + cellCount * cellSize
 
-    function gridPoint(u:number, v:number):Vector3D {
+    function gridPoint(u: number, v: number): Vector3D {
       switch (normalAxis) {
         case Axis.NegativeX, Axis.PositiveX:
           return new Vector3D(0, u, v)
@@ -55,15 +55,15 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
           gridPoint(max, linePosition)
         ]
       ),
-      gridLines3D.push(
-        [
-          gridPoint(linePosition, min),
-          gridPoint(linePosition, max)
-        ]
-      )
+        gridLines3D.push(
+          [
+            gridPoint(linePosition, min),
+            gridPoint(linePosition, max)
+          ]
+        )
     }
 
-    let gridLines2D:[Point2D, Point2D][] = []
+    let gridLines2D: [Point2D, Point2D][] = []
     for (let gridLine3D of gridLines3D) {
       gridLines2D.push([
         this.project(gridLine3D[0]),
@@ -73,56 +73,86 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
 
     return (
       <g stroke={Palette.lightGray} opacity={0.25}>
-        { gridLines2D.map((endpoints:[Point2D, Point2D]) => {
+        {gridLines2D.map((endpoints: [Point2D, Point2D]) => {
           return <line x1={endpoints[0].x} y1={endpoints[0].y} x2={endpoints[1].x} y2={endpoints[1].y} />
         })}
       </g>
     )
   }
 
-
   private renderAxes() {
     let axisLength = 1
-    let axisEndpoints = [
-      new Vector3D(axisLength, 0, 0),
-      new Vector3D(0, axisLength, 0),
-      new Vector3D(0, 0, axisLength)
-    ]
-    let projectedAxisEndpoints = axisEndpoints.map((vector:Vector3D) => this.project(vector))
-    let origin = new Vector3D()
-    let projectedOrigin = this.project(origin)
+    return (
+      <g>
+        {this.renderAxis(Axis.PositiveX, axisLength, Palette.red)}
+        {this.renderAxis(Axis.PositiveY, axisLength, Palette.green)}
+        {this.renderAxis(Axis.PositiveZ, axisLength, Palette.blue)}
+      </g>
+    )
+  }
 
-    //TODO: DRY
+  private renderAxis(axis: Axis, axisLength: number, color: string) {
+    let arrowSize = 0.15 * axisLength
+    let projectedOrigin = this.project(new Vector3D())
+    let endpoint = new Vector3D()
+    let axisNormal = new Vector3D()
+    switch (axis) {
+      case Axis.PositiveX:
+        endpoint.x = axisLength
+        axisNormal.y = 1
+        break
+      case Axis.PositiveY:
+        endpoint.y = axisLength
+        axisNormal.z = 1
+        break
+      case Axis.PositiveZ:
+        endpoint.z = axisLength
+        axisNormal.y = 1
+        break
+      default:
+        //Negative axis. Shouldn't end up here
+        return
+    }
+
+    let axisDirection = endpoint.normalized()
+
+    let arrowWedgeStart = this.project(
+      new Vector3D(
+        endpoint.x + arrowSize * (axisNormal.x - axisDirection.x),
+        endpoint.y + arrowSize * (axisNormal.y - axisDirection.y),
+        endpoint.z + arrowSize * (axisNormal.z - axisDirection.z)
+      )
+    )
+    let arrowWedgeEnd = this.project(
+      new Vector3D(
+        endpoint.x + arrowSize * (-axisNormal.x - axisDirection.x),
+        endpoint.y + arrowSize * (-axisNormal.y - axisDirection.y),
+        endpoint.z + arrowSize * (-axisNormal.z - axisDirection.z)
+      )
+    )
+
+    let projectedEndpoint = this.project(endpoint)
     return (
       <g>
         <line
           x1={projectedOrigin.x}
           y1={projectedOrigin.y}
-          x2={projectedAxisEndpoints[0].x}
-          y2={projectedAxisEndpoints[0].y}
-          stroke={Palette.red}
+          x2={projectedEndpoint.x}
+          y2={projectedEndpoint.y}
+          stroke={color}
         />
-        <line
-          x1={projectedOrigin.x}
-          y1={projectedOrigin.y}
-          x2={projectedAxisEndpoints[1].x}
-          y2={projectedAxisEndpoints[1].y}
-          stroke={Palette.green}
-        />
-        <line
-          x1={projectedOrigin.x}
-          y1={projectedOrigin.y}
-          x2={projectedAxisEndpoints[2].x}
-          y2={projectedAxisEndpoints[2].y}
-          stroke={Palette.blue}
+        <polyline
+          points={"" + arrowWedgeStart.x + ", " + arrowWedgeStart.y + ", " + projectedEndpoint.x + ", " + projectedEndpoint.y + ", " + arrowWedgeEnd.x + ", " + arrowWedgeEnd.y}
+          stroke={color}
+          fill="none"
         />
       </g>
     )
   }
 
-  private project(point:Vector3D):Point2D {
+  private project(point: Vector3D): Point2D {
     if (!this.props.solverResult.principalPoint) {
-      return {x: 0, y: 0}
+      return { x: 0, y: 0 }
     }
 
     let projected = point
