@@ -32,19 +32,19 @@ export default class Solver {
       return result
     }
 
-    let vanishingPoints = this.computeVanishingPointsFromControlPoints(
+    let inputVanishingPoints = this.computeVanishingPointsFromControlPoints(
       image,
       controlPoints.vanishingPoints,
       errors
     )
 
-    if (!vanishingPoints) {
+    if (!inputVanishingPoints) {
       result.errors = errors
       return result
     }
 
     result.cameraTransform = new Transform()
-    result.vanishingPoints = [vanishingPoints[0], { x: 0, y: 0 }, { x: 0, y: 0 }]
+    result.vanishingPoints = [inputVanishingPoints[0], { x: 0, y: 0 }, { x: 0, y: 0 }]
     result.horizontalFieldOfView = 0
     result.verticalFieldOfView = 0
     result.relativeFocalLength = 0
@@ -65,9 +65,33 @@ export default class Solver {
       return result
     }
 
+
+    //TODO: clean up this cloning
     let vanishingPointControlStates: VanishingPointControlState[] = [
-      controlPoints.vanishingPoints[0],
-      controlPoints.vanishingPoints[1]
+      {
+        lineSegments: [
+          [
+            { ...controlPoints.vanishingPoints[0].lineSegments[0][0] },
+            { ...controlPoints.vanishingPoints[0].lineSegments[0][1] }
+          ],
+          [
+            { ...controlPoints.vanishingPoints[0].lineSegments[1][0] },
+            { ...controlPoints.vanishingPoints[0].lineSegments[1][1] }
+          ]
+        ]
+      },
+      {
+        lineSegments: [
+          [
+            { ...controlPoints.vanishingPoints[1].lineSegments[0][0] },
+            { ...controlPoints.vanishingPoints[1].lineSegments[0][1] }
+          ],
+          [
+            { ...controlPoints.vanishingPoints[0].lineSegments[1][0] },
+            { ...controlPoints.vanishingPoints[0].lineSegments[1][1] }
+          ]
+        ]
+      }
     ]
 
     if (settings.quadModeEnabled) {
@@ -77,14 +101,14 @@ export default class Solver {
       vanishingPointControlStates[1].lineSegments[1][1] = controlPoints.vanishingPoints[0].lineSegments[0][1]
     }
 
-    //Compute the two vanishing points specified using control points
-    let vanishingPoints = this.computeVanishingPointsFromControlPoints(
+    //Compute the two input vanishing points from the provided control points
+    let inputVanishingPoints = this.computeVanishingPointsFromControlPoints(
       image,
       controlPoints.vanishingPoints,
       errors
     )
 
-    if (!vanishingPoints) {
+    if (!inputVanishingPoints) {
       result.errors = errors
       return result
     }
@@ -107,7 +131,7 @@ export default class Solver {
         if (vanishingPointz) {
           let thirdVanishingPoint = vanishingPointz[0]
           principalPoint = MathUtil.triangleOrthoCenter(
-            vanishingPoints[0], vanishingPoints[1], thirdVanishingPoint
+            inputVanishingPoints[0], inputVanishingPoints[1], thirdVanishingPoint
           )
         }
         break
@@ -119,15 +143,23 @@ export default class Solver {
     }
 
     result.principalPoint = principalPoint
-
+    result.vanishingPoints = [
+      inputVanishingPoints[0],
+      inputVanishingPoints[1],
+      MathUtil.thirdTriangleVertex(
+        inputVanishingPoints[0],
+        inputVanishingPoints[1],
+        principalPoint
+      )
+    ]
 
     let fRelative = this.computeFocalLength(
-      vanishingPoints[0], vanishingPoints[1], result.principalPoint
+      inputVanishingPoints[0], inputVanishingPoints[1], result.principalPoint
     )! //TODO: check for null
     result.relativeFocalLength = fRelative
 
     let cameraTransform = this.computeCameraRotationMatrix(
-      vanishingPoints[0], vanishingPoints[1], fRelative, result.principalPoint
+      inputVanishingPoints[0], inputVanishingPoints[1], fRelative, result.principalPoint
     )
 
     //Assign axes to vanishing point

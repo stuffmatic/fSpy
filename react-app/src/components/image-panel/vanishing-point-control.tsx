@@ -9,6 +9,7 @@ interface VanishingPointControlProps {
   color: string
   vanishingPointIndex: number
   controlState: VanishingPointControlState
+  vanishingPoint: Point2D | null
 
   onControlPointDrag(
     vanishingPointIndex: number,
@@ -56,32 +57,25 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
   }
 
   private renderVanishingPoint() {
-    //the vanishing point is the intersection between the lines
-    //defined by the two control point pairs
-    let vanishingPoint = MathUtil.lineIntersection(
-      this.props.controlState.lineSegments[0],
-      this.props.controlState.lineSegments[1]
-    )
-
-    if (vanishingPoint) {
-      let p1 = MathUtil.lineSegmentMidpoint(
-        this.props.controlState.lineSegments[0]
-      )
-      let p2 = vanishingPoint
-      let p3 = MathUtil.lineSegmentMidpoint(
-        this.props.controlState.lineSegments[1]
-      )
-      return (
-        <polyline
-          points={p1.x + ", " + p1.y + " " + p2.x + ", " + p2.y + " " + p3.x + ", " + p3.y}
-          fill="none"
-          stroke={this.props.color}
-
-          opacity={0.5}
-        />
-      )
+    if (this.props.vanishingPoint == null) {
+      return null
     }
 
-    return null
+    let p1 = MathUtil.lineSegmentMidpoint(
+      this.props.controlState.lineSegments[0]
+    )
+    let p2 = this.props.vanishingPoint
+    let p3 = MathUtil.lineSegmentMidpoint(
+      this.props.controlState.lineSegments[1]
+    )
+    return (
+      <polyline
+        points={p1.x + ", " + p1.y + " " + p2.x + ", " + p2.y + " " + p3.x + ", " + p3.y}
+        fill="none"
+        stroke={this.props.color}
+
+        opacity={0.5}
+      />
+    )
   }
 }

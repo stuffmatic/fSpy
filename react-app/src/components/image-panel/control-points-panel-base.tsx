@@ -71,21 +71,29 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
 
   protected rel2AbsControlPointPairState(rel: ControlPointPairState): ControlPointPairState {
     return [
-      CoordinatesUtil.convert(
-        rel[0],
-        ImageCoordinateFrame.Relative,
-        ImageCoordinateFrame.Absolute,
-        this.props.width,
-        this.props.height
-      ),
-      CoordinatesUtil.convert(
-        rel[1],
-        ImageCoordinateFrame.Relative,
-        ImageCoordinateFrame.Absolute,
-        this.props.width,
-        this.props.height
-      )
+      this.rel2AbsPoint(rel[0]),
+      this.rel2AbsPoint(rel[1])
     ]
+  }
+
+  protected rel2AbsPoint(rel:Point2D):Point2D {
+    return CoordinatesUtil.convert(
+      rel,
+      ImageCoordinateFrame.Relative,
+      ImageCoordinateFrame.Absolute,
+      this.props.width,
+      this.props.height
+    )
+  }
+
+  protected imgPlane2AbsPoint(imagePlanePoint:Point2D):Point2D {
+    return CoordinatesUtil.convert(
+      imagePlanePoint,
+      ImageCoordinateFrame.ImagePlane,
+      ImageCoordinateFrame.Absolute,
+      this.props.width,
+      this.props.height
+    )
   }
 
   protected invokeControlPointDragCallback(
