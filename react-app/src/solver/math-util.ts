@@ -1,4 +1,6 @@
 import Point2D from "./point-2d";
+import Vector3D from "./vector-3d";
+import { SolverResult } from "./solver-result";
 
 export default class MathUtil {
 
@@ -113,5 +115,26 @@ export default class MathUtil {
       x: p.x + h * n.x,
       y: p.y + h * n.y
     }
+  }
+
+  static perspectiveProject(
+    point:Vector3D,
+    solverResult:SolverResult
+  ):Point2D {
+    if (!solverResult.principalPoint) {
+      return { x: 0, y: 0 }
+    }
+
+    let projected = point
+    if (solverResult.cameraTransform) {
+      solverResult.cameraTransform.transformVector(projected)
+    }
+
+    let fov = solverResult.horizontalFieldOfView!
+    let s = 1 / Math.tan(0.5 * fov)
+    projected.x = s * projected.x / (-projected.z) + solverResult.principalPoint.x
+    projected.y = s * projected.y / (-projected.z) + solverResult.principalPoint.y
+
+    return projected
   }
 }

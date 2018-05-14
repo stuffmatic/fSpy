@@ -6,6 +6,7 @@ import { Palette } from '../../style/palette';
 import { Axis } from '../../types/calibration-settings';
 import { GlobalSettings } from '../../types/global-settings';
 import { SolverResult } from '../../solver/solver-result';
+import MathUtil from '../../solver/math-util';
 
 interface Overlay3DPanelProps {
   width: number
@@ -151,22 +152,8 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   }
 
   private project(point: Vector3D): Point2D {
-    if (!this.props.solverResult.principalPoint) {
-      return { x: 0, y: 0 }
-    }
-
-    let projected = point
-    if (this.props.solverResult.cameraTransform) {
-      this.props.solverResult.cameraTransform.transformVector(projected)
-    }
-
-    let fov = this.props.solverResult.horizontalFieldOfView!
-    let s = 1 / Math.tan(0.5 * fov)
-    projected.x = s * projected.x / (-projected.z) + this.props.solverResult.principalPoint.x
-    projected.y = s * projected.y / (-projected.z) + this.props.solverResult.principalPoint.y
-
     return CoordinatesUtil.convert(
-      point,
+      MathUtil.perspectiveProject(point, this.props.solverResult),
       ImageCoordinateFrame.ImagePlane,
       ImageCoordinateFrame.Absolute,
       this.props.width,
