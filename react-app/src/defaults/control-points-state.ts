@@ -5,13 +5,16 @@ const defaultControlPointsStateBase: ControlPointsStateBase = {
     x: 0.5, y: 0.5
   },
   origin: {
-    x: 0.3, y: 0.3
+    x: 0.4235593220338983,
+    y: 0.04302477183833116
   },
   referenceDistanceAnchor: {
-    x: 0.7, y: 0.7
+    x: 0.08661016949152542,
+    y: 0.5671447196870926
   },
   referenceDistanceHandleOffsets: [
-    0.1, 0.15
+    -0.2772282099685266,
+    -0.2020170948124077
   ]
 }
 
