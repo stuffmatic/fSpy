@@ -1,8 +1,9 @@
 import { CalibrationSettingsBase, CalibrationSettings1VP, CalibrationSettings2VP, ReferenceDistanceUnit, PrincipalPointMode1VP, Axis, PrincipalPointMode2VP, HorizonMode } from "../types/calibration-settings";
 
 const defaultCalibrationSettingsBase: CalibrationSettingsBase = {
-  referenceDistanceUnit: ReferenceDistanceUnit.Meters,
-  referenceDistance: 10
+  referenceDistanceAxis: Axis.PositiveX,
+  referenceDistance: 10,
+  referenceDistanceUnit: ReferenceDistanceUnit.Meters
 }
 
 export const defaultCalibrationSettings1VP: CalibrationSettings1VP = {

@@ -36,7 +36,6 @@ export function controlPointsState1VP(state: ControlPointsState1VP, action: AppA
       }
 
     case ActionTypes.ADJUST_VANISHING_POINT:
-
       let adjustedVanishingPoints: [VanishingPointControlState] = [
         { ...state.vanishingPoints[0] }
       ]

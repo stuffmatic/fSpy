@@ -124,12 +124,14 @@ export default class MathUtil {
     if (!solverResult.principalPoint) {
       return { x: 0, y: 0 }
     }
+    let projected = point.copy()
 
-    let projected = point
+    //apply camera transform
     if (solverResult.cameraTransform) {
-      solverResult.cameraTransform.transformVector(projected)
+      projected = solverResult.cameraTransform.transformedVector(projected)
     }
 
+    //perform field of view scaling and perspective divide
     let fov = solverResult.horizontalFieldOfView!
     let s = 1 / Math.tan(0.5 * fov)
     projected.x = s * projected.x / (-projected.z) + solverResult.principalPoint.x
@@ -137,4 +139,5 @@ export default class MathUtil {
 
     return projected
   }
+
 }

@@ -31,7 +31,7 @@ export enum ReferenceDistanceUnit {
 export interface CalibrationSettingsBase {
   referenceDistanceUnit:ReferenceDistanceUnit
   referenceDistance:number
-  referenceDistanceVanishingPointIndex?:number
+  referenceDistanceAxis:Axis
 }
 
 export interface CalibrationSettings1VP extends CalibrationSettingsBase {
