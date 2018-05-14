@@ -52,6 +52,13 @@ export function controlPointsState1VP(state: ControlPointsState1VP, action: AppA
         ...state,
         referenceDistanceAnchor: action.position
       }
+    case ActionTypes.ADJUST_REFERENCE_DISTANCE_HANDLE:
+      let adjustedOffsets = [...state.referenceDistanceHandleOffsets]
+      adjustedOffsets[action.handleIndex] = action.position
+      return {
+        ...state,
+        referenceDistanceHandleOffsets: [adjustedOffsets[0], adjustedOffsets[1]]
+      }
   }
 
   return state;

@@ -26,7 +26,7 @@ export default class ControlPointsPanel1VP extends ControlPointsPanelBase {
         }
 
         { this.renderOriginControl(state.origin) }
-        { this.renderReferenceDistanceAnchorControl(state.referenceDistanceAnchor) }
+        { this.renderReferenceDistanceControl(state.referenceDistanceAnchor) }
 
         <VanishingPointControl
           color={Palette.colorForAxis(this.props.calibrationSettings1VP.vanishingPointAxis)}

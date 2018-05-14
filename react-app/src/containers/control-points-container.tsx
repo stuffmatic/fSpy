@@ -3,7 +3,7 @@ import ControlPointsPanel1VP from './../components/image-panel/control-points-pa
 import ControlPointsPanel2VP from './../components/image-panel/control-points-panel-2-vp'
 import Overlay3DPanel from './../components/image-panel/overlay-3d-panel'
 import { StoreState } from '../types/store-state';
-import { AppAction, adjustHorizon, setOrigin, setPrincipalPoint, adjustVanishingPoint, setReferenceDistanceAnchor } from '../actions';
+import { AppAction, adjustHorizon, setOrigin, setPrincipalPoint, adjustVanishingPoint, setReferenceDistanceAnchor, adjustReferenceDistanceHandle } from '../actions';
 import { Dispatch, connect } from 'react-redux';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { ControlPointsState1VP, ControlPointsState2VP, ControlPointPairIndex } from '../types/control-points-state';
@@ -30,6 +30,7 @@ export interface ControlPointsContainerProps {
 export interface ControlPointsContainerCallbacks {
   onPrincipalPointDrag(calibrationMode: CalibrationMode, position: Point2D): void
   onOriginDrag(calibrationMode: CalibrationMode, position: Point2D): void
+  onReferenceDistanceHandleDrag(calibrationMode: CalibrationMode, handleIndex:number, position:number):void
   onReferenceDistanceAnchorDrag(calibrationMode: CalibrationMode, position: Point2D): void
   onVanishingPointControlPointDrag(
     calibrationMode: CalibrationMode,
@@ -96,6 +97,9 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     },
     onReferenceDistanceAnchorDrag: (calibrationMode: CalibrationMode, position: Point2D) => {
       dispatch(setReferenceDistanceAnchor(calibrationMode, position))
+    },
+    onReferenceDistanceHandleDrag: (calibrationMode: CalibrationMode, handleIndex:number, position:number) => {
+      dispatch(adjustReferenceDistanceHandle(calibrationMode, handleIndex, position))
     },
     onHorizonDrag: (calibrationMode: CalibrationMode, controlPointIndex: ControlPointPairIndex, position: Point2D) => {
       dispatch(adjustHorizon(controlPointIndex, position))

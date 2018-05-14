@@ -32,6 +32,7 @@ export enum ActionTypes {
   SET_REFERENCE_DISTANCE_ANCHOR = "SET_REFERENCE_DISTANCE_ANCHOR",
   ADJUST_HORIZON = "ADJUST_HORIZON",
   ADJUST_VANISHING_POINT = "ADJUST_VANISHING_POINT",
+  ADJUST_REFERENCE_DISTANCE_HANDLE = "ADJUST_REFERENCE_DISTANCE_HANDLE",
 
   //
   SET_CALIBRATION_RESULT = "SET_CALIBRATION_RESULT",
@@ -331,6 +332,28 @@ export function adjustVanishingPoint(
   }
 }
 
+//
+
+export interface AdjustReferenceDistanceHandle {
+  type: ActionTypes.ADJUST_REFERENCE_DISTANCE_HANDLE,
+  calibrationMode: CalibrationMode,
+  handleIndex: number,
+  position: number
+}
+
+export function adjustReferenceDistanceHandle(
+  calibrationMode: CalibrationMode,
+  handleIndex: number,
+  position: number
+): AdjustReferenceDistanceHandle {
+  return {
+    type: ActionTypes.ADJUST_REFERENCE_DISTANCE_HANDLE,
+    calibrationMode: calibrationMode,
+    handleIndex: handleIndex,
+    position: position
+  }
+}
+
 //Set calibration result
 export interface SetCalibrationResult {
   type: ActionTypes.SET_CALIBRATION_RESULT,
@@ -379,6 +402,7 @@ export type AppAction =
   SetReferenceDistanceAnchor |
   SetPrincipalPoint |
   AdjustHorizon |
+  AdjustReferenceDistanceHandle |
   AdjustVanishingPoint |
   SetCalibrationResult | 
   SetExportDialogVisibility

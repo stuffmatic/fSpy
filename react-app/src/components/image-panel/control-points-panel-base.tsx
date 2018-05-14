@@ -6,7 +6,7 @@ import Point2D from '../../solver/point-2d';
 import { CalibrationMode } from '../../types/global-settings';
 import PrincipalPointControl from './principal-point-control'
 import OriginControl from './origin-control'
-import ReferenceDistanceAnchorControl from './reference-distance-anchor-control'
+import ReferenceDistanceControl from './reference-distance-control'
 import MathUtil from '../../solver/math-util';
 import { CalibrationSettingsBase, Axis } from '../../types/calibration-settings';
 
@@ -57,7 +57,7 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
     )
   }
 
-  protected renderReferenceDistanceAnchorControl(position: Point2D) {
+  protected renderReferenceDistanceControl(position: Point2D) {
 
     let is1VP = this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint
     let settings: CalibrationSettingsBase = is1VP ? this.props.calibrationSettings1VP : this.props.calibrationSettings2VP
@@ -74,7 +74,7 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
     }
 
 
-    function uvIndicesForAxis(positiveAxis: Axis): [number, number] {
+    function vpIndexForAxis(positiveAxis: Axis): number {
       let negativeAxis = Axis.NegativeX
       switch (positiveAxis) {
         case Axis.PositiveY:
@@ -85,24 +85,21 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
           break
       }
 
-      let uIndex = 0
-      let vIndex = 0
-
       for (let vpIndex = 0; vpIndex < 3; vpIndex++) {
         let vpAxis = result.vanishingPointAxes![vpIndex]
-        if (vpAxis == positiveAxis || vpAxis == negativeAxis)  {
-          uIndex = (vpIndex + 1) % 3
-          vIndex = (vpIndex + 2) % 3
+        if (vpAxis == positiveAxis || vpAxis == negativeAxis) {
+          return vpIndex
         }
       }
 
-      return  [uIndex, vIndex]
+      return 0
     }
 
-    let uvIndices = uvIndicesForAxis(referenceAxis)
-    let uIndex = uvIndices[0]
-    let vIndex = uvIndices[1]
+    let referenceAxisVpIndex = vpIndexForAxis(referenceAxis)
+    let uIndex = (referenceAxisVpIndex + 1) % 3
+    let vIndex = (referenceAxisVpIndex + 2) % 3
 
+    let positionRel = position
     position = CoordinatesUtil.convert(
       position,
       ImageCoordinateFrame.Relative,
@@ -148,6 +145,7 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
       this.props.width,
       this.props.height
     )
+
     let originAbs = CoordinatesUtil.convert(
       origin,
       ImageCoordinateFrame.ImagePlane,
@@ -156,18 +154,61 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
       this.props.height
     )
 
+    //anchor point + length
+    let referenceAxisVpRel = CoordinatesUtil.convert(
+      result.vanishingPoints[referenceAxisVpIndex],
+      ImageCoordinateFrame.ImagePlane,
+      ImageCoordinateFrame.Relative,
+      this.props.width,
+      this.props.height
+    )
+
+    let anchorToVpRel = MathUtil.normalized({
+      x: referenceAxisVpRel.x - positionRel.x,
+      y: referenceAxisVpRel.y - positionRel.y
+    })
+
+    let offset0 = controlPointsState.referenceDistanceHandleOffsets[0]
+    let offset1 = controlPointsState.referenceDistanceHandleOffsets[1]
+    let handlePositions: [Point2D, Point2D] = [
+      { x: positionRel.x + offset0 * anchorToVpRel.x, y: positionRel.y + offset0 * anchorToVpRel.y },
+      { x: positionRel.x + offset1 * anchorToVpRel.x, y: positionRel.y + offset1 * anchorToVpRel.y }
+    ]
+
     return (
-      <ReferenceDistanceAnchorControl
+      <ReferenceDistanceControl
         origin={originAbs}
         uIntersection={uIntersection}
         vIntersection={vIntersection}
-        position={
+        anchorPosition={
           posAbs
         }
-        dragCallback={(position: Point2D) => {
+        handlePositions={
+          [
+            this.rel2AbsPoint(handlePositions[0]),
+            this.rel2AbsPoint(handlePositions[1])
+          ]
+        }
+        anchorDragCallback={(position: Point2D) => {
           this.invokeControlPointDragCallback(
             position,
             this.props.onReferenceDistanceAnchorDrag
+          )
+        }}
+        handleDragCallback={(handleIndex: number, dragPosition: Point2D) => {
+          let dragRel = CoordinatesUtil.convert(
+            dragPosition,
+            ImageCoordinateFrame.Absolute,
+            ImageCoordinateFrame.Relative,
+            this.props.width,
+            this.props.height
+          )
+          let a = {x: dragRel.x - positionRel.x, y: dragRel.y - positionRel.y}
+          let offset = MathUtil.dot(anchorToVpRel, a)
+          this.props.onReferenceDistanceHandleDrag(
+            this.props.globalSettings.calibrationMode,
+            handleIndex,
+            offset
           )
         }}
       />

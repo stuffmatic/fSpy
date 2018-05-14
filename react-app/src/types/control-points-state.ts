@@ -22,13 +22,13 @@ export interface VanishingPointControlState {
 }
 
 export interface ControlPointsStateBase {
-  /*
-  referenceDistance
-  referenceDistanceUnit
-  */
   principalPoint:ControlPointState
   origin:ControlPointState
   referenceDistanceAnchor:ControlPointState
+  //The offsets are the distances in relative image coordinates
+  //along the axis from the anchor to the vanishing point corresponding
+  //to the selected reference axis
+  referenceDistanceHandleOffsets:[number, number]
 }
 
 export interface ControlPointsState1VP extends ControlPointsStateBase {

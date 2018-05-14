@@ -9,7 +9,10 @@ const defaultControlPointsStateBase: ControlPointsStateBase = {
   },
   referenceDistanceAnchor: {
     x: 0.7, y: 0.7
-  }
+  },
+  referenceDistanceHandleOffsets: [
+    0.1, 0.15
+  ]
 }
 
 export const defaultControlPointsState1VP: ControlPointsState1VP = {
