@@ -1,6 +1,6 @@
-import { CalibrationResult1VP, CalibrationResult2VP } from "../solver/calibration-result";
+import { SolverResult } from "../solver/solver-result";
 
 export default interface CalibrationResult {
-  calibrationResult1VP:CalibrationResult1VP
-  calibrationResult2VP:CalibrationResult2VP
+  calibrationResult1VP:SolverResult
+  calibrationResult2VP:SolverResult
 }

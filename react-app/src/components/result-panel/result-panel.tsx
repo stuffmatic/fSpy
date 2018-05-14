@@ -1,16 +1,14 @@
 import * as React from 'react';
-import CalibrationResult from '../../types/calibration-result';
-import { CalibrationMode } from '../../types/global-settings';
 import Button from './../common/button'
 import TableRow from './table-row'
 import MatrixView from './matrix-view'
 import BulletList, { BulletListType } from './bullet-list'
 import { ImageState } from '../../types/image-state';
+import { SolverResult } from '../../solver/solver-result';
 
 
 interface ResultPanelProps {
-  calibrationMode: CalibrationMode
-  calibrationResult: CalibrationResult
+  solverResult:SolverResult
   image: ImageState
   onExportClicked():void
 }
@@ -50,13 +48,13 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> 
             </div>
             <div className="panel-section bottom-border">
               <div className="panel-row" >Camera transform matrix</div>
-              <MatrixView transform={this.props.calibrationResult.calibrationResult2VP.cameraParameters.cameraTransform} />
+              <MatrixView transform={this.props.solverResult.cameraTransform} />
             </div>
 
             <div className="panel-section bottom-border">
               <BulletList
                 messages={
-                  this.props.calibrationResult.calibrationResult2VP.warnings
+                  this.props.solverResult.warnings
                 }
                 type={BulletListType.Warnings}
               />

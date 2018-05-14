@@ -48,8 +48,7 @@ class ResultContainer extends React.PureComponent<ResultContainerProps> {
 
     return (
       <ResultPanel
-        calibrationMode={this.props.calibrationMode}
-        calibrationResult={result}
+        solverResult={this.props.calibrationMode == CalibrationMode.OneVanishingPoint ? result.calibrationResult1VP  : result.calibrationResult2VP}
         image={this.props.image}
         onExportClicked={this.props.onExportClicked}
       />

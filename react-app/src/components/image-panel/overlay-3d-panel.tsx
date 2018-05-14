@@ -3,14 +3,14 @@ import Vector3D from '../../solver/vector-3d';
 import Point2D from '../../solver/point-2d';
 import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util';
 import { Palette } from '../../style/palette';
-import { CameraParametersBase } from '../../solver/calibration-result';
 import { Axis } from '../../types/calibration-settings';
 import { GlobalSettings } from '../../types/global-settings';
+import { SolverResult } from '../../solver/solver-result';
 
 interface Overlay3DPanelProps {
   width: number
   height: number
-  cameraParameters:CameraParametersBase
+  solverResult:SolverResult
   globalSettings:GlobalSettings
 }
 
@@ -121,15 +121,19 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   }
 
   private project(point:Vector3D):Point2D {
-    let projected = point
-    if (this.props.cameraParameters.cameraTransform) {
-      this.props.cameraParameters.cameraTransform.transformVector(projected)
+    if (!this.props.solverResult.principalPoint) {
+      return {x: 0, y: 0}
     }
 
-    let fov = this.props.cameraParameters.horizontalFieldOfView!
+    let projected = point
+    if (this.props.solverResult.cameraTransform) {
+      this.props.solverResult.cameraTransform.transformVector(projected)
+    }
+
+    let fov = this.props.solverResult.horizontalFieldOfView!
     let s = 1 / Math.tan(0.5 * fov)
-    projected.x = s * projected.x / (-projected.z) + this.props.cameraParameters.principalPoint.x
-    projected.y = s * projected.y / (-projected.z) + this.props.cameraParameters.principalPoint.y
+    projected.x = s * projected.x / (-projected.z) + this.props.solverResult.principalPoint.x
+    projected.y = s * projected.y / (-projected.z) + this.props.solverResult.principalPoint.y
 
     return CoordinatesUtil.convert(
       point,

@@ -29,7 +29,7 @@ export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
     let principalPoint:Point2D | null = null
     switch (this.props.calibrationSettings2VP.principalPointMode) {
       case PrincipalPointMode2VP.FromThirdVanishingPoint:
-        principalPoint = this.props.calibrationResult.calibrationResult2VP.cameraParameters.principalPoint
+        principalPoint = this.props.calibrationResult.calibrationResult2VP.principalPoint
         if (principalPoint) {
           principalPoint = CoordinatesUtil.convert(
             principalPoint,

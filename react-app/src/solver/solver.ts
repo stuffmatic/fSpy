@@ -1,12 +1,13 @@
 import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode2VP, Axis } from "../types/calibration-settings";
 import { ControlPointsState1VP, ControlPointsState2VP, VanishingPointControlState } from "../types/control-points-state";
 import { ImageState } from "../types/image-state";
-import { CalibrationResult1VP, CalibrationResult2VP } from "./calibration-result";
 import MathUtil from "./math-util";
 import Point2D from "./point-2d";
 import Transform from "./transform";
 import Vector3D from "./vector-3d";
 import CoordinatesUtil, { ImageCoordinateFrame } from "./coordinates-util";
+import { SolverResult } from "./solver-result";
+import { defaultSolverResult } from "../defaults/solver-result";
 
 
 /*
@@ -16,65 +17,14 @@ refer to "Using Vanishing Points for Camera Calibration and Coarse 3D Reconstruc
 from a Single Image" by E. Guillou, D. Meneveaux, E. Maisel, K. Bouatouch.
 (http://www.irisa.fr/prive/kadi/Reconstruction/paper.ps.gz).
 */
-
-class SolverBase {
-  protected static validateImage(image: ImageState): string[] {
-    let errors: string[] = []
-    if (image.width == null || image.height == null) {
-      errors.push("No image loaded")
-    }
-    return errors
-  }
-
-  protected static computeVanishingPoints(image: ImageState, controlPointStates: VanishingPointControlState[], errors: string[]): Point2D[] | null {
-    let result: Point2D[] = []
-    for (let i = 0; i < controlPointStates.length; i++) {
-      let vanishingPoint = MathUtil.lineIntersection(
-        controlPointStates[i].lineSegments[0],
-        controlPointStates[i].lineSegments[1]
-      )
-      if (vanishingPoint) {
-        result.push(
-          CoordinatesUtil.convert(
-            vanishingPoint,
-            ImageCoordinateFrame.Relative,
-            ImageCoordinateFrame.ImagePlane,
-            image.width!,
-            image.height!
-          )
-        )
-      }
-      else {
-        errors.push("Failed to compute vanishing point")
-      }
-    }
-
-    return errors.length == 0 ? result : null
-  }
-}
-
-
-export default class Solver extends SolverBase {
+export default class Solver {
 
   static solve1VP(
     settings: CalibrationSettings1VP,
     controlPoints: ControlPointsState1VP,
     image: ImageState
-  ): CalibrationResult1VP {
-
-    //TODO: use default instead of creating empty object again here?
-    let result:CalibrationResult1VP = {
-      errors: [],
-      warnings: [],
-      cameraParameters: {
-        cameraTransform: null,
-        horizontalFieldOfView: null,
-        verticalFieldOfView: null,
-        relativeFocalLength: null,
-        vanishingPoint: null,
-        principalPoint: {x: 0, y: 0}
-      }
-    }
+  ): SolverResult {
+    let result = this.blankSolverResult()
 
     let errors = this.validateImage(image)
     if (errors.length > 0) {
@@ -93,11 +43,11 @@ export default class Solver extends SolverBase {
       return result
     }
 
-    result.cameraParameters.cameraTransform = new Transform()
-    result.cameraParameters.vanishingPoint = vanishingPoints[0]
-    result.cameraParameters.horizontalFieldOfView = 0
-    result.cameraParameters.verticalFieldOfView = 0
-    result.cameraParameters.relativeFocalLength = 0
+    result.cameraTransform = new Transform()
+    result.vanishingPoints = [vanishingPoints[0], {x: 0, y: 0}, {x: 0, y: 0}]
+    result.horizontalFieldOfView = 0
+    result.verticalFieldOfView = 0
+    result.relativeFocalLength = 0
 
     return result
   }
@@ -106,21 +56,8 @@ export default class Solver extends SolverBase {
     settings: CalibrationSettings2VP,
     controlPoints: ControlPointsState2VP,
     image: ImageState
-  ): CalibrationResult2VP {
-    //TODO: use default instead of creating empty object again here?
-    let result:CalibrationResult2VP = {
-      errors: [],
-      warnings: [],
-      cameraParameters: {
-        cameraTransform: null,
-        horizontalFieldOfView: null,
-        verticalFieldOfView: null,
-        relativeFocalLength: null,
-        vanishingPoints: null,
-        principalPoint: {x: 0, y: 0}
-      }
-    }
-
+  ): SolverResult {
+    let result = this.blankSolverResult()
 
     let errors = this.validateImage(image)
     if (errors.length > 0) {
@@ -142,9 +79,10 @@ export default class Solver extends SolverBase {
 
     //Get the principal point
 
+    let principalPoint = {x: 0, y: 0}
     switch (settings.principalPointMode) {
       case PrincipalPointMode2VP.Manual:
-        result.cameraParameters.principalPoint = CoordinatesUtil.convert(
+        principalPoint = CoordinatesUtil.convert(
           controlPoints.principalPoint,
           ImageCoordinateFrame.Relative,
           ImageCoordinateFrame.ImagePlane,
@@ -156,7 +94,7 @@ export default class Solver extends SolverBase {
         let vanishingPointz = this.computeVanishingPoints(image, [controlPoints.vanishingPoints[2]], errors)
         if (vanishingPointz) {
           let thirdVanishingPoint = vanishingPointz[0]
-          result.cameraParameters.principalPoint = MathUtil.triangleOrthoCenter(
+          principalPoint = MathUtil.triangleOrthoCenter(
             vanishingPoints[0], vanishingPoints[1], thirdVanishingPoint
           )
         }
@@ -168,17 +106,17 @@ export default class Solver extends SolverBase {
       return result
     }
 
+    result.principalPoint = principalPoint
+
 
     let fRelative = this.computeFocalLength(
-      vanishingPoints[0], vanishingPoints[1], result.cameraParameters.principalPoint
+      vanishingPoints[0], vanishingPoints[1], result.principalPoint
     )! //TODO: check for null
-    result.cameraParameters.relativeFocalLength = fRelative
+    result.relativeFocalLength = fRelative
 
     let cameraTransform = this.computeCameraRotationMatrix(
-      vanishingPoints[0], vanishingPoints[1], fRelative, result.cameraParameters.principalPoint
+      vanishingPoints[0], vanishingPoints[1], fRelative, result.principalPoint
     )
-
-
 
     //Assign axes to vanishing point
     let basisChangeTransform = new Transform()
@@ -195,16 +133,16 @@ export default class Solver extends SolverBase {
     basisChangeTransform.matrix[2][1] = row3.y
     basisChangeTransform.matrix[2][2] = row3.z
 
-    result.cameraParameters.cameraTransform = basisChangeTransform.leftMultiplied(cameraTransform)
+    result.cameraTransform = basisChangeTransform.leftMultiplied(cameraTransform)
 
 
-    result.cameraParameters.horizontalFieldOfView = this.computeFieldOfView(
+    result.horizontalFieldOfView = this.computeFieldOfView(
       image.width!,
       image.height!,
       fRelative,
       false
     )
-    result.cameraParameters.verticalFieldOfView = this.computeFieldOfView(
+    result.verticalFieldOfView = this.computeFieldOfView(
       image.width!,
       image.height!,
       fRelative,
@@ -224,18 +162,18 @@ export default class Solver extends SolverBase {
       image.height!
     )
 
-    let k = Math.tan(0.5 * result.cameraParameters.horizontalFieldOfView)
+    let k = Math.tan(0.5 * result.horizontalFieldOfView)
     let lolz = new Vector3D(
-      k * (lol.x - result.cameraParameters.principalPoint.x),
-      k * (lol.y - result.cameraParameters.principalPoint.y),
+      k * (lol.x - result.principalPoint.x),
+      k * (lol.y - result.principalPoint.y),
       -1
     )
 
 
     //result.cameraParameters.cameraTransform.transposed().transformVector(lolz)
-    result.cameraParameters.cameraTransform.matrix[0][3] = 10 * lolz.x
-    result.cameraParameters.cameraTransform.matrix[1][3] = 10 * lolz.y
-    result.cameraParameters.cameraTransform.matrix[2][3] = 10 * lolz.z
+    result.cameraTransform.matrix[0][3] = 10 * lolz.x
+    result.cameraTransform.matrix[1][3] = 10 * lolz.y
+    result.cameraTransform.matrix[2][3] = 10 * lolz.z
 
 
     if (Math.abs(cameraTransform.determinant - 1) > 1e-7) {
@@ -357,6 +295,50 @@ export default class Solver extends SolverBase {
       case Axis.PositiveZ:
         return new Vector3D(0, 0, 1)
     }
+  }
+
+  private static validateImage(image: ImageState): string[] {
+    let errors: string[] = []
+    if (image.width == null || image.height == null) {
+      errors.push("No image loaded")
+    }
+    return errors
+  }
+
+  private static computeVanishingPoints(image: ImageState, controlPointStates: VanishingPointControlState[], errors: string[]): Point2D[] | null {
+    let result: Point2D[] = []
+    for (let i = 0; i < controlPointStates.length; i++) {
+      let vanishingPoint = MathUtil.lineIntersection(
+        controlPointStates[i].lineSegments[0],
+        controlPointStates[i].lineSegments[1]
+      )
+      if (vanishingPoint) {
+        result.push(
+          CoordinatesUtil.convert(
+            vanishingPoint,
+            ImageCoordinateFrame.Relative,
+            ImageCoordinateFrame.ImagePlane,
+            image.width!,
+            image.height!
+          )
+        )
+      }
+      else {
+        errors.push("Failed to compute vanishing point")
+      }
+    }
+
+    return errors.length == 0 ? result : null
+  }
+
+  /**
+   * Creates a blank solver result to be populated by the solver
+   */
+  private static blankSolverResult():SolverResult {
+    let result = {...defaultSolverResult}
+    result.errors = []
+    result.warnings = []
+    return result
   }
 
 }

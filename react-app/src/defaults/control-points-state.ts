@@ -38,12 +38,12 @@ export const defaultControlPointsState2VP: ControlPointsState2VP = {
       lineSegments: [
         [
           {
-            x: 0.060900900900900896,
-            y: 0.3127413127413127
-          },
-          {
             x: 0.0318719806763285,
             y: 0.06521739130434782
+          },
+          {
+            x: 0.060900900900900896,
+            y: 0.3127413127413127
           }
         ],
         [
