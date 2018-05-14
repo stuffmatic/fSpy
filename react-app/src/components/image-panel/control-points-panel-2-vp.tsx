@@ -52,7 +52,8 @@ export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
         {
           this.renderPrincipalPointControl(
             principalPoint!,
-            this.props.calibrationSettings2VP.principalPointMode == PrincipalPointMode2VP.Manual
+            this.props.calibrationSettings2VP.principalPointMode == PrincipalPointMode2VP.Manual,
+            this.props.calibrationSettings2VP.principalPointMode != PrincipalPointMode2VP.Default
           )
         }
         {

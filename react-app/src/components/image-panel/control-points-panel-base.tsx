@@ -11,7 +11,11 @@ type ControlPointsPanelProps = ControlPointsContainerDimensionProps & ControlPoi
 
 export default class ControlPointsPanelBase extends React.PureComponent<ControlPointsPanelProps> {
 
-  protected renderPrincipalPointControl(position: Point2D | null, isEnabled: boolean) {
+  protected renderPrincipalPointControl(position: Point2D | null, isEnabled: boolean, isVisible: boolean) {
+    if (!isVisible) {
+      return null
+    }
+
     return (
       <PrincipalPointControl
         position={
