@@ -29,21 +29,19 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> 
             <div className="panel-section bottom-border">
               <TableRow
                 title={"Horizontal field of view"}
-                value={"x°"}
+                value={this.props.solverResult.horizontalFieldOfView}
+                unit={"°"}
               />
               <TableRow
                 title={"Vertical field of view"}
-                value={"x°"}
+                value={this.props.solverResult.verticalFieldOfView}
+                unit={"°"}
               />
             </div>
             <div className="panel-section bottom-border">
               <TableRow
                 title={"Relative focal length"}
-                value={"x"}
-              />
-              <TableRow
-                title={"Absolute focal length"}
-                value={"y"}
+                value={this.props.solverResult.relativeFocalLength}
               />
             </div>
             <div className="panel-section bottom-border">

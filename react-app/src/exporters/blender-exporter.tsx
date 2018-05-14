@@ -13,6 +13,7 @@ export default class BlenderExporter extends Exporter {
         <li>Press new to create a new text block</li>
         <li>Paste the script to the left into the text editor (edit -> paste)</li>
         <li>Run the script (text -> run script></li>
+        <li>Set background image</li>
       </ul>
     )
   }

@@ -32,7 +32,7 @@ export default class Solver {
       return result
     }
 
-    let vanishingPoints = this.computeVanishingPoints(
+    let vanishingPoints = this.computeVanishingPointsFromControlPoints(
       image,
       controlPoints.vanishingPoints,
       errors
@@ -44,7 +44,7 @@ export default class Solver {
     }
 
     result.cameraTransform = new Transform()
-    result.vanishingPoints = [vanishingPoints[0], {x: 0, y: 0}, {x: 0, y: 0}]
+    result.vanishingPoints = [vanishingPoints[0], { x: 0, y: 0 }, { x: 0, y: 0 }]
     result.horizontalFieldOfView = 0
     result.verticalFieldOfView = 0
     result.relativeFocalLength = 0
@@ -66,7 +66,7 @@ export default class Solver {
     }
 
     //Compute the two vanishing points specified using control points
-    let vanishingPoints = this.computeVanishingPoints(
+    let vanishingPoints = this.computeVanishingPointsFromControlPoints(
       image,
       controlPoints.vanishingPoints,
       errors
@@ -79,7 +79,7 @@ export default class Solver {
 
     //Get the principal point
 
-    let principalPoint = {x: 0, y: 0}
+    let principalPoint = { x: 0, y: 0 }
     switch (settings.principalPointMode) {
       case PrincipalPointMode2VP.Manual:
         principalPoint = CoordinatesUtil.convert(
@@ -91,7 +91,7 @@ export default class Solver {
         )
         break
       case PrincipalPointMode2VP.FromThirdVanishingPoint:
-        let vanishingPointz = this.computeVanishingPoints(image, [controlPoints.vanishingPoints[2]], errors)
+        let vanishingPointz = this.computeVanishingPointsFromControlPoints(image, [controlPoints.vanishingPoints[2]], errors)
         if (vanishingPointz) {
           let thirdVanishingPoint = vanishingPointz[0]
           principalPoint = MathUtil.triangleOrthoCenter(
@@ -169,8 +169,6 @@ export default class Solver {
       -1
     )
 
-
-    //result.cameraParameters.cameraTransform.transposed().transformVector(lolz)
     result.cameraTransform.matrix[0][3] = 10 * lolz.x
     result.cameraTransform.matrix[1][3] = 10 * lolz.y
     result.cameraTransform.matrix[2][3] = 10 * lolz.z
@@ -229,12 +227,9 @@ export default class Solver {
     let PPuv = new Vector3D(P.x - Puv.x, P.y - Puv.y).length
     let FvPuv = new Vector3D(Fv.x - Puv.x, Fv.y - Puv.y).length
     let FuPuv = new Vector3D(Fu.x - Puv.x, Fu.y - Puv.y).length
-    //let FuFv = MathUtil.distance({ x: 0, y: 0 }, MathUtil.difference(Fu, Fv))//length([x - y for x, y in zip(Fu, Fv)])
-    //print("FuFv", FuFv, "FvPuv + FuPuv", FvPuv + FuPuv)
 
     let fSq = FvPuv * FuPuv - PPuv * PPuv
-    //print("FuPuv", FuPuv, "FvPuv", FvPuv, "PPuv", PPuv, "OPuv", FvPuv * FuPuv)
-    //print("fSq = ", fSq, " = ", FvPuv * FuPuv, " - ", PPuv * PPuv)
+
     if (fSq <= 0) {
       return null
     }
@@ -262,7 +257,7 @@ export default class Solver {
     let s2 = OFv.length
     let vpRc = OFv.normalized()
 
-    let wpRc =  upRc.cross(vpRc)
+    let wpRc = upRc.cross(vpRc)
 
     let M = new Transform()
     M.matrix[0][0] = OFu.x / s1
@@ -280,7 +275,7 @@ export default class Solver {
     return M
   }
 
-  private static axisVector(axis:Axis):Vector3D {
+  private static axisVector(axis: Axis): Vector3D {
     switch (axis) {
       case Axis.NegativeX:
         return new Vector3D(-1, 0, 0)
@@ -305,7 +300,11 @@ export default class Solver {
     return errors
   }
 
-  private static computeVanishingPoints(image: ImageState, controlPointStates: VanishingPointControlState[], errors: string[]): Point2D[] | null {
+  private static computeVanishingPointsFromControlPoints(
+    image: ImageState,
+    controlPointStates: VanishingPointControlState[],
+    errors: string[]
+  ): Point2D[] | null {
     let result: Point2D[] = []
     for (let i = 0; i < controlPointStates.length; i++) {
       let vanishingPoint = MathUtil.lineIntersection(
@@ -334,8 +333,8 @@ export default class Solver {
   /**
    * Creates a blank solver result to be populated by the solver
    */
-  private static blankSolverResult():SolverResult {
-    let result = {...defaultSolverResult}
+  private static blankSolverResult(): SolverResult {
+    let result = { ...defaultSolverResult }
     result.errors = []
     result.warnings = []
     return result
