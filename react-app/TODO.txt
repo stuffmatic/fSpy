@@ -1,7 +1,5 @@
 actions name space
 use redux thunk for re-computing calibration result once https://github.com/gaearon/redux-thunk/issues/169 is fixed
 full screen mode for projector use
-see if vanishing line means what it should mean
-include third vp in calibration result
 export svg?
 sort out rectangle mode + third vp
