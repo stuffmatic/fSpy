@@ -75,8 +75,6 @@ export default class MathUtil {
     }
   }
 
-
-
   static triangleOrthoCenter(k: Point2D, l: Point2D, m: Point2D): Point2D {
     let a = k.x
     let b = k.y
@@ -91,6 +89,29 @@ export default class MathUtil {
 
     return {
       x: x, y: y
+    }
+  }
+
+  static thirdTriangleVertex(firstVertex: Point2D, secondVertex: Point2D, orthocenter: Point2D): Point2D {
+    let a = firstVertex
+    let b = secondVertex
+    let o = orthocenter
+
+    //compute p, the orthogonal projection of the orthocenter onto the line through a and b
+    let aToB = this.normalized({ x: b.x - a.x, y: b.y - a.y })
+    let proj = this.dot(aToB, this.difference(o, a))
+    let p = {
+      x: a.x + proj * aToB.x,
+      y: a.y + proj * aToB.y
+    }
+
+    //the vertex c can be expressed as p + hn, where n is orthogonal to ab.
+    let n = { x: aToB.y, y: -aToB.x }
+    let h = this.dot(this.difference(a, p), this.difference(o, b)) / (this.dot(n, this.difference(o, b)))
+
+    return {
+      x: p.x + h * n.x,
+      y: p.y + h * n.y
     }
   }
 }
