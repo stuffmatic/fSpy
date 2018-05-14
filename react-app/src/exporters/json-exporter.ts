@@ -5,27 +5,10 @@ export default class JSONExporter extends Exporter {
     return "JSON"
   }
   get instructions():string {
-    return "Here's JSON!"
+    return "Here's JSON!. Fov in radians, transform is 4x4 matrix"
   }
   get code():string {
-    return JSON.stringify([
-      {omg: "hello!"},
-      {omg: "hello!"},
-      {omg: "hello!"},
-      {omg: "hello!"},
-      {omg: "hello!"},
-      {omg: "hello!"},
-      {omg: "hello!"},
-      {omg: "hello!"},
-      {omg: "hello!"},
-      {omg: "hello!"},
-      {omg: "hello!"},
-      {omg: "hello!"},
-      {omg: "hello!"},
-      {omg: "hello!"},
-      {omg: "hello!"},
-      {omg: "hello!"}
-    ], null, 2)
+    return JSON.stringify(this.solverResult, null, 2)
   }
   get codeLanguage(): string {
     return "json"

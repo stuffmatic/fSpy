@@ -6,9 +6,11 @@ import Exporter from '../../exporters/exporter';
 import BlenderExporter from '../../exporters/blender-exporter';
 import JSONExporter from '../../exporters/json-exporter';
 import * as hljs from 'highlight.js'
+import { SolverResult } from '../../solver/solver-result';
 
 interface ExportDialogProps {
   isVisible: boolean
+  solverResult:SolverResult
   onOpen(): void
   onClose(): void
 }
@@ -20,16 +22,17 @@ interface ExportDialogState {
 
 export default class ExportDialog extends React.Component<ExportDialogProps, ExportDialogState> {
 
-  state = {
-    exporters: [
-      new JSONExporter(),
-      new BlenderExporter()
-    ],
-    selectedExporterIndex: 0
-  }
+
 
   constructor(props: ExportDialogProps) {
     super(props)
+    this.state = {
+      exporters: [
+        new JSONExporter(),
+        new BlenderExporter()
+      ],
+      selectedExporterIndex: 0
+    }
   }
 
   componentDidMount() {
@@ -62,6 +65,7 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
       userSelect: "text"
     }
 
+    this.state.exporters[this.state.selectedExporterIndex].refresh(this.props.solverResult)
 
     return (
       <div id="modal-container" style={{
@@ -109,6 +113,7 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
           }}>
             <div style={modalColumnStyle}>
               <div style={modalColumnContentStyle} >
+
                 {  this.state.exporters[this.state.selectedExporterIndex].instructions }
               </div>
             </div>

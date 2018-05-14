@@ -1,7 +1,15 @@
+import { SolverResult } from "../solver/solver-result";
+
 export default abstract class Exporter {
 
-  constructor() {
+  protected solverResult:SolverResult | null
 
+  constructor() {
+    this.solverResult = null
+  }
+
+  refresh(solverResult:SolverResult):void {
+    this.solverResult = solverResult
   }
 
   abstract get name():string

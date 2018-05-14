@@ -8,10 +8,14 @@ import './App.css';
 import { StoreState } from './types/store-state';
 import { Dispatch, connect } from 'react-redux';
 import { AppAction, setExportDialogVisibility } from './actions';
+import { GlobalSettings, CalibrationMode } from './types/global-settings';
+import { UIState } from './types/ui-state';
+import CalibrationResult from './types/calibration-result';
 
 interface AppProps {
-  isExportDialogOpen: boolean
-  sidePanelsAreVisible: boolean
+  uiState:UIState,
+  globalSettings:GlobalSettings,
+  calibrationResult:CalibrationResult,
   onExportDialogVisiblityChange(isVisible: boolean): void
 }
 
@@ -19,18 +23,24 @@ function App(props: AppProps) {
   return (
     <div id="app-container">
       <ExportDialog
-        isVisible={props.isExportDialogOpen}
+        isVisible={props.uiState.isExportDialogOpen}
+        solverResult={ props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint ? props.calibrationResult.calibrationResult1VP : props.calibrationResult.calibrationResult2VP }
         onOpen={() => props.onExportDialogVisiblityChange(true)}
-        onClose={() => props.onExportDialogVisiblityChange(false)} />
-      <SettingsContainer isVisible={props.sidePanelsAreVisible} />
+        onClose={() => props.onExportDialogVisiblityChange(false)}
+      />
+      <SettingsContainer isVisible={props.uiState.sidePanelsAreVisible} />
       <ImageContainer />
-      <ResultContainer isVisible={props.sidePanelsAreVisible} />
+      <ResultContainer isVisible={props.uiState.sidePanelsAreVisible}  />
     </div>
   );
 }
 
 export function mapStateToProps(state: StoreState) {
-  return state.uiState
+  return {
+    uiState: state.uiState,
+    globalSettings: state.globalSettings,
+    calibrationResult: state.calibrationResult
+  }
 }
 
 export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
