@@ -8,6 +8,7 @@ import PrincipalPointControl from './principal-point-control'
 import OriginControl from './origin-control'
 import ReferenceDistanceAnchorControl from './reference-distance-anchor-control'
 import MathUtil from '../../solver/math-util';
+import { CalibrationSettingsBase, Axis } from '../../types/calibration-settings';
 
 type ControlPointsPanelProps = ControlPointsContainerDimensionProps & ControlPointsContainerCallbacks & ControlPointsContainerProps
 
@@ -57,13 +58,50 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
   }
 
   protected renderReferenceDistanceAnchorControl(position: Point2D) {
+
     let is1VP = this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint
+    let settings: CalibrationSettingsBase = is1VP ? this.props.calibrationSettings1VP : this.props.calibrationSettings2VP
     let result = is1VP ? this.props.calibrationResult.calibrationResult1VP : this.props.calibrationResult.calibrationResult2VP
     let controlPointsState: ControlPointsStateBase = is1VP ? this.props.controlPointsState1VP : this.props.controlPointsState2VP
 
-    if (!result.vanishingPoints) {
+    let referenceAxis = settings.referenceDistanceAxis
+    if (referenceAxis == null) {
+      return null
+    }
+
+    if (!result.vanishingPoints || !result.vanishingPointAxes) {
       return
     }
+
+
+    function uvIndicesForAxis(positiveAxis: Axis): [number, number] {
+      let negativeAxis = Axis.NegativeX
+      switch (positiveAxis) {
+        case Axis.PositiveY:
+          negativeAxis = Axis.NegativeY
+          break
+        case Axis.PositiveZ:
+          negativeAxis = Axis.NegativeZ
+          break
+      }
+
+      let uIndex = 0
+      let vIndex = 0
+
+      for (let vpIndex = 0; vpIndex < 3; vpIndex++) {
+        let vpAxis = result.vanishingPointAxes![vpIndex]
+        if (vpAxis == positiveAxis || vpAxis == negativeAxis)  {
+          uIndex = (vpIndex + 1) % 3
+          vIndex = (vpIndex + 2) % 3
+        }
+      }
+
+      return  [uIndex, vIndex]
+    }
+
+    let uvIndices = uvIndicesForAxis(referenceAxis)
+    let uIndex = uvIndices[0]
+    let vIndex = uvIndices[1]
 
     position = CoordinatesUtil.convert(
       position,
@@ -81,10 +119,10 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
       this.props.height
     )
 
-    let lol = CoordinatesUtil.convert(
+    let uIntersection = CoordinatesUtil.convert(
       MathUtil.lineIntersection(
-        [origin, result.vanishingPoints[0]],
-        [position, result.vanishingPoints[1]]
+        [origin, result.vanishingPoints[uIndex]],
+        [position, result.vanishingPoints[vIndex]]
       )!,
       ImageCoordinateFrame.ImagePlane,
       ImageCoordinateFrame.Absolute,
@@ -92,10 +130,10 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
       this.props.height
     )
 
-    let face = CoordinatesUtil.convert(
+    let vIntersection = CoordinatesUtil.convert(
       MathUtil.lineIntersection(
-        [origin, result.vanishingPoints[1]],
-        [position, result.vanishingPoints[0]]
+        [origin, result.vanishingPoints[vIndex]],
+        [position, result.vanishingPoints[uIndex]]
       )!,
       ImageCoordinateFrame.ImagePlane,
       ImageCoordinateFrame.Absolute,
@@ -121,12 +159,12 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
     return (
       <ReferenceDistanceAnchorControl
         origin={originAbs}
-        uIntersection={lol}
-        vIntersection={face}
+        uIntersection={uIntersection}
+        vIntersection={vIntersection}
         position={
           posAbs
         }
-        dragCallback={(position: Point2D) =>  {
+        dragCallback={(position: Point2D) => {
           this.invokeControlPointDragCallback(
             position,
             this.props.onReferenceDistanceAnchorDrag
@@ -134,14 +172,6 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
         }}
       />
     )
-
-    /*
-    let settings: CalibrationSettingsBase = this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint ? this.props.calibrationSettings1VP : this.props.calibrationSettings2VP
-    let referenceAxis = settings.referenceDistanceAxis
-    let result = this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint ? this.props.calibrationResult.calibrationResult1VP : this.props.calibrationResult.calibrationResult2VP
-
-
-    )*/
   }
 
   protected rel2AbsVanishingPointControlState(state: VanishingPointControlState): VanishingPointControlState {

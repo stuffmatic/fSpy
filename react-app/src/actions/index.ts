@@ -23,6 +23,8 @@ export enum ActionTypes {
   SET_PRINCIPAL_POINT_MODE_2VP = "SET_PRINCIPAL_POINT_MODE_2VP",
   SET_VANISHING_POINT_AXIS_1VP = "SET_VANISHING_POINT_AXIS_1VP",
   SET_VANISHING_POINT_AXIS_2VP = "SET_VANISHING_POINT_AXIS_2VP",
+  SET_REFERENCE_DISTANCE_AXIS_1VP = "SET_REFERENCE_DISTANCE_AXIS_1VP",
+  SET_REFERENCE_DISTANCE_AXIS_2VP = "SET_REFERENCE_DISTANCE_AXIS_2VP",
 
   //Control point actions
   SET_PRINCIPAL_POINT = "SET_PRINCIPAL_POINT",
@@ -212,6 +214,32 @@ export function setVanishingPointAxis2VP(vanishingPointIndex: number, axis: Axis
   }
 }
 
+//
+export interface SetReferenceDistanceAxis1VP {
+  type: ActionTypes.SET_REFERENCE_DISTANCE_AXIS_1VP,
+  axis: Axis | null
+}
+
+export function setReferenceDistanceAxis1VP(axis: Axis | null): SetReferenceDistanceAxis1VP {
+  return {
+    type: ActionTypes.SET_REFERENCE_DISTANCE_AXIS_1VP,
+    axis: axis
+  }
+}
+
+//
+export interface SetReferenceDistanceAxis2VP {
+  type: ActionTypes.SET_REFERENCE_DISTANCE_AXIS_2VP,
+  axis: Axis | null
+}
+
+export function setReferenceDistanceAxis2VP(axis: Axis | null): SetReferenceDistanceAxis2VP {
+  return {
+    type: ActionTypes.SET_REFERENCE_DISTANCE_AXIS_2VP,
+    axis: axis
+  }
+}
+
 //Set principal point
 export interface SetPrincipalPoint {
   type: ActionTypes.SET_PRINCIPAL_POINT
@@ -345,6 +373,8 @@ export type AppAction =
   SetPrincipalPointMode2VP |
   SetVanishingPointAxis1VP | 
   SetVanishingPointAxis2VP | 
+  SetReferenceDistanceAxis1VP |
+  SetReferenceDistanceAxis2VP |
   SetOrigin |
   SetReferenceDistanceAnchor |
   SetPrincipalPoint |

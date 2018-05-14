@@ -23,6 +23,11 @@ export function calibrationSettings1VP(state: CalibrationSettings1VP, action: Ap
         ...state,
         vanishingPointAxis: action.axis
       }
+    case ActionTypes.SET_REFERENCE_DISTANCE_AXIS_1VP:
+      return {
+        ...state,
+        referenceDistanceAxis: action.axis
+      }
   }
 
   return state

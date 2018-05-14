@@ -15,12 +15,12 @@ export enum HorizonMode {
 }
 
 export enum Axis {
-  PositiveX = "PositiveX",
-  NegativeX = "NegativeX",
-  PositiveY = "PositiveY",
-  NegativeY = "NegativeY",
-  PositiveZ = "PositiveZ",
-  NegativeZ = "NegativeZ",
+  PositiveX = "xPositive",
+  NegativeX = "xNegative",
+  PositiveY = "yPositive",
+  NegativeY = "yNegative",
+  PositiveZ = "zPositive",
+  NegativeZ = "zNegative",
 }
 
 export enum ReferenceDistanceUnit {
@@ -31,7 +31,7 @@ export enum ReferenceDistanceUnit {
 export interface CalibrationSettingsBase {
   referenceDistanceUnit:ReferenceDistanceUnit
   referenceDistance:number
-  referenceDistanceAxis:Axis
+  referenceDistanceAxis:Axis | null
 }
 
 export interface CalibrationSettings1VP extends CalibrationSettingsBase {

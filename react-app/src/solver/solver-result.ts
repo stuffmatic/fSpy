@@ -1,5 +1,6 @@
 import Transform from "./transform";
 import Point2D from "./point-2d";
+import { Axis } from "../types/calibration-settings";
 
 export interface SolverResult {
   errors:string[]
@@ -7,6 +8,7 @@ export interface SolverResult {
 
   principalPoint:Point2D | null
   vanishingPoints:[Point2D, Point2D, Point2D] | null
+  vanishingPointAxes:[Axis, Axis, Axis] | null
   cameraTransform:Transform | null
   horizontalFieldOfView:number | null
   verticalFieldOfView:number | null

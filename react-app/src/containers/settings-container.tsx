@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setNotes, setVanishingPointAxis1VP, setVanishingPointAxis2VP, setGridFloorNormal, setControlPointsVisible } from '../actions';
+import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setNotes, setVanishingPointAxis1VP, setVanishingPointAxis2VP, setGridFloorNormal, setControlPointsVisible, setReferenceDistanceAxis1VP, setReferenceDistanceAxis2VP } from '../actions';
 import SettingsPanel from '../components/settings-panel/settings-panel';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { StoreState } from '../types/store-state';
@@ -24,6 +24,8 @@ export interface SettingsContainerProps {
   onLoadTestImage(imageIndex: number | null): void
   onVanishingPointAxisChange1VP(axis: Axis): void
   onVanishingPointAxisChange2VP(vanishingPointIndex: number, axis: Axis): void
+  onReferenceDistanceAxisChange1VP(axis: Axis | null): void
+  onReferenceDistanceAxisChange2VP(axis: Axis | null): void
 }
 
 class SettingsContainer extends React.PureComponent<SettingsContainerProps> {
@@ -56,7 +58,7 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     onShowControlPointsChange: (visible: boolean) => {
       dispatch(setControlPointsVisible(visible))
     },
-    onGridFloorNormalChange: (axis: Axis | null) =>  {
+    onGridFloorNormalChange: (axis: Axis | null) => {
       dispatch(setGridFloorNormal(axis))
     },
     onNotesChange: (notes: string) => {
@@ -90,6 +92,12 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     },
     onVanishingPointAxisChange2VP: (vanishingPointIndex: number, axis: Axis) => {
       dispatch(setVanishingPointAxis2VP(vanishingPointIndex, axis))
+    },
+    onReferenceDistanceAxisChange1VP: (axis: Axis | null) => {
+      dispatch(setReferenceDistanceAxis1VP(axis))
+    },
+    onReferenceDistanceAxisChange2VP: (axis: Axis | null) => {
+      dispatch(setReferenceDistanceAxis2VP(axis))
     }
   }
 }

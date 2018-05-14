@@ -61,7 +61,12 @@ export default class SettingsSection1VP extends React.PureComponent<SettingsCont
           Reference distance
         </div>
         <div className="panel-row">
-          <ReferenceDistanceForm />
+        <ReferenceDistanceForm
+            referenceAxis={this.props.calibrationSettings1VP.referenceDistanceAxis}
+            onReferenceAxisChange={(axis:Axis | null) => {
+              this.props.onReferenceDistanceAxisChange1VP(axis)
+            }}
+          />
         </div>
 
         <PanelSpacer />

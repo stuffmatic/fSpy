@@ -179,6 +179,11 @@ export default class Solver {
 
     result.cameraTransform = basisChangeTransform.leftMultiplied(cameraTransform)
 
+    result.vanishingPointAxes = [
+      settings.vanishingPointAxes[0],
+      settings.vanishingPointAxes[1],
+      this.vectorAxis(row3)
+    ]
 
     result.horizontalFieldOfView = this.computeFieldOfView(
       image.width!,
@@ -336,6 +341,20 @@ export default class Solver {
     }
   }
 
+  private static vectorAxis(vector:Vector3D):Axis {
+    if (vector.x == 0 && vector.y == 0) {
+      return vector.z > 0 ? Axis.PositiveZ : Axis.NegativeZ
+    }
+    else if (vector.x == 0 && vector.z == 0) {
+      return vector.y > 0 ? Axis.PositiveY : Axis.NegativeY
+    }
+    else if (vector.y == 0 && vector.z == 0) {
+      return vector.x > 0 ? Axis.PositiveX : Axis.NegativeX
+    }
+
+    throw "Invalid axis vector"
+  }
+
   private static validateImage(image: ImageState): string[] {
     let errors: string[] = []
     if (image.width == null || image.height == null) {
@@ -383,5 +402,4 @@ export default class Solver {
     result.warnings = []
     return result
   }
-
 }
