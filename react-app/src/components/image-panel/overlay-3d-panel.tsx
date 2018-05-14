@@ -92,7 +92,7 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   }
 
   private renderAxis(axis: Axis, axisLength: number, color: string) {
-    let arrowSize = 0.15 * axisLength
+    let arrowSize = 0.12 * axisLength
     let projectedOrigin = this.project(new Vector3D())
     let endpoint = new Vector3D()
     let axisNormal = new Vector3D()
@@ -115,19 +115,19 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
     }
 
     let axisDirection = endpoint.normalized()
-
+    let arrowWidth = 0.7
     let arrowWedgeStart = this.project(
       new Vector3D(
-        endpoint.x + arrowSize * (axisNormal.x - axisDirection.x),
-        endpoint.y + arrowSize * (axisNormal.y - axisDirection.y),
-        endpoint.z + arrowSize * (axisNormal.z - axisDirection.z)
+        endpoint.x + arrowSize * (arrowWidth * axisNormal.x - axisDirection.x),
+        endpoint.y + arrowSize * (arrowWidth * axisNormal.y - axisDirection.y),
+        endpoint.z + arrowSize * (arrowWidth * axisNormal.z - axisDirection.z)
       )
     )
     let arrowWedgeEnd = this.project(
       new Vector3D(
-        endpoint.x + arrowSize * (-axisNormal.x - axisDirection.x),
-        endpoint.y + arrowSize * (-axisNormal.y - axisDirection.y),
-        endpoint.z + arrowSize * (-axisNormal.z - axisDirection.z)
+        endpoint.x + arrowSize * (-arrowWidth * axisNormal.x - axisDirection.x),
+        endpoint.y + arrowSize * (-arrowWidth * axisNormal.y - axisDirection.y),
+        endpoint.z + arrowSize * (-arrowWidth * axisNormal.z - axisDirection.z)
       )
     )
 
