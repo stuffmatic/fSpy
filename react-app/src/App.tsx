@@ -11,11 +11,13 @@ import { AppAction, setExportDialogVisibility } from './actions';
 import { GlobalSettings, CalibrationMode } from './types/global-settings';
 import { UIState } from './types/ui-state';
 import CalibrationResult from './types/calibration-result';
+import { ImageState } from './types/image-state';
 
 interface AppProps {
   uiState:UIState,
   globalSettings:GlobalSettings,
   calibrationResult:CalibrationResult,
+  image:ImageState,
   onExportDialogVisiblityChange(isVisible: boolean): void
 }
 
@@ -25,6 +27,7 @@ function App(props: AppProps) {
       <ExportDialog
         isVisible={props.uiState.isExportDialogOpen}
         solverResult={ props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint ? props.calibrationResult.calibrationResult1VP : props.calibrationResult.calibrationResult2VP }
+        image= {props.image}
         onOpen={() => props.onExportDialogVisiblityChange(true)}
         onClose={() => props.onExportDialogVisiblityChange(false)}
       />
@@ -39,7 +42,8 @@ export function mapStateToProps(state: StoreState) {
   return {
     uiState: state.uiState,
     globalSettings: state.globalSettings,
-    calibrationResult: state.calibrationResult
+    calibrationResult: state.calibrationResult,
+    image: state.image
   }
 }
 

@@ -7,10 +7,12 @@ import BlenderExporter from '../../exporters/blender-exporter';
 import JSONExporter from '../../exporters/json-exporter';
 import * as hljs from 'highlight.js'
 import { SolverResult } from '../../solver/solver-result';
+import { ImageState } from '../../types/image-state';
 
 interface ExportDialogProps {
   isVisible: boolean
   solverResult:SolverResult
+  image: ImageState
   onOpen(): void
   onClose(): void
 }
@@ -65,7 +67,10 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
       userSelect: "text"
     }
 
-    this.state.exporters[this.state.selectedExporterIndex].refresh(this.props.solverResult)
+    this.state.exporters[this.state.selectedExporterIndex].refresh(
+      this.props.solverResult,
+      this.props.image
+    )
 
     return (
       <div id="modal-container" style={{
