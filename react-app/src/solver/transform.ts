@@ -294,9 +294,9 @@ export default class Transform {
     }
   }
 
-  transformedVector(vector: Vector3D): Vector3D {
+  transformedVector(vector: Vector3D, perspectiveDivide = false): Vector3D {
     let copy = vector.copy()
-    this.transformVector(copy)
+    this.transformVector(copy, perspectiveDivide)
     return copy
   }
 

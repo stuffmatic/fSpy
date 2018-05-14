@@ -1,6 +1,7 @@
 import Point2D from "./point-2d";
 import Vector3D from "./vector-3d";
 import { SolverResult } from "./solver-result";
+import Transform from "./transform";
 
 export default class MathUtil {
 
@@ -127,15 +128,29 @@ export default class MathUtil {
     let projected = point.copy()
 
     //apply camera transform
+    let transform = new Transform()
     if (solverResult.cameraTransform) {
-      projected = solverResult.cameraTransform.transformedVector(projected)
+      transform.leftMultiply(solverResult.cameraTransform)
     }
 
-    //perform field of view scaling and perspective divide
+    //apply projection transform
     let fov = solverResult.horizontalFieldOfView!
     let s = 1 / Math.tan(0.5 * fov)
-    projected.x = s * projected.x / (-projected.z) + solverResult.principalPoint.x
-    projected.y = s * projected.y / (-projected.z) + solverResult.principalPoint.y
+    let projectionTransform = Transform.fromMatrix([
+      [s, 0, -solverResult.principalPoint.x, 0],
+      [0, s, -solverResult.principalPoint.y, 0],
+      [0, 0, 1, 0],
+      [0, 0, -1, 0]
+    ])
+    transform.leftMultiply(projectionTransform)
+    //console.log(JSON.stringify(transform, null, 2))
+    //console.log(JSON.stringify(transform.inverted(), null, 2))
+    projected = transform.transformedVector(projected, true)
+
+    //perform field of view scaling and perspective divide
+
+    //projected.x = s * projected.x / (-projected.z) + solverResult.principalPoint.x
+    //projected.y = s * projected.y / (-projected.z) + solverResult.principalPoint.y
 
     return projected
   }
