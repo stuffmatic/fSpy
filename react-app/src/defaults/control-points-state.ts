@@ -7,6 +7,9 @@ const defaultControlPointsStateBase: ControlPointsStateBase = {
   origin: {
     x: 0.3, y: 0.3
   },
+  referenceDistanceAnchor: {
+    x: 0.7, y: 0.7
+  }
 }
 
 export const defaultControlPointsState1VP: ControlPointsState1VP = {

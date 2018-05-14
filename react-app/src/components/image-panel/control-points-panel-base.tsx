@@ -6,6 +6,7 @@ import Point2D from '../../solver/point-2d';
 import { CalibrationMode } from '../../types/global-settings';
 import PrincipalPointControl from './principal-point-control'
 import OriginControl from './origin-control'
+import ReferenceDistanceAnchorControl from './reference-distance-anchor-control'
 
 type ControlPointsPanelProps = ControlPointsContainerDimensionProps & ControlPointsContainerCallbacks & ControlPointsContainerProps
 
@@ -42,18 +43,28 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
     return (
       <OriginControl
         position={
-          CoordinatesUtil.convert(
-            position,
-            ImageCoordinateFrame.Relative,
-            ImageCoordinateFrame.Absolute,
-            this.props.width,
-            this.props.height
-          )
+          this.rel2AbsPoint(position)
         }
         dragCallback={(position: Point2D) => {
           this.invokeControlPointDragCallback(
             position,
             this.props.onOriginDrag
+          )
+        }}
+      />
+    )
+  }
+
+  protected renderReferenceDistanceAnchorControl(position:Point2D) {
+    return (
+      <ReferenceDistanceAnchorControl
+        position={
+          this.rel2AbsPoint(position)
+        }
+        dragCallback={(position:Point2D) => {
+          this.invokeControlPointDragCallback(
+            position,
+            this.props.onReferenceDistanceAnchorDrag
           )
         }}
       />

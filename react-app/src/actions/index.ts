@@ -27,6 +27,7 @@ export enum ActionTypes {
   //Control point actions
   SET_PRINCIPAL_POINT = "SET_PRINCIPAL_POINT",
   SET_ORIGIN = "SET_ORIGIN",
+  SET_REFERENCE_DISTANCE_ANCHOR = "SET_REFERENCE_DISTANCE_ANCHOR",
   ADJUST_HORIZON = "ADJUST_HORIZON",
   ADJUST_VANISHING_POINT = "ADJUST_VANISHING_POINT",
 
@@ -241,6 +242,21 @@ export function setOrigin(calibrationMode: CalibrationMode, position: Point2D): 
   }
 }
 
+//Set reference distance anchor
+export interface SetReferenceDistanceAnchor {
+  type: ActionTypes.SET_REFERENCE_DISTANCE_ANCHOR
+  calibrationMode: CalibrationMode
+  position: Point2D
+}
+
+export function setReferenceDistanceAnchor(calibrationMode: CalibrationMode, position: Point2D): SetReferenceDistanceAnchor {
+  return {
+    type: ActionTypes.SET_REFERENCE_DISTANCE_ANCHOR,
+    position: position,
+    calibrationMode: calibrationMode
+  }
+}
+
 //Adjust horizon (i.e set the position one endpoint of the horizon line)
 export interface AdjustHorizon {
   type: ActionTypes.ADJUST_HORIZON,
@@ -330,6 +346,7 @@ export type AppAction =
   SetVanishingPointAxis1VP | 
   SetVanishingPointAxis2VP | 
   SetOrigin |
+  SetReferenceDistanceAnchor |
   SetPrincipalPoint |
   AdjustHorizon |
   AdjustVanishingPoint |

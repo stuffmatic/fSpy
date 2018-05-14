@@ -48,6 +48,11 @@ export function controlPointsState1VP(state: ControlPointsState1VP, action: AppA
         ...state,
         vanishingPoints: adjustedVanishingPoints
       }
+    case ActionTypes.SET_REFERENCE_DISTANCE_ANCHOR:
+      return {
+        ...state,
+        referenceDistanceAnchor: action.position
+      }
   }
 
   return state;
