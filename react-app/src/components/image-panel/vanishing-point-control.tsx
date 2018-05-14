@@ -12,7 +12,7 @@ interface VanishingPointControlProps {
 
   onControlPointDrag(
     vanishingPointIndex: number,
-    vanishingLineIndex: number,
+    lineSegmentIndex: number,
     pointPairIndex: number,
     position: Point2D
   ): void
@@ -22,30 +22,30 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
   render() {
     return (
       <g>
-        {this.renderVanishingLine(0)}
-        {this.renderVanishingLine(1)}
+        {this.renderLineSegment(0)}
+        {this.renderLineSegment(1)}
         {this.renderVanishingPoint()}
       </g>
     )
   }
 
-  private renderVanishingLine(index: number) {
+  private renderLineSegment(index: number) {
     return (
       <g>
         <ControlLine
-          start={this.props.controlState.vanishingLines[index][0]}
-          end={this.props.controlState.vanishingLines[index][1]}
+          start={this.props.controlState.lineSegments[index][0]}
+          end={this.props.controlState.lineSegments[index][1]}
           color={this.props.color}
         />
         <ControlPoint
-          position={this.props.controlState.vanishingLines[index][0]}
+          position={this.props.controlState.lineSegments[index][0]}
           dragCallback={(position: Point2D) => {
             this.props.onControlPointDrag(this.props.vanishingPointIndex, index, 0, position)
           }}
           fill={this.props.color}
         />
         <ControlPoint
-          position={this.props.controlState.vanishingLines[index][1]}
+          position={this.props.controlState.lineSegments[index][1]}
           dragCallback={(position: Point2D) => {
             this.props.onControlPointDrag(this.props.vanishingPointIndex, index, 1, position)
           }}
@@ -59,17 +59,17 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
     //the vanishing point is the intersection between the lines
     //defined by the two control point pairs
     let vanishingPoint = MathUtil.lineIntersection(
-      this.props.controlState.vanishingLines[0],
-      this.props.controlState.vanishingLines[1]
+      this.props.controlState.lineSegments[0],
+      this.props.controlState.lineSegments[1]
     )
 
     if (vanishingPoint) {
       let p1 = MathUtil.lineSegmentMidpoint(
-        this.props.controlState.vanishingLines[0]
+        this.props.controlState.lineSegments[0]
       )
       let p2 = vanishingPoint
       let p3 = MathUtil.lineSegmentMidpoint(
-        this.props.controlState.vanishingLines[1]
+        this.props.controlState.lineSegments[1]
       )
       return (
         <polyline

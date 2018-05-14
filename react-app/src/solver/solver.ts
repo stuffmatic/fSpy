@@ -30,8 +30,8 @@ class SolverBase {
     let result: Point2D[] = []
     for (let i = 0; i < controlPointStates.length; i++) {
       let vanishingPoint = MathUtil.lineIntersection(
-        controlPointStates[i].vanishingLines[0],
-        controlPointStates[i].vanishingLines[1]
+        controlPointStates[i].lineSegments[0],
+        controlPointStates[i].lineSegments[1]
       )
       if (vanishingPoint) {
         result.push(

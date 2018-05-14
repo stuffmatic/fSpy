@@ -3,7 +3,7 @@ import ControlPointsPanel1VP from './../components/image-panel/control-points-pa
 import ControlPointsPanel2VP from './../components/image-panel/control-points-panel-2-vp'
 import Overlay3DPanel from './../components/image-panel/overlay-3d-panel'
 import { StoreState } from '../types/store-state';
-import { AppAction, adjustHorizon, setOrigin, setPrincipalPoint, adjustVanishingLine } from '../actions';
+import { AppAction, adjustHorizon, setOrigin, setPrincipalPoint, adjustVanishingPoint } from '../actions';
 import { Dispatch, connect } from 'react-redux';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { ControlPointsState1VP, ControlPointsState2VP, ControlPointPairIndex } from '../types/control-points-state';
@@ -33,7 +33,7 @@ export interface ControlPointsContainerCallbacks {
   onVanishingPointControlPointDrag(
     calibrationMode: CalibrationMode,
     vanishingPointIndex: number,
-    vanishingLineIndex: number,
+    lineSegmentIndex: number,
     controlPointIndex: ControlPointPairIndex,
     position: Point2D
   ): void
@@ -98,14 +98,14 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     },
     onVanishingPointControlPointDrag: (calibrationMode: CalibrationMode,
       vanishingPointIndex: number,
-      vanishingLineIndex: number,
+      lineSegmentIndex: number,
       controlPointIndex: ControlPointPairIndex,
       position: Point2D) => {
       dispatch(
-        adjustVanishingLine(
+        adjustVanishingPoint(
           calibrationMode,
           vanishingPointIndex,
-          vanishingLineIndex,
+          lineSegmentIndex,
           controlPointIndex,
           position
         )

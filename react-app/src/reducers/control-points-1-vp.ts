@@ -35,14 +35,14 @@ export function controlPointsState1VP(state: ControlPointsState1VP, action: AppA
         principalPoint: action.position
       }
 
-    case ActionTypes.ADJUST_VANISHING_LINE:
+    case ActionTypes.ADJUST_VANISHING_POINT:
 
       let adjustedVanishingPoints: [VanishingPointControlState] = [
         { ...state.vanishingPoints[0] }
       ]
-      let adjustedVanishingPoint = adjustedVanishingPoints[action.vanishingPointIndex]
-      let adjustedVanishingLine = adjustedVanishingPoint.vanishingLines[action.vanishingLineIndex]
-      adjustedVanishingLine[action.controlPointIndex] = action.position
+      let adjustedVanishingPoint = adjustedVanishingPoints[action.lineSegmentIndex]
+      let adjustedLineSegment = adjustedVanishingPoint.lineSegments[action.lineSegmentIndex]
+      adjustedLineSegment[action.controlPointIndex] = action.position
 
       return {
         ...state,

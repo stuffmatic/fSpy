@@ -35,10 +35,10 @@ export default class ControlPointsPanel1VP extends ControlPointsPanelBase {
               state.vanishingPoints[0]
             )
           }
-          onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: ControlPointPairIndex, position: Point2D) => {
-            this.invokeVanishingLineEndpointDragCallback(
+          onControlPointDrag={(vanishingPointIndex: number, lineSegmentIndex: number, controlPointIndex: ControlPointPairIndex, position: Point2D) => {
+            this.invokeVanishingPointDragCallback(
               vanishingPointIndex,
-              vanishingLineIndex,
+              lineSegmentIndex,
               controlPointIndex,
               position,
               this.props.onVanishingPointControlPointDrag

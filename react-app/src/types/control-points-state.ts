@@ -18,7 +18,7 @@ export enum ControlPointPairIndex {
 }
 
 export interface VanishingPointControlState {
-  vanishingLines:[ControlPointPairState, ControlPointPairState]
+  lineSegments:[ControlPointPairState, ControlPointPairState]
 }
 
 export interface ControlPointsStateBase {

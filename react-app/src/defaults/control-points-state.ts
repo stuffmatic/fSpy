@@ -17,7 +17,7 @@ export const defaultControlPointsState1VP: ControlPointsState1VP = {
   ],
   vanishingPoints: [
     {
-      vanishingLines: [
+      lineSegments: [
         [
           { x: 0.3, y: 0.9 },
           { x: 0.35, y: 0.7 }
@@ -35,7 +35,7 @@ export const defaultControlPointsState2VP: ControlPointsState2VP = {
   ...defaultControlPointsStateBase,
   vanishingPoints: [
     {
-      vanishingLines: [
+      lineSegments: [
         [
           {
             x: 0.060900900900900896,
@@ -59,7 +59,7 @@ export const defaultControlPointsState2VP: ControlPointsState2VP = {
       ]
     },
     {
-      vanishingLines: [
+      lineSegments: [
         [
           {
             x: 0.4977477477477477,
@@ -83,7 +83,7 @@ export const defaultControlPointsState2VP: ControlPointsState2VP = {
       ]
     },
     {
-      vanishingLines: [
+      lineSegments: [
         [
           {
             x: 0.48018018018018016,

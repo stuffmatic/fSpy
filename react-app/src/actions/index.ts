@@ -28,7 +28,7 @@ export enum ActionTypes {
   SET_PRINCIPAL_POINT = "SET_PRINCIPAL_POINT",
   SET_ORIGIN = "SET_ORIGIN",
   ADJUST_HORIZON = "ADJUST_HORIZON",
-  ADJUST_VANISHING_LINE = "ADJUST_VANISHING_LINE",
+  ADJUST_VANISHING_POINT = "ADJUST_VANISHING_POINT",
 
   //
   SET_CALIBRATION_RESULT = "SET_CALIBRATION_RESULT",
@@ -259,28 +259,29 @@ export function adjustHorizon(
   }
 }
 
-//Adjust vanishing line (i.e set the position of one endpoint of a vanishing line)
-export interface AdjustVanishingLine {
-  type: ActionTypes.ADJUST_VANISHING_LINE,
+//Adjust a vanishing point (i.e set the position of an endpoint of a line
+//segment of a vanishing point control)
+export interface AdjustVanishingPoint {
+  type: ActionTypes.ADJUST_VANISHING_POINT,
   calibrationMode: CalibrationMode,
   vanishingPointIndex: number,
-  vanishingLineIndex: number,
+  lineSegmentIndex: number,
   controlPointIndex: ControlPointPairIndex,
   position: Point2D
 }
 
-export function adjustVanishingLine(
+export function adjustVanishingPoint(
   calibrationMode: CalibrationMode,
   vanshingPointIndex: number,
-  vanishingLineIndex: number,
+  lineSegmentIndex: number,
   controlPointIndex: ControlPointPairIndex,
   position: Point2D
-): AdjustVanishingLine {
+): AdjustVanishingPoint {
   return {
-    type: ActionTypes.ADJUST_VANISHING_LINE,
+    type: ActionTypes.ADJUST_VANISHING_POINT,
     calibrationMode: calibrationMode,
     vanishingPointIndex: vanshingPointIndex,
-    vanishingLineIndex: vanishingLineIndex,
+    lineSegmentIndex: lineSegmentIndex,
     controlPointIndex: controlPointIndex,
     position: position
   }
@@ -331,6 +332,6 @@ export type AppAction =
   SetOrigin |
   SetPrincipalPoint |
   AdjustHorizon |
-  AdjustVanishingLine |
+  AdjustVanishingPoint |
   SetCalibrationResult | 
   SetExportDialogVisibility

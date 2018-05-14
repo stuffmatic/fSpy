@@ -62,9 +62,9 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
 
   protected rel2AbsVanishingPointControlState(state: VanishingPointControlState): VanishingPointControlState {
     return {
-      vanishingLines: [
-        this.rel2AbsControlPointPairState(state.vanishingLines[0]),
-        this.rel2AbsControlPointPairState(state.vanishingLines[1])
+      lineSegments: [
+        this.rel2AbsControlPointPairState(state.lineSegments[0]),
+        this.rel2AbsControlPointPairState(state.lineSegments[1])
       ]
     }
   }
@@ -122,21 +122,21 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
     )
   }
 
-  protected invokeVanishingLineEndpointDragCallback(
+  protected invokeVanishingPointDragCallback(
     vanishingPointIndex: number,
-    vanishingLineIndex: number,
+    lineSegmentIndex: number,
     controlPointIndex: ControlPointPairIndex,
     position: Point2D,
     callback: (calibrationMode: CalibrationMode,
       vanishingPointIndex: number,
-      vanishingLineIndex: number,
+      lineSegmentIndex: number,
       controlPointIndex: ControlPointPairIndex,
       position: Point2D) => void
   ) {
     callback(
       this.props.globalSettings.calibrationMode,
       vanishingPointIndex,
-      vanishingLineIndex,
+      lineSegmentIndex,
       controlPointIndex,
       CoordinatesUtil.convert(
         position,

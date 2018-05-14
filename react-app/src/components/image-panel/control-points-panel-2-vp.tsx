@@ -13,14 +13,14 @@ export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
     let quadModeEnabled = this.props.calibrationSettings2VP.quadModeEnabled
     if (quadModeEnabled) {
       vp2Points = {
-        vanishingLines: [
+        lineSegments: [
           [
-            state.vanishingPoints[0].vanishingLines[0][0],
-            state.vanishingPoints[0].vanishingLines[1][0]
+            state.vanishingPoints[0].lineSegments[0][0],
+            state.vanishingPoints[0].lineSegments[1][0]
           ],
           [
-            state.vanishingPoints[0].vanishingLines[0][1],
-            state.vanishingPoints[0].vanishingLines[1][1]
+            state.vanishingPoints[0].lineSegments[0][1],
+            state.vanishingPoints[0].lineSegments[1][1]
           ]
         ]
       }
@@ -66,11 +66,11 @@ export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
           controlState={
             this.rel2AbsVanishingPointControlState(vp2Points)
           }
-          onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: number, position: Point2D) => {
+          onControlPointDrag={(vanishingPointIndex: number, lineSegmentIndex: number, controlPointIndex: number, position: Point2D) => {
             if (!quadModeEnabled) {
-              this.invokeVanishingLineEndpointDragCallback(
+              this.invokeVanishingPointDragCallback(
                 vanishingPointIndex,
-                vanishingLineIndex,
+                lineSegmentIndex,
                 controlPointIndex,
                 position,
                 this.props.onVanishingPointControlPointDrag
@@ -86,10 +86,10 @@ export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
           controlState={
             this.rel2AbsVanishingPointControlState(state.vanishingPoints[0])
           }
-          onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: number, position: Point2D) => {
-            this.invokeVanishingLineEndpointDragCallback(
+          onControlPointDrag={(vanishingPointIndex: number, lineSegmentIndex: number, controlPointIndex: number, position: Point2D) => {
+            this.invokeVanishingPointDragCallback(
               vanishingPointIndex,
-              vanishingLineIndex,
+              lineSegmentIndex,
               controlPointIndex,
               position,
               this.props.onVanishingPointControlPointDrag
@@ -104,7 +104,6 @@ export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
   }
 
   protected renderThirdVanishingPoint() {
-
     let settings = this.props.calibrationSettings2VP
     let state = this.props.controlPointsState2VP
     if (settings.principalPointMode == PrincipalPointMode2VP.FromThirdVanishingPoint) {
@@ -116,10 +115,10 @@ export default class ControlPointsPanel2VP extends ControlPointsPanelBase {
             controlState={
               this.rel2AbsVanishingPointControlState(state.vanishingPoints[2])
             }
-            onControlPointDrag={(vanishingPointIndex: number, vanishingLineIndex: number, controlPointIndex: number, position: Point2D) => {
-              this.invokeVanishingLineEndpointDragCallback(
+            onControlPointDrag={(vanishingPointIndex: number, lineSegmentIndex: number, controlPointIndex: number, position: Point2D) => {
+              this.invokeVanishingPointDragCallback(
                 vanishingPointIndex,
-                vanishingLineIndex,
+                lineSegmentIndex,
                 controlPointIndex,
                 position,
                 this.props.onVanishingPointControlPointDrag
