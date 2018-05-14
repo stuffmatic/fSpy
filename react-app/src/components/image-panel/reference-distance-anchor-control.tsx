@@ -14,7 +14,7 @@ interface ReferenceDistanceAnchorControlProps {
 export default function ReferenceDistanceAnchorControl(props: ReferenceDistanceAnchorControlProps) {
   return (
     <g>
-      <g stroke={Palette.gray} opacity="0.5" strokeDasharray="5,10">
+      <g stroke={Palette.gray} opacity="0.5" strokeDasharray="2,6">
         <line x1={props.origin.x} y1={props.origin.y} x2={props.uIntersection.x} y2={props.uIntersection.y} />
         <line x1={props.origin.x} y1={props.origin.y} x2={props.vIntersection.x} y2={props.vIntersection.y} />
         <line x1={props.position.x} y1={props.position.y} x2={props.uIntersection.x} y2={props.uIntersection.y} />
