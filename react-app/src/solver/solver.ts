@@ -1,4 +1,4 @@
-import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode2VP, Axis } from "../types/calibration-settings";
+import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode2VP, Axis, CalibrationSettingsBase } from "../types/calibration-settings";
 import { ControlPointsState1VP, ControlPointsState2VP, VanishingPointControlState, ControlPointsStateBase } from "../types/control-points-state";
 import { ImageState } from "../types/image-state";
 import MathUtil from "./math-util";
@@ -198,30 +198,13 @@ export default class Solver {
       true
     )
 
-
-    //TODO: FIX THIS
-    let lol = CoordinatesUtil.convert(
-      {
-        x: controlPoints.origin.x,
-        y: controlPoints.origin.y
-      },
-      ImageCoordinateFrame.Relative,
-      ImageCoordinateFrame.ImagePlane,
-      image.width!,
-      image.height!
+    this.computeTranslationVector(
+      controlPoints,
+      settings,
+      controlPoints.origin,
+      image,
+      result
     )
-
-    let k = Math.tan(0.5 * result.horizontalFieldOfView)
-    let lolz = new Vector3D(
-      k * (lol.x - result.principalPoint.x),
-      k * (lol.y - result.principalPoint.y),
-      -1
-    )
-
-    result.cameraTransform.matrix[0][3] = 10 * lolz.x
-    result.cameraTransform.matrix[1][3] = 10 * lolz.y
-    result.cameraTransform.matrix[2][3] = 10 * lolz.z
-
 
     if (Math.abs(cameraTransform.determinant - 1) > 1e-7) {
       result.warnings.push("Unreliable camera transform, determinant " + cameraTransform.determinant.toFixed(5))
@@ -352,9 +335,9 @@ export default class Solver {
     vanishingPointAxes: [Axis, Axis, Axis],
     imageWidth: number,
     imageHeight: number,
-    cameraTransform:Transform,
-    principalPoint:Point2D,
-    horizontalFieldOfView:number
+    cameraTransform: Transform,
+    principalPoint: Point2D,
+    horizontalFieldOfView: number
   ): [Vector3D, Vector3D] {
     let handlePositionsRelative = this.referenceDistanceHandlesRelativePositions(
       controlPoints,
@@ -425,19 +408,19 @@ export default class Solver {
       principalPoint,
       horizontalFieldOfView
     )
-    let rayAnchorEnd =  MathUtil.perspectiveUnproject(
+    let rayAnchorEnd = MathUtil.perspectiveUnproject(
       new Vector3D(anchorPosition.x, anchorPosition.y, 2),
       cameraTransform,
       principalPoint,
       horizontalFieldOfView
     )
-    let referencePlaneIntersection =  MathUtil.linePlaneIntersection(
+    let referencePlaneIntersection = MathUtil.linePlaneIntersection(
       origin, u, v,
       rayAnchorStart, rayAnchorEnd
     )
 
     //Compute the world positions of the reference distance handles
-    let result:Vector3D[] = []
+    let result: Vector3D[] = []
 
     for (let handlePosition of handlePositions) {
       let handleRayStart = MathUtil.perspectiveUnproject(
@@ -524,10 +507,10 @@ export default class Solver {
     if (vector.x == 0 && vector.y == 0) {
       return vector.z > 0 ? Axis.PositiveZ : Axis.NegativeZ
     }
-    else if (vector.x == 0 && vector.z == 0)  {
+    else if (vector.x == 0 && vector.z == 0) {
       return vector.y > 0 ? Axis.PositiveY : Axis.NegativeY
     }
-    else if (vector.y == 0 && vector.z == 0)  {
+    else if (vector.y == 0 && vector.z == 0) {
       return vector.x > 0 ? Axis.PositiveX : Axis.NegativeX
     }
 
@@ -570,6 +553,78 @@ export default class Solver {
     }
 
     return errors.length == 0 ? result : null
+  }
+
+  private static computeTranslationVector(
+    controlPoints:ControlPointsStateBase,
+    settings: CalibrationSettingsBase,
+    originRelative: Point2D,
+    image: ImageState,
+    result: SolverResult
+  ): void {
+    //The 3D origin in image plane coordinates
+    let origin = CoordinatesUtil.convert(
+      originRelative,
+      ImageCoordinateFrame.Relative,
+      ImageCoordinateFrame.ImagePlane,
+      image.width!, //TODO: null check
+      image.height! //TODO: null check
+    )
+
+    let k = Math.tan(0.5 * result.horizontalFieldOfView!) //TODO: null check
+    let origin3D = new Vector3D(
+      k * (origin.x - result.principalPoint!.x),//TODO: null check
+      k * (origin.y - result.principalPoint!.y),//TODO: null check
+      -1
+    )
+
+    if (settings.referenceDistanceAxis) {
+      let referenceDistance = settings.referenceDistance
+
+      let handlesRel = this.referenceDistanceHandlesRelativePositions(
+        controlPoints, settings.referenceDistanceAxis, result.vanishingPoints!, result.vanishingPointAxes!, image.width!, image.height!
+      )
+      let handlesImPl = handlesRel.map((position:Point2D) => {
+        return CoordinatesUtil.convert(
+          position,
+          ImageCoordinateFrame.Relative,
+          ImageCoordinateFrame.ImagePlane,
+          image.width!,
+          image.height!
+        )
+      })
+
+      let handleDistanceImPl = MathUtil.distance(handlesImPl[0], handlesImPl[1])
+
+      let referenceDistanceHandles3D = this.referenceDistanceHandlesWorldPositions(
+        controlPoints,
+        settings.referenceDistanceAxis,
+        result.vanishingPoints!, //TODO: null check
+        result.vanishingPointAxes!, //TODO: null check
+        image.width!, //TODO: null check
+        image.height!, //TODO: null check
+        result.cameraTransform!, //TODO: null check
+        result.principalPoint!, //TODO: null check
+        result.horizontalFieldOfView! //TODO: null check
+      )
+
+      let projectedHandles = referenceDistanceHandles3D.map((handle:Vector3D) => {
+        return MathUtil.perspectiveProject(
+          handle, result.cameraTransform!, result.principalPoint!, result.horizontalFieldOfView!
+        )
+      })
+
+      let projectedHandlesDistance = MathUtil.distance(projectedHandles[0], projectedHandles[1])
+
+      let scale = referenceDistance * projectedHandlesDistance / handleDistanceImPl
+      console.log("scale = " + scale + " = " + projectedHandlesDistance + "/" + handleDistanceImPl)
+      origin3D.multiplyByScalar(scale)
+    }
+
+    result.cameraTransform!.matrix[0][3] = origin3D.x //TODO: null check
+    result.cameraTransform!.matrix[1][3] = origin3D.y //TODO: null check
+    result.cameraTransform!.matrix[2][3] = origin3D.z //TODO: null check
+
   }
 
   /**

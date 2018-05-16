@@ -158,19 +158,6 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
       this.props.height
     )
 
-    let handlePositions3D = Solver.referenceDistanceHandlesWorldPositions(
-      controlPointsState,
-      referenceAxis,
-      result.vanishingPoints,
-      result.vanishingPointAxes,
-      this.props.width,
-      this.props.height,
-      result.cameraTransform!,
-      result.principalPoint!,
-      result.horizontalFieldOfView!
-    )
-    console.log(JSON.stringify(handlePositions3D))
-
     return (
       <ReferenceDistanceControl
         origin={originAbs}
