@@ -1,5 +1,6 @@
 import Exporter from "./exporter";
 import * as React from 'react';
+import CoordinatesUtil, { ImageCoordinateFrame } from "../solver/coordinates-util";
 
 export default class BlenderExporter extends Exporter {
   get name(): string {
@@ -30,15 +31,21 @@ export default class BlenderExporter extends Exporter {
 
     let fov = this.solverResult.horizontalFieldOfView
     let matrix = this.solverResult.cameraTransform.inverted().matrix
+    let principalPointRelative = CoordinatesUtil.convert(
+      this.solverResult.principalPoint,
+      ImageCoordinateFrame.ImagePlane,
+      ImageCoordinateFrame.Relative,
+      this.image.width!, //TODO: null checks
+      this.image.height!
+    )
 
-    //TODO: null checks
     return `import bpy
 import mathutils
 
 #Get the active object, assuming it's a camera
 camera = bpy.context.active_object
 
-#Set the camera field of view in degrees
+#Set the camera field of view in radians
 camera.data.type = 'PERSP'
 camera.data.lens_unit = 'FOV'
 camera.data.angle = ` + fov + `
@@ -48,8 +55,8 @@ camera.data.angle = ` + fov + `
 camera.matrix_world = mathutils.Matrix(` + JSON.stringify(matrix, null, 2) + `)
 
 #Set the principal point
-camera.data.shift_x = 0
-camera.data.shift_y = 0
+camera.data.shift_x = ` + (0.5 - principalPointRelative.x) + `
+camera.data.shift_y = ` + (-0.5 + principalPointRelative.y) + `
 
 #Set the rendered image size
 #to match the calibration image
