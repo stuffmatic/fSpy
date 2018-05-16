@@ -3,3 +3,4 @@ use redux thunk for re-computing calibration result once https://github.com/gaea
 full screen mode for projector use
 export svg?
 sort out rectangle mode + third vp
+sort out naming of camera transform (or its inverse)
