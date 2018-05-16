@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import Solver from '../solver/solver';
+
 import CalibrationResult from '../types/calibration-result';
 import { AppAction, setCalibrationResult, setExportDialogVisibility } from '../actions';
 import { CalibrationSettings1VP, CalibrationSettings2VP } from '../types/calibration-settings';
@@ -9,9 +9,10 @@ import { ImageState } from '../types/image-state';
 import { StoreState } from '../types/store-state';
 import { CalibrationMode } from '../types/global-settings';
 import ResultPanel from '../components/result-panel/result-panel'
+import Solver from '../solver/solver';
 
 interface ResultContainerProps {
-  isVisible:boolean
+  isVisible: boolean
   calibrationMode: CalibrationMode
   calibrationSettings1VP: CalibrationSettings1VP
   controlPointsState1VP: ControlPointsState1VP
@@ -21,7 +22,7 @@ interface ResultContainerProps {
 
   image: ImageState
   onComputedResult(result: CalibrationResult): void
-  onExportClicked():void
+  onExportClicked(): void
 }
 
 class ResultContainer extends React.PureComponent<ResultContainerProps> {
@@ -30,7 +31,9 @@ class ResultContainer extends React.PureComponent<ResultContainerProps> {
       return null
     }
 
-    //TODO: move this somewhere else
+    //TODO: replace this horrible hack with redux thunk once
+    //https://github.com/gaearon/redux-thunk/issues/169 is fixed
+
     let result: CalibrationResult = {
       calibrationResult1VP: Solver.solve1VP(
         this.props.calibrationSettings1VP,
@@ -46,9 +49,10 @@ class ResultContainer extends React.PureComponent<ResultContainerProps> {
 
     this.props.onComputedResult(result)
 
+
     return (
       <ResultPanel
-        solverResult={this.props.calibrationMode == CalibrationMode.OneVanishingPoint ? result.calibrationResult1VP  : result.calibrationResult2VP}
+        solverResult={this.props.calibrationMode == CalibrationMode.OneVanishingPoint ? result.calibrationResult1VP : result.calibrationResult2VP}
         image={this.props.image}
         onExportClicked={this.props.onExportClicked}
       />

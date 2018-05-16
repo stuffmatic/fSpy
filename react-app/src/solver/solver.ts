@@ -201,9 +201,13 @@ export default class Solver {
     this.computeTranslationVector(
       controlPoints,
       settings,
-      controlPoints.origin,
-      image,
-      result
+      image.width!,
+      image.height!,
+      result.cameraTransform,
+      result.horizontalFieldOfView,
+      principalPoint,
+      result.vanishingPoints,
+      result.vanishingPointAxes
     )
 
     if (Math.abs(cameraTransform.determinant - 1) > 1e-7) {
@@ -558,39 +562,48 @@ export default class Solver {
   private static computeTranslationVector(
     controlPoints:ControlPointsStateBase,
     settings: CalibrationSettingsBase,
-    originRelative: Point2D,
-    image: ImageState,
-    result: SolverResult
+    imageWidth:number,
+    imageHeight:number,
+    cameraTransform:Transform,
+    horizontalFieldOfView:number,
+    principalPoint:Point2D,
+    vanishingPoints:[Point2D, Point2D, Point2D],
+    vanishingPointAxes:[Axis, Axis, Axis],
   ): void {
     //The 3D origin in image plane coordinates
     let origin = CoordinatesUtil.convert(
-      originRelative,
+      controlPoints.origin,
       ImageCoordinateFrame.Relative,
       ImageCoordinateFrame.ImagePlane,
-      image.width!, //TODO: null check
-      image.height! //TODO: null check
+      imageWidth,
+      imageHeight
     )
 
-    let k = Math.tan(0.5 * result.horizontalFieldOfView!) //TODO: null check
+    let k = Math.tan(0.5 * horizontalFieldOfView)
     let origin3D = new Vector3D(
-      k * (origin.x - result.principalPoint!.x),//TODO: null check
-      k * (origin.y - result.principalPoint!.y),//TODO: null check
+      k * (origin.x - principalPoint.x),
+      k * (origin.y - principalPoint.y),
       -1
     )
+
+    cameraTransform.matrix[0][3] = origin3D.x
+    cameraTransform.matrix[1][3] = origin3D.y
+    cameraTransform.matrix[2][3] = origin3D.z
+
 
     if (settings.referenceDistanceAxis) {
       let referenceDistance = settings.referenceDistance
 
       let handlesRel = this.referenceDistanceHandlesRelativePositions(
-        controlPoints, settings.referenceDistanceAxis, result.vanishingPoints!, result.vanishingPointAxes!, image.width!, image.height!
+        controlPoints, settings.referenceDistanceAxis, vanishingPoints, vanishingPointAxes, imageWidth, imageHeight
       )
       let handlesImPl = handlesRel.map((position:Point2D) => {
         return CoordinatesUtil.convert(
           position,
           ImageCoordinateFrame.Relative,
           ImageCoordinateFrame.ImagePlane,
-          image.width!,
-          image.height!
+          imageWidth,
+          imageHeight
         )
       })
 
@@ -599,31 +612,36 @@ export default class Solver {
       let referenceDistanceHandles3D = this.referenceDistanceHandlesWorldPositions(
         controlPoints,
         settings.referenceDistanceAxis,
-        result.vanishingPoints!, //TODO: null check
-        result.vanishingPointAxes!, //TODO: null check
-        image.width!, //TODO: null check
-        image.height!, //TODO: null check
-        result.cameraTransform!, //TODO: null check
-        result.principalPoint!, //TODO: null check
-        result.horizontalFieldOfView! //TODO: null check
+        vanishingPoints,
+        vanishingPointAxes,
+        imageWidth,
+        imageHeight,
+        cameraTransform,
+        principalPoint,
+        horizontalFieldOfView
       )
 
       let projectedHandles = referenceDistanceHandles3D.map((handle:Vector3D) => {
         return MathUtil.perspectiveProject(
-          handle, result.cameraTransform!, result.principalPoint!, result.horizontalFieldOfView!
+          handle, cameraTransform, principalPoint, horizontalFieldOfView
         )
       })
 
       let projectedHandlesDistance = MathUtil.distance(projectedHandles[0], projectedHandles[1])
 
-      let scale = referenceDistance * projectedHandlesDistance / handleDistanceImPl
-      console.log("scale = " + scale + " = " + projectedHandlesDistance + "/" + handleDistanceImPl)
+      let scale = 2 * referenceDistance / projectedHandlesDistance
+      /*if (isNaN(projectedHandlesDistance)) {
+        console.log("scale = " + scale + " = " + projectedHandlesDistance + "/" + handleDistanceImPl)
+        console.log("  handles impl " + JSON.stringify(handlesImPl))
+        console.log("  3d handles" + JSON.stringify(referenceDistanceHandles3D))
+        console.log("  projected handles" + JSON.stringify(projectedHandles))
+      }*/
       origin3D.multiplyByScalar(scale)
     }
 
-    result.cameraTransform!.matrix[0][3] = origin3D.x //TODO: null check
-    result.cameraTransform!.matrix[1][3] = origin3D.y //TODO: null check
-    result.cameraTransform!.matrix[2][3] = origin3D.z //TODO: null check
+    cameraTransform.matrix[0][3] = origin3D.x
+    cameraTransform.matrix[1][3] = origin3D.y
+    cameraTransform.matrix[2][3] = origin3D.z
 
   }
 
