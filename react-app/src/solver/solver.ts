@@ -586,29 +586,19 @@ export default class Solver {
       -1
     )
 
+    //Set a default translation vector
     cameraTransform.matrix[0][3] = origin3D.x
     cameraTransform.matrix[1][3] = origin3D.y
     cameraTransform.matrix[2][3] = origin3D.z
 
 
     if (settings.referenceDistanceAxis) {
-      let referenceDistance = settings.referenceDistance
+      //If requested, scale the translation vector so that
+      //the distance between the 3d handle positions equals the
+      //specified reference distance
 
-      let handlesRel = this.referenceDistanceHandlesRelativePositions(
-        controlPoints, settings.referenceDistanceAxis, vanishingPoints, vanishingPointAxes, imageWidth, imageHeight
-      )
-      let handlesImPl = handlesRel.map((position:Point2D) => {
-        return CoordinatesUtil.convert(
-          position,
-          ImageCoordinateFrame.Relative,
-          ImageCoordinateFrame.ImagePlane,
-          imageWidth,
-          imageHeight
-        )
-      })
-
-      let handleDistanceImPl = MathUtil.distance(handlesImPl[0], handlesImPl[1])
-
+      //See what the distance between the 3d handle positions is given the current,
+      //default, translation vector
       let referenceDistanceHandles3D = this.referenceDistanceHandlesWorldPositions(
         controlPoints,
         settings.referenceDistanceAxis,
@@ -620,29 +610,17 @@ export default class Solver {
         principalPoint,
         horizontalFieldOfView
       )
+      let defaultHandleDistance = referenceDistanceHandles3D[0].subtracted(referenceDistanceHandles3D[1]).length
 
-      let projectedHandles = referenceDistanceHandles3D.map((handle:Vector3D) => {
-        return MathUtil.perspectiveProject(
-          handle, cameraTransform, principalPoint, horizontalFieldOfView
-        )
-      })
-
-      let projectedHandlesDistance = MathUtil.distance(projectedHandles[0], projectedHandles[1])
-
-      let scale = 2 * referenceDistance / projectedHandlesDistance
-      /*if (isNaN(projectedHandlesDistance)) {
-        console.log("scale = " + scale + " = " + projectedHandlesDistance + "/" + handleDistanceImPl)
-        console.log("  handles impl " + JSON.stringify(handlesImPl))
-        console.log("  3d handles" + JSON.stringify(referenceDistanceHandles3D))
-        console.log("  projected handles" + JSON.stringify(projectedHandles))
-      }*/
+      //Scale the translation vector
+      let referenceDistance = settings.referenceDistance
+      let scale = referenceDistance / defaultHandleDistance
       origin3D.multiplyByScalar(scale)
     }
 
     cameraTransform.matrix[0][3] = origin3D.x
     cameraTransform.matrix[1][3] = origin3D.y
     cameraTransform.matrix[2][3] = origin3D.z
-
   }
 
   /**
