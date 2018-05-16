@@ -29,10 +29,11 @@ export default class BlenderExporter extends Exporter {
     }
 
     let fov = this.solverResult.horizontalFieldOfView
-    let matrix = this.solverResult.cameraTransform.matrix
+    let matrix = this.solverResult.cameraTransform.inverted().matrix
 
     //TODO: null checks
     return `import bpy
+import mathutils
 
 #Get the active object, assuming it's a camera
 camera = bpy.context.active_object
@@ -43,7 +44,7 @@ camera.data.lens = ` + (180 * fov / Math.PI) + `
 
 #Set the orientation and location
 #of the camera
-camera.matrix_world = ` + JSON.stringify(matrix, null, 2) + `
+camera.matrix_world = mathutils.Matrix(` + JSON.stringify(matrix, null, 2) + `)
 
 #Set the principal point
 camera.data.shift_x = 0

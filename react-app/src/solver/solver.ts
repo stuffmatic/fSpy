@@ -612,7 +612,7 @@ export default class Solver {
       )
       let defaultHandleDistance = referenceDistanceHandles3D[0].subtracted(referenceDistanceHandles3D[1]).length
 
-      //Scale the translation vector
+      //Scale the translation vector by the ratio of the reference distance to the computed distance
       let referenceDistance = settings.referenceDistance
       let scale = referenceDistance / defaultHandleDistance
       origin3D.multiplyByScalar(scale)

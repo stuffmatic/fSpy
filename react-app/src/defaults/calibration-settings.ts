@@ -2,7 +2,7 @@ import { CalibrationSettingsBase, CalibrationSettings1VP, CalibrationSettings2VP
 
 const defaultCalibrationSettingsBase: CalibrationSettingsBase = {
   referenceDistanceAxis: Axis.PositiveZ,
-  referenceDistance: 10,
+  referenceDistance: 4,
   referenceDistanceUnit: ReferenceDistanceUnit.Meters
 }
 
