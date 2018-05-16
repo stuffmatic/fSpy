@@ -92,6 +92,7 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
           { this.state.exporters.map((exporter:Exporter, index:number) => {
             return (
               <Button
+                key={index}
                 isSelected= {index == this.state.selectedExporterIndex}
                 title={exporter.name}
                 onClick={() => {
