@@ -77,13 +77,13 @@ export default class SettingsSection2VP extends React.PureComponent<SettingsCont
           referenceDistance={this.props.calibrationSettings2VP.referenceDistance}
           referenceDistanceUnit={this.props.calibrationSettings2VP.referenceDistanceUnit}
           onReferenceAxisChange={(axis: Axis | null) => {
-            this.props.onReferenceDistanceAxisChange2VP(axis)
+            this.props.onReferenceDistanceAxisChange(this.props.globalSettings.calibrationMode, axis)
           }}
           onReferenceDistanceChange={(distance: number) => {
-            this.props.onReferenceDistanceChange2VP(distance)
+            this.props.onReferenceDistanceChange(this.props.globalSettings.calibrationMode, distance)
           }}
           onReferenceDistanceUnitChange={(unit: ReferenceDistanceUnit) => {
-            this.props.onReferenceDistanceUnitChange2VP(unit)
+            this.props.onReferenceDistanceUnitChange(this.props.globalSettings.calibrationMode, unit)
           }}
         />
 

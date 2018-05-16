@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setNotes, setVanishingPointAxis1VP, setVanishingPointAxis2VP, setGridFloorNormal, setControlPointsVisible, setReferenceDistanceAxis1VP, setReferenceDistanceAxis2VP, setReferenceDistanceUnit1VP, setReferenceDistanceUnit2VP, setReferenceDistance1VP, setReferenceDistance2VP } from '../actions';
+import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setNotes, setVanishingPointAxis1VP, setVanishingPointAxis2VP, setGridFloorNormal, setControlPointsVisible, setReferenceDistanceUnit, setReferenceDistance, setReferenceDistanceAxis } from '../actions';
 import SettingsPanel from '../components/settings-panel/settings-panel';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { StoreState } from '../types/store-state';
@@ -24,12 +24,9 @@ export interface SettingsContainerProps {
   onLoadTestImage(imageIndex: number | null): void
   onVanishingPointAxisChange1VP(axis: Axis): void
   onVanishingPointAxisChange2VP(vanishingPointIndex: number, axis: Axis): void
-  onReferenceDistanceAxisChange1VP(axis: Axis | null): void
-  onReferenceDistanceAxisChange2VP(axis: Axis | null): void
-  onReferenceDistanceUnitChange1VP(unit: ReferenceDistanceUnit): void
-  onReferenceDistanceUnitChange2VP(unit: ReferenceDistanceUnit): void
-  onReferenceDistanceChange1VP(distance: number): void
-  onReferenceDistanceChange2VP(distance: number): void
+  onReferenceDistanceAxisChange(calibrationMode:CalibrationMode, axis: Axis | null): void
+  onReferenceDistanceUnitChange(calibrationMode:CalibrationMode, unit: ReferenceDistanceUnit): void
+  onReferenceDistanceChange(calibrationMode:CalibrationMode, distance: number): void
 }
 
 class SettingsContainer extends React.PureComponent<SettingsContainerProps> {
@@ -97,23 +94,14 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     onVanishingPointAxisChange2VP: (vanishingPointIndex: number, axis: Axis) => {
       dispatch(setVanishingPointAxis2VP(vanishingPointIndex, axis))
     },
-    onReferenceDistanceAxisChange1VP: (axis: Axis | null) => {
-      dispatch(setReferenceDistanceAxis1VP(axis))
+    onReferenceDistanceAxisChange: (calibrationMode:CalibrationMode, axis: Axis | null) => {
+      dispatch(setReferenceDistanceAxis(calibrationMode, axis))
     },
-    onReferenceDistanceAxisChange2VP: (axis: Axis | null) => {
-      dispatch(setReferenceDistanceAxis2VP(axis))
+    onReferenceDistanceUnitChange: (calibrationMode:CalibrationMode, unit: ReferenceDistanceUnit) => {
+      dispatch(setReferenceDistanceUnit(calibrationMode, unit))
     },
-    onReferenceDistanceUnitChange1VP: (unit: ReferenceDistanceUnit) => {
-      dispatch(setReferenceDistanceUnit1VP(unit))
-    },
-    onReferenceDistanceUnitChange2VP: (unit: ReferenceDistanceUnit) => {
-      dispatch(setReferenceDistanceUnit2VP(unit))
-    },
-    onReferenceDistanceChange1VP: (distance: number) => {
-      dispatch(setReferenceDistance1VP(distance))
-    },
-    onReferenceDistanceChange2VP: (distance: number) => {
-      dispatch(setReferenceDistance2VP(distance))
+    onReferenceDistanceChange: (calibrationMode:CalibrationMode, distance: number) => {
+      dispatch(setReferenceDistance(calibrationMode, distance))
     }
   }
 }
