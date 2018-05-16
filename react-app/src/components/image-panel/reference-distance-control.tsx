@@ -32,6 +32,13 @@ export default function ReferenceDistanceControl(props: ReferenceDistanceControl
         x2={props.handlePositions[1].x}
         y2={props.handlePositions[1].y}
       />
+      <ReferenceDistanceAnchorControl
+        position={props.anchorPosition}
+        dragCallback={props.anchorDragCallback}
+        uIntersection={props.uIntersection}
+        vIntersection={props.vIntersection}
+        origin={props.origin}
+      />
       <ControlPoint
         position={props.handlePositions[0]}
         dragCallback={(position: Point2D) => {
@@ -46,13 +53,7 @@ export default function ReferenceDistanceControl(props: ReferenceDistanceControl
         }}
         fill={Palette.gray}
       />
-      <ReferenceDistanceAnchorControl
-        position={props.anchorPosition}
-        dragCallback={props.anchorDragCallback}
-        uIntersection={props.uIntersection}
-        vIntersection={props.vIntersection}
-        origin={props.origin}
-      />
+
     </g>
   )
 }
