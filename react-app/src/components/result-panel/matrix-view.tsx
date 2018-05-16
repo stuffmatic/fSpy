@@ -1,21 +1,22 @@
 import * as React from 'react';
-import Transform from '../../solver/transform';
 
 interface RotationMatrixViewProps {
-  transform: Transform | null
+  rows: number[][] | null
 }
 
-export default class RotationMatrixView extends React.PureComponent<RotationMatrixViewProps> {
+export default class MatrixView extends React.PureComponent<RotationMatrixViewProps> {
   render() {
-    if (!this.props.transform) {
+    if (!this.props.rows) {
       return null
     }
 
     return (
       <div style={{ fontFamily:"Roboto Mono", fontSize: "12px", color: "gray" }}>
-        {this.renderRow(this.props.transform.matrix[0])}
-        {this.renderRow(this.props.transform.matrix[1])}
-        {this.renderRow(this.props.transform.matrix[2])}
+        {
+          this.props.rows.map((row:number[]) => {
+          return this.renderRow(row)}
+        )}
+
       </div>
     )
   }

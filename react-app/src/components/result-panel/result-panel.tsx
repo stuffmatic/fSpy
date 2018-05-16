@@ -1,16 +1,16 @@
 import * as React from 'react';
 import Button from './../common/button'
 import TableRow from './table-row'
-import RotationMatrixView from './rotation-matrix-view'
+import MatrixView from './matrix-view'
 import BulletList, { BulletListType } from './bullet-list'
 import { ImageState } from '../../types/image-state';
 import { SolverResult } from '../../solver/solver-result';
 
 
 interface ResultPanelProps {
-  solverResult:SolverResult
+  solverResult: SolverResult
   image: ImageState
-  onExportClicked():void
+  onExportClicked(): void
 }
 
 export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
@@ -46,11 +46,17 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> 
             </div>
             <div className="panel-section bottom-border">
               <div className="panel-row" >Camera rotation matrix</div>
-              <RotationMatrixView transform={this.props.solverResult.cameraTransform} />
+              <MatrixView
+                rows={this.props.solverResult.cameraTransform ? this.props.solverResult.cameraTransform.matrix : null}
+              />
             </div>
             <div className="panel-section bottom-border">
               <div className="panel-row" >Camera translation</div>
-
+              <MatrixView
+                rows={
+                  this.props.solverResult.cameraTransform ? [[this.props.solverResult.cameraTransform.matrix[0][3], this.props.solverResult.cameraTransform.matrix[1][3], this.props.solverResult.cameraTransform.matrix[2][3]]] : null
+                }
+              />
             </div>
 
             <div className="panel-section bottom-border">
@@ -65,7 +71,7 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> 
           <div>
             <div>
               <div className="panel-section top-border">
-                <Button title={"Export"} onClick={() => {this.props.onExportClicked() }} />
+                <Button title={"Export"} onClick={() => { this.props.onExportClicked() }} />
               </div>
             </div>
 
