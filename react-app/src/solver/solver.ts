@@ -282,9 +282,7 @@ export default class Solver {
    * @returns The matrix Moc
    */
   static computeCameraRotationMatrix(Fu: Point2D, Fv: Point2D, f: number, P: Point2D): Transform {
-    //
     let OFu = new Vector3D(Fu.x - P.x, Fu.y - P.y, -f)
-    //
     let OFv = new Vector3D(Fv.x - P.x, Fv.y - P.y, -f)
 
     let s1 = OFu.length
@@ -584,7 +582,7 @@ export default class Solver {
       k * (origin.x - principalPoint.x),
       k * (origin.y - principalPoint.y),
       -1
-    )
+    ).multipliedByScalar(10) //TODO: make this distance a constant
 
     //Set a default translation vector
     cameraTransform.matrix[0][3] = origin3D.x
