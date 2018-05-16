@@ -39,8 +39,9 @@ import mathutils
 camera = bpy.context.active_object
 
 #Set the camera field of view in degrees
+camera.data.type = 'PERSP'
 camera.data.lens_unit = 'FOV'
-camera.data.lens = ` + (180 * fov / Math.PI) + `
+camera.data.angle = ` + fov + `
 
 #Set the orientation and location
 #of the camera
@@ -55,7 +56,6 @@ camera.data.shift_y = 0
 render_settings = bpy.context.scene.render
 render_settings.resolution_x = ` + this.image.width + `
 render_settings.resolution_y = ` + this.image.height + `
-
 `
   }
   get codeLanguage(): string {
