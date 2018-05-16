@@ -1,5 +1,5 @@
 import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode2VP, Axis } from "../types/calibration-settings";
-import { ControlPointsState1VP, ControlPointsState2VP, VanishingPointControlState } from "../types/control-points-state";
+import { ControlPointsState1VP, ControlPointsState2VP, VanishingPointControlState, ControlPointsStateBase } from "../types/control-points-state";
 import { ImageState } from "../types/image-state";
 import MathUtil from "./math-util";
 import Point2D from "./point-2d";
@@ -324,6 +324,185 @@ export default class Solver {
     return M
   }
 
+  static vanishingPointIndexForAxis(positiveAxis: Axis, vanishingPointAxes: [Axis, Axis, Axis]): number {
+    let negativeAxis = Axis.NegativeX
+    switch (positiveAxis) {
+      case Axis.PositiveY:
+        negativeAxis = Axis.NegativeY
+        break
+      case Axis.PositiveZ:
+        negativeAxis = Axis.NegativeZ
+        break
+    }
+
+    for (let vpIndex = 0; vpIndex < 3; vpIndex++) {
+      let vpAxis = vanishingPointAxes[vpIndex]
+      if (vpAxis == positiveAxis || vpAxis == negativeAxis) {
+        return vpIndex
+      }
+    }
+
+    return 0
+  }
+
+  static referenceDistanceHandlesWorldPositions(
+    controlPoints: ControlPointsStateBase,
+    referenceAxis: Axis,
+    vanishingPoints: [Point2D, Point2D, Point2D],
+    vanishingPointAxes: [Axis, Axis, Axis],
+    imageWidth: number,
+    imageHeight: number,
+    cameraTransform:Transform,
+    principalPoint:Point2D,
+    horizontalFieldOfView:number
+  ): [Vector3D, Vector3D] {
+    let handlePositionsRelative = this.referenceDistanceHandlesRelativePositions(
+      controlPoints,
+      referenceAxis,
+      vanishingPoints,
+      vanishingPointAxes,
+      imageWidth,
+      imageHeight
+    )
+
+    //handle positions in image plane coordinates
+    let handlePositions = [
+      CoordinatesUtil.convert(
+        handlePositionsRelative[0],
+        ImageCoordinateFrame.Relative,
+        ImageCoordinateFrame.ImagePlane,
+        imageWidth,
+        imageHeight
+      ),
+      CoordinatesUtil.convert(
+        handlePositionsRelative[1],
+        ImageCoordinateFrame.Relative,
+        ImageCoordinateFrame.ImagePlane,
+        imageWidth,
+        imageHeight
+      )
+    ]
+
+    //anchor position in image plane coordinates
+    let anchorPosition = CoordinatesUtil.convert(
+      controlPoints.referenceDistanceAnchor,
+      ImageCoordinateFrame.Relative,
+      ImageCoordinateFrame.ImagePlane,
+      imageWidth,
+      imageHeight
+    )
+
+    //Two vectors u, v spanning the reference plane, i.e the plane
+    //perpendicular to the reference axis w
+    let origin = new Vector3D()
+    let u = new Vector3D()
+    let v = new Vector3D()
+    let w = new Vector3D()
+    switch (referenceAxis) {
+      case Axis.PositiveX:
+        u.y = 1
+        v.z = 1
+        w.x = 1
+        break
+      case Axis.PositiveY:
+        u.x = 1
+        v.z = 1
+        w.y = 1
+        break
+      case Axis.PositiveZ:
+        u.x = 1
+        v.y = 1
+        w.z = 1
+        break
+    }
+
+    //The reference distance anchor is defined to lie in the reference plane p.
+    //Let rayAnchor be a ray from the camera through the anchor position in the image plane.
+    //The intersection of p and rayAnchor give us two coordinate values u0 and v0.
+    let rayAnchorStart = MathUtil.perspectiveUnproject(
+      new Vector3D(anchorPosition.x, anchorPosition.y, 1),
+      cameraTransform,
+      principalPoint,
+      horizontalFieldOfView
+    )
+    let rayAnchorEnd =  MathUtil.perspectiveUnproject(
+      new Vector3D(anchorPosition.x, anchorPosition.y, 2),
+      cameraTransform,
+      principalPoint,
+      horizontalFieldOfView
+    )
+    let referencePlaneIntersection =  MathUtil.linePlaneIntersection(
+      origin, u, v,
+      rayAnchorStart, rayAnchorEnd
+    )
+
+    //Compute the world positions of the reference distance handles
+    let result:Vector3D[] = []
+
+    for (let handlePosition of handlePositions) {
+      let handleRayStart = MathUtil.perspectiveUnproject(
+        new Vector3D(handlePosition.x, handlePosition.y, 1),
+        cameraTransform,
+        principalPoint,
+        horizontalFieldOfView
+      )
+      let handleRayEnd = MathUtil.perspectiveUnproject(
+        new Vector3D(handlePosition.x, handlePosition.y, 2),
+        cameraTransform,
+        principalPoint,
+        horizontalFieldOfView
+      )
+
+      let handlePosition3D = MathUtil.shortestLineSegmentBetweenLines(
+        handleRayStart,
+        handleRayEnd,
+        referencePlaneIntersection,
+        referencePlaneIntersection.added(w)
+      )[0]
+
+      result.push(handlePosition3D)
+    }
+
+    return [result[0], result[1]]
+  }
+
+  static referenceDistanceHandlesRelativePositions(
+    controlPoints: ControlPointsStateBase,
+    referenceAxis: Axis,
+    vanishingPoints: [Point2D, Point2D, Point2D],
+    vanishingPointAxes: [Axis, Axis, Axis],
+    imageWidth: number,
+    imageHeight: number
+  ): [Point2D, Point2D] {
+    //The position of the reference distance anchor in relative coordinates
+    let anchor = controlPoints.referenceDistanceAnchor
+    //The index of the vanishing point corresponding to the reference axis
+    let vpIndex = this.vanishingPointIndexForAxis(referenceAxis, vanishingPointAxes)
+    //The position of the vanishing point in relative coordinates
+    let vp = CoordinatesUtil.convert(
+      vanishingPoints[vpIndex],
+      ImageCoordinateFrame.ImagePlane,
+      ImageCoordinateFrame.Relative,
+      imageWidth,
+      imageHeight
+    )
+    //A unit vector pointing from the anchor to the vanishing point
+    let anchorToVp = MathUtil.normalized({ x: vp.x - anchor.x, y: vp.y - anchor.y })
+
+    //The handles lie on the line from the anchor to the vanishing point
+    let handleOffsets = controlPoints.referenceDistanceHandleOffsets
+    return [
+      {
+        x: anchor.x + handleOffsets[0] * anchorToVp.x,
+        y: anchor.y + handleOffsets[0] * anchorToVp.y,
+      },
+      {
+        x: anchor.x + handleOffsets[1] * anchorToVp.x,
+        y: anchor.y + handleOffsets[1] * anchorToVp.y,
+      }
+    ]
+  }
+
   private static axisVector(axis: Axis): Vector3D {
     switch (axis) {
       case Axis.NegativeX:
@@ -341,14 +520,14 @@ export default class Solver {
     }
   }
 
-  private static vectorAxis(vector:Vector3D):Axis {
+  private static vectorAxis(vector: Vector3D): Axis {
     if (vector.x == 0 && vector.y == 0) {
       return vector.z > 0 ? Axis.PositiveZ : Axis.NegativeZ
     }
-    else if (vector.x == 0 && vector.z == 0) {
+    else if (vector.x == 0 && vector.z == 0)  {
       return vector.y > 0 ? Axis.PositiveY : Axis.NegativeY
     }
-    else if (vector.y == 0 && vector.z == 0) {
+    else if (vector.y == 0 && vector.z == 0)  {
       return vector.x > 0 ? Axis.PositiveX : Axis.NegativeX
     }
 

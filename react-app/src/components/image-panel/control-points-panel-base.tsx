@@ -8,8 +8,8 @@ import PrincipalPointControl from './principal-point-control'
 import OriginControl from './origin-control'
 import ReferenceDistanceControl from './reference-distance-control'
 import MathUtil from '../../solver/math-util';
-import { CalibrationSettingsBase, Axis } from '../../types/calibration-settings';
-import Vector3D from '../../solver/vector-3d';
+import { CalibrationSettingsBase } from '../../types/calibration-settings';
+import Solver from '../../solver/solver';
 
 type ControlPointsPanelProps = ControlPointsContainerDimensionProps & ControlPointsContainerCallbacks & ControlPointsContainerProps
 
@@ -59,7 +59,6 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
   }
 
   protected renderReferenceDistanceControl(position: Point2D) {
-
     let is1VP = this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint
     let settings: CalibrationSettingsBase = is1VP ? this.props.calibrationSettings1VP : this.props.calibrationSettings2VP
     let result = is1VP ? this.props.calibrationResult.calibrationResult1VP : this.props.calibrationResult.calibrationResult2VP
@@ -74,29 +73,10 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
       return
     }
 
-
-    function vpIndexForAxis(positiveAxis: Axis): number {
-      let negativeAxis = Axis.NegativeX
-      switch (positiveAxis) {
-        case Axis.PositiveY:
-          negativeAxis = Axis.NegativeY
-          break
-        case Axis.PositiveZ:
-          negativeAxis = Axis.NegativeZ
-          break
-      }
-
-      for (let vpIndex = 0; vpIndex < 3; vpIndex++) {
-        let vpAxis = result.vanishingPointAxes![vpIndex]
-        if (vpAxis == positiveAxis || vpAxis == negativeAxis) {
-          return vpIndex
-        }
-      }
-
-      return 0
-    }
-
-    let referenceAxisVpIndex = vpIndexForAxis(referenceAxis)
+    let referenceAxisVpIndex = Solver.vanishingPointIndexForAxis(
+      referenceAxis,
+      result.vanishingPointAxes
+    )
     let uIndex = (referenceAxisVpIndex + 1) % 3
     let vIndex = (referenceAxisVpIndex + 2) % 3
 
@@ -169,52 +149,27 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
       y: referenceAxisVpRel.y - positionRel.y
     })
 
-    let offset0 = controlPointsState.referenceDistanceHandleOffsets[0]
-    let offset1 = controlPointsState.referenceDistanceHandleOffsets[1]
-    let handlePositions: [Point2D, Point2D] = [
-      { x: positionRel.x + offset0 * anchorToVpRel.x, y: positionRel.y + offset0 * anchorToVpRel.y },
-      { x: positionRel.x + offset1 * anchorToVpRel.x, y: positionRel.y + offset1 * anchorToVpRel.y }
-    ]
-
-
-    //////MOVE
-    let unprojectedN = MathUtil.perspectiveUnproject(
-      new Vector3D(position.x, position.y, 1),
-      result
-    )
-    let unprojectedF = MathUtil.perspectiveUnproject(
-      new Vector3D(position.x, position.y, 2),
-      result
-    )
-    console.log("ray " + JSON.stringify(unprojectedF) + " - " + JSON.stringify(unprojectedN))
-    let xp = new Vector3D(1)
-    let yp = new Vector3D(0, 1)
-    let op = new Vector3D()
-    let referencePlaneIntersection = MathUtil.linePlaneIntersection(
-      op, xp, yp,
-      unprojectedN, unprojectedF
-    )
-    console.log("  ray xy plane intersection " + JSON.stringify(referencePlaneIntersection))
-
-    let referenceDistanceRayEnd = referencePlaneIntersection.copy()
-    referenceDistanceRayEnd.z = 1
-
-    let handle1 = CoordinatesUtil.convert(
-      handlePositions[0],
-      ImageCoordinateFrame.Relative,
-      ImageCoordinateFrame.ImagePlane,
+    let handlePositions = Solver.referenceDistanceHandlesRelativePositions(
+      controlPointsState,
+      referenceAxis,
+      result.vanishingPoints,
+      result.vanishingPointAxes,
       this.props.width,
       this.props.height
     )
 
-    let handle1RayStart = MathUtil.perspectiveUnproject(new Vector3D(handle1.x, handle1.y, 1), result)
-    let handle1RayEnd = MathUtil.perspectiveUnproject(new Vector3D(handle1.x, handle1.y, 2), result)
-
-    let inters = MathUtil.shortestLineSegmentBetweenLines(handle1RayStart, handle1RayEnd, referencePlaneIntersection, referenceDistanceRayEnd)
-    console.log("inters " + JSON.stringify(inters))
-
-    //////MOVE
-
+    let handlePositions3D = Solver.referenceDistanceHandlesWorldPositions(
+      controlPointsState,
+      referenceAxis,
+      result.vanishingPoints,
+      result.vanishingPointAxes,
+      this.props.width,
+      this.props.height,
+      result.cameraTransform!,
+      result.principalPoint!,
+      result.horizontalFieldOfView!
+    )
+    console.log(JSON.stringify(handlePositions3D))
 
     return (
       <ReferenceDistanceControl

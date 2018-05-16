@@ -152,8 +152,21 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   }
 
   private project(point: Vector3D): Point2D {
+    let cameraTransform = this.props.solverResult.cameraTransform
+    let principalPoint = this.props.solverResult.principalPoint
+    let horizontalFieldOfView = this.props.solverResult.horizontalFieldOfView
+    if (cameraTransform == null || principalPoint == null || horizontalFieldOfView == null) {
+      //TODO: return null instead?
+      return {x: 0, y: 0}
+    }
+
     return CoordinatesUtil.convert(
-      MathUtil.perspectiveProject(point, this.props.solverResult),
+      MathUtil.perspectiveProject(
+        point,
+        cameraTransform,
+        principalPoint,
+        horizontalFieldOfView
+      ),
       ImageCoordinateFrame.ImagePlane,
       ImageCoordinateFrame.Absolute,
       this.props.width,

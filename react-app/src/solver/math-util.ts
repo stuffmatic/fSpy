@@ -1,6 +1,5 @@
 import Point2D from "./point-2d";
 import Vector3D from "./vector-3d";
-import { SolverResult } from "./solver-result";
 import Transform from "./transform";
 
 export default class MathUtil {
@@ -168,39 +167,48 @@ export default class MathUtil {
     ]
   }
 
-  private static modelViewProjection(solverResult: SolverResult): Transform {
-    if (!solverResult.principalPoint ||
-      !solverResult.cameraTransform ||
-      !solverResult.principalPoint) {
-      return new Transform()
-    }
-
-    let fov = solverResult.horizontalFieldOfView!
-    let s = 1 / Math.tan(0.5 * fov)
+  private static modelViewProjection(
+    cameraTransform:Transform,
+    principalPoint:Point2D,
+    horizontalFieldOfView:number
+  ): Transform {
+    let s = 1 / Math.tan(0.5 * horizontalFieldOfView)
     let n = 0.01
     let f = 10
     let projectionTransform = Transform.fromMatrix([
-      [s, 0, -solverResult.principalPoint.x, 0],
-      [0, s, -solverResult.principalPoint.y, 0],
+      [s, 0, -principalPoint.x, 0],
+      [0, s, -principalPoint.y, 0],
       [0, 0, -(f + n) / (f - n), -2 * f * n / (f - n)],
       [0, 0, -1, 0]
     ])
-    return solverResult.cameraTransform.leftMultiplied(projectionTransform)
+    return cameraTransform.leftMultiplied(projectionTransform)
   }
 
   static perspectiveUnproject(
     point: Vector3D,
-    solverResult: SolverResult
+    cameraTransform:Transform,
+    principalPoint:Point2D,
+    horizontalFieldOfView:number
   ): Vector3D {
-    let transform = this.modelViewProjection(solverResult).inverted()
+    let transform = this.modelViewProjection(
+      cameraTransform,
+      principalPoint,
+      horizontalFieldOfView
+    ).inverted()
     return transform.transformedVector(point, true)
   }
 
   static perspectiveProject(
     point: Vector3D,
-    solverResult: SolverResult
+    cameraTransform:Transform,
+    principalPoint:Point2D,
+    horizontalFieldOfView:number
   ): Point2D {
-    let projected = this.modelViewProjection(solverResult).transformedVector(
+    let projected = this.modelViewProjection(
+      cameraTransform,
+      principalPoint,
+      horizontalFieldOfView
+    ).transformedVector(
       point,
       true
     )

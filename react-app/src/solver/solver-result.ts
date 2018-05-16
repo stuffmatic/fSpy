@@ -7,10 +7,11 @@ export interface SolverResult {
   warnings:string[]
 
   principalPoint:Point2D | null
-  vanishingPoints:[Point2D, Point2D, Point2D] | null
-  vanishingPointAxes:[Axis, Axis, Axis] | null
   cameraTransform:Transform | null
   horizontalFieldOfView:number | null
+
+  vanishingPoints:[Point2D, Point2D, Point2D] | null
+  vanishingPointAxes:[Axis, Axis, Axis] | null
   verticalFieldOfView:number | null
   relativeFocalLength:number | null
 }
