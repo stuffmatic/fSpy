@@ -119,8 +119,8 @@ export default class MathUtil {
   }
 
   static linePlaneIntersection(
-    p0:Vector3D, p1:Vector3D, p2:Vector3D, la:Vector3D, lb:Vector3D
-  ):Vector3D {
+    p0: Vector3D, p1: Vector3D, p2: Vector3D, la: Vector3D, lb: Vector3D
+  ): Vector3D {
     //https://en.wikipedia.org/wiki/Line–plane_intersection
     let p01 = p1.subtracted(p0)
     let p02 = p2.subtracted(p0)
@@ -135,10 +135,43 @@ export default class MathUtil {
     )
   }
 
-  private static modelViewProjection(solverResult:SolverResult):Transform {
+  static shortestLineSegmentBetweenLines(p1: Vector3D, p2: Vector3D, p3: Vector3D, p4: Vector3D): [Vector3D, Vector3D] {
+    //TODO: gracefully handle parallel lines
+    //http://paulbourke.net/geometry/pointlineplane/
+
+    function d(m: number, n: number, o: number, p: number): number {
+      //dmnop = (xm - xn)(xo - xp) + (ym - yn)(yo - yp) + (zm - zn)(zo - zp)
+      let allPoints = [p1, p2, p3, p4]
+      let pm = allPoints[m - 1]
+      let pn = allPoints[n - 1]
+      let po = allPoints[o - 1]
+      let pp = allPoints[p - 1]
+      return (pm.x - pn.x) * (po.x - pp.x) + (pm.y - pn.y) * (po.y - pp.y) + (pm.z - pn.z) * (po.z - pp.z)
+    }
+
+    let muaNumerator = d(1, 3, 4, 3) * d(4, 3, 2, 1) - d(1, 3, 2, 1) * d(4, 3, 4, 3)
+    let muaDenominator = d(2, 1, 2, 1) * d(4, 3, 4, 3) - d(4, 3, 2, 1) * d(4, 3, 2, 1)
+    let mua = muaNumerator / muaDenominator
+    let mub = (d(1, 3, 4, 3) + mua * d(4, 3, 2, 1)) / d(4, 3, 4, 3)
+
+    return [
+      new Vector3D(
+        p1.x + mua * (p2.x - p1.x),
+        p1.y + mua * (p2.y - p1.y),
+        p1.z + mua * (p2.z - p1.z)
+      ),
+      new Vector3D(
+        p3.x + mub * (p4.x - p3.x),
+        p3.y + mub * (p4.y - p3.y),
+        p3.z + mub * (p4.z - p3.z)
+      ),
+    ]
+  }
+
+  private static modelViewProjection(solverResult: SolverResult): Transform {
     if (!solverResult.principalPoint ||
-        !solverResult.cameraTransform ||
-        !solverResult.principalPoint) {
+      !solverResult.cameraTransform ||
+      !solverResult.principalPoint) {
       return new Transform()
     }
 
@@ -156,17 +189,17 @@ export default class MathUtil {
   }
 
   static perspectiveUnproject(
-    point:Vector3D,
-    solverResult:SolverResult
-  ):Vector3D {
+    point: Vector3D,
+    solverResult: SolverResult
+  ): Vector3D {
     let transform = this.modelViewProjection(solverResult).inverted()
     return transform.transformedVector(point, true)
   }
 
   static perspectiveProject(
-    point:Vector3D,
-    solverResult:SolverResult
-  ):Point2D {
+    point: Vector3D,
+    solverResult: SolverResult
+  ): Point2D {
     let projected = this.modelViewProjection(solverResult).transformedVector(
       point,
       true

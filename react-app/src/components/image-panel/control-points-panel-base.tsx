@@ -109,27 +109,6 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
       this.props.height
     )
 
-    //////MOVE
-    let unprojectedN = MathUtil.perspectiveUnproject(
-      new Vector3D(position.x, position.y, 1),
-      result
-    )
-    let unprojectedF = MathUtil.perspectiveUnproject(
-      new Vector3D(position.x, position.y, 2),
-      result
-    )
-    console.log("ray " + JSON.stringify(unprojectedF) + " - " + JSON.stringify(unprojectedN))
-    let xp = new Vector3D(1)
-    let yp = new Vector3D(0, 1)
-    let op = new Vector3D()
-    let referencePlaneIntersection = MathUtil.linePlaneIntersection(
-      op, xp, yp,
-      unprojectedN, unprojectedF
-    )
-    console.log("  ray xy plane intersection " + JSON.stringify(referencePlaneIntersection))
-
-    //////MOVE
-
     let origin = CoordinatesUtil.convert(
       controlPointsState.origin,
       ImageCoordinateFrame.Relative,
@@ -196,6 +175,46 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
       { x: positionRel.x + offset0 * anchorToVpRel.x, y: positionRel.y + offset0 * anchorToVpRel.y },
       { x: positionRel.x + offset1 * anchorToVpRel.x, y: positionRel.y + offset1 * anchorToVpRel.y }
     ]
+
+
+    //////MOVE
+    let unprojectedN = MathUtil.perspectiveUnproject(
+      new Vector3D(position.x, position.y, 1),
+      result
+    )
+    let unprojectedF = MathUtil.perspectiveUnproject(
+      new Vector3D(position.x, position.y, 2),
+      result
+    )
+    console.log("ray " + JSON.stringify(unprojectedF) + " - " + JSON.stringify(unprojectedN))
+    let xp = new Vector3D(1)
+    let yp = new Vector3D(0, 1)
+    let op = new Vector3D()
+    let referencePlaneIntersection = MathUtil.linePlaneIntersection(
+      op, xp, yp,
+      unprojectedN, unprojectedF
+    )
+    console.log("  ray xy plane intersection " + JSON.stringify(referencePlaneIntersection))
+
+    let referenceDistanceRayEnd = referencePlaneIntersection.copy()
+    referenceDistanceRayEnd.z = 1
+
+    let handle1 = CoordinatesUtil.convert(
+      handlePositions[0],
+      ImageCoordinateFrame.Relative,
+      ImageCoordinateFrame.ImagePlane,
+      this.props.width,
+      this.props.height
+    )
+
+    let handle1RayStart = MathUtil.perspectiveUnproject(new Vector3D(handle1.x, handle1.y, 1), result)
+    let handle1RayEnd = MathUtil.perspectiveUnproject(new Vector3D(handle1.x, handle1.y, 2), result)
+
+    let inters = MathUtil.shortestLineSegmentBetweenLines(handle1RayStart, handle1RayEnd, referencePlaneIntersection, referenceDistanceRayEnd)
+    console.log("inters " + JSON.stringify(inters))
+
+    //////MOVE
+
 
     return (
       <ReferenceDistanceControl
