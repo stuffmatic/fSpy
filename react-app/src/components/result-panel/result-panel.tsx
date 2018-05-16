@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Button from './../common/button'
 import TableRow from './table-row'
-import MatrixView from './matrix-view'
+import RotationMatrixView from './rotation-matrix-view'
 import BulletList, { BulletListType } from './bullet-list'
 import { ImageState } from '../../types/image-state';
 import { SolverResult } from '../../solver/solver-result';
@@ -29,12 +29,12 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> 
             <div className="panel-section bottom-border">
               <TableRow
                 title={"Horizontal field of view"}
-                value={this.props.solverResult.horizontalFieldOfView}
+                value={this.props.solverResult.horizontalFieldOfView ? (180 * this.props.solverResult.horizontalFieldOfView / Math.PI) : null}
                 unit={"°"}
               />
               <TableRow
                 title={"Vertical field of view"}
-                value={this.props.solverResult.verticalFieldOfView}
+                value={this.props.solverResult.verticalFieldOfView ? (180 * this.props.solverResult.verticalFieldOfView / Math.PI) : null}
                 unit={"°"}
               />
             </div>
@@ -45,8 +45,12 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> 
               />
             </div>
             <div className="panel-section bottom-border">
-              <div className="panel-row" >Camera transform matrix</div>
-              <MatrixView transform={this.props.solverResult.cameraTransform} />
+              <div className="panel-row" >Camera rotation matrix</div>
+              <RotationMatrixView transform={this.props.solverResult.cameraTransform} />
+            </div>
+            <div className="panel-section bottom-border">
+              <div className="panel-row" >Camera translation</div>
+
             </div>
 
             <div className="panel-section bottom-border">
