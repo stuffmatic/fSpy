@@ -118,40 +118,59 @@ export default class MathUtil {
     }
   }
 
+  static linePlaneIntersection(
+    p0:Vector3D, p1:Vector3D, p2:Vector3D, la:Vector3D, lb:Vector3D
+  ):Vector3D {
+    //https://en.wikipedia.org/wiki/Line–plane_intersection
+    let p01 = p1.subtracted(p0)
+    let p02 = p2.subtracted(p0)
+    let lab = lb.subtracted(la)
+    let numerator = (p01.cross(p02)).dot(la.subtracted(p0))
+    let denominator = -(lab.dot(p01.cross(p02)))
+    let t = numerator / denominator
+    return new Vector3D(
+      la.x + t * lab.x,
+      la.y + t * lab.y,
+      la.z + t * lab.z
+    )
+  }
+
+  private static modelViewProjection(solverResult:SolverResult):Transform {
+    if (!solverResult.principalPoint ||
+        !solverResult.cameraTransform ||
+        !solverResult.principalPoint) {
+      return new Transform()
+    }
+
+    let fov = solverResult.horizontalFieldOfView!
+    let s = 1 / Math.tan(0.5 * fov)
+    let n = 0.01
+    let f = 10
+    let projectionTransform = Transform.fromMatrix([
+      [s, 0, -solverResult.principalPoint.x, 0],
+      [0, s, -solverResult.principalPoint.y, 0],
+      [0, 0, -(f + n) / (f - n), -2 * f * n / (f - n)],
+      [0, 0, -1, 0]
+    ])
+    return solverResult.cameraTransform.leftMultiplied(projectionTransform)
+  }
+
+  static perspectiveUnproject(
+    point:Vector3D,
+    solverResult:SolverResult
+  ):Vector3D {
+    let transform = this.modelViewProjection(solverResult).inverted()
+    return transform.transformedVector(point, true)
+  }
+
   static perspectiveProject(
     point:Vector3D,
     solverResult:SolverResult
   ):Point2D {
-    if (!solverResult.principalPoint) {
-      return { x: 0, y: 0 }
-    }
-    let projected = point.copy()
-
-    //apply camera transform
-    let transform = new Transform()
-    if (solverResult.cameraTransform) {
-      transform.leftMultiply(solverResult.cameraTransform)
-    }
-
-    //apply projection transform
-    let fov = solverResult.horizontalFieldOfView!
-    let s = 1 / Math.tan(0.5 * fov)
-    let projectionTransform = Transform.fromMatrix([
-      [s, 0, -solverResult.principalPoint.x, 0],
-      [0, s, -solverResult.principalPoint.y, 0],
-      [0, 0, 1, 0],
-      [0, 0, -1, 0]
-    ])
-    transform.leftMultiply(projectionTransform)
-    //console.log(JSON.stringify(transform, null, 2))
-    //console.log(JSON.stringify(transform.inverted(), null, 2))
-    projected = transform.transformedVector(projected, true)
-
-    //perform field of view scaling and perspective divide
-
-    //projected.x = s * projected.x / (-projected.z) + solverResult.principalPoint.x
-    //projected.y = s * projected.y / (-projected.z) + solverResult.principalPoint.y
-
+    let projected = this.modelViewProjection(solverResult).transformedVector(
+      point,
+      true
+    )
     return projected
   }
 

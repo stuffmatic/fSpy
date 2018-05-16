@@ -9,6 +9,7 @@ import OriginControl from './origin-control'
 import ReferenceDistanceControl from './reference-distance-control'
 import MathUtil from '../../solver/math-util';
 import { CalibrationSettingsBase, Axis } from '../../types/calibration-settings';
+import Vector3D from '../../solver/vector-3d';
 
 type ControlPointsPanelProps = ControlPointsContainerDimensionProps & ControlPointsContainerCallbacks & ControlPointsContainerProps
 
@@ -107,6 +108,27 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
       this.props.width,
       this.props.height
     )
+
+    //////MOVE
+    let unprojectedN = MathUtil.perspectiveUnproject(
+      new Vector3D(position.x, position.y, 1),
+      result
+    )
+    let unprojectedF = MathUtil.perspectiveUnproject(
+      new Vector3D(position.x, position.y, 2),
+      result
+    )
+    console.log("ray " + JSON.stringify(unprojectedF) + " - " + JSON.stringify(unprojectedN))
+    let xp = new Vector3D(1)
+    let yp = new Vector3D(0, 1)
+    let op = new Vector3D()
+    let referencePlaneIntersection = MathUtil.linePlaneIntersection(
+      op, xp, yp,
+      unprojectedN, unprojectedF
+    )
+    console.log("  ray xy plane intersection " + JSON.stringify(referencePlaneIntersection))
+
+    //////MOVE
 
     let origin = CoordinatesUtil.convert(
       controlPointsState.origin,
