@@ -31,7 +31,7 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
     }
 
     let cellCount = 10
-    let cellSize = 0.5
+    let cellSize = 0.15 * this.normalizationFactor
     let gridLines3D: [Vector3D, Vector3D][] = []
     let min = -0.5 * cellCount * cellSize
     let max = min + cellCount * cellSize
@@ -81,8 +81,23 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
     )
   }
 
+  private get normalizationFactor():number {
+    let cameraTransform = this.props.solverResult.cameraTransform
+    let fov = this.props.solverResult.horizontalFieldOfView
+    if (cameraTransform == null || fov == null) {
+      return 0
+    }
+    let translation = new Vector3D(cameraTransform.matrix[0][3], cameraTransform.matrix[1][3], cameraTransform.matrix[2][3])
+    let l = translation.length
+    let s = Math.atan(0.5 * fov)
+    return l * s
+  }
+
   private renderAxes() {
-    let axisLength = 1
+    //Compute a scale factor so the axes have the same length
+    //regardless of camera translation and field of view
+    let axisLength = 0.3 * this.normalizationFactor
+
     return (
       <g>
         {this.renderAxis(Axis.PositiveX, axisLength, Palette.red)}
