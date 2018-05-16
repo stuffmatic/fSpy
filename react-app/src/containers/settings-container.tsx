@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setNotes, setVanishingPointAxis1VP, setVanishingPointAxis2VP, setGridFloorNormal, setControlPointsVisible, setReferenceDistanceAxis1VP, setReferenceDistanceAxis2VP } from '../actions';
+import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setNotes, setVanishingPointAxis1VP, setVanishingPointAxis2VP, setGridFloorNormal, setControlPointsVisible, setReferenceDistanceAxis1VP, setReferenceDistanceAxis2VP, setReferenceDistanceUnit1VP, setReferenceDistanceUnit2VP, setReferenceDistance1VP, setReferenceDistance2VP } from '../actions';
 import SettingsPanel from '../components/settings-panel/settings-panel';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { StoreState } from '../types/store-state';
-import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode, Axis } from '../types/calibration-settings';
+import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode, Axis, ReferenceDistanceUnit } from '../types/calibration-settings';
 
 export interface SettingsContainerProps {
   isVisible: boolean
@@ -26,6 +26,10 @@ export interface SettingsContainerProps {
   onVanishingPointAxisChange2VP(vanishingPointIndex: number, axis: Axis): void
   onReferenceDistanceAxisChange1VP(axis: Axis | null): void
   onReferenceDistanceAxisChange2VP(axis: Axis | null): void
+  onReferenceDistanceUnitChange1VP(unit: ReferenceDistanceUnit): void
+  onReferenceDistanceUnitChange2VP(unit: ReferenceDistanceUnit): void
+  onReferenceDistanceChange1VP(distance: number): void
+  onReferenceDistanceChange2VP(distance: number): void
 }
 
 class SettingsContainer extends React.PureComponent<SettingsContainerProps> {
@@ -98,6 +102,18 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     },
     onReferenceDistanceAxisChange2VP: (axis: Axis | null) => {
       dispatch(setReferenceDistanceAxis2VP(axis))
+    },
+    onReferenceDistanceUnitChange1VP: (unit: ReferenceDistanceUnit) => {
+      dispatch(setReferenceDistanceUnit1VP(unit))
+    },
+    onReferenceDistanceUnitChange2VP: (unit: ReferenceDistanceUnit) => {
+      dispatch(setReferenceDistanceUnit2VP(unit))
+    },
+    onReferenceDistanceChange1VP: (distance: number) => {
+      dispatch(setReferenceDistance1VP(distance))
+    },
+    onReferenceDistanceChange2VP: (distance: number) => {
+      dispatch(setReferenceDistance2VP(distance))
     }
   }
 }

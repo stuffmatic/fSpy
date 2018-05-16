@@ -30,6 +30,16 @@ export function calibrationSettings2VP(state: CalibrationSettings2VP, action: Ap
         ...state,
         referenceDistanceAxis: action.axis
       }
+    case ActionTypes.SET_REFERENCE_DISTANCE_2VP:
+      return {
+        ...state,
+        referenceDistance: action.distance
+      }
+    case ActionTypes.SET_REFERENCE_DISTANCE_UNIT_2VP:
+      return {
+        ...state,
+        referenceDistanceUnit: action.unit
+      }
 
   }
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SettingsContainerProps } from '../../containers/settings-container';
-import { PrincipalPointMode1VP, HorizonMode, Axis } from '../../types/calibration-settings';
+import { PrincipalPointMode1VP, HorizonMode, Axis, ReferenceDistanceUnit } from '../../types/calibration-settings';
 import AxisDropdown from './axis-dropdown'
 import PanelSpacer from './../common/panel-spacer'
 import Dropdown from './../common/dropdown'
@@ -60,14 +60,21 @@ export default class SettingsSection1VP extends React.PureComponent<SettingsCont
         <div className="panel-row">
           Reference distance
         </div>
-        <div className="panel-row">
+
         <ReferenceDistanceForm
             referenceAxis={this.props.calibrationSettings1VP.referenceDistanceAxis}
+            referenceDistance={this.props.calibrationSettings1VP.referenceDistance}
+            referenceDistanceUnit={this.props.calibrationSettings1VP.referenceDistanceUnit}
             onReferenceAxisChange={(axis:Axis | null) => {
               this.props.onReferenceDistanceAxisChange1VP(axis)
             }}
+            onReferenceDistanceChange={(distance:number) => {
+              this.props.onReferenceDistanceChange1VP(distance)
+            }}
+            onReferenceDistanceUnitChange={(unit:ReferenceDistanceUnit) => {
+              this.props.onReferenceDistanceUnitChange1VP(unit)
+            }}
           />
-        </div>
 
         <PanelSpacer />
         <div className="panel-row">

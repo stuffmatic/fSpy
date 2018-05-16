@@ -1,6 +1,6 @@
 import { CalibrationMode } from "../types/global-settings";
 import { ControlPointPairIndex } from "../types/control-points-state";
-import { PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode, Axis } from "../types/calibration-settings";
+import { PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode, Axis, ReferenceDistanceUnit } from "../types/calibration-settings";
 import CalibrationResult from "../types/calibration-result";
 import Point2D from "../solver/point-2d";
 
@@ -23,6 +23,10 @@ export enum ActionTypes {
   SET_PRINCIPAL_POINT_MODE_2VP = "SET_PRINCIPAL_POINT_MODE_2VP",
   SET_VANISHING_POINT_AXIS_1VP = "SET_VANISHING_POINT_AXIS_1VP",
   SET_VANISHING_POINT_AXIS_2VP = "SET_VANISHING_POINT_AXIS_2VP",
+  SET_REFERENCE_DISTANCE_1VP = "SET_REFERENCE_DISTANCE_1VP",
+  SET_REFERENCE_DISTANCE_2VP = "SET_REFERENCE_DISTANCE_2VP",
+  SET_REFERENCE_DISTANCE_UNIT_1VP = "SET_REFERENCE_DISTANCE_UNIT_1VP",
+  SET_REFERENCE_DISTANCE_UNIT_2VP = "SET_REFERENCE_DISTANCE_UNIT_2VP",
   SET_REFERENCE_DISTANCE_AXIS_1VP = "SET_REFERENCE_DISTANCE_AXIS_1VP",
   SET_REFERENCE_DISTANCE_AXIS_2VP = "SET_REFERENCE_DISTANCE_AXIS_2VP",
 
@@ -216,6 +220,58 @@ export function setVanishingPointAxis2VP(vanishingPointIndex: number, axis: Axis
 }
 
 //
+export interface SetReferenceDistance1VP {
+  type: ActionTypes.SET_REFERENCE_DISTANCE_1VP,
+  distance: number
+}
+
+export function setReferenceDistance1VP(distance:number): SetReferenceDistance1VP {
+  return {
+    type: ActionTypes.SET_REFERENCE_DISTANCE_1VP,
+    distance: distance
+  }
+}
+
+//
+export interface SetReferenceDistance2VP {
+  type: ActionTypes.SET_REFERENCE_DISTANCE_2VP,
+  distance: number
+}
+
+export function setReferenceDistance2VP(distance:number): SetReferenceDistance2VP {
+  return {
+    type: ActionTypes.SET_REFERENCE_DISTANCE_2VP,
+    distance: distance
+  }
+}
+
+//
+export interface SetReferenceDistanceUnit1VP {
+  type: ActionTypes.SET_REFERENCE_DISTANCE_UNIT_1VP,
+  unit: ReferenceDistanceUnit
+}
+
+export function setReferenceDistanceUnit1VP(unit:ReferenceDistanceUnit): SetReferenceDistanceUnit1VP {
+  return {
+    type: ActionTypes.SET_REFERENCE_DISTANCE_UNIT_1VP,
+    unit: unit
+  }
+}
+
+//
+export interface SetReferenceDistanceUnit2VP {
+  type: ActionTypes.SET_REFERENCE_DISTANCE_UNIT_2VP,
+  unit: ReferenceDistanceUnit
+}
+
+export function setReferenceDistanceUnit2VP(unit:ReferenceDistanceUnit): SetReferenceDistanceUnit2VP {
+  return {
+    type: ActionTypes.SET_REFERENCE_DISTANCE_UNIT_2VP,
+    unit: unit
+  }
+}
+
+//
 export interface SetReferenceDistanceAxis1VP {
   type: ActionTypes.SET_REFERENCE_DISTANCE_AXIS_1VP,
   axis: Axis | null
@@ -398,6 +454,10 @@ export type AppAction =
   SetVanishingPointAxis2VP | 
   SetReferenceDistanceAxis1VP |
   SetReferenceDistanceAxis2VP |
+  SetReferenceDistanceUnit1VP |
+  SetReferenceDistanceUnit2VP |
+  SetReferenceDistance1VP |
+  SetReferenceDistance2VP |
   SetOrigin |
   SetReferenceDistanceAnchor |
   SetPrincipalPoint |

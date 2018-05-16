@@ -24,6 +24,7 @@ export enum Axis {
 }
 
 export enum ReferenceDistanceUnit {
+  None = "No unit",
   Meters = "Meters",
   Yards = "Yards"
 }
