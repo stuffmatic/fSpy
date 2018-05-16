@@ -5,12 +5,22 @@ interface NumericInputFieldProps {
   onSubmit(value: number): void
 }
 
-export default class NumericInputField extends React.Component<NumericInputFieldProps> {
+interface NumericInputFieldState {
+  stringValue: string,
+  initialValue: string,
+  valueIsValid: boolean
+}
 
-  state = {
-    stringValue: "",
-    initialValue: "",
-    valueIsValid: false
+export default class NumericInputField extends React.Component<NumericInputFieldProps, NumericInputFieldState> {
+
+  constructor(props: NumericInputFieldProps) {
+    super(props)
+    this.state = {
+      stringValue: "",
+      initialValue: "",
+      valueIsValid: false
+    }
+
   }
 
   handleChange(event: any) {
@@ -24,7 +34,7 @@ export default class NumericInputField extends React.Component<NumericInputField
 
   }
 
-  handleSubmit(event:any) {
+  handleSubmit(event: any) {
     event.preventDefault()
     let numericValue = this.numericValue()
     if (numericValue !== undefined) {
@@ -37,15 +47,17 @@ export default class NumericInputField extends React.Component<NumericInputField
 
   handleFocus(event: any) {
     console.log("handleFocus")
-    this.setState({ initialValue: event.target.value });
+    this.setState({ initialValue: event.target.value })
   }
 
-  handleBlur(event:any) {
+  handleBlur(event: any) {
     console.log("handleBlur")
-    this.setState({ stringValue: this.props.value });
+    this.setState(
+      { stringValue: this.props.value.toString() }
+    )
   }
 
-  private numericValue(): number |  undefined {
+  private numericValue(): number | undefined {
     let value = parseFloat(this.state.stringValue)
     console.log("Parsed " + this.state.stringValue + " to " + value)
     return isNaN(value) ? undefined : value
@@ -53,20 +65,20 @@ export default class NumericInputField extends React.Component<NumericInputField
 
   render() {
     return (
-      <form onSubmit={(event:any) => {
+      <form onSubmit={(event: any) => {
         this.handleSubmit(event)
       }}>
         <label style={{ backgroundColor: this.state.valueIsValid ? "none" : "red" }}>
           <input
             type="text"
             value={this.state.stringValue}
-            onChange={(event:any) => {
+            onChange={(event: any) => {
               this.handleChange(event)
             }}
-            onFocus={(event:any) => {
+            onFocus={(event: any) => {
               this.handleFocus(event)
             }}
-            onBlur={(event:any) => {
+            onBlur={(event: any) => {
               this.handleBlur(event)
             }}
           />
