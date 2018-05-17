@@ -1,4 +1,4 @@
-import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode2VP, Axis, CalibrationSettingsBase } from "../types/calibration-settings";
+import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode2VP, Axis, CalibrationSettingsBase} from "../types/calibration-settings";
 import { ControlPointsState1VP, ControlPointsState2VP, VanishingPointControlState, ControlPointsStateBase } from "../types/control-points-state";
 import { ImageState } from "../types/image-state";
 import MathUtil from "./math-util";
@@ -42,6 +42,37 @@ export default class Solver {
       result.errors = errors
       return result
     }
+
+    //Flat horizon by default
+    /*
+    let horizon:Point2D = {x: 1, y: 0}
+    if (settings.horizonMode == HorizonMode.Manual) {
+      let horizonStart = CoordinatesUtil.convert(
+        controlPoints.horizon[0],
+        ImageCoordinateFrame.Relative,
+        ImageCoordinateFrame.ImagePlane,
+        image.width!,
+        image.height!
+      )
+      let horizonEnd = CoordinatesUtil.convert(
+        controlPoints.horizon[0],
+        ImageCoordinateFrame.Relative,
+        ImageCoordinateFrame.ImagePlane,
+        image.width!,
+        image.height!
+      )
+
+      horizon = MathUtil.normalized({
+        x: horizonEnd.x - horizonStart.x,
+        y: horizonEnd.y - horizonStart.y
+      })
+    }
+
+
+    let secondVanishingPoint = this.computeSecondVanishingPoint(
+      inputVanishingPoints[0],
+      relativeFocal
+    )*/
 
     result.cameraTransform = new Transform()
     result.vanishingPoints = [inputVanishingPoints[0], { x: 0, y: 0 }, { x: 0, y: 0 }]
@@ -487,6 +518,32 @@ export default class Solver {
       }
     ]
   }
+
+  /**
+   * Computes the coordinates of the second vanishing point
+   * based on the first, a focal length, the center of projection and
+   * the desired horizon tilt angle. The equations here are derived from
+   * section 3.2 "Determining the focal length from a single image".
+   * @param Fu the first vanishing point in image plane coordinates.
+   * @param f the relative focal length
+   * @param P the center of projection in normalized image coordinates
+   * @param horizonDir The desired horizon direction
+   */
+  /*private static computeSecondVanishingPoint(Fu:Point2D, f:number, P:Point2D, horizonDir:Point2D):Point2D | null {
+    //find the second vanishing point
+    //TODO_ take principal point into account here
+    if (MathUtil.distance(Fu, P) < 1e-7) { //TODO: espsilon constant
+      return null
+    }
+
+    let k = -(Fu.x * Fu.x + Fu.y * Fu.y + f * f) / (Fu.x * horizonDir.x + Fu.y * horizonDir.y)
+    let Fv = {
+      x: Fu.x + k * horizonDir.x,
+      y: Fu.y + k * horizonDir.y
+    }
+
+    return Fv
+  }*/
 
   private static axisVector(axis: Axis): Vector3D {
     switch (axis) {
