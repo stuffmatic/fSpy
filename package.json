@@ -1,5 +1,6 @@
 {
   "name": "fspy",
+  "productName": "f-Spy",
   "version": "0.1.0",
   "private": true,
   "main": "src/electron-starter.js",
@@ -9,11 +10,13 @@
     "mac": {
       "category": "public.app-category.utilities"
     },
-    "asar": false,
     "files": [
       "src/electron-starter.js",
       "build/**/*"
-    ]
+    ],
+    "directories": {
+      "buildResources": "electron_resources"
+    }
   },
   "buildResources": [
     "build/**/*"
