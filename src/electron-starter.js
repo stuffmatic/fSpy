@@ -13,7 +13,14 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600, show: false} )
+  mainWindow = new BrowserWindow({
+    minWidth: 800,
+    minHeight: 600,
+    width: 800,
+    height: 600,
+    show: false
+  })
+
   mainWindow.on('ready-to-show', function() {
     mainWindow.show();
     mainWindow.focus();
