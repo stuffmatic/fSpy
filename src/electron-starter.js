@@ -27,12 +27,6 @@ function createWindow () {
   });
 
   mainWindow.setBackgroundColor("#222222")
-  // and load the index.html of the app.
-  /*mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
-    protocol: 'file:',
-    slashes: true
-  }))*/
 
   const startUrl = process.env.ELECTRON_START_URL || url.format({
     pathname: path.join(__dirname, '/../build/index.html'),

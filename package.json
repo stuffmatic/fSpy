@@ -15,7 +15,7 @@
       "build/**/*"
     ],
     "directories": {
-      "buildResources": "electron_resources"
+      "buildResources": "assets/electron"
     }
   },
   "buildResources": [
