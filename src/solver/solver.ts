@@ -1,4 +1,4 @@
-import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode2VP, Axis, CalibrationSettingsBase} from "../types/calibration-settings";
+import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode2VP, Axis, CalibrationSettingsBase, HorizonMode, PrincipalPointMode1VP} from "../types/calibration-settings";
 import { ControlPointsState1VP, ControlPointsState2VP, VanishingPointControlState, ControlPointsStateBase } from "../types/control-points-state";
 import { ImageState } from "../types/image-state";
 import MathUtil from "./math-util";
@@ -9,60 +9,84 @@ import CoordinatesUtil, { ImageCoordinateFrame } from "./coordinates-util";
 import { SolverResult } from "./solver-result";
 import { defaultSolverResult } from "../defaults/solver-result";
 
-
-/*
-The solver handles estimation of focal length and camera orientation
-from input line segments. All sections numbers, equations numbers etc
-refer to "Using Vanishing Points for Camera Calibration and Coarse 3D Reconstruction
-from a Single Image" by E. Guillou, D. Meneveaux, E. Maisel, K. Bouatouch.
-(http://www.irisa.fr/prive/kadi/Reconstruction/paper.ps.gz).
-*/
+/**
+ * The solver handles estimation of focal length and camera orientation
+ * from given vanishing points. Sections numbers, equations numbers etc
+ * refer to "Using Vanishing Points for Camera Calibration and Coarse 3D Reconstruction
+ * from a Single Image" by E. Guillou, D. Meneveaux, E. Maisel, K. Bouatouch.
+ * @see http://www.irisa.fr/prive/kadi/Reconstruction/paper.ps.gz
+ */
 export default class Solver {
 
+  /**
+   * Estimates camera parameters given a single vanishing point, a
+   * relative focal length and an optional horizon direction
+   * @param settings
+   * @param controlPoints
+   * @param image
+   */
   static solve1VP(
     settings: CalibrationSettings1VP,
     controlPoints: ControlPointsState1VP,
     image: ImageState
   ): SolverResult {
+    //Create a blank result object
     let result = this.blankSolverResult()
 
-    let errors = this.validateImage(image)
-    if (errors.length > 0) {
-      result.errors = errors
+    //Bail out if we don't have valid image dimensions
+    result.errors = this.validateImageDimensions(image)
+    if (result.errors.length > 0) {
       return result
     }
 
+    let imageWidth = image.width!
+    let imageHeight = image.height!
+
+    //Compute the input vanishing point in image plane coordinates
     let inputVanishingPoints = this.computeVanishingPointsFromControlPoints(
       image,
       controlPoints.vanishingPoints,
-      errors
+      result.errors
     )
 
-    if (!inputVanishingPoints) {
-      result.errors = errors
+    if (result.errors.length > 0) {
+      //Something went wrong computing the vanishing point. Nothing further.
       return result
     }
 
-    //Flat horizon by default
-    /*
-    let horizon:Point2D = {x: 1, y: 0}
+    //Get the principal point
+    let principalPoint = {x: 0, y: 0}
+    if (settings.principalPointMode == PrincipalPointMode1VP.Manual) {
+      principalPoint = CoordinatesUtil.convert(
+        controlPoints.principalPoint,
+        ImageCoordinateFrame.Relative,
+        ImageCoordinateFrame.ImagePlane,
+        imageWidth,
+        imageHeight
+      )
+    }
+
+    //Compute the horizon direction
+    let horizonDirection:Point2D = {x: 1, y: 0} //flat by default
     if (settings.horizonMode == HorizonMode.Manual) {
+      //Compute two points on the horizon line in image plane coordinates
       let horizonStart = CoordinatesUtil.convert(
         controlPoints.horizon[0],
         ImageCoordinateFrame.Relative,
         ImageCoordinateFrame.ImagePlane,
-        image.width!,
-        image.height!
+        imageWidth,
+        imageHeight
       )
       let horizonEnd = CoordinatesUtil.convert(
-        controlPoints.horizon[0],
+        controlPoints.horizon[1],
         ImageCoordinateFrame.Relative,
         ImageCoordinateFrame.ImagePlane,
-        image.width!,
-        image.height!
+        imageWidth,
+        imageHeight
       )
 
-      horizon = MathUtil.normalized({
+      //Normalized horizon direction vector
+      horizonDirection = MathUtil.normalized({
         x: horizonEnd.x - horizonStart.x,
         y: horizonEnd.y - horizonStart.y
       })
@@ -70,15 +94,37 @@ export default class Solver {
 
 
     let secondVanishingPoint = this.computeSecondVanishingPoint(
-      inputVanishingPoints[0],
-      relativeFocal
-    )*/
+      inputVanishingPoints![0],
+      settings.relativeFocalLength,
+      principalPoint,
+      horizonDirection
+    )
 
-    result.cameraTransform = new Transform()
-    result.vanishingPoints = [inputVanishingPoints[0], { x: 0, y: 0 }, { x: 0, y: 0 }]
-    result.horizontalFieldOfView = 0
-    result.verticalFieldOfView = 0
-    result.relativeFocalLength = 0
+    if (secondVanishingPoint == null) {
+      result.errors.push("Failed to compute second vanishing point")
+      return result
+    }
+
+    //TODO: assign axes
+    let axisAssignmentMatrix = new Transform()
+    result.vanishingPointAxes = [
+      Axis.PositiveX,
+      Axis.PositiveY,
+      Axis.PositiveZ
+    ]
+
+    this.computeCameraParameters(
+      result,
+      controlPoints,
+      settings,
+      axisAssignmentMatrix,
+      principalPoint,
+      inputVanishingPoints![0],
+      secondVanishingPoint,
+      settings.relativeFocalLength,
+      imageWidth,
+      imageHeight
+    )
 
     return result
   }
@@ -90,11 +136,13 @@ export default class Solver {
   ): SolverResult {
     let result = this.blankSolverResult()
 
-    let errors = this.validateImage(image)
+    let errors = this.validateImageDimensions(image)
     if (errors.length > 0) {
       result.errors = errors
       return result
     }
+    let imageWidth = image.width!
+    let imageHeight = image.height!
 
 
     //TODO: clean up this cloning
@@ -145,7 +193,6 @@ export default class Solver {
     }
 
     //Get the principal point
-
     let principalPoint = { x: 0, y: 0 }
     switch (settings.principalPointMode) {
       case PrincipalPointMode2VP.Manual:
@@ -158,9 +205,13 @@ export default class Solver {
         )
         break
       case PrincipalPointMode2VP.FromThirdVanishingPoint:
-        let vanishingPointz = this.computeVanishingPointsFromControlPoints(image, [controlPoints.vanishingPoints[2]], errors)
-        if (vanishingPointz) {
-          let thirdVanishingPoint = vanishingPointz[0]
+        let thirdVanishingPointArray = this.computeVanishingPointsFromControlPoints(
+          image,
+          [controlPoints.vanishingPoints[2]],
+          errors
+        )
+        if (thirdVanishingPointArray) {
+          let thirdVanishingPoint = thirdVanishingPointArray![0]
           principalPoint = MathUtil.triangleOrthoCenter(
             inputVanishingPoints[0], inputVanishingPoints[1], thirdVanishingPoint
           )
@@ -168,47 +219,29 @@ export default class Solver {
         break
     }
 
-    if (errors.length > 0) {
-      result.errors = errors
+    let fRelative = this.computeFocalLength(
+      inputVanishingPoints[0], inputVanishingPoints[1], principalPoint
+    )
+
+    if (fRelative == null) {
+      result.errors.push("Failed to compute focal length")
       return result
     }
 
-    result.principalPoint = principalPoint
-    result.vanishingPoints = [
-      inputVanishingPoints[0],
-      inputVanishingPoints[1],
-      MathUtil.thirdTriangleVertex(
-        inputVanishingPoints[0],
-        inputVanishingPoints[1],
-        principalPoint
-      )
-    ]
-
-    let fRelative = this.computeFocalLength(
-      inputVanishingPoints[0], inputVanishingPoints[1], result.principalPoint
-    )! //TODO: check for null
-    result.relativeFocalLength = fRelative
-
-    let cameraTransform = this.computeCameraRotationMatrix(
-      inputVanishingPoints[0], inputVanishingPoints[1], fRelative, result.principalPoint
-    )
-
-    //Assign axes to vanishing point
-    let basisChangeTransform = new Transform()
+    //Assing vanishing point axes
+    let axisAssignmentMatrix = new Transform()
     let row1 = this.axisVector(settings.vanishingPointAxes[0])
     let row2 = this.axisVector(settings.vanishingPointAxes[1])
     let row3 = row1.cross(row2)
-    basisChangeTransform.matrix[0][0] = row1.x
-    basisChangeTransform.matrix[0][1] = row1.y
-    basisChangeTransform.matrix[0][2] = row1.z
-    basisChangeTransform.matrix[1][0] = row2.x
-    basisChangeTransform.matrix[1][1] = row2.y
-    basisChangeTransform.matrix[1][2] = row2.z
-    basisChangeTransform.matrix[2][0] = row3.x
-    basisChangeTransform.matrix[2][1] = row3.y
-    basisChangeTransform.matrix[2][2] = row3.z
-
-    result.cameraTransform = basisChangeTransform.leftMultiplied(cameraTransform)
+    axisAssignmentMatrix.matrix[0][0] = row1.x
+    axisAssignmentMatrix.matrix[0][1] = row1.y
+    axisAssignmentMatrix.matrix[0][2] = row1.z
+    axisAssignmentMatrix.matrix[1][0] = row2.x
+    axisAssignmentMatrix.matrix[1][1] = row2.y
+    axisAssignmentMatrix.matrix[1][2] = row2.z
+    axisAssignmentMatrix.matrix[2][0] = row3.x
+    axisAssignmentMatrix.matrix[2][1] = row3.y
+    axisAssignmentMatrix.matrix[2][2] = row3.z
 
     result.vanishingPointAxes = [
       settings.vanishingPointAxes[0],
@@ -216,39 +249,90 @@ export default class Solver {
       this.vectorAxis(row3)
     ]
 
-    result.horizontalFieldOfView = this.computeFieldOfView(
-      image.width!,
-      image.height!,
-      fRelative,
-      false
-    )
-    result.verticalFieldOfView = this.computeFieldOfView(
-      image.width!,
-      image.height!,
-      fRelative,
-      true
-    )
-
-    this.computeTranslationVector(
+    //compute camera parameters
+    this.computeCameraParameters(
+      result,
       controlPoints,
       settings,
-      image.width!,
-      image.height!,
-      result.cameraTransform,
-      result.horizontalFieldOfView,
+      axisAssignmentMatrix,
       principalPoint,
-      result.vanishingPoints,
-      result.vanishingPointAxes
+      inputVanishingPoints[0],
+      inputVanishingPoints[1],
+      fRelative,
+      imageWidth,
+      imageHeight
     )
-
-    if (Math.abs(cameraTransform.determinant - 1) > 1e-7) {
-      result.warnings.push("Unreliable camera transform, determinant " + cameraTransform.determinant.toFixed(5))
-    }
 
     return result
   }
 
-  static computeFieldOfView(
+  private static computeCameraParameters(
+    result:SolverResult,
+    controlPoints:ControlPointsStateBase,
+    settings: CalibrationSettingsBase,
+    axisAssignmentMatrix:Transform,
+    principalPoint:Point2D,
+    vp1:Point2D,
+    vp2:Point2D,
+    relativeFocalLength:number,
+    imageWidth:number,
+    imageHeight:number
+  ) {
+    //principal point
+    result.principalPoint = principalPoint
+    //focal length
+    result.relativeFocalLength = relativeFocalLength
+    //vanishing points
+    result.vanishingPoints = [
+      vp1,
+      vp2,
+      MathUtil.thirdTriangleVertex(
+        vp1,
+        vp2,
+        principalPoint
+      )
+    ]
+    //horizontal field of view
+    result.horizontalFieldOfView = this.computeFieldOfView(
+      imageWidth,
+      imageHeight,
+      relativeFocalLength,
+      false
+    )
+    //vertical field of view
+    result.verticalFieldOfView = this.computeFieldOfView(
+      imageWidth,
+      imageHeight,
+      relativeFocalLength,
+      true
+    )
+
+
+    //compute camera rotation matrix
+    let cameraRotationMatrix = this.computeCameraRotationMatrix(
+      vp1, vp2, relativeFocalLength, principalPoint
+    )
+    if (Math.abs(cameraRotationMatrix.determinant - 1) > 1e-7) {
+      result.warnings.push("Camera rotation matrix has non-unit determinant " + cameraRotationMatrix.determinant.toFixed(5))
+    }
+
+    result.cameraTransform = axisAssignmentMatrix.leftMultiplied(cameraRotationMatrix)
+
+    this.computeTranslationVector(
+      controlPoints,
+      settings,
+      imageWidth,
+      imageHeight,
+      result.cameraTransform,
+      result.horizontalFieldOfView,
+      principalPoint,
+      result.vanishingPoints,
+      result.vanishingPointAxes!
+    )
+
+  }
+
+  private static computeFieldOfView(
     imageWidth: number,
     imageHeight: number,
     fRelative: number,
@@ -529,7 +613,7 @@ export default class Solver {
    * @param P the center of projection in normalized image coordinates
    * @param horizonDir The desired horizon direction
    */
-  /*private static computeSecondVanishingPoint(Fu:Point2D, f:number, P:Point2D, horizonDir:Point2D):Point2D | null {
+  private static computeSecondVanishingPoint(Fu:Point2D, f:number, P:Point2D, horizonDir:Point2D):Point2D | null {
     //find the second vanishing point
     //TODO_ take principal point into account here
     if (MathUtil.distance(Fu, P) < 1e-7) { //TODO: espsilon constant
@@ -543,7 +627,7 @@ export default class Solver {
     }
 
     return Fv
-  }*/
+  }
 
   private static axisVector(axis: Axis): Vector3D {
     switch (axis) {
@@ -576,7 +660,7 @@ export default class Solver {
     throw "Invalid axis vector"
   }
 
-  private static validateImage(image: ImageState): string[] {
+  private static validateImageDimensions(image: ImageState): string[] {
     let errors: string[] = []
     if (image.width == null || image.height == null) {
       errors.push("No image loaded")
@@ -584,6 +668,13 @@ export default class Solver {
     return errors
   }
 
+  /**
+   * Computes vanishing points in image plane coordinates given a set of
+   * vanishing point control points.
+   * @param image
+   * @param controlPointStates
+   * @param errors
+   */
   private static computeVanishingPointsFromControlPoints(
     image: ImageState,
     controlPointStates: VanishingPointControlState[],

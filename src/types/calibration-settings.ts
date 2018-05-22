@@ -40,6 +40,7 @@ export interface CalibrationSettings1VP extends CalibrationSettingsBase {
   vanishingPointAxis:Axis
   upAxis:Axis
   horizonMode:HorizonMode
+  relativeFocalLength:number
 }
 
 export interface CalibrationSettings2VP extends CalibrationSettingsBase {

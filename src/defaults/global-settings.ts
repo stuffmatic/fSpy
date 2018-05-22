@@ -1,7 +1,7 @@
 import { CalibrationMode, GlobalSettings } from "../types/global-settings";
 
 export const defaultGlobalSettings:GlobalSettings = {
-  calibrationMode: CalibrationMode.TwoVanishingPoints,
+  calibrationMode: CalibrationMode.OneVanishingPoint,
   imageOpacity: 0.2,
   notes: "",
   gridFloorNormal: null,

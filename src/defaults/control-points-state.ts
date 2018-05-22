@@ -21,19 +21,37 @@ const defaultControlPointsStateBase: ControlPointsStateBase = {
 export const defaultControlPointsState1VP: ControlPointsState1VP = {
   ...defaultControlPointsStateBase,
   horizon: [
-    { x: 0.2, y: 0.5 },
-    { x: 0.8, y: 0.5 }
+    {
+      x: 0.2,
+      y: 0.5
+    },
+    {
+      x: 0.8,
+      y: 0.5
+    }
   ],
   vanishingPoints: [
     {
       lineSegments: [
         [
-          { x: 0.3, y: 0.9 },
-          { x: 0.35, y: 0.7 }
+          {
+            x: 0.3218575063613231,
+            y: 0.7964376590330788
+          },
+          {
+            x: 0.14819338422391856,
+            y: 0.6208651399491094
+          }
         ],
         [
-          { x: 0.5, y: 0.7 },
-          { x: 0.55, y: 0.8 }
+          {
+            x: 0.16440203562340966,
+            y: 0.15012722646310434
+          },
+          {
+            x: 0.39132315521628497,
+            y: 0.24681933842239187
+          }
         ]
       ]
     }

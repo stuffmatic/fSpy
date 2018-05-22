@@ -59,6 +59,7 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
     }
 
     let is1VPMode = this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint
+    let solverResult = is1VPMode ? this.props.calibrationResult.calibrationResult1VP : this.props.calibrationResult.calibrationResult2VP
     let controlPointsPanel = is1VPMode ? (<ControlPointsPanel1VP {...this.props} />) :
                                          (<ControlPointsPanel2VP  {...this.props} />)
     return (
@@ -66,7 +67,7 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
         <Overlay3DPanel
           width={this.props.width}
           height={this.props.height}
-          solverResult={this.props.calibrationResult.calibrationResult2VP}
+          solverResult={solverResult}
           globalSettings={this.props.globalSettings}
         />
         { this.props.globalSettings.showControlPoints ? controlPointsPanel : null}
