@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { SettingsContainerProps } from '../../containers/settings-container';
-import NotesTextArea from './notes-text-area'
 import GridFloorNormalDropdown from './grid-floor-normal-dropdown'
 import { Axis } from '../../types/calibration-settings';
 
@@ -9,8 +8,7 @@ export default class SettingsSectionBottom extends React.PureComponent<SettingsC
     return (
       <div className="panel-section top-border">
         <div className="panel-row">
-
-            <input
+          <input
             name="imageIsDimmed"
             type="checkbox"
             checked={this.props.globalSettings.imageOpacity < 1}
@@ -18,17 +16,6 @@ export default class SettingsSectionBottom extends React.PureComponent<SettingsC
               this.props.onImageOpacityChange(event.target.checked ? 0.2 : 1)
             }}
           /> Dimmed
-        </div>
-        <div className="panel-row">
-
-            <input
-            name="showControlPoints"
-            type="checkbox"
-            checked={this.props.globalSettings.showControlPoints}
-            onChange={(event: any) => {
-              this.props.onShowControlPointsChange(event.target.checked ? true : false)
-            }}
-          /> Control points
         </div>
 
         <div className="panel-row">
@@ -40,16 +27,6 @@ export default class SettingsSectionBottom extends React.PureComponent<SettingsC
             onChange={(axis:Axis | null) => {
               this.props.onGridFloorNormalChange(axis)
             }}
-          />
-        </div>
-
-        <div className="panel-row">
-          Notes
-        </div>
-        <div>
-          <NotesTextArea
-            value={this.props.globalSettings.notes}
-            onValueChange={(notes: string) => { this.props.onNotesChange(notes) }}
           />
         </div>
 

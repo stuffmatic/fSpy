@@ -18,20 +18,10 @@ export function globalSettings(state: GlobalSettings, action: AppAction): Global
         ...state,
         imageOpacity: action.opacity
       }
-    case ActionTypes.SET_NOTES:
-      return {
-        ...state,
-        notes: action.notes
-      }
     case ActionTypes.SET_GRID_FLOOR_NORMAL:
       return {
         ...state,
         gridFloorNormal: action.axis
-      }
-    case ActionTypes.SET_CONTROL_POINTS_VISIBLE:
-      return {
-        ...state,
-        showControlPoints: action.visible
       }
   }
 

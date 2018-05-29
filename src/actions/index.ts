@@ -9,8 +9,6 @@ export enum ActionTypes {
   SET_CALIBRATION_MODE = "SET_CALIBRATION_MODE",
   SET_IMAGE_OPACITY = "SET_IMAGE_OPACITY",
   SET_GRID_FLOOR_NORMAL = "SET_GRID_FLOOR_NORMAL",
-  SET_CONTROL_POINTS_VISIBLE = "SET_CONTROL_POINTS_VISIBLE",
-  SET_NOTES = "SET_NOTES",
 
   //Image loading actions
   SET_IMAGE_URL = "SET_IMAGE_URL",
@@ -81,32 +79,6 @@ export function setGridFloorNormal(axis: Axis | null): SetGridFloorNormal {
   return {
     type: ActionTypes.SET_GRID_FLOOR_NORMAL,
     axis: axis
-  }
-}
-
-//Set control point visiblitiy
-export interface SetControlPointsVisible {
-  type: ActionTypes.SET_CONTROL_POINTS_VISIBLE
-  visible: boolean
-}
-
-export function setControlPointsVisible(visible:boolean): SetControlPointsVisible {
-  return {
-    type: ActionTypes.SET_CONTROL_POINTS_VISIBLE,
-    visible: visible
-  }
-}
-
-//Set notes
-export interface SetNotes {
-  type: ActionTypes.SET_NOTES
-  notes: string
-}
-
-export function setNotes(notes: string): SetNotes {
-  return {
-    type: ActionTypes.SET_NOTES,
-    notes: notes
   }
 }
 
@@ -408,8 +380,6 @@ export type AppAction =
   SetCalibrationMode |
   SetImageOpacity |
   SetGridFloorNormal |
-  SetControlPointsVisible |
-  SetNotes |
   SetImageURL |
   SetImageSize |
   SetHorizonMode |

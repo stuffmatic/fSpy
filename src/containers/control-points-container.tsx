@@ -70,7 +70,7 @@ export class ControlPointsContainer extends React.PureComponent<ControlPointsCon
           solverResult={solverResult}
           globalSettings={this.props.globalSettings}
         />
-        { this.props.globalSettings.showControlPoints ? controlPointsPanel : null}
+        { controlPointsPanel }
       </svg>
     )
   }
