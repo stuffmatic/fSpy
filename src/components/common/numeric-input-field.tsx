@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Palette } from '../../style/palette';
 
 interface NumericInputFieldProps {
   value: number
@@ -6,9 +7,9 @@ interface NumericInputFieldProps {
 }
 
 interface NumericInputFieldState {
-  stringValue: string,
-  initialValue: string,
-  valueIsValid: boolean
+  isEditing:Boolean
+  editedValue:string
+  editedValueIsValid:Boolean
 }
 
 export default class NumericInputField extends React.Component<NumericInputFieldProps, NumericInputFieldState> {
@@ -16,73 +17,109 @@ export default class NumericInputField extends React.Component<NumericInputField
   constructor(props: NumericInputFieldProps) {
     super(props)
     this.state = {
-      stringValue: "",
-      initialValue: "",
-      valueIsValid: false
+      isEditing: false,
+      editedValue: props.value.toString(),
+      editedValueIsValid: true
     }
-
   }
 
   handleChange(event: any) {
-    console.log("handleChange " + event.target.value)
-    let numericValue = this.numericValue()
     this.setState({
       ...this.state,
-      stringValue: event.target.value,
-      valueIsValid: numericValue !== undefined
-    });
-
+      editedValue: event.target.value,
+      editedValueIsValid: this.numericValue(event.target.value) != undefined
+    })
   }
 
   handleSubmit(event: any) {
     event.preventDefault()
-    let numericValue = this.numericValue()
-    if (numericValue !== undefined) {
-      console.log("Valid submit")
-    }
-    else {
-      console.log("Invalid submit")
-    }
+    this.finishEditing()
   }
 
   handleFocus(event: any) {
-    console.log("handleFocus")
-    this.setState({ initialValue: event.target.value })
+    this.beginEditing()
   }
 
   handleBlur(event: any) {
-    console.log("handleBlur")
-    this.setState(
-      { stringValue: this.props.value.toString() }
-    )
+    if (this.state.isEditing) {
+      this.finishEditing()
+    }
+    else {
+      //the user canceled editing and blur was called explicitly
+    }
   }
 
-  private numericValue(): number | undefined {
-    let value = parseFloat(this.state.stringValue)
-    console.log("Parsed " + this.state.stringValue + " to " + value)
+  private beginEditing() {
+    this.setState({
+      ...this.state,
+      isEditing: true,
+      editedValue: this.props.value.toString(),
+      editedValueIsValid: true
+    })
+  }
+
+  private finishEditing() {
+    this.setState({
+      ...this.state,
+      isEditing: false
+    })
+    let numericValue = this.numericValue(this.state.editedValue)
+    this.props.onSubmit(numericValue == undefined ? 0 : numericValue)
+  }
+
+  private cancelEditing() {
+    this.setState({
+      ...this.state,
+      isEditing: false
+    })
+  }
+
+  private numericValue(stringValue:string): number | undefined {
+    let value = parseFloat(stringValue)
     return isNaN(value) ? undefined : value
   }
 
   render() {
+    let inputStyle:any = { border:"none", outline: "none" }
+    if (this.state.isEditing) {
+      if (this.state.editedValueIsValid) {
+        inputStyle = {
+          ...inputStyle,
+          border: "1px solid" + Palette.green
+        }
+      }
+      else {
+        inputStyle = {
+          ...inputStyle,
+          border: "1px solid" + Palette.red
+        }
+      }
+    }
+
     return (
       <form onSubmit={(event: any) => {
         this.handleSubmit(event)
       }}>
-        <label style={{ backgroundColor: this.state.valueIsValid ? "none" : "red" }}>
-          <input
-            type="text"
-            value={this.state.stringValue}
-            onChange={(event: any) => {
-              this.handleChange(event)
-            }}
-            onFocus={(event: any) => {
-              this.handleFocus(event)
-            }}
-            onBlur={(event: any) => {
-              this.handleBlur(event)
-            }}
-          />
-        </label>
+        <input
+          style={ inputStyle }
+          type="text"
+          value={this.state.isEditing ? this.state.editedValue : this.props.value}
+          onChange={(event: any) => {
+            this.handleChange(event)
+          }}
+          onFocus={(event: any) => {
+            this.handleFocus(event)
+          }}
+          onBlur={(event: any) => {
+            this.handleBlur(event)
+          }}
+          onKeyDown={(event: any) => {
+            if (event.key == 'Escape') {
+              this.cancelEditing()
+              event.target.blur()
+            }
+          }}
+        />
         <input style={{ display: "none" }} type="submit" value="Submit" />
       </form>
     );

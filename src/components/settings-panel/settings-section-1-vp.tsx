@@ -6,7 +6,6 @@ import PanelSpacer from './../common/panel-spacer'
 import Dropdown from './../common/dropdown'
 import ReferenceDistanceForm from './reference-distance-form'
 import SensorSizeForm from './../common/sensor-size-form'
-import NumericInputField from './../common/numeric-input-field'
 import AbsoluteFocalLengthForm from './../common/absolute-focal-length-form'
 
 export default class SettingsSection1VP extends React.PureComponent<SettingsContainerProps> {
@@ -14,9 +13,6 @@ export default class SettingsSection1VP extends React.PureComponent<SettingsCont
 
     return (
       <div className="panel-section">
-        <div className="panel-row">
-          <NumericInputField value={1318} onSubmit={(value: number) => { }} />
-        </div>
         <div className="panel-row">
           Principal point
         </div>
