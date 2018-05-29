@@ -34,19 +34,11 @@ export default class NumericInputField extends React.Component<NumericInputField
   handleSubmit(event: any) {
     event.preventDefault()
     this.finishEditing()
+    event.target.blur()
   }
 
   handleFocus(event: any) {
     this.beginEditing()
-  }
-
-  handleBlur(event: any) {
-    if (this.state.isEditing) {
-      this.finishEditing()
-    }
-    else {
-      //the user canceled editing and blur was called explicitly
-    }
   }
 
   private beginEditing() {
@@ -97,31 +89,28 @@ export default class NumericInputField extends React.Component<NumericInputField
     }
 
     return (
-      <form onSubmit={(event: any) => {
-        this.handleSubmit(event)
-      }}>
         <input
           style={ inputStyle }
           type="text"
-          value={this.state.isEditing ? this.state.editedValue : this.props.value}
+          value={ this.state.isEditing ? this.state.editedValue : this.props.value }
           onChange={(event: any) => {
             this.handleChange(event)
           }}
           onFocus={(event: any) => {
             this.handleFocus(event)
           }}
-          onBlur={(event: any) => {
-            this.handleBlur(event)
-          }}
           onKeyDown={(event: any) => {
             if (event.key == 'Escape') {
               this.cancelEditing()
               event.target.blur()
             }
+            else if (event.key == 'Enter') {
+              if (this.state.editedValueIsValid) {
+                this.handleSubmit(event)
+              }
+            }
           }}
         />
-        <input style={{ display: "none" }} type="submit" value="Submit" />
-      </form>
     );
   }
 }
