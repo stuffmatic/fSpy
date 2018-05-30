@@ -41,6 +41,10 @@ export default class NumericInputField extends React.Component<NumericInputField
     this.beginEditing()
   }
 
+  handleBlur(event: any) {
+    this.cancelEditing()
+  }
+
   private beginEditing() {
     this.setState({
       ...this.state,
@@ -98,6 +102,9 @@ export default class NumericInputField extends React.Component<NumericInputField
           }}
           onFocus={(event: any) => {
             this.handleFocus(event)
+          }}
+          onBlur={(event: any) => {
+            this.handleBlur(event)
           }}
           onKeyDown={(event: any) => {
             if (event.key == 'Escape') {
