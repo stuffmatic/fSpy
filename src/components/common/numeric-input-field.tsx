@@ -2,14 +2,15 @@ import * as React from 'react';
 import { Palette } from '../../style/palette';
 
 interface NumericInputFieldProps {
+  isDisabled?: Boolean
   value: number
   onSubmit(value: number): void
 }
 
 interface NumericInputFieldState {
-  isEditing:Boolean
-  editedValue:string
-  editedValueIsValid:Boolean
+  isEditing: Boolean
+  editedValue: string
+  editedValueIsValid: Boolean
 }
 
 export default class NumericInputField extends React.Component<NumericInputFieldProps, NumericInputFieldState> {
@@ -70,13 +71,25 @@ export default class NumericInputField extends React.Component<NumericInputField
     })
   }
 
-  private numericValue(stringValue:string): number | undefined {
+  private numericValue(stringValue: string): number | undefined {
     let value = parseFloat(stringValue)
     return isNaN(value) ? undefined : value
   }
 
   render() {
-    let inputStyle:any = { border:"none", outline: "none" }
+    let inputStyle: any = {
+      border: "none",
+      outline: "none",
+      width: "60px"
+    }
+
+    if (this.props.isDisabled) {
+      inputStyle = {
+        ...inputStyle,
+        backgroundColor: Palette.lightGray
+      }
+    }
+
     if (this.state.isEditing) {
       if (this.state.editedValueIsValid) {
         inputStyle = {
@@ -93,20 +106,27 @@ export default class NumericInputField extends React.Component<NumericInputField
     }
 
     return (
-        <input
-          style={ inputStyle }
-          type="text"
-          value={ this.state.isEditing ? this.state.editedValue : this.props.value }
-          onChange={(event: any) => {
+      <input
+        style={inputStyle}
+        type="text"
+        value={this.state.isEditing ? this.state.editedValue : this.props.value}
+        onChange={(event: any) => {
+          if (!this.props.isDisabled) {
             this.handleChange(event)
-          }}
-          onFocus={(event: any) => {
+          }
+        }}
+        onFocus={(event: any) => {
+          if (!this.props.isDisabled) {
             this.handleFocus(event)
-          }}
-          onBlur={(event: any) => {
+          }
+        }}
+        onBlur={(event: any) => {
+          if (!this.props.isDisabled) {
             this.handleBlur(event)
-          }}
-          onKeyDown={(event: any) => {
+          }
+        }}
+        onKeyDown={(event: any) => {
+          if (!this.props.isDisabled) {
             if (event.key == 'Escape') {
               this.cancelEditing()
               event.target.blur()
@@ -116,8 +136,9 @@ export default class NumericInputField extends React.Component<NumericInputField
                 this.handleSubmit(event)
               }
             }
-          }}
-        />
+          }
+        }}
+      />
     );
   }
 }

@@ -29,6 +29,11 @@ export function calibrationSettings1VP(state: CalibrationSettings1VP, action: Ap
         ...state,
         vanishingPointAxis: action.axis
       }
+    case ActionTypes.SET_ABSOLUTE_FOCAL_LENGTH_1VP:
+      return {
+        ...state,
+        absoluteFocalLength: action.absoluteFocalLength
+      }
     case ActionTypes.SET_REFERENCE_DISTANCE_AXIS:
       return {
         ...state,
@@ -43,6 +48,24 @@ export function calibrationSettings1VP(state: CalibrationSettings1VP, action: Ap
       return {
         ...state,
         referenceDistanceUnit: action.unit
+      }
+    case ActionTypes.SET_CAMERA_PRESET:
+      return {
+        ...state,
+        cameraData: {
+          ...state.cameraData,
+          presetId: action.cameraPreset
+        }
+      }
+    case ActionTypes.SET_CAMERA_SENSOR_SIZE:
+      let oldCameraData = state.cameraData
+      return {
+        ...state,
+        cameraData: {
+          ...state.cameraData,
+          customSensorWidth: action.width != undefined ? action.width : oldCameraData.customSensorWidth,
+          customSensorHeight: action.height != undefined ? action.height : oldCameraData.customSensorHeight
+        }
       }
   }
 

@@ -46,6 +46,24 @@ export function calibrationSettings2VP(state: CalibrationSettings2VP, action: Ap
         ...state,
         referenceDistanceUnit: action.unit
       }
+    case ActionTypes.SET_CAMERA_PRESET:
+      return {
+        ...state,
+        cameraData: {
+          ...state.cameraData,
+          presetId: action.cameraPreset
+        }
+      }
+    case ActionTypes.SET_CAMERA_SENSOR_SIZE:
+      let oldCameraData = state.cameraData
+      return {
+        ...state,
+        cameraData: {
+          ...state.cameraData,
+          customSensorWidth: action.width != undefined ? action.width : oldCameraData.customSensorWidth,
+          customSensorHeight: action.height != undefined ? action.height : oldCameraData.customSensorHeight
+        }
+      }
 
   }
 

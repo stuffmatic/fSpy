@@ -5,8 +5,7 @@ import AxisDropdown from './axis-dropdown'
 import PanelSpacer from './../common/panel-spacer'
 import Dropdown from './../common/dropdown'
 import ReferenceDistanceForm from './reference-distance-form'
-import SensorSizeForm from './../common/sensor-size-form'
-import AbsoluteFocalLengthForm from './../common/absolute-focal-length-form'
+import FocalLengthForm from './../common/focal-length-form'
 
 export default class SettingsSection1VP extends React.PureComponent<SettingsContainerProps> {
   render() {
@@ -45,7 +44,7 @@ export default class SettingsSection1VP extends React.PureComponent<SettingsCont
         <div className="panel-row">
           <AxisDropdown
             selectedAxis={this.props.calibrationSettings1VP.vanishingPointAxis}
-            onChange={(axis: Axis) =>  {
+            onChange={(axis: Axis) => {
               this.props.onVanishingPointAxisChange1VP(axis)
             }
             }
@@ -58,30 +57,36 @@ export default class SettingsSection1VP extends React.PureComponent<SettingsCont
         </div>
 
         <ReferenceDistanceForm
-            referenceAxis={this.props.calibrationSettings1VP.referenceDistanceAxis}
-            referenceDistance={this.props.calibrationSettings1VP.referenceDistance}
-            referenceDistanceUnit={this.props.calibrationSettings1VP.referenceDistanceUnit}
-            onReferenceAxisChange={(axis:Axis | null) => {
-              this.props.onReferenceDistanceAxisChange(this.props.globalSettings.calibrationMode, axis)
-            }}
-            onReferenceDistanceChange={(distance:number) => {
-              this.props.onReferenceDistanceChange(this.props.globalSettings.calibrationMode, distance)
-            }}
-            onReferenceDistanceUnitChange={(unit:ReferenceDistanceUnit) => {
-              this.props.onReferenceDistanceUnitChange(this.props.globalSettings.calibrationMode, unit)
-            }}
-          />
+          referenceAxis={this.props.calibrationSettings1VP.referenceDistanceAxis}
+          referenceDistance={this.props.calibrationSettings1VP.referenceDistance}
+          referenceDistanceUnit={this.props.calibrationSettings1VP.referenceDistanceUnit}
+          onReferenceAxisChange={(axis: Axis | null) => {
+            this.props.onReferenceDistanceAxisChange(this.props.globalSettings.calibrationMode, axis)
+          }}
+          onReferenceDistanceChange={(distance: number) => {
+            this.props.onReferenceDistanceChange(this.props.globalSettings.calibrationMode, distance)
+          }}
+          onReferenceDistanceUnitChange={(unit: ReferenceDistanceUnit) => {
+            this.props.onReferenceDistanceUnitChange(this.props.globalSettings.calibrationMode, unit)
+          }}
+        />
 
         <PanelSpacer />
         <div className="panel-row">
           Camera data
         </div>
-        <div className="panel-row">
-          <AbsoluteFocalLengthForm />
-        </div>
-        <div className="panel-row">
-          <SensorSizeForm />
-        </div>
+
+        <FocalLengthForm
+          cameraData={this.props.calibrationSettings1VP.cameraData}
+          absoluteFocalLength={this.props.calibrationSettings1VP.absoluteFocalLength}
+          onAbsoluteFocalLengthChange={this.props.onAbsoluteFocalLengthChange1VP}
+          onCameraPresetChange={ (cameraPreset:string | null) => {
+            this.props.onCameraPresetChange(this.props.globalSettings.calibrationMode, cameraPreset)
+          }}
+          onSensorSizeChange={(width:number | undefined, height: number | undefined) => {
+            this.props.onSensorSizeChange(this.props.globalSettings.calibrationMode, width, height)
+          }}
+        />
 
         <PanelSpacer />
         <div className="panel-row">

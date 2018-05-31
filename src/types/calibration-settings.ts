@@ -33,6 +33,13 @@ export interface CalibrationSettingsBase {
   referenceDistanceUnit:ReferenceDistanceUnit
   referenceDistance:number
   referenceDistanceAxis:Axis | null
+  cameraData:CameraData
+}
+
+export interface CameraData {
+  presetId:string | null
+  customSensorWidth:number
+  customSensorHeight:number
 }
 
 export interface CalibrationSettings1VP extends CalibrationSettingsBase {
@@ -40,7 +47,7 @@ export interface CalibrationSettings1VP extends CalibrationSettingsBase {
   vanishingPointAxis:Axis
   upAxis:Axis
   horizonMode:HorizonMode
-  relativeFocalLength:number
+  absoluteFocalLength:number
 }
 
 export interface CalibrationSettings2VP extends CalibrationSettingsBase {

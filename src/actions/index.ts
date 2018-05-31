@@ -20,11 +20,15 @@ export enum ActionTypes {
   SET_REFERENCE_DISTANCE = "SET_REFERENCE_DISTANCE",
   SET_REFERENCE_DISTANCE_UNIT = "SET_REFERENCE_DISTANCE_UNIT",
   SET_REFERENCE_DISTANCE_AXIS = "SET_REFERENCE_DISTANCE_AXIS",
+  SET_CAMERA_PRESET = "SET_CAMERA_PRESET",
+  SET_CAMERA_SENSOR_SIZE = "SET_CAMERA_SENSOR_SIZE",
 
   SET_PRINCIPAL_POINT_MODE_1VP = "SET_PRINCIPAL_POINT_MODE_1VP",
   SET_PRINCIPAL_POINT_MODE_2VP = "SET_PRINCIPAL_POINT_MODE_2VP",
   SET_VANISHING_POINT_AXIS_1VP = "SET_VANISHING_POINT_AXIS_1VP",
   SET_VANISHING_POINT_AXIS_2VP = "SET_VANISHING_POINT_AXIS_2VP",
+
+  SET_ABSOLUTE_FOCAL_LENGTH_1VP = "SET_RELATIVE_FOCAL_LENGTH_1VP",
 
 
   //Control point actions
@@ -98,7 +102,7 @@ export function setImageUrl(url: string): SetImageURL {
 //
 export interface SetImageSize {
   type: ActionTypes.SET_IMAGE_SIZE
-  width: number | null
+  width: number |  null
   height: number | null
 }
 
@@ -178,7 +182,7 @@ export function setVanishingPointAxis1VP(axis: Axis): SetVanishingPointAxis1VP {
 //
 export interface SetVanishingPointAxis2VP {
   type: ActionTypes.SET_VANISHING_POINT_AXIS_2VP,
-  vanishingPointIndex:number,
+  vanishingPointIndex: number,
   axis: Axis
 }
 
@@ -191,13 +195,27 @@ export function setVanishingPointAxis2VP(vanishingPointIndex: number, axis: Axis
 }
 
 //
+
+export interface SetAbsoluteFocalLength1VP {
+  type: ActionTypes.SET_ABSOLUTE_FOCAL_LENGTH_1VP,
+  absoluteFocalLength: number
+}
+
+export function setAbsoluteFocalLength1VP(absoluteFocalLength: number): SetAbsoluteFocalLength1VP {
+  return {
+    type: ActionTypes.SET_ABSOLUTE_FOCAL_LENGTH_1VP,
+    absoluteFocalLength: absoluteFocalLength
+  }
+}
+
+//
 export interface SetReferenceDistance {
   type: ActionTypes.SET_REFERENCE_DISTANCE,
-  calibrationMode:CalibrationMode,
+  calibrationMode: CalibrationMode,
   distance: number
 }
 
-export function setReferenceDistance(calibrationMode:CalibrationMode, distance:number): SetReferenceDistance {
+export function setReferenceDistance(calibrationMode: CalibrationMode, distance: number): SetReferenceDistance {
   return {
     type: ActionTypes.SET_REFERENCE_DISTANCE,
     calibrationMode: calibrationMode,
@@ -212,7 +230,7 @@ export interface SetReferenceDistanceUnit {
   unit: ReferenceDistanceUnit
 }
 
-export function setReferenceDistanceUnit(calibrationMode: CalibrationMode, unit:ReferenceDistanceUnit): SetReferenceDistanceUnit {
+export function setReferenceDistanceUnit(calibrationMode: CalibrationMode, unit: ReferenceDistanceUnit): SetReferenceDistanceUnit {
   return {
     type: ActionTypes.SET_REFERENCE_DISTANCE_UNIT,
     calibrationMode: calibrationMode,
@@ -223,17 +241,50 @@ export function setReferenceDistanceUnit(calibrationMode: CalibrationMode, unit:
 //
 export interface SetReferenceDistanceAxis {
   type: ActionTypes.SET_REFERENCE_DISTANCE_AXIS,
-  calibrationMode:CalibrationMode,
+  calibrationMode: CalibrationMode,
   axis: Axis | null
 }
 
-export function setReferenceDistanceAxis(calibrationMode:CalibrationMode, axis: Axis | null): SetReferenceDistanceAxis {
+export function setReferenceDistanceAxis(calibrationMode: CalibrationMode, axis: Axis | null): SetReferenceDistanceAxis {
   return {
     type: ActionTypes.SET_REFERENCE_DISTANCE_AXIS,
     calibrationMode: calibrationMode,
     axis: axis
   }
 }
+
+//
+export interface SetCameraPreset {
+  type: ActionTypes.SET_CAMERA_PRESET,
+  calibrationMode: CalibrationMode,
+  cameraPreset: string | null
+}
+
+export function setCameraPreset(calibrationMode: CalibrationMode, cameraPreset: string | null): SetCameraPreset {
+  return {
+    type: ActionTypes.SET_CAMERA_PRESET,
+    calibrationMode: calibrationMode,
+    cameraPreset: cameraPreset
+  }
+}
+
+//
+export interface SetCameraSensorSize {
+  type: ActionTypes.SET_CAMERA_SENSOR_SIZE,
+  calibrationMode: CalibrationMode,
+  width: number | undefined
+  height: number | undefined
+}
+
+export function setCameraSensorSize(calibrationMode: CalibrationMode, width: number | undefined, height: number | undefined): SetCameraSensorSize {
+  return {
+    type: ActionTypes.SET_CAMERA_SENSOR_SIZE,
+    calibrationMode: calibrationMode,
+    width: width,
+    height: height
+  }
+}
+
 
 //Set principal point
 export interface SetPrincipalPoint {
@@ -354,7 +405,7 @@ export interface SetCalibrationResult {
   result: CalibrationResult
 }
 
-export function setCalibrationResult(result:CalibrationResult): SetCalibrationResult {
+export function setCalibrationResult(result: CalibrationResult): SetCalibrationResult {
   return {
     type: ActionTypes.SET_CALIBRATION_RESULT,
     result: result
@@ -367,13 +418,12 @@ export interface SetExportDialogVisibility {
   isVisible: boolean
 }
 
-export function setExportDialogVisibility(isVisible:boolean): SetExportDialogVisibility {
+export function setExportDialogVisibility(isVisible: boolean): SetExportDialogVisibility {
   return {
     type: ActionTypes.SET_EXPORT_DIALOG_VISIBILITY,
     isVisible: isVisible
   }
 }
-
 
 //Define a type covering all actions
 export type AppAction =
@@ -386,10 +436,13 @@ export type AppAction =
   SetQuadModeEnabled |
   SetPrincipalPointMode1VP |
   SetPrincipalPointMode2VP |
-  SetVanishingPointAxis1VP | 
-  SetVanishingPointAxis2VP | 
+  SetVanishingPointAxis1VP |
+  SetVanishingPointAxis2VP  |
+  SetAbsoluteFocalLength1VP  |
   SetReferenceDistanceAxis |
   SetReferenceDistanceUnit |
+  SetCameraPreset |
+  SetCameraSensorSize |
   SetReferenceDistance |
   SetOrigin |
   SetReferenceDistanceAnchor |
@@ -397,5 +450,5 @@ export type AppAction =
   AdjustHorizon |
   AdjustReferenceDistanceHandle |
   AdjustVanishingPoint |
-  SetCalibrationResult | 
+  SetCalibrationResult |
   SetExportDialogVisibility

@@ -8,6 +8,7 @@ import Vector3D from "./vector-3d";
 import CoordinatesUtil, { ImageCoordinateFrame } from "./coordinates-util";
 import { SolverResult } from "./solver-result";
 import { defaultSolverResult } from "../defaults/solver-result";
+import { cameraPresets } from "./camera-presets";
 
 /**
  * The solver handles estimation of focal length and camera orientation
@@ -41,6 +42,31 @@ export default class Solver {
 
     let imageWidth = image.width!
     let imageHeight = image.height!
+
+    //Compute a relative focal length from the provided absolute focal length and sensor size
+    let absoluteFocalLength = settings.absoluteFocalLength
+    let sensorWidth = settings.cameraData.customSensorWidth
+    let sensorHeight = settings.cameraData.customSensorHeight
+    let presetId = settings.cameraData.presetId
+    if (presetId) {
+      let preset = cameraPresets[presetId]
+      sensorWidth = preset.sensorWidth
+      sensorHeight = preset.sensorHeight
+    }
+    let relativeFocalLength = 0
+    let sensorAspectRatio = sensorWidth / sensorHeight
+    if (sensorAspectRatio > 1) {
+      //wide sensor.
+      relativeFocalLength = absoluteFocalLength / sensorWidth
+    }
+    else {
+      //tall sensor
+      relativeFocalLength = absoluteFocalLength / sensorHeight
+    }
+
+    if (Math.abs(sensorAspectRatio - imageWidth / imageHeight) > 0.01) { //TODO: choose epsilon
+      result.warnings.push("Image-sensor aspect ratio mismatch")
+    }
 
     //Compute the input vanishing point in image plane coordinates
     let inputVanishingPoints = this.computeVanishingPointsFromControlPoints(
@@ -95,7 +121,7 @@ export default class Solver {
 
     let secondVanishingPoint = this.computeSecondVanishingPoint(
       inputVanishingPoints![0],
-      settings.relativeFocalLength,
+      relativeFocalLength,
       principalPoint,
       horizonDirection
     )
@@ -121,7 +147,7 @@ export default class Solver {
       principalPoint,
       inputVanishingPoints![0],
       secondVanishingPoint,
-      settings.relativeFocalLength,
+      relativeFocalLength,
       imageWidth,
       imageHeight
     )

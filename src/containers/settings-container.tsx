@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setVanishingPointAxis1VP, setVanishingPointAxis2VP, setGridFloorNormal, setReferenceDistanceUnit, setReferenceDistance, setReferenceDistanceAxis } from '../actions';
+import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setVanishingPointAxis1VP, setVanishingPointAxis2VP, setGridFloorNormal, setReferenceDistanceUnit, setReferenceDistance, setReferenceDistanceAxis, setAbsoluteFocalLength1VP, setCameraPreset, setCameraSensorSize } from '../actions';
 import SettingsPanel from '../components/settings-panel/settings-panel';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { StoreState } from '../types/store-state';
@@ -22,9 +22,12 @@ export interface SettingsContainerProps {
   onLoadTestImage(imageIndex: number | null): void
   onVanishingPointAxisChange1VP(axis: Axis): void
   onVanishingPointAxisChange2VP(vanishingPointIndex: number, axis: Axis): void
-  onReferenceDistanceAxisChange(calibrationMode:CalibrationMode, axis: Axis | null): void
-  onReferenceDistanceUnitChange(calibrationMode:CalibrationMode, unit: ReferenceDistanceUnit): void
-  onReferenceDistanceChange(calibrationMode:CalibrationMode, distance: number): void
+  onAbsoluteFocalLengthChange1VP(absoluteFocalLength: number): void
+  onReferenceDistanceAxisChange(calibrationMode: CalibrationMode, axis: Axis | null): void
+  onReferenceDistanceUnitChange(calibrationMode: CalibrationMode, unit: ReferenceDistanceUnit): void
+  onReferenceDistanceChange(calibrationMode: CalibrationMode, distance: number): void
+  onCameraPresetChange(calibrationMode: CalibrationMode, cameraPreset: string | null): void
+  onSensorSizeChange(calibrationMode: CalibrationMode, width: number | undefined, height: number |  undefined): void
 }
 
 class SettingsContainer extends React.PureComponent<SettingsContainerProps> {
@@ -86,14 +89,23 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     onVanishingPointAxisChange2VP: (vanishingPointIndex: number, axis: Axis) => {
       dispatch(setVanishingPointAxis2VP(vanishingPointIndex, axis))
     },
-    onReferenceDistanceAxisChange: (calibrationMode:CalibrationMode, axis: Axis | null) => {
+    onAbsoluteFocalLengthChange1VP: (absoluteFocalLength: number) => {
+      dispatch(setAbsoluteFocalLength1VP(absoluteFocalLength))
+    },
+    onReferenceDistanceAxisChange: (calibrationMode: CalibrationMode, axis: Axis | null) => {
       dispatch(setReferenceDistanceAxis(calibrationMode, axis))
     },
-    onReferenceDistanceUnitChange: (calibrationMode:CalibrationMode, unit: ReferenceDistanceUnit) => {
+    onReferenceDistanceUnitChange: (calibrationMode: CalibrationMode, unit: ReferenceDistanceUnit) => {
       dispatch(setReferenceDistanceUnit(calibrationMode, unit))
     },
-    onReferenceDistanceChange: (calibrationMode:CalibrationMode, distance: number) => {
+    onReferenceDistanceChange: (calibrationMode: CalibrationMode, distance: number) => {
       dispatch(setReferenceDistance(calibrationMode, distance))
+    },
+    onCameraPresetChange: (calibrationMode: CalibrationMode, cameraPreset: string | null) => {
+      dispatch(setCameraPreset(calibrationMode, cameraPreset))
+    },
+    onSensorSizeChange: (calibrationMode: CalibrationMode, width: number | undefined, height: number |  undefined) => {
+      dispatch(setCameraSensorSize(calibrationMode, width, height))
     }
   }
 }

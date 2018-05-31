@@ -1,11 +1,23 @@
-export interface CameraData {
-  id:string
+export interface CameraPreset {
   displayName:string
   sensorWidth:number
   sensorHeight:number
 }
 
-export const cameraPresets:CameraData[] = [
+export const cameraPresets:{[id: string]: CameraPreset} = {
+  "blender": {
+    displayName: "Blender default camera",
+    sensorWidth: 32,
+    sensorHeight: 24
+  },
+  "aps-c": {
+    displayName: "APS-C DSLR",
+    sensorWidth: 22.3,
+    sensorHeight: 14.9
+  }
+}
+
+/*[
   {
     id: "blender",
     displayName: "Blender default camera",
@@ -168,5 +180,5 @@ export const cameraPresets:CameraData[] = [
     sensorWidth: 24.89,
     sensorHeight: 18.66
   }
-]
+]*/
 
