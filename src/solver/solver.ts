@@ -65,7 +65,7 @@ export default class Solver {
     }
 
     if (Math.abs(sensorAspectRatio - imageWidth / imageHeight) > 0.01) { //TODO: choose epsilon
-      result.warnings.push("Image-sensor aspect ratio mismatch")
+      result.warnings.push("Image/sensor aspect ratio mismatch")
     }
 
     //Compute the input vanishing point in image plane coordinates
