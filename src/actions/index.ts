@@ -48,29 +48,24 @@ export enum ActionTypes {
   SET_EXPORT_DIALOG_VISIBILITY = "SET_EXPORT_DIALOG_VISIBILITY"
 }
 
-
 export function recalculateCalibrationResult(): ThunkAction<void, StoreState, void, AppAction> {
   return (dispatch: ThunkDispatch<StoreState, void, AppAction>, getState: () => StoreState) => {
-    setTimeout(() => {
-      let state = getState()
+    let state = getState()
 
-      let result: CalibrationResult = {
-        calibrationResult1VP: Solver.solve1VP(
-          state.calibrationSettings1VP,
-          state.controlPointsState1VP,
-          state.image
-        ),
-        calibrationResult2VP: Solver.solve2VP(
-          state.calibrationSettings2VP,
-          state.controlPointsState2VP,
-          state.image
-        )
-      }
+    let result: CalibrationResult = {
+      calibrationResult1VP: Solver.solve1VP(
+        state.calibrationSettings1VP,
+        state.controlPointsState1VP,
+        state.image
+      ),
+      calibrationResult2VP: Solver.solve2VP(
+        state.calibrationSettings2VP,
+        state.controlPointsState2VP,
+        state.image
+      )
+    }
 
-      dispatch(setCalibrationResult(result))
-    },
-      0)
-
+    dispatch(setCalibrationResult(result))
   }
 }
 
