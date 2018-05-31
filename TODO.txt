@@ -4,3 +4,4 @@ full screen mode for projector use
 export svg?
 sort out rectangle mode + third vp
 sort out naming of camera transform (or its inverse)
+tooltips
