@@ -13,18 +13,18 @@ export default class MatrixView extends React.PureComponent<RotationMatrixViewPr
     return (
       <div style={{ fontFamily:"Roboto Mono", fontSize: "12px", color: "gray" }}>
         {
-          this.props.rows.map((row:number[]) => {
-          return this.renderRow(row)}
+          this.props.rows.map((row:number[], i:number) => {
+          return this.renderRow(row, i)}
         )}
 
       </div>
     )
   }
 
-  private renderRow(row: number[]) {
+  private renderRow(row: number[], rowKey:number) {
     let firstThree = [row[0], row[1], row[2]]
     return (
-      <div style={{display: "flex"}}>
+      <div key={rowKey} style={{display: "flex"}}>
         {firstThree.map((element: number, i: number) => {
           return <span style={{width: "33%", textAlign: "left"}} key={i}>{element.toPrecision(5)}</span>
         })}
