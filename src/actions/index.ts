@@ -50,25 +50,26 @@ export enum ActionTypes {
 
 
 export function recalculateCalibrationResult(): ThunkAction<void, StoreState, void, AppAction> {
-  return (dispatch:ThunkDispatch<StoreState, void, AppAction>, getState:() => StoreState) => {
+  return (dispatch: ThunkDispatch<StoreState, void, AppAction>, getState: () => StoreState) => {
     setTimeout(() => {
       let state = getState()
 
-    let result: CalibrationResult = {
-      calibrationResult1VP: Solver.solve1VP(
-        state.calibrationSettings1VP,
-        state.controlPointsState1VP,
-        state.image
-      ),
-      calibrationResult2VP: Solver.solve2VP(
-        state.calibrationSettings2VP,
-        state.controlPointsState2VP,
-        state.image
-      )
-    }
+      let result: CalibrationResult = {
+        calibrationResult1VP: Solver.solve1VP(
+          state.calibrationSettings1VP,
+          state.controlPointsState1VP,
+          state.image
+        ),
+        calibrationResult2VP: Solver.solve2VP(
+          state.calibrationSettings2VP,
+          state.controlPointsState2VP,
+          state.image
+        )
+      }
 
-    dispatch(setCalibrationResult(result))
-    }, 0)
+      dispatch(setCalibrationResult(result))
+    },
+      0)
 
   }
 }
@@ -128,7 +129,7 @@ export function setImageUrl(url: string): SetImageURL {
 //
 export interface SetImageSize {
   type: ActionTypes.SET_IMAGE_SIZE
-  width: number |  null
+  width: number | null
   height: number | null
 }
 
@@ -462,8 +463,8 @@ export type AppAction =
   SetPrincipalPointMode1VP |
   SetPrincipalPointMode2VP |
   SetVanishingPointAxis1VP |
-  SetVanishingPointAxis2VP  |
-  SetAbsoluteFocalLength1VP  |
+  SetVanishingPointAxis2VP |
+  SetAbsoluteFocalLength1VP |
   SetReferenceDistanceAxis |
   SetReferenceDistanceUnit |
   SetCameraPreset |
@@ -479,7 +480,7 @@ export type AppAction =
   SetExportDialogVisibility
 
 //A list of action types that trigger calibration result calculation
-export const actionTypesTriggeringRecalculation:ActionTypes[] = [
+export const actionTypesTriggeringRecalculation: ActionTypes[] = [
   ActionTypes.SET_IMAGE_SIZE,
 
   ActionTypes.SET_HORIZON_MODE,
