@@ -29,7 +29,8 @@
     "react-measure": "^2.0.2",
     "react-redux": "^5.0.7",
     "react-select": "^1.2.1",
-    "redux": "^4.0.0"
+    "redux": "^4.0.0",
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts-ts start",
@@ -49,9 +50,9 @@
     "@types/react-measure": "^2.0.2",
     "@types/react-redux": "^5.0.16",
     "@types/react-select": "^1.2.6",
-    "react-scripts-ts": "2.15.1",
     "electron": "^2.0.1",
     "electron-builder": "^20.13.4",
+    "react-scripts-ts": "2.15.1",
     "typescript": "^2.8.1"
   }
 }

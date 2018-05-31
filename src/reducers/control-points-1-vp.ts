@@ -1,7 +1,8 @@
-import { AppAction, ActionTypes } from '../actions';
+import { AppAction, ActionTypes, recalculateCalibrationResult } from '../actions';
 import { ControlPointsState1VP, VanishingPointControlState } from '../types/control-points-state';
 import { CalibrationMode } from '../types/global-settings';
 import { defaultControlPointsState1VP } from '../defaults/control-points-state';
+import store from '../store/store';
 
 export function controlPointsState1VP(state: ControlPointsState1VP, action: AppAction): ControlPointsState1VP {
   if (state === undefined) {
@@ -14,6 +15,10 @@ export function controlPointsState1VP(state: ControlPointsState1VP, action: AppA
   if ((action as any).calibrationMode == CalibrationMode.TwoVanishingPoints) {
     return state
   }
+
+
+  //request async recalculation of result
+  store.dispatch<any>(recalculateCalibrationResult())
 
   switch (action.type) {
     case ActionTypes.ADJUST_HORIZON:

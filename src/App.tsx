@@ -23,6 +23,7 @@ interface AppProps {
 
 function App(props: AppProps) {
   return (
+
     <div id="app-container">
       <ExportDialog
         isVisible={props.uiState.isExportDialogOpen}

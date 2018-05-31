@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setVanishingPointAxis1VP, setVanishingPointAxis2VP, setGridFloorNormal, setReferenceDistanceUnit, setReferenceDistance, setReferenceDistanceAxis, setAbsoluteFocalLength1VP, setCameraPreset, setCameraSensorSize } from '../actions';
+import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setVanishingPointAxis1VP, setVanishingPointAxis2VP, setGridFloorNormal, setReferenceDistanceUnit, setReferenceDistance, setReferenceDistanceAxis, setAbsoluteFocalLength1VP, setCameraPreset, setCameraSensorSize} from '../actions';
 import SettingsPanel from '../components/settings-panel/settings-panel';
 import { CalibrationMode, GlobalSettings } from '../types/global-settings';
 import { StoreState } from '../types/store-state';

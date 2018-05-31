@@ -3,6 +3,9 @@ import { ControlPointPairIndex } from "../types/control-points-state";
 import { PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode, Axis, ReferenceDistanceUnit } from "../types/calibration-settings";
 import CalibrationResult from "../types/calibration-result";
 import Point2D from "../solver/point-2d";
+import { StoreState } from "../types/store-state";
+import { ThunkAction, ThunkDispatch } from "redux-thunk";
+import Solver from "../solver/solver";
 
 export enum ActionTypes {
   //Global settings actions
@@ -30,7 +33,6 @@ export enum ActionTypes {
 
   SET_ABSOLUTE_FOCAL_LENGTH_1VP = "SET_RELATIVE_FOCAL_LENGTH_1VP",
 
-
   //Control point actions
   SET_PRINCIPAL_POINT = "SET_PRINCIPAL_POINT",
   SET_ORIGIN = "SET_ORIGIN",
@@ -46,6 +48,30 @@ export enum ActionTypes {
   SET_EXPORT_DIALOG_VISIBILITY = "SET_EXPORT_DIALOG_VISIBILITY"
 }
 
+
+export function recalculateCalibrationResult(): ThunkAction<void, StoreState, void, AppAction> {
+  return (dispatch:ThunkDispatch<StoreState, void, AppAction>, getState:() => StoreState) => {
+    setTimeout(() => {
+      let state = getState()
+
+    let result: CalibrationResult = {
+      calibrationResult1VP: Solver.solve1VP(
+        state.calibrationSettings1VP,
+        state.controlPointsState1VP,
+        state.image
+      ),
+      calibrationResult2VP: Solver.solve2VP(
+        state.calibrationSettings2VP,
+        state.controlPointsState2VP,
+        state.image
+      )
+    }
+
+    dispatch(setCalibrationResult(result))
+    }, 0)
+
+  }
+}
 
 //Set active calibration mode
 export interface SetCalibrationMode {
@@ -73,7 +99,7 @@ export function setImageOpacity(opacity: number): SetImageOpacity {
   }
 }
 
-//Set grid floor noraml
+//Set grid floor normal
 export interface SetGridFloorNormal {
   type: ActionTypes.SET_GRID_FLOOR_NORMAL
   axis: Axis | null
