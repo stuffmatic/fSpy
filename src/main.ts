@@ -1,5 +1,8 @@
 import { app, BrowserWindow } from 'electron'
-declare var __dirname: string
+const path = require('path')
+const url = require('url')
+
+// declare var __dirname: string
 let mainWindow: Electron.BrowserWindow
 
 function onReady() {
@@ -8,8 +11,14 @@ function onReady() {
     height: 600
   })
 
-  const fileName = `file://${__dirname}/index.html`
-  mainWindow.loadURL(fileName)
+  const startUrl = process.env.ELECTRON_START_URL || url.format({
+    pathname: path.join(__dirname, 'dist/index.html'),
+    protocol: 'file:',
+    slashes: true
+  })
+
+  // const fileName = 'http://localhost:8080' // `file://${__dirname}/index.html`
+  mainWindow.loadURL(startUrl)
   mainWindow.on('close', () => app.quit())
 }
 

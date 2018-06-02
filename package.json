@@ -23,12 +23,14 @@
     "tslint-loader": "^3.6.0",
     "typescript": "^2.9.1",
     "webpack": "^4.10.2",
-    "webpack-cli": "^3.0.1"
+    "webpack-cli": "^3.0.1",
+    "webpack-dev-server": "^3.1.4"
   },
   "scripts": {
     "build": "webpack --config webpack.config.js --display verbose",
+    "start:dev": "webpack-dev-server --content-base dist/",
     "prestart": "yarn run build",
-    "start": "electron ./dist/main.js"
+    "start": "ELECTRON_START_URL=http://localhost:8080 electron ./dist/main.js"
   },
   "dependencies": {
     "react": "^16.4.0",
