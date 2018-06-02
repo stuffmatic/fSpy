@@ -2,7 +2,7 @@ const path = require('path')
 
 const commonConfig = {
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'build'),
     filename: '[name].js'
   },
   module: {

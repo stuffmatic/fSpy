@@ -1,7 +1,8 @@
 {
   "name": "f-spy",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "build/main.js",
+  "homepage": "./",
   "repository": "git@bitbucket.org:stuffmatic/f-spy.git",
   "author": "per <per@stuffmatic.com>",
   "license": "GPL-3.0",
@@ -14,6 +15,7 @@
     "babel-preset-es2015-node": "^6.1.1",
     "babel-preset-react": "^6.24.1",
     "electron": "^2.0.2",
+    "electron-builder": "^20.15.1",
     "html-webpack-plugin": "^3.2.0",
     "standard": "^11.0.1",
     "standard-loader": "^6.0.1",
@@ -28,12 +30,24 @@
   },
   "scripts": {
     "build": "webpack --config webpack.config.js --display verbose",
-    "start:dev": "webpack-dev-server --content-base dist/",
+    "start:dev": "webpack-dev-server --content-base build/",
     "prestart": "yarn run build",
-    "start": "ELECTRON_START_URL=http://localhost:8080 electron ./dist/main.js"
+    "start": "ELECTRON_START_URL=http://localhost:8080 electron ./build/main.js",
+    "dist": "electron-builder",
+    "dist-": "electron-builder --dir"
   },
   "dependencies": {
     "react": "^16.4.0",
     "react-dom": "^16.4.0"
+  },
+  "build": {
+    "appId": "com.stuffmatic.f-spy",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "files": [
+      "build/**/*"
+    ],
+    "asar": false
   }
 }
