@@ -1,0 +1,21 @@
+{
+  "extends": "tslint-config-standard",
+  "rules": {
+    "indent": [
+      true,
+      "spaces"
+    ],
+    "ter-indent": [
+      true,
+      2
+    ],
+    "space-before-function-paren": [
+      "error",
+      {
+        "anonymous": "always",
+        "named": "never",
+        "asyncArrow": "ignore"
+      }
+    ]
+  }
+}
