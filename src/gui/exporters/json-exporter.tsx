@@ -1,11 +1,11 @@
-import * as React from 'react';
-import Exporter from './exporter';
+import * as React from 'react'
+import Exporter from './exporter'
 
 export default class JSONExporter extends Exporter {
-  get name():string {
-    return "JSON"
+  get name(): string {
+    return 'JSON'
   }
-  get instructions():JSX.Element {
+  get instructions(): JSX.Element {
     return (
       <div>
         Here's JSON!
@@ -18,18 +18,18 @@ export default class JSONExporter extends Exporter {
       </div>
     )
   }
-  get code():string {
+  get code(): string {
     return JSON.stringify(
       {
-        ... this.solverResult,
-        imageWidth: this.image!.width, //TODO: null check
-        imageHeight: this.image!.height,
+        ...this.solverResult,
+        imageWidth: this.image!.width, // TODO: null check
+        imageHeight: this.image!.height
       },
       null,
       2
     )
   }
   get codeLanguage(): string {
-    return "json"
+    return 'json'
   }
 }

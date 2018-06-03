@@ -1,10 +1,10 @@
-import Exporter from "./exporter";
-import * as React from 'react';
-import CoordinatesUtil, { ImageCoordinateFrame } from "../solver/coordinates-util";
+import Exporter from './exporter'
+import * as React from 'react'
+import CoordinatesUtil, { ImageCoordinateFrame } from '../solver/coordinates-util'
 
 export default class BlenderExporter extends Exporter {
   get name(): string {
-    return "Blender"
+    return 'Blender'
   }
   get instructions(): JSX.Element {
     return (
@@ -20,13 +20,13 @@ export default class BlenderExporter extends Exporter {
   }
 
   get code(): string {
-    if (!this.solverResult || 
+    if (!this.solverResult ||
         !this.solverResult.horizontalFieldOfView ||
         !this.solverResult.cameraTransform ||
         !this.solverResult.principalPoint ||
         !this.image
     ) {
-      return ""
+      return ''
     }
 
     let fov = this.solverResult.horizontalFieldOfView
@@ -35,7 +35,7 @@ export default class BlenderExporter extends Exporter {
       this.solverResult.principalPoint,
       ImageCoordinateFrame.ImagePlane,
       ImageCoordinateFrame.Relative,
-      this.image.width!, //TODO: null checks
+      this.image.width!, // TODO: null checks
       this.image.height!
     )
 
@@ -66,6 +66,6 @@ render_settings.resolution_y = ` + this.image.height + `
 `
   }
   get codeLanguage(): string {
-    return "python"
+    return 'python'
   }
 }
