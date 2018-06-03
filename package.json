@@ -8,7 +8,6 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "@types/jest": "^23.0.0",
-    "@types/node": "^10.3.0",
     "@types/react": "^16.3.16",
     "@types/react-dom": "^16.0.5",
     "babel-core": "^6.26.3",
@@ -44,7 +43,6 @@
     "prebuild-test": "trash __tests__",
     "build-test": "webpack --config webpack.tests.config.js --mode development",
     "pretest": "yarn run build-test",
-
     "dev-server": "webpack-dev-server --content-base build/  --mode development",
     "dev": "DEV=true electron ./build/main.js",
     "dist": "electron-builder",
@@ -52,7 +50,9 @@
   },
   "dependencies": {
     "react": "^16.4.0",
-    "react-dom": "^16.4.0"
+    "react-dom": "^16.4.0",
+    "redux": "^4.0.0",
+    "redux-thunk": "^2.3.0"
   },
   "build": {
     "appId": "com.stuffmatic.f-spy",
