@@ -48,13 +48,13 @@ module.exports = [
   Object.assign(
     {
       target: 'electron-main',
-      entry: { main: './src/main.ts' }
+      entry: { main: './src/main/index.ts' }
     },
     commonConfig),
   Object.assign(
     {
       target: 'electron-renderer',
-      entry: { gui: './src/gui.tsx' },
+      entry: { gui: './src/gui/index.tsx' },
       plugins: [new HtmlWebpackPlugin()]
     },
     commonConfig)
