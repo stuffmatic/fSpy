@@ -8,13 +8,18 @@ const commonConfig = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.tsx?$/,
         enforce: 'pre',
-        loader: 'tslint-loader',
-        options: {
-          typeCheck: true,
-          emitErrors: true
-        }
+        use: [
+          {
+            loader: 'tslint-loader',
+            options: {
+              typeCheck: true,
+              emitErrors: true,
+              configFile: 'tslint.json'
+            }
+          }
+        ]
       },
       {
         test: /\.tsx?$/,
@@ -32,6 +37,10 @@ const commonConfig = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader'
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
       }
     ]
   },

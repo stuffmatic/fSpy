@@ -74,7 +74,7 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     },
     onLoadTestImage: (imageIndex: number | null) => {
       let url = 'omg fel url!'
-      if (imageIndex != null) {
+      if (imageIndex !== null) {
         url = [
           'https://upload.wikimedia.org/wikipedia/commons/f/f8/Tall_Palm_in_Napier.png',
           'https://image.freepik.com/free-photo/wide-road-with-buildings-on-either-side_1127-2188.jpg'

@@ -24,13 +24,13 @@ export default function CameraPresetsDropdown(props: CameraPresetsDropdownProps)
             (id: string | null) => {
               return {
                 value: id,
-                id: id == null ? 'null' : id,
-                label: id == null ? 'Custom camera' : cameraPresets[id].displayName
+                id: id === null ? 'null' : id,
+                label: id === null ? 'Custom camera' : cameraPresets[id].displayName
               }
             }
           )
         }
-        selectedOptionId={props.cameraData.presetId == null ? 'null' : props.cameraData.presetId}
+        selectedOptionId={props.cameraData.presetId === null ? 'null' : props.cameraData.presetId}
         onChange={props.onPresetChanged}
       />
     </div>

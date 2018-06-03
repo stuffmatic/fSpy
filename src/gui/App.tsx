@@ -4,7 +4,7 @@ import ResultContainer from './containers/result-container'
 import SettingsContainer from './containers/settings-container'
 import ExportDialog from './components/export-dialog/export-dialog'
 
-// import './App.css'
+import './App.css'
 import { StoreState } from './types/store-state'
 import { Dispatch, connect } from 'react-redux'
 import { AppAction, setExportDialogVisibility } from './actions'

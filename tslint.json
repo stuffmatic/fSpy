@@ -16,7 +16,7 @@
       false
     ],
     "space-before-function-paren": [
-      "error",
+      true,
       {
         "anonymous": "always",
         "named": "never",

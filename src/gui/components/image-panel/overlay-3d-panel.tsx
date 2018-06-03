@@ -87,7 +87,7 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   private get normalizationFactor(): number {
     let cameraTransform = this.props.solverResult.cameraTransform
     let fov = this.props.solverResult.horizontalFieldOfView
-    if (cameraTransform == null || fov == null) {
+    if (cameraTransform === null || fov === null) {
       return 0
     }
     let translation = new Vector3D(cameraTransform.matrix[0][3], cameraTransform.matrix[1][3], cameraTransform.matrix[2][3])
@@ -130,7 +130,7 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
         break
       default:
         // Negative axis. Shouldn't end up here
-        return
+        return undefined
     }
 
     let axisDirection = endpoint.normalized()
@@ -173,7 +173,7 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
     let cameraTransform = this.props.solverResult.cameraTransform
     let principalPoint = this.props.solverResult.principalPoint
     let horizontalFieldOfView = this.props.solverResult.horizontalFieldOfView
-    if (cameraTransform == null || principalPoint == null || horizontalFieldOfView == null) {
+    if (cameraTransform === null || principalPoint === null || horizontalFieldOfView === null) {
       // TODO: return null instead?
       return { x: 0, y: 0 }
     }

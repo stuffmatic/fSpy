@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react'
 
 interface CheckboxProps {
   title: string
@@ -8,10 +8,10 @@ interface CheckboxProps {
 
 export default function Checkbox(props: CheckboxProps) {
   return (
-    <div className="panel-row" >
+    <div className='panel-row' >
       <input
         name={props.title}
-        type="checkbox"
+        type='checkbox'
         checked={props.isSelected}
         onChange={(event: any) => {
           props.onChange(event.target.checked)

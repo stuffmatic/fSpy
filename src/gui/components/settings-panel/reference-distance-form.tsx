@@ -1,23 +1,23 @@
-import * as React from 'react';
+import * as React from 'react'
 import ReferenceDistanceAxisDropdown from './reference-distance-axis-dropdown'
 import ReferenceDistanceUnitDropdown from './reference-distance-unit-dropdown'
 import NumericInputField from './../common/numeric-input-field'
 import PanelSpacer from './../common/panel-spacer'
-import { Axis, ReferenceDistanceUnit } from '../../types/calibration-settings';
+import { Axis, ReferenceDistanceUnit } from '../../types/calibration-settings'
 
 interface ReferenceDistanceFormProps {
-  onReferenceAxisChange(axis: Axis | null): void
-  onReferenceDistanceChange(distance: number): void
-  onReferenceDistanceUnitChange(unit: ReferenceDistanceUnit): void
   referenceAxis: Axis | null
   referenceDistance: number
   referenceDistanceUnit: ReferenceDistanceUnit
+  onReferenceAxisChange(axis: Axis | null): void
+  onReferenceDistanceChange(distance: number): void
+  onReferenceDistanceUnitChange(unit: ReferenceDistanceUnit): void
 }
 
 export default function ReferenceDistanceForm(props: ReferenceDistanceFormProps) {
   return (
-    <div className="panelSection">
-      <div className="panel-row">
+    <div className='panelSection'>
+      <div className='panel-row'>
         <NumericInputField
           value={props.referenceDistance}
           onSubmit={props.onReferenceDistanceChange}
@@ -26,7 +26,7 @@ export default function ReferenceDistanceForm(props: ReferenceDistanceFormProps)
 
       <PanelSpacer />
 
-      <div className="panel-row">
+      <div className='panel-row'>
         <ReferenceDistanceAxisDropdown
           selectedAxis={props.referenceAxis}
           onChange={(axis: Axis | null) => {
@@ -37,10 +37,10 @@ export default function ReferenceDistanceForm(props: ReferenceDistanceFormProps)
 
       <PanelSpacer />
 
-      <div className="panel-row">
+      <div className='panel-row'>
         <ReferenceDistanceUnitDropdown
           selectedUnit={props.referenceDistanceUnit}
-          onChange={(unit:ReferenceDistanceUnit) => {
+          onChange={(unit: ReferenceDistanceUnit) => {
             props.onReferenceDistanceUnitChange(unit)
           }}
         />

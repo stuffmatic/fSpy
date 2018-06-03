@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { SettingsContainerProps } from '../../containers/settings-container';
-import { PrincipalPointMode1VP, HorizonMode, Axis, ReferenceDistanceUnit } from '../../types/calibration-settings';
+import * as React from 'react'
+import { SettingsContainerProps } from '../../containers/settings-container'
+import { PrincipalPointMode1VP, HorizonMode, Axis, ReferenceDistanceUnit } from '../../types/calibration-settings'
 import AxisDropdown from './axis-dropdown'
 import PanelSpacer from './../common/panel-spacer'
 import Dropdown from './../common/dropdown'
@@ -11,18 +11,18 @@ export default class SettingsSection1VP extends React.PureComponent<SettingsCont
   render() {
 
     return (
-      <div className="panel-section">
-        <div className="panel-row">
+      <div className='panel-section'>
+        <div className='panel-row'>
           Principal point
         </div>
-        <div className="panel-row">
+        <div className='panel-row'>
           <Dropdown
             options={
               [
                 {
                   value: PrincipalPointMode1VP.Default,
                   id: PrincipalPointMode1VP.Default,
-                  label: "Image midpoint"
+                  label: 'Image midpoint'
                 },
                 {
                   value: PrincipalPointMode1VP.Manual,
@@ -38,10 +38,10 @@ export default class SettingsSection1VP extends React.PureComponent<SettingsCont
           />
         </div>
         <PanelSpacer />
-        <div className="panel-row">
+        <div className='panel-row'>
           Vanishing point axis
         </div>
-        <div className="panel-row">
+        <div className='panel-row'>
           <AxisDropdown
             selectedAxis={this.props.calibrationSettings1VP.vanishingPointAxis}
             onChange={(axis: Axis) => {
@@ -52,7 +52,7 @@ export default class SettingsSection1VP extends React.PureComponent<SettingsCont
         </div>
 
         <PanelSpacer />
-        <div className="panel-row">
+        <div className='panel-row'>
           Reference distance
         </div>
 
@@ -72,7 +72,7 @@ export default class SettingsSection1VP extends React.PureComponent<SettingsCont
         />
 
         <PanelSpacer />
-        <div className="panel-row">
+        <div className='panel-row'>
           Camera data
         </div>
 
@@ -80,38 +80,38 @@ export default class SettingsSection1VP extends React.PureComponent<SettingsCont
           cameraData={this.props.calibrationSettings1VP.cameraData}
           absoluteFocalLength={this.props.calibrationSettings1VP.absoluteFocalLength}
           onAbsoluteFocalLengthChange={this.props.onAbsoluteFocalLengthChange1VP}
-          onCameraPresetChange={ (cameraPreset:string | null) => {
+          onCameraPresetChange={(cameraPreset: string | null) => {
             this.props.onCameraPresetChange(this.props.globalSettings.calibrationMode, cameraPreset)
           }}
-          onSensorSizeChange={(width:number | undefined, height: number | undefined) => {
+          onSensorSizeChange={(width: number | undefined, height: number | undefined) => {
             this.props.onSensorSizeChange(this.props.globalSettings.calibrationMode, width, height)
           }}
         />
 
         <PanelSpacer />
-        <div className="panel-row">
+        <div className='panel-row'>
           Up axis
         </div>
-        <div className="panel-row">
+        <div className='panel-row'>
           <AxisDropdown
             selectedAxis={Axis.PositiveZ}
             onChange={
-              (axis: Axis) => console.log("selected axis " + axis)
+              (axis: Axis) => console.log('selected axis ' + axis)
             }
           />
         </div>
         <PanelSpacer />
-        <div className="panel-row">
+        <div className='panel-row'>
           Horizon
         </div>
-        <div className="panel-row">
+        <div className='panel-row'>
           <Dropdown
             options={
               [
                 {
                   value: HorizonMode.Default,
                   id: HorizonMode.Default,
-                  label: "Flat"
+                  label: 'Flat'
                 },
                 {
                   value: HorizonMode.Manual,

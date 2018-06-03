@@ -65,12 +65,12 @@ export default class ControlPointsPanelBase extends React.PureComponent<ControlP
     let controlPointsState: ControlPointsStateBase = is1VP ? this.props.controlPointsState1VP : this.props.controlPointsState2VP
 
     let referenceAxis = settings.referenceDistanceAxis
-    if (referenceAxis == null) {
+    if (referenceAxis === null) {
       return null
     }
 
     if (!result.vanishingPoints || !result.vanishingPointAxes) {
-      return
+      return undefined
     }
 
     let referenceAxisVpIndex = Solver.vanishingPointIndexForAxis(

@@ -48,7 +48,7 @@
     "prebuild-test": "trash __tests__",
     "build-test": "webpack --config webpack.tests.config.js --mode development",
     "pretest": "yarn run build-test",
-    "dev-server": "webpack-dev-server --content-base build/  --mode development",
+    "dev-server": "webpack-dev-server --config webpack.config.js --content-base build/  --mode development",
     "dev": "DEV=true electron ./build/main.js",
     "dist": "electron-builder",
     "test": "jest"

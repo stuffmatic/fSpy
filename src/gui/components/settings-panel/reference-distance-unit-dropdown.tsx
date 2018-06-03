@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { ReferenceDistanceUnit } from '../../types/calibration-settings';
+import * as React from 'react'
+import { ReferenceDistanceUnit } from '../../types/calibration-settings'
 import Dropdown from './../common/dropdown'
 
 interface ReferenceDistanceUnitDropdownProps {

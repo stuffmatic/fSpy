@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { Axis } from '../../types/calibration-settings';
+import React from 'react'
+import { Axis } from '../../types/calibration-settings'
 import Dropdown from './../common/dropdown'
 
 interface AxisDropdownProps {
@@ -11,32 +11,32 @@ const options = [
   {
     value: Axis.NegativeX,
     id: Axis.NegativeX,
-    label: "-x"
+    label: '-x'
   },
   {
     value: Axis.PositiveX,
     id: Axis.PositiveX,
-    label: "x"
+    label: 'x'
   },
   {
     value: Axis.NegativeY,
     id: Axis.NegativeY,
-    label: "-y"
+    label: '-y'
   },
   {
     value: Axis.PositiveY,
     id: Axis.PositiveY,
-    label: "y"
+    label: 'y'
   },
   {
     value: Axis.NegativeZ,
     id: Axis.NegativeZ,
-    label: "-z"
+    label: '-z'
   },
   {
     value: Axis.PositiveZ,
     id: Axis.PositiveZ,
-    label: "z"
+    label: 'z'
   }
 ]
 

@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { SettingsContainerProps } from '../../containers/settings-container';
-import { PrincipalPointMode2VP, Axis, ReferenceDistanceUnit } from '../../types/calibration-settings';
+import * as React from 'react'
+import { SettingsContainerProps } from '../../containers/settings-container'
+import { PrincipalPointMode2VP, Axis, ReferenceDistanceUnit } from '../../types/calibration-settings'
 import Checkbox from './checkbox'
 import Dropdown from './../common/dropdown'
 import AxisDropdown from './axis-dropdown'
@@ -10,18 +10,18 @@ import ReferenceDistanceForm from './reference-distance-form'
 export default class SettingsSection2VP extends React.PureComponent<SettingsContainerProps> {
   render() {
     return (
-      <div className="panel-section">
-        <div className="panel-row">
+      <div className='panel-section'>
+        <div className='panel-row'>
           Principal point
         </div>
-        <div className="panel-row">
+        <div className='panel-row'>
           <Dropdown
             options={
               [
                 {
                   value: PrincipalPointMode2VP.Default,
                   id: PrincipalPointMode2VP.Default,
-                  label: "Image midpoint"
+                  label: 'Image midpoint'
                 },
                 {
                   value: PrincipalPointMode2VP.Manual,
@@ -31,7 +31,7 @@ export default class SettingsSection2VP extends React.PureComponent<SettingsCont
                 {
                   value: PrincipalPointMode2VP.FromThirdVanishingPoint,
                   id: PrincipalPointMode2VP.FromThirdVanishingPoint,
-                  label: "From 3rd vanishing point"
+                  label: 'From 3rd vanishing point'
                 }
               ]
             }
@@ -43,11 +43,11 @@ export default class SettingsSection2VP extends React.PureComponent<SettingsCont
         </div>
 
         <PanelSpacer />
-        <div className="panel-row">
+        <div className='panel-row'>
           Vanishing point axes
         </div>
 
-        <div className="panel-row">
+        <div className='panel-row'>
           <AxisDropdown
             selectedAxis={this.props.calibrationSettings2VP.vanishingPointAxes[0]}
             onChange={(axis: Axis) => {
@@ -57,7 +57,7 @@ export default class SettingsSection2VP extends React.PureComponent<SettingsCont
           />
         </div>
         <PanelSpacer />
-        <div className="panel-row">
+        <div className='panel-row'>
           <AxisDropdown
             selectedAxis={this.props.calibrationSettings2VP.vanishingPointAxes[1]}
             onChange={
@@ -68,7 +68,7 @@ export default class SettingsSection2VP extends React.PureComponent<SettingsCont
           />
         </div>
         <PanelSpacer />
-        <div className="panel-row">
+        <div className='panel-row'>
           Reference distance
         </div>
 
@@ -88,9 +88,9 @@ export default class SettingsSection2VP extends React.PureComponent<SettingsCont
         />
 
         <PanelSpacer />
-        <div className="panel-row">
+        <div className='panel-row'>
           <Checkbox
-            title="Rectangle mode"
+            title='Rectangle mode'
             isSelected={this.props.calibrationSettings2VP.quadModeEnabled}
             onChange={(isSelected: boolean) => this.props.onQuadModeEnabledChange(isSelected)}
           />

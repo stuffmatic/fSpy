@@ -18,7 +18,7 @@ export default class FocalLengthForm extends React.PureComponent<FocalLengthForm
     let sensorWidth = this.props.cameraData.customSensorWidth
     let sensorHeight = this.props.cameraData.customSensorHeight
     let presetId = this.props.cameraData.presetId
-    if (presetId != null) {
+    if (presetId !== null) {
       let preset = cameraPresets[presetId]
       sensorWidth = preset.sensorWidth
       sensorHeight = preset.sensorHeight
@@ -35,11 +35,11 @@ export default class FocalLengthForm extends React.PureComponent<FocalLengthForm
         <PanelSpacer />
         <div className='panel-row'>
           <NumericInputField
-            isDisabled={presetId != null}
+            isDisabled={presetId !== null}
             value={sensorWidth}
             onSubmit={(value: number) => { this.props.onSensorSizeChange(value, undefined) }} /> x
           <NumericInputField
-            isDisabled={presetId != null}
+            isDisabled={presetId !== null}
             value={sensorHeight}
             onSubmit={(value: number) => { this.props.onSensorSizeChange(undefined, value) }} /> mm
         </div>

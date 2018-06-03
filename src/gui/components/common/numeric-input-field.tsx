@@ -28,7 +28,7 @@ export default class NumericInputField extends React.Component<NumericInputField
     this.setState({
       ...this.state,
       editedValue: event.target.value,
-      editedValueIsValid: this.numericValue(event.target.value) != undefined
+      editedValueIsValid: this.numericValue(event.target.value) !== undefined
     })
   }
 
@@ -125,7 +125,7 @@ export default class NumericInputField extends React.Component<NumericInputField
       isEditing: false
     })
     let numericValue = this.numericValue(this.state.editedValue)
-    this.props.onSubmit(numericValue == undefined ? 0 : numericValue)
+    this.props.onSubmit(numericValue === undefined ? 0 : numericValue)
   }
 
   private cancelEditing() {

@@ -57,7 +57,7 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
   }
 
   private renderVanishingPoint() {
-    if (this.props.vanishingPoint == null) {
+    if (this.props.vanishingPoint === null) {
       return null
     }
 
