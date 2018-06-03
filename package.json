@@ -46,7 +46,7 @@
     "pretest": "yarn run build-test",
 
     "dev-server": "webpack-dev-server --content-base build/  --mode development",
-    "dev": "ELECTRON_START_URL=http://localhost:8080 electron ./build/main.js",
+    "dev": "DEV=true electron ./build/main.js",
     "dist": "electron-builder",
     "test": "jest"
   },
