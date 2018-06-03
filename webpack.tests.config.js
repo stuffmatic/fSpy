@@ -28,8 +28,8 @@ const getEntries = (folder) =>
     }, {})
 
 module.exports = [
-  Object.assign({}, webPack[0], {entry: getEntries('./tests/host/')}),
-  Object.assign({}, webPack[0], {entry: getEntries('./tests/gui/')})
+  Object.assign({}, webPack[0], {entry: getEntries('./tests/gui/')}),
+  Object.assign({}, webPack[0], {entry: getEntries('./tests/main/')})
 ].map(s => {
   s.output.path = path.resolve(__dirname, '__tests__')
   return s

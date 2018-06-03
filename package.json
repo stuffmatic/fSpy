@@ -22,6 +22,7 @@
     "jest-junit": "^5.0.0",
     "standard": "^11.0.1",
     "standard-loader": "^6.0.1",
+    "trash-cli": "^1.4.0",
     "ts-loader": "^4.3.1",
     "tslint": "^5.10.0",
     "tslint-config-standard": "^7.0.0",
@@ -32,16 +33,21 @@
     "webpack-dev-server": "^3.1.4"
   },
   "scripts": {
-    "dev-build": "webpack --config webpack.config.js --mode development",
-    "dist-build": "webpack --config webpack.config.js --mode production",
-    "predev-server": "yarn run dev-build",
+    "prebuild-dev": "trash build",
+    "build-dev": "webpack --config webpack.config.js --mode development",
+    "prebuild-dist": "trash build",
+    "build-dist": "webpack --config webpack.config.js --mode production",
+    "predev-server": "yarn run build-dev",
+    "predist": "yarn run build-dist",
+    "predist-preview": "yarn run build-dist",
+    "dist-preview": "electron-builder --dir",
+    "prebuild-test": "trash __tests__",
+    "build-test": "webpack --config webpack.tests.config.js --mode development",
+    "pretest": "yarn run build-test",
+
     "dev-server": "webpack-dev-server --content-base build/",
     "dev": "ELECTRON_START_URL=http://localhost:8080 electron ./build/main.js",
-    "predist": "yarn run dist-build",
     "dist": "electron-builder",
-    "predist-preview": "yarn run dist-build",
-    "dist-preview": "electron-builder --dir",
-    "pretest": "webpack --config webpack.tests.config.js",
     "test": "jest"
   },
   "dependencies": {
@@ -60,7 +66,7 @@
   },
   "jest": {
     "testRegex": "/__tests__/.*\\.jsx?",
-    "testResultsProcessor": "./node_modules/jest-junit"
+    "testResultsProcessor": "jest-junit"
   },
   "jest-junit": {
     "suiteName": "jest tests",
