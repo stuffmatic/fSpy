@@ -55,7 +55,9 @@ module.exports = [
     {
       target: 'electron-renderer',
       entry: { gui: './src/gui/index.tsx' },
-      plugins: [new HtmlWebpackPlugin()]
+      plugins: [new HtmlWebpackPlugin({
+        template: 'src/gui/index.html'
+      })]
     },
     commonConfig)
 ]

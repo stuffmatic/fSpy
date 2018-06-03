@@ -56,6 +56,7 @@ export default class CoordinatesUtil {
           case ImageCoordinateFrame.Relative:
             return this.absoluteToRelative(point, imageWidth, imageHeight)
         }
+        break
       }
       case ImageCoordinateFrame.ImagePlane: {
         switch (targetFrame) {
@@ -67,6 +68,7 @@ export default class CoordinatesUtil {
           case ImageCoordinateFrame.Relative:
             return this.imagePlaneToRelative(point, imageWidth, imageHeight)
         }
+        break
       }
       case ImageCoordinateFrame.Relative: {
         switch (targetFrame) {
@@ -77,10 +79,11 @@ export default class CoordinatesUtil {
           case ImageCoordinateFrame.Relative:
             return point
         }
+        break
       }
     }
 
-    throw "Should not end up here"
+    throw new Error('Should not end up here')
   }
 
   private static absoluteToRelative(point: Point2D, imageWidth: number, imageHeight: number): Point2D {

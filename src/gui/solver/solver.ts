@@ -124,7 +124,7 @@ export default class Solver {
       horizonDirection
     )
 
-    if (secondVanishingPoint == null) {
+    if (secondVanishingPoint === null) {
       result.errors.push('Failed to compute second vanishing point')
       return result
     }
@@ -234,7 +234,7 @@ export default class Solver {
           errors
         )
         if (thirdVanishingPointArray) {
-          let thirdVanishingPoint = thirdVanishingPointArray![0]
+          let thirdVanishingPoint = thirdVanishingPointArray[0]
           principalPoint = MathUtil.triangleOrthoCenter(
             inputVanishingPoints[0], inputVanishingPoints[1], thirdVanishingPoint
           )
@@ -246,7 +246,7 @@ export default class Solver {
       inputVanishingPoints[0], inputVanishingPoints[1], principalPoint
     )
 
-    if (fRelative == null) {
+    if (fRelative === null) {
       result.errors.push('Failed to compute focal length')
       return result
     }
@@ -592,7 +592,7 @@ export default class Solver {
 
   private static validateImageDimensions(image: ImageState): string[] {
     let errors: string[] = []
-    if (image.width == null || image.height == null) {
+    if (image.width === null || image.height === null) {
       errors.push('No image loaded')
     }
     return errors
