@@ -32,11 +32,14 @@
     "webpack-dev-server": "^3.1.4"
   },
   "scripts": {
-    "build": "webpack --config webpack.config.js --display verbose",
-    "start:dev": "webpack-dev-server --content-base build/",
-    "prestart": "yarn run build",
-    "start": "ELECTRON_START_URL=http://localhost:8080 electron ./build/main.js",
+    "dev-build": "webpack --config webpack.config.js --mode development",
+    "dist-build": "webpack --config webpack.config.js --mode production",
+    "predev-server": "yarn run dev-build",
+    "dev-server": "webpack-dev-server --content-base build/",
+    "dev": "ELECTRON_START_URL=http://localhost:8080 electron ./build/main.js",
+    "predist": "yarn run dist-build",
     "dist": "electron-builder",
+    "predist-preview": "yarn run dist-build",
     "dist-preview": "electron-builder --dir",
     "pretest": "webpack --config webpack.tests.config.js",
     "test": "jest"
