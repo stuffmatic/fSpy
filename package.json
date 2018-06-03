@@ -61,7 +61,10 @@
     },
     "files": [
       "build/**/*"
-    ]
+    ],
+    "directories": {
+      "buildResources": "assets/electron"
+    }
   },
   "jest": {
     "testRegex": "/__tests__/.*\\.jsx?",
