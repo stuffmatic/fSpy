@@ -1,9 +1,87 @@
 import * as React from 'react'
-import ResizableImagePanel from './../components/image-panel/resizable-image-panel'
-import ControlPointsContainer from './control-points-container'
 import { StoreState } from '../types/store-state'
 import { connect } from 'react-redux'
 import { ImageState } from '../types/image-state'
+import { Stage, Layer, Rect } from 'react-konva'
+import { Palette } from '../style/palette'
+import Measure, { ContentRect } from 'react-measure'
+
+interface TestCanvasState {
+  width: number | undefined
+  height: number | undefined
+}
+
+class TestCanvas extends React.PureComponent<{}, TestCanvasState> {
+
+  constructor(props: {}) {
+    super(props)
+
+    this.state = {
+      width: undefined,
+      height: undefined
+    }
+  }
+
+  render() {
+    let width = this.state.width
+    let height = this.state.height
+
+    return (
+      <div id='center-panel'>
+        <Measure
+          client
+          bounds
+          offset
+          onResize={(contentRect: ContentRect) => {
+            let newWidth = contentRect.bounds !== undefined ? contentRect.bounds.width : undefined
+            let newHeight = contentRect.bounds !== undefined ? contentRect.bounds.height : undefined
+            this.setState({
+              ...this.state,
+              width: newWidth,
+              height: newHeight
+            })
+          }}
+        >
+          {({ measureRef }) => {
+            console.log('width ' + width + ', ' + height)
+            return (<div id='image-panel' ref={measureRef} >
+              <Stage width={width} height={height}>
+                <Layer>
+                  <Rect
+                    x={20}
+                    y={20}
+                    width={width! - 2 * 20}
+                    height={height! - 2 * 20}
+                    fill={Palette.red}
+                    shadowBlur={5}
+                    onClick={(_: Event) => {
+                      //
+                      console.log('onClick')
+                    }}
+                    onDragStart={(_: Event) => {
+                      //
+                      console.log('onDragStart')
+                    }}
+                    onDragMove={(_: Event) => {
+                      //
+                      console.log('onDragMove')
+                    }}
+                    onDragEnd={(_: Event) => {
+                      //
+                      console.log('onDragEnd')
+                    }}
+                  />
+                </Layer>
+              </Stage>
+            </div>
+            )
+          }
+          }
+        </Measure>
+      </div>
+    )
+  }
+}
 
 interface ImageContainerProps {
   imageOpacity: number
@@ -31,7 +109,9 @@ class ImageContainer extends React.Component<ImageContainerProps, ImageContainer
 
   render() {
 
-    return (
+    return (<TestCanvas />)
+
+    /*return (
       <div id='center-panel'>
         {this.renderImagePanelOrPlaceholder()}
         <ControlPointsContainer
@@ -41,10 +121,10 @@ class ImageContainer extends React.Component<ImageContainerProps, ImageContainer
           height={this.state.imageHeight}
         />
       </div>
-    )
+    )*/
   }
 
-  private renderImagePanelOrPlaceholder() {
+  /*private renderImagePanelOrPlaceholder() {
     if (this.props.imageState.url) {
       return (
         <ResizableImagePanel
@@ -60,7 +140,7 @@ class ImageContainer extends React.Component<ImageContainerProps, ImageContainer
         Load an image vetja!
       </div>
     )
-  }
+  }*/
 
   private onImageResize(
     imageLeft: number,

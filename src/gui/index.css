@@ -64,10 +64,9 @@ textarea {
   max-width: 250px;
 }
 
-#image-panel img {
+#image-panel {
   width: 100%;
   height: 100vh;
-  object-fit: contain
 }
 
 .side-panel {
