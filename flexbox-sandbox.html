@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>title</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Roboto";
+      font-size: 14px;
+    }
+
+    #app-container {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #left-panel {
+      background-color: #ff0000;
+      flex: 0 0 200px;
+    }
+
+    #settings-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    #settings-top-container {
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    #center-panel {
+      background-color: #00ff00;
+      flex-grow: 1;
+    }
+
+    #right-panel {
+      background-color: #0000ff;
+      flex: 0 0 200px;
+    }
+
+    #image-panel img {
+      width: 100%;
+      height: 100vh;
+      object-fit: contain
+    }
+
+
+    #modal-container {
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #modal-content {
+      background-color: #fefefe;
+      width: 500px;
+      height: 300px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #modal-columns {
+      height: 250px;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    .modal-column {
+      flex-basis: 50%;
+      overflow: auto;
+      padding: 20px;
+    }
+
+    .modal-code {
+      margin-left: 10px;
+      margin: 0;
+      background-color: darkgray;
+      overflow: auto;
+      height: 100%;
+      font-family: 'Roboto Mono';
+    }
+
+    #modal-bottom-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app-container">
+
+    <div id="modal-container">
+      <div id="modal-top-buttons">
+        <button>Hello</button>
+        <button>Herro</button>
+        <button>Lol</button>
+      </div>
+      <div id="modal-content">
+        <div id="modal-columns">
+          <div class="modal-column">
+              Det är ett välkänt faktum att läsare distraheras av läsbar text på en sida när man skall studera layouten. Poängen med Lorem
+              Ipsum är att det ger ett normalt ordflöde, till skillnad från "Text här, Text här", och ger intryck av att
+              efter "Lorem Ipsum" avslöjar många webbsidor under uteckling. Olika versioner har dykt upp under åren, ibland
+              av olyckshändelse, ibland med flit (mer eller mindre humoristiska). av olyckshändelse, ibland med flit (mer eller mindre humoristiska). av olyckshändelse, ibland med flit (mer eller mindre humoristiska).
+              vara läsbar text. Många publiseringprogram och webbutvecklare använder Lorem Ipsum som test-text, och en sökning
+              avslöjar många webbsidor under uteckling. Olika versioner har dykt upp under åren, ibland
+              av olyckshändelse, ibland med flit (mer eller mindre humoristiska). av olyckshändelse, ibland med flit (mer eller mindre humoristiska). av olyckshändelse, ibland med flit (mer eller mindre humoristiska).
+              vara läsbar text. Många publiseringprogram och webbutvecklare använder Lorem Ipsum som test-text, och en sökning
+
+          </div>
+          <div class="modal-column">
+
+              class LolFace { omg herro class LolFace { omg herro } // // // // // // // // // // // // // // // // // //
+
+          </div>
+        </div>
+        <div id="modal-bottom-button">
+          <button>Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="left-panel" class="side-panel">
+      <div id="settings-container">
+        <div id="settings-top-container">
+          Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello
+          Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello
+          Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello Top div hello
+        </div>
+
+        <div>
+          Bottom div hello
+        </div>
+      </div>
+    </div>
+
+    <div id="center-panel" class="side-panel">
+      <div id="image-panel">
+        <img src="https://lh3.googleusercontent.com/5EfQBHDb47tchiART6U6yk3yYS9qBYr6VUssB5wHE1AgavqV5E2SSuzyiNkc7UgVng=s360-rw" />
+      </div>
+    </div>
+
+    <div id="right-panel" class="side-panel">
+      right
+    </div>
+  </div>
+</body>
+
+</html>
