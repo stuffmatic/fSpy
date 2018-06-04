@@ -14,7 +14,7 @@ const commonConfig = {
           {
             loader: 'tslint-loader',
             options: {
-              typeCheck: true,
+              typeCheck: false,
               emitErrors: true,
               configFile: 'tslint.json'
             }
