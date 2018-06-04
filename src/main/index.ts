@@ -1,5 +1,6 @@
 import { app, BrowserWindow, Menu } from 'electron'
 import menuTemplate from './menu-template'
+import { OpenImageMessage } from './messages'
 const path = require('path')
 const url = require('url')
 
@@ -20,6 +21,11 @@ function createWindow() {
     window.focus()
     if (process.env.DEV) {
       window.webContents.openDevTools({ mode: 'bottom' })
+      // load a test image
+      window.webContents.send(
+        OpenImageMessage.type,
+        new OpenImageMessage(path.join(__dirname, '../test_data/box.jpg'))
+      )
     }
   })
 
