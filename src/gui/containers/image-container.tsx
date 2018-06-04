@@ -2,15 +2,12 @@ import * as React from 'react'
 import ResizableImagePanel from './../components/image-panel/resizable-image-panel'
 import ControlPointsContainer from './control-points-container'
 import { StoreState } from '../types/store-state'
-import { Dispatch } from 'redux'
-import { AppAction, setImageSize } from '../actions'
 import { connect } from 'react-redux'
 import { ImageState } from '../types/image-state'
 
 interface ImageContainerProps {
   imageOpacity: number
   imageState: ImageState
-  onImageLoad(width: number, height: number): void
 }
 
 interface ImageContainerState {
@@ -52,10 +49,8 @@ class ImageContainer extends React.Component<ImageContainerProps, ImageContainer
       return (
         <ResizableImagePanel
           imageOpacity={this.props.imageOpacity}
-          imageUrl={this.props.imageState.url}
+          image={this.props.imageState}
           onResize={this.onImageResize}
-          onImageLoad={this.props.onImageLoad}
-          onImageLoadError={this.onImageLoadError}
         />
       )
     }
@@ -80,10 +75,6 @@ class ImageContainer extends React.Component<ImageContainerProps, ImageContainer
       imageHeight: imageHeight
     })
   }
-
-  private onImageLoadError() {
-    alert('Failed to load the image')
-  }
 }
 
 export function mapStateToProps(state: StoreState) {
@@ -93,13 +84,4 @@ export function mapStateToProps(state: StoreState) {
   }
 }
 
-export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
-  return {
-    onImageLoad: (width: number, height: number) => {
-      dispatch(setImageSize(width, height))
-    }
-
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ImageContainer)
+export default connect(mapStateToProps, null)(ImageContainer)

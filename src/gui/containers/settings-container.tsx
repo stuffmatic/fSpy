@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setImageUrl, setVanishingPointAxis1VP, setVanishingPointAxis2VP, setGridFloorNormal, setReferenceDistanceUnit, setReferenceDistance, setReferenceDistanceAxis, setAbsoluteFocalLength1VP, setCameraPreset, setCameraSensorSize } from '../actions'
+import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setVanishingPointAxis1VP, setVanishingPointAxis2VP, setGridFloorNormal, setReferenceDistanceUnit, setReferenceDistance, setReferenceDistanceAxis, setAbsoluteFocalLength1VP, setCameraPreset, setCameraSensorSize } from '../actions'
 import SettingsPanel from '../components/settings-panel/settings-panel'
 import { CalibrationMode, GlobalSettings } from '../types/global-settings'
 import { StoreState } from '../types/store-state'
@@ -19,7 +19,6 @@ export interface SettingsContainerProps {
   onPrincipalPointModeChange1VP(principalPointMode: PrincipalPointMode1VP): void
   onPrincipalPointModeChange2VP(principalPointMode: PrincipalPointMode2VP): void
   onQuadModeEnabledChange(quadModeEnabled: boolean): void
-  onLoadTestImage(imageIndex: number | null): void
   onVanishingPointAxisChange1VP(axis: Axis): void
   onVanishingPointAxisChange2VP(vanishingPointIndex: number, axis: Axis): void
   onAbsoluteFocalLengthChange1VP(absoluteFocalLength: number): void
@@ -71,17 +70,6 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     },
     onQuadModeEnabledChange: (quadModeEnabled: boolean) => {
       dispatch(setQuadModeEnabled(quadModeEnabled))
-    },
-    onLoadTestImage: (imageIndex: number | null) => {
-      let url = 'omg fel url!'
-      if (imageIndex !== null) {
-        url = [
-          'https://upload.wikimedia.org/wikipedia/commons/f/f8/Tall_Palm_in_Napier.png',
-          'https://image.freepik.com/free-photo/wide-road-with-buildings-on-either-side_1127-2188.jpg'
-        ][imageIndex]
-      }
-      console.log('loading url ' + url)
-      dispatch(setImageUrl(url))
     },
     onVanishingPointAxisChange1VP: (axis: Axis): void => {
       dispatch(setVanishingPointAxis1VP(axis))

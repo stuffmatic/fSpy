@@ -9,14 +9,10 @@ export function imageState(state: ImageState | undefined, action: AnyAction): Im
   }
 
   switch (action.type) {
-    case ActionTypes.SET_IMAGE_URL:
+    case ActionTypes.SET_IMAGE:
       return {
         ...state,
-        url: action.url
-      }
-    case ActionTypes.SET_IMAGE_SIZE:
-      return {
-        ...state,
+        url: action.url,
         width: action.width,
         height: action.height
       }

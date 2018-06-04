@@ -11,7 +11,7 @@ import 'highlight.js/styles/atom-one-dark.css'
 import { ipcRenderer } from 'electron'
 import { OpenProjectMessage, OpenImageMessage } from '../main/messages'
 import { existsSync, readFileSync } from 'fs'
-import { setImageUrl } from './actions'
+import { setImage } from './actions'
 
 ReactDOM.render(
   <Provider store={store}>
@@ -38,7 +38,7 @@ ipcRenderer.on(OpenImageMessage.type, (_: any, message: OpenImageMessage) => {
     console.log(image.width)
     console.log(image.height)
     console.log(event)
-    store.dispatch(setImageUrl(url))
+    store.dispatch(setImage(url, image.width, image.height))
   }
   image.onerror = (_: Event) => {
     alert('Failed to load the image')

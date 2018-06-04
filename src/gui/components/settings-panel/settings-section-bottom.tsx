@@ -29,24 +29,6 @@ export default class SettingsSectionBottom extends React.PureComponent<SettingsC
             }}
           />
         </div>
-
-        <div>
-          <button onClick={() => {
-            this.props.onLoadTestImage(0)
-          }}>
-            Load test image 1
-          </button>
-          <button onClick={() => {
-            this.props.onLoadTestImage(1)
-          }}>
-            Load test image 2
-          </button>
-          <button onClick={() => {
-            this.props.onLoadTestImage(null)
-          }}>
-            Load broken test image
-          </button>
-        </div>
       </div>
     )
   }

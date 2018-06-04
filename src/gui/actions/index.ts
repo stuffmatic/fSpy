@@ -14,8 +14,7 @@ export enum ActionTypes {
   SET_GRID_FLOOR_NORMAL = 'SET_GRID_FLOOR_NORMAL',
 
   // Image loading actions
-  SET_IMAGE_URL = 'SET_IMAGE_URL',
-  SET_IMAGE_SIZE = 'SET_IMAGE_SIZE',
+  SET_IMAGE = 'SET_IMAGE',
 
   // Calibration settings actions
   SET_HORIZON_MODE = 'SET_HORIZON_MODE',
@@ -50,22 +49,25 @@ export enum ActionTypes {
 
 export function recalculateCalibrationResult(): ThunkAction<void, StoreState, void, AppAction> {
   return (dispatch: ThunkDispatch<StoreState, void, AppAction>, getState: () => StoreState) => {
-    let state = getState()
+    setTimeout(() => {
+      let state = getState()
 
-    let result: CalibrationResult = {
-      calibrationResult1VP: Solver.solve1VP(
-        state.calibrationSettings1VP,
-        state.controlPointsState1VP,
-        state.image
-      ),
-      calibrationResult2VP: Solver.solve2VP(
-        state.calibrationSettings2VP,
-        state.controlPointsState2VP,
-        state.image
-      )
-    }
+      let result: CalibrationResult = {
+        calibrationResult1VP: Solver.solve1VP(
+          state.calibrationSettings1VP,
+          state.controlPointsState1VP,
+          state.image
+        ),
+        calibrationResult2VP: Solver.solve2VP(
+          state.calibrationSettings2VP,
+          state.controlPointsState2VP,
+          state.image
+        )
+      }
 
-    dispatch(setCalibrationResult(result))
+      dispatch(setCalibrationResult(result))
+    },
+    0)
   }
 }
 
@@ -109,28 +111,17 @@ export function setGridFloorNormal(axis: Axis | null): SetGridFloorNormal {
 }
 
 //
-export interface SetImageURL {
-  type: ActionTypes.SET_IMAGE_URL
+export interface SetImage {
+  type: ActionTypes.SET_IMAGE
   url: string
+  width: number
+  height: number
 }
 
-export function setImageUrl(url: string): SetImageURL {
+export function setImage(url: string, width: number, height: number): SetImage {
   return {
-    type: ActionTypes.SET_IMAGE_URL,
-    url: url
-  }
-}
-
-//
-export interface SetImageSize {
-  type: ActionTypes.SET_IMAGE_SIZE
-  width: number | null
-  height: number | null
-}
-
-export function setImageSize(width: number | null, height: number | null): SetImageSize {
-  return {
-    type: ActionTypes.SET_IMAGE_SIZE,
+    type: ActionTypes.SET_IMAGE,
+    url: url,
     width: width,
     height: height
   }
@@ -451,8 +442,7 @@ export type AppAction =
   SetCalibrationMode |
   SetImageOpacity |
   SetGridFloorNormal |
-  SetImageURL |
-  SetImageSize |
+  SetImage |
   SetHorizonMode |
   SetQuadModeEnabled |
   SetPrincipalPointMode1VP |
@@ -476,7 +466,7 @@ export type AppAction =
 
 // A list of action types that trigger calibration result calculation
 export const actionTypesTriggeringRecalculation: ActionTypes[] = [
-  ActionTypes.SET_IMAGE_SIZE,
+  ActionTypes.SET_IMAGE,
 
   ActionTypes.SET_HORIZON_MODE,
   ActionTypes.SET_QUAD_MODE_ENABLED,

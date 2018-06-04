@@ -1,12 +1,11 @@
 import * as React from 'react'
 import Measure, { ContentRect } from 'react-measure'
+import { ImageState } from '../../types/image-state'
 
 interface ResizableImagePanelProps {
   imageOpacity: number
-  imageUrl: string
+  image: ImageState
   onResize(imageLeft: number, imageTop: number, imageWidth: number, imageHeight: number): void
-  onImageLoad(width: number, height: number): void
-  onImageLoadError(): void
 }
 
 interface ResizableImagePanelState {
@@ -14,11 +13,9 @@ interface ResizableImagePanelState {
 }
 
 export default class ResizableImagePanel extends React.Component<ResizableImagePanelProps, ResizableImagePanelState> {
-  private imageRef: any // TODO: what type?
 
   constructor(props: ResizableImagePanelProps) {
     super(props)
-    this.imageRef = React.createRef()
     this.state = {
       mostRecentContentRect: null
     }
@@ -36,28 +33,14 @@ export default class ResizableImagePanel extends React.Component<ResizableImageP
       >
         {({ measureRef }) =>
           <div id='image-panel' ref={measureRef} >
-            <img ref={this.imageRef}
+            <img
               style={{ opacity: this.props.imageOpacity }}
-              src={this.props.imageUrl}
-              onLoad={() => this.onImageLoad()}
-              onError={
-                (e: any) => {
-                  console.log(e)
-                  this.props.onImageLoadError()
-                }
-              }
+              src={this.props.image.url ? this.props.image.url : ''}
             />
           </div>
         }
       </Measure>
     )
-  }
-
-  private onImageLoad() {
-    let w = this.imageRef.current.naturalWidth
-    let h = this.imageRef.current.naturalHeight
-    this.props.onImageLoad(w, h)
-    this.fireResizeCallback()
   }
 
   private onResize(contentRect: ContentRect) {
@@ -72,8 +55,8 @@ export default class ResizableImagePanel extends React.Component<ResizableImageP
     if (!contentRect) {
       return
     }
-    let w = this.imageRef.current.naturalWidth
-    let h = this.imageRef.current.naturalHeight
+    let w = this.props.image.width
+    let h = this.props.image.height
     if (w && h && contentRect.bounds) {
       let boundsAspect = contentRect.bounds.width / contentRect.bounds.height
       let imageAspect = w / h
