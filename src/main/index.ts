@@ -21,7 +21,6 @@ function createWindow() {
     if (process.env.DEV) {
       window.webContents.openDevTools({ mode: 'bottom' })
     }
-    window.webContents.send('test-message', ['arg1', 'arg2'])
   })
 
   const startUrl = url.format({

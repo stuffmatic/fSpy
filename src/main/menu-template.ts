@@ -1,4 +1,5 @@
-import { app, dialog } from 'electron'
+import { app, dialog, BrowserWindow } from 'electron'
+import { OpenProjectMessage, OpenImageMessage } from './messages'
 
 let fileMenu: Electron.MenuItemConstructorOptions = {
   label: 'File',
@@ -16,7 +17,10 @@ let fileMenu: Electron.MenuItemConstructorOptions = {
           },
           (filePaths: string[]) => {
             if (filePaths !== undefined) {
-              //
+              BrowserWindow.getFocusedWindow().webContents.send(
+                OpenProjectMessage.type,
+                new OpenProjectMessage(filePaths[0])
+              )
             }
           }
         )
@@ -32,7 +36,10 @@ let fileMenu: Electron.MenuItemConstructorOptions = {
           },
           (filePaths: string[]) => {
             if (filePaths !== undefined) {
-              console.log(filePaths)
+              BrowserWindow.getFocusedWindow().webContents.send(
+                OpenImageMessage.type,
+                new OpenImageMessage(filePaths[0])
+              )
             }
           }
         )

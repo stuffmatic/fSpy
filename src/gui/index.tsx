@@ -9,6 +9,7 @@ import './index.css'
 import 'react-select/dist/react-select.css'
 import 'highlight.js/styles/atom-one-dark.css'
 import { ipcRenderer } from 'electron'
+import { OpenProjectMessage, OpenImageMessage } from '../main/messages'
 
 ReactDOM.render(
   <Provider store={store}>
@@ -17,10 +18,12 @@ ReactDOM.render(
   document.getElementById('root') as HTMLElement
 )
 
-ipcRenderer.on('test-message', (event: any, args: any) => {
-  console.log('got test message in renderer process!')
-  console.log('event')
-  console.log(event)
-  console.log('args')
-  console.log(args)
+ipcRenderer.on(OpenProjectMessage.type, (_: any, message: OpenProjectMessage) => {
+  console.log('got OpenProjectMessage')
+  console.log(message.filePath)
+})
+
+ipcRenderer.on(OpenImageMessage.type, (_: any, message: OpenImageMessage) => {
+  console.log('got OpenImageMessage')
+  console.log(message.filePath)
 })
