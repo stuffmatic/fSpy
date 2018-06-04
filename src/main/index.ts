@@ -1,4 +1,5 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, Menu } from 'electron'
+import menuTemplate from './menu-template'
 const path = require('path')
 const url = require('url')
 
@@ -20,6 +21,7 @@ function createWindow() {
     if (process.env.DEV) {
       window.webContents.openDevTools({ mode: 'bottom' })
     }
+    window.webContents.send('test-message', ['arg1', 'arg2'])
   })
 
   const startUrl = url.format({
@@ -31,6 +33,9 @@ function createWindow() {
   const devUrl = 'http://localhost:8080'
 
   window.loadURL(process.env.DEV ? devUrl : startUrl)
+
+  let menu = Menu.buildFromTemplate(menuTemplate)
+  Menu.setApplicationMenu(menu)
 
   // Emitted when the window is closed.
   window.on('closed', () => {
