@@ -33,10 +33,7 @@ ipcRenderer.on(OpenImageMessage.type, (_: any, message: OpenImageMessage) => {
   let url = URL.createObjectURL(blob)
   let image = new Image()
   image.src = url
-  image.onload = (event: Event) => {
-    console.log(image.width)
-    console.log(image.height)
-    console.log(event)
+  image.onload = (_: Event) => {
     store.dispatch(setImage(url, image.width, image.height))
   }
   image.onerror = (_: Event) => {

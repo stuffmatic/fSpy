@@ -1,16 +1,16 @@
 import * as React from 'react'
-import { Stage, Layer, Rect, Circle } from 'react-konva'
+import { Image as KonvaImage, Stage, Layer, Rect, Circle } from 'react-konva'
 import Measure, { ContentRect } from 'react-measure'
 import { Palette } from '../style/palette'
+import Point2D from '../solver/point-2d'
+import { ImageState } from '../types/image-state'
 
 interface ControlPointProps {
-  xAbsolute: number
-  yAbsolute: number
-  onControlPointDrag(xAbsolute: number, yAbsolute: number): void
+  absolutePosition: Point2D
+  onControlPointDrag(absolutePosition: Point2D): void
 }
 
-class ControlPoint extends React.PureComponent<ControlPointProps> {
-
+class ControlPoint extends React.Component<ControlPointProps> {
   constructor(props: ControlPointProps) {
     super(props)
   }
@@ -19,10 +19,10 @@ class ControlPoint extends React.PureComponent<ControlPointProps> {
     return (
       <Circle
         draggable
-        radius={10}
+        radius={4}
         fill={Palette.blue}
-        x={this.props.xAbsolute}
-        y={this.props.yAbsolute}
+        x={this.props.absolutePosition.x}
+        y={this.props.absolutePosition.y}
         onDragStart={(event: any) => this.handleDrag(event)}
         onDragMove={(event: any) => this.handleDrag(event)}
         onDragEnd={(event: any) => this.handleDrag(event)}
@@ -32,8 +32,10 @@ class ControlPoint extends React.PureComponent<ControlPointProps> {
 
   private handleDrag(event: any) {
     this.props.onControlPointDrag(
-      event.target.x(),
-      event.target.y()
+      {
+        x: event.target.x(),
+        y: event.target.y()
+      }
     )
   }
 }
@@ -41,26 +43,44 @@ class ControlPoint extends React.PureComponent<ControlPointProps> {
 interface ControlPointsContainerState {
   width: number | undefined
   height: number | undefined
+  relativePositionTest: Point2D
 }
 
 interface ControlPointsContainerProps {
-
+  imageState: ImageState
 }
 
 export default class ControlPointsContainer extends React.Component<ControlPointsContainerProps, ControlPointsContainerState> {
 
-  constructor(props: {}) {
+  private previousImageUrl: string | null
+  private imageElement: HTMLImageElement | null
+
+  constructor(props: ControlPointsContainerProps) {
     super(props)
+
+    this.previousImageUrl = null
+    this.imageElement = null
 
     this.state = {
       width: undefined,
-      height: undefined
+      height: undefined,
+      relativePositionTest: {
+        x: 0.5, y: 0.5
+      }
     }
   }
 
   render() {
     let width = this.state.width
     let height = this.state.height
+
+    if (this.previousImageUrl != this.props.imageState.url) {
+      if (this.props.imageState.url) {
+        this.imageElement = new Image()
+        this.imageElement.src = this.props.imageState.url
+      }
+    }
+    this.previousImageUrl = this.props.imageState.url
 
     return (
       <div id='center-panel'>
@@ -79,7 +99,6 @@ export default class ControlPointsContainer extends React.Component<ControlPoint
           }}
         >
           {({ measureRef }) => {
-            console.log('width ' + width + ', ' + height)
             return (<div id='image-panel' ref={measureRef} >
               <Stage width={width} height={height}>
                 <Layer>
@@ -88,30 +107,19 @@ export default class ControlPointsContainer extends React.Component<ControlPoint
                     y={20}
                     width={width! - 2 * 20}
                     height={height! - 2 * 20}
-                    stroke={Palette.gray}
-                    shadowBlur={5}
-                    onClick={(_: Event) => {
-                      //
-                      console.log('onClick')
-                    }}
-                    onDragStart={(_: Event) => {
-                      //
-                      console.log('onDragStart')
-                    }}
-                    onDragMove={(_: Event) => {
-                      //
-                      console.log('onDragMove')
-                    }}
-                    onDragEnd={(_: Event) => {
-                      //
-                      console.log('onDragEnd')
-                    }}
+                    stroke={Palette.red}
                   />
+                  {this.renderImage()}
                   <ControlPoint
-                    xAbsolute={20}
-                    yAbsolute={20}
-                    onControlPointDrag={(xAbsolute: number, yAbsolute: number) => {
-                      console.log(xAbsolute + ', ' + yAbsolute)
+                    absolutePosition={this.rel2abs(this.state.relativePositionTest)}
+                    onControlPointDrag={(absolutePosition: Point2D) => {
+                      let relativePosition = this.abs2Rel(absolutePosition)
+                      relativePosition.x = Math.min(Math.max(0.1, relativePosition.x), 0.9)
+                      relativePosition.y = Math.min(Math.max(0.1, relativePosition.y), 0.9)
+                      this.setState({
+                        ...this.state,
+                        relativePositionTest: relativePosition
+                      })
                     }}
                   />
                 </Layer>
@@ -123,5 +131,48 @@ export default class ControlPointsContainer extends React.Component<ControlPoint
         </Measure>
       </div>
     )
+  }
+
+  private renderImage() {
+    if (!this.imageElement) {
+      return null
+    }
+
+    let width = this.state.width
+    let height = this.state.height
+
+    return (
+      <KonvaImage
+        image={this.imageElement}
+        x={20}
+        y={20}
+        width={width! - 2 * 20}
+        height={height! - 2 * 20}
+      />
+    )
+  }
+
+  private rel2abs(point: Point2D): Point2D {
+    if (this.state.width === undefined || this.state.height === undefined) {
+      return {
+        x: 0, y: 0
+      }
+    }
+    return {
+      x: this.state.width * point.x,
+      y: this.state.height * point.y
+    }
+  }
+
+  private abs2Rel(point: Point2D): Point2D {
+    if (this.state.width === undefined || this.state.height === undefined) {
+      return {
+        x: 0, y: 0
+      }
+    }
+    return {
+      x: point.x / this.state.width,
+      y: point.y / this.state.height
+    }
   }
 }
