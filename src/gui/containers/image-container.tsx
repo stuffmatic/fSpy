@@ -2,9 +2,55 @@ import * as React from 'react'
 import { StoreState } from '../types/store-state'
 import { connect } from 'react-redux'
 import { ImageState } from '../types/image-state'
-import { Stage, Layer, Rect } from 'react-konva'
+import { Stage, Layer, Rect, Circle } from 'react-konva'
 import { Palette } from '../style/palette'
 import Measure, { ContentRect } from 'react-measure'
+
+interface TestControlPointProps {
+  xAbsolute: number
+  yAbsolute: number
+}
+
+interface TestControlPointState {
+  x: number
+  y: number
+}
+
+class TestControlPoint extends React.Component<TestControlPointProps, TestControlPointState> {
+
+  constructor(props: TestControlPointProps) {
+    super(props)
+
+    this.state = {
+      x: 100,
+      y: 100
+    }
+  }
+
+  render() {
+    return (
+      <Circle
+        draggable
+        radius={10}
+        fill={Palette.blue}
+        x={this.state.x}
+        y={this.state.y}
+        onDragStart={(event: any) => this.handleDrag(event)}
+        onDragMove={(event: any) => this.handleDrag(event)}
+        onDragEnd={(event: any) => this.handleDrag(event)}
+      />
+    )
+  }
+
+  private handleDrag(event: any) {
+    let x = Math.min(300, event.target.x())
+    let y = Math.min(300, event.target.y())
+    this.setState({
+      x: x,
+      y: y
+    })
+  }
+}
 
 interface TestCanvasState {
   width: number | undefined
@@ -70,6 +116,10 @@ class TestCanvas extends React.PureComponent<{}, TestCanvasState> {
                       //
                       console.log('onDragEnd')
                     }}
+                  />
+                  <TestControlPoint
+                    xAbsolute={50}
+                    yAbsolute={50}
                   />
                 </Layer>
               </Stage>
