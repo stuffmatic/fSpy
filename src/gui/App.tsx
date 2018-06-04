@@ -1,5 +1,5 @@
 import * as React from 'react'
-import ImageContainer from './containers/image-container'
+import ControlPointsContainer from './containers/control-points-container'
 import ResultContainer from './containers/result-container'
 import SettingsContainer from './containers/settings-container'
 import ExportDialog from './components/export-dialog/export-dialog'
@@ -37,7 +37,7 @@ class App extends React.PureComponent<AppProps> {
           onClose={() => this.props.onExportDialogVisiblityChange(false)}
         />
         <SettingsContainer isVisible={this.props.uiState.sidePanelsAreVisible} />
-        <ImageContainer />
+        <ControlPointsContainer />
         <ResultContainer isVisible={this.props.uiState.sidePanelsAreVisible} />
       </div>
     )

@@ -1,127 +1,127 @@
 import * as React from 'react'
-import ControlPointsPanel1VP from './../components/image-panel/control-points-panel-1-vp'
-import ControlPointsPanel2VP from './../components/image-panel/control-points-panel-2-vp'
-import Overlay3DPanel from './../components/image-panel/overlay-3d-panel'
-import { StoreState } from '../types/store-state'
-import { AppAction, adjustHorizon, setOrigin, setPrincipalPoint, adjustVanishingPoint, setReferenceDistanceAnchor, adjustReferenceDistanceHandle } from '../actions'
-import { Dispatch, connect } from 'react-redux'
-import { CalibrationMode, GlobalSettings } from '../types/global-settings'
-import { ControlPointsState1VP, ControlPointsState2VP, ControlPointPairIndex } from '../types/control-points-state'
-import { CalibrationSettings1VP, CalibrationSettings2VP } from '../types/calibration-settings'
-import CalibrationResult from '../types/calibration-result'
-import Point2D from '../solver/point-2d'
+import { Stage, Layer, Rect, Circle } from 'react-konva'
+import Measure, { ContentRect } from 'react-measure'
+import { Palette } from '../style/palette'
 
-export interface ControlPointsContainerDimensionProps {
-  left: number
-  top: number
-  width: number
-  height: number
+interface ControlPointProps {
+  xAbsolute: number
+  yAbsolute: number
+  onControlPointDrag(xAbsolute: number, yAbsolute: number): void
 }
 
-export interface ControlPointsContainerProps {
-  globalSettings: GlobalSettings
-  calibrationSettings1VP: CalibrationSettings1VP
-  controlPointsState1VP: ControlPointsState1VP
-  calibrationSettings2VP: CalibrationSettings2VP
-  controlPointsState2VP: ControlPointsState2VP
-  calibrationResult: CalibrationResult
-}
+class ControlPoint extends React.PureComponent<ControlPointProps> {
 
-export interface ControlPointsContainerCallbacks {
-  onPrincipalPointDrag(calibrationMode: CalibrationMode, position: Point2D): void
-  onOriginDrag(calibrationMode: CalibrationMode, position: Point2D): void
-  onReferenceDistanceHandleDrag(calibrationMode: CalibrationMode, handleIndex: number, position: number): void
-  onReferenceDistanceAnchorDrag(calibrationMode: CalibrationMode, position: Point2D): void
-  onVanishingPointControlPointDrag(
-    calibrationMode: CalibrationMode,
-    vanishingPointIndex: number,
-    lineSegmentIndex: number,
-    controlPointIndex: ControlPointPairIndex,
-    position: Point2D
-  ): void
-  onHorizonDrag(
-    calibrationMode: CalibrationMode,
-    controlPointIndex: ControlPointPairIndex,
-    position: Point2D
-  ): void
-}
-
-export class ControlPointsContainer extends React.PureComponent<ControlPointsContainerProps & ControlPointsContainerCallbacks & ControlPointsContainerDimensionProps> {
+  constructor(props: ControlPointProps) {
+    super(props)
+  }
 
   render() {
-    let svgStyle: React.CSSProperties = {
-      top: this.props.top,
-      left: this.props.left,
-      width: this.props.width,
-      height: this.props.height,
-      position: 'absolute',
-      overflow: 'visible'
-    }
-
-    let is1VPMode = this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint
-    let solverResult = is1VPMode ? this.props.calibrationResult.calibrationResult1VP : this.props.calibrationResult.calibrationResult2VP
-    let controlPointsPanel = is1VPMode ? (<ControlPointsPanel1VP {...this.props} />) :
-      (<ControlPointsPanel2VP { ...this.props } />)
     return (
-      <svg style={svgStyle}>
-        <Overlay3DPanel
-          width={this.props.width}
-          height={this.props.height}
-          solverResult={solverResult}
-          globalSettings={this.props.globalSettings}
-        />
-        {controlPointsPanel}
-      </svg>
+      <Circle
+        draggable
+        radius={10}
+        fill={Palette.blue}
+        x={this.props.xAbsolute}
+        y={this.props.yAbsolute}
+        onDragStart={(event: any) => this.handleDrag(event)}
+        onDragMove={(event: any) => this.handleDrag(event)}
+        onDragEnd={(event: any) => this.handleDrag(event)}
+      />
+    )
+  }
+
+  private handleDrag(event: any) {
+    this.props.onControlPointDrag(
+      event.target.x(),
+      event.target.y()
     )
   }
 }
 
-export function mapStateToProps(state: StoreState, _: ControlPointsContainerDimensionProps) {
-  let result = {
-    globalSettings: state.globalSettings,
-    calibrationSettings1VP: state.calibrationSettings1VP,
-    controlPointsState1VP: state.controlPointsState1VP,
-    calibrationSettings2VP: state.calibrationSettings2VP,
-    controlPointsState2VP: state.controlPointsState2VP,
-    calibrationResult: state.calibrationResult
-  }
-  return result
+interface ControlPointsContainerState {
+  width: number | undefined
+  height: number | undefined
 }
 
-export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
-  return {
-    onPrincipalPointDrag: (calibrationMode: CalibrationMode, position: Point2D) => {
-      dispatch(setPrincipalPoint(calibrationMode, position))
-    },
-    onOriginDrag: (calibrationMode: CalibrationMode, position: Point2D) => {
-      dispatch(setOrigin(calibrationMode, position))
-    },
-    onReferenceDistanceAnchorDrag: (calibrationMode: CalibrationMode, position: Point2D) => {
-      dispatch(setReferenceDistanceAnchor(calibrationMode, position))
-    },
-    onReferenceDistanceHandleDrag: (calibrationMode: CalibrationMode, handleIndex: number, position: number) => {
-      dispatch(adjustReferenceDistanceHandle(calibrationMode, handleIndex, position))
-    },
-    onHorizonDrag: (_: CalibrationMode, controlPointIndex: ControlPointPairIndex, position: Point2D) => {
-      // TODO: is calibration mode needed here?
-      dispatch(adjustHorizon(controlPointIndex, position))
-    },
-    onVanishingPointControlPointDrag: (calibrationMode: CalibrationMode,
-      vanishingPointIndex: number,
-      lineSegmentIndex: number,
-      controlPointIndex: ControlPointPairIndex,
-      position: Point2D) => {
-      dispatch(
-        adjustVanishingPoint(
-          calibrationMode,
-          vanishingPointIndex,
-          lineSegmentIndex,
-          controlPointIndex,
-          position
-        )
-      )
+interface ControlPointsContainerProps {
+
+}
+
+export default class ControlPointsContainer extends React.Component<ControlPointsContainerProps, ControlPointsContainerState> {
+
+  constructor(props: {}) {
+    super(props)
+
+    this.state = {
+      width: undefined,
+      height: undefined
     }
   }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(ControlPointsContainer)
+  render() {
+    let width = this.state.width
+    let height = this.state.height
+
+    return (
+      <div id='center-panel'>
+        <Measure
+          client
+          bounds
+          offset
+          onResize={(contentRect: ContentRect) => {
+            let newWidth = contentRect.bounds !== undefined ? contentRect.bounds.width : undefined
+            let newHeight = contentRect.bounds !== undefined ? contentRect.bounds.height : undefined
+            this.setState({
+              ...this.state,
+              width: newWidth,
+              height: newHeight
+            })
+          }}
+        >
+          {({ measureRef }) => {
+            console.log('width ' + width + ', ' + height)
+            return (<div id='image-panel' ref={measureRef} >
+              <Stage width={width} height={height}>
+                <Layer>
+                  <Rect
+                    x={20}
+                    y={20}
+                    width={width! - 2 * 20}
+                    height={height! - 2 * 20}
+                    stroke={Palette.gray}
+                    shadowBlur={5}
+                    onClick={(_: Event) => {
+                      //
+                      console.log('onClick')
+                    }}
+                    onDragStart={(_: Event) => {
+                      //
+                      console.log('onDragStart')
+                    }}
+                    onDragMove={(_: Event) => {
+                      //
+                      console.log('onDragMove')
+                    }}
+                    onDragEnd={(_: Event) => {
+                      //
+                      console.log('onDragEnd')
+                    }}
+                  />
+                  <ControlPoint
+                    xAbsolute={20}
+                    yAbsolute={20}
+                    onControlPointDrag={(xAbsolute: number, yAbsolute: number) => {
+                      console.log(xAbsolute + ', ' + yAbsolute)
+                    }}
+                  />
+                </Layer>
+              </Stage>
+            </div>
+            )
+          }
+          }
+        </Measure>
+      </div>
+    )
+  }
+}
