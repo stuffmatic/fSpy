@@ -1,5 +1,5 @@
 import React from 'react'
-import Select from 'react-select'
+import Select, { Option } from 'react-select'
 
 interface DropdownProps<T> {
   options: DropdownOption<T>[]
@@ -24,13 +24,15 @@ export default class Dropdown<T> extends React.Component<DropdownProps<T>> {
         clearable={false}
         name=''
         value={this.props.selectedOptionId}
-        /*onChange={(selectedOption: Option) => {
-          for (let option of this.props.options) {
-            if (option.id == selectedOption.value) {
-              this.props.onChange(option.value)
+        onChange={(selectedOption: Option | null) => {
+          if (selectedOption !== null) {
+            for (let option of this.props.options) {
+              if (option.id == selectedOption.value) {
+                this.props.onChange(option.value)
+              }
             }
           }
-        }}*/
+        }}
         searchable={false}
         options={
           this.props.options.map(
