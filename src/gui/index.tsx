@@ -10,7 +10,7 @@ import 'react-select/dist/react-select.css'
 import 'highlight.js/styles/atom-one-dark.css'
 import { ipcRenderer } from 'electron'
 import { OpenProjectMessage, OpenImageMessage } from '../main/messages'
-import { existsSync, readFileSync } from 'fs'
+import { readFileSync } from 'fs'
 import { setImage } from './actions'
 
 ReactDOM.render(
@@ -21,7 +21,6 @@ ReactDOM.render(
 )
 
 ipcRenderer.on(OpenProjectMessage.type, (_: any, message: OpenProjectMessage) => {
-  console.log('got OpenProjectMessage')
   console.log(message.filePath)
 })
 
@@ -43,9 +42,4 @@ ipcRenderer.on(OpenImageMessage.type, (_: any, message: OpenImageMessage) => {
   image.onerror = (_: Event) => {
     alert('Failed to load the image')
   }
-
-  console.log('got OpenImageMessage')
-  console.log(message.filePath)
-  console.log(url)
-  console.log('exists? ' + existsSync(message.filePath))
 })

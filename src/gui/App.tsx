@@ -20,22 +20,28 @@ interface AppProps {
   onExportDialogVisiblityChange(isVisible: boolean): void
 }
 
-function App(props: AppProps) {
-  return (
+class App extends React.PureComponent<AppProps> {
 
-    <div id='app-container'>
-      <ExportDialog
-        isVisible={props.uiState.isExportDialogOpen}
-        solverResult={props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint ? props.calibrationResult.calibrationResult1VP : props.calibrationResult.calibrationResult2VP}
-        image={props.image}
-        onOpen={() => props.onExportDialogVisiblityChange(true)}
-        onClose={() => props.onExportDialogVisiblityChange(false)}
-      />
-      <SettingsContainer isVisible={props.uiState.sidePanelsAreVisible} />
-      <ImageContainer />
-      <ResultContainer isVisible={props.uiState.sidePanelsAreVisible} />
-    </div>
-  )
+  constructor(props: AppProps) {
+    super(props)
+  }
+
+  render() {
+    return (
+      <div id='app-container'>
+        <ExportDialog
+          isVisible={this.props.uiState.isExportDialogOpen}
+          solverResult={this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint ? this.props.calibrationResult.calibrationResult1VP : this.props.calibrationResult.calibrationResult2VP}
+          image={this.props.image}
+          onOpen={() => this.props.onExportDialogVisiblityChange(true)}
+          onClose={() => this.props.onExportDialogVisiblityChange(false)}
+        />
+        <SettingsContainer isVisible={this.props.uiState.sidePanelsAreVisible} />
+        <ImageContainer />
+        <ResultContainer isVisible={this.props.uiState.sidePanelsAreVisible} />
+      </div>
+    )
+  }
 }
 
 export function mapStateToProps(state: StoreState) {

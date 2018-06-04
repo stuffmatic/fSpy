@@ -19,7 +19,9 @@ function createWindow() {
   window.on('ready-to-show', () => {
     window.show()
     window.focus()
+
     if (process.env.DEV) {
+      // show dev tools
       window.webContents.openDevTools({ mode: 'bottom' })
       // load a test image
       window.webContents.send(
