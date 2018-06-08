@@ -1,45 +1,11 @@
 import * as React from 'react'
-import { Image as KonvaImage, Stage, Layer, Circle } from 'react-konva'
+import { Image as KonvaImage, Stage, Layer } from 'react-konva'
 import Measure, { ContentRect } from 'react-measure'
-import { Palette } from '../../style/palette'
 import Point2D from '../../solver/point-2d'
 import { ImageState } from '../../types/image-state'
 import AABB from '../../solver/aabb'
-
-interface ControlPointProps {
-  absolutePosition: Point2D
-  onControlPointDrag(absolutePosition: Point2D): void
-}
-
-class ControlPoint extends React.Component<ControlPointProps> {
-  constructor(props: ControlPointProps) {
-    super(props)
-  }
-
-  render() {
-    return (
-      <Circle
-        draggable
-        radius={4}
-        fill={Palette.blue}
-        x={this.props.absolutePosition.x}
-        y={this.props.absolutePosition.y}
-        onDragStart={(event: any) => this.handleDrag(event)}
-        onDragMove={(event: any) => this.handleDrag(event)}
-        onDragEnd={(event: any) => this.handleDrag(event)}
-      />
-    )
-  }
-
-  private handleDrag(event: any) {
-    this.props.onControlPointDrag(
-      {
-        x: event.target.x(),
-        y: event.target.y()
-      }
-    )
-  }
-}
+import ControlPoint from '../../components/control-points-panel/control-point'
+import { Palette } from '../../style/palette'
 
 interface ControlPointsPanelState {
   width: number | undefined
@@ -108,6 +74,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
                 <Layer>
                   {this.renderImage()}
                   <ControlPoint
+                    fill={Palette.blue}
                     absolutePosition={this.rel2abs(this.state.relativePositionTest)}
                     onControlPointDrag={(absolutePosition: Point2D) => {
                       let imageAABB = this.imageAbsoluteAABB()
