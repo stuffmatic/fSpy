@@ -1,9 +1,10 @@
 import * as React from 'react'
-import { Image as KonvaImage, Stage, Layer, Rect, Circle } from 'react-konva'
+import { Image as KonvaImage, Stage, Layer, Circle } from 'react-konva'
 import Measure, { ContentRect } from 'react-measure'
 import { Palette } from '../style/palette'
 import Point2D from '../solver/point-2d'
 import { ImageState } from '../types/image-state'
+import AABB from '../solver/aabb'
 
 interface ControlPointProps {
   absolutePosition: Point2D
@@ -54,6 +55,7 @@ export default class ControlPointsContainer extends React.Component<ControlPoint
 
   private previousImageUrl: string | null
   private imageElement: HTMLImageElement | null
+  private readonly pad = 20
 
   constructor(props: ControlPointsContainerProps) {
     super(props)
@@ -78,6 +80,8 @@ export default class ControlPointsContainer extends React.Component<ControlPoint
       if (this.props.imageState.url) {
         this.imageElement = new Image()
         this.imageElement.src = this.props.imageState.url
+      } else {
+        this.imageElement = null
       }
     }
     this.previousImageUrl = this.props.imageState.url
@@ -102,24 +106,24 @@ export default class ControlPointsContainer extends React.Component<ControlPoint
             return (<div id='image-panel' ref={measureRef} >
               <Stage width={width} height={height}>
                 <Layer>
-                  <Rect
-                    x={20}
-                    y={20}
-                    width={width! - 2 * 20}
-                    height={height! - 2 * 20}
-                    stroke={Palette.red}
-                  />
                   {this.renderImage()}
                   <ControlPoint
                     absolutePosition={this.rel2abs(this.state.relativePositionTest)}
                     onControlPointDrag={(absolutePosition: Point2D) => {
-                      let relativePosition = this.abs2Rel(absolutePosition)
-                      relativePosition.x = Math.min(Math.max(0.1, relativePosition.x), 0.9)
-                      relativePosition.y = Math.min(Math.max(0.1, relativePosition.y), 0.9)
-                      this.setState({
-                        ...this.state,
-                        relativePositionTest: relativePosition
-                      })
+                      let imageAABB = this.imageAbsoluteAABB()
+                      if (imageAABB) {
+                        let clampedPosition = {
+                          x: Math.min(Math.max(imageAABB.xMin, absolutePosition.x), imageAABB.xMax),
+                          y: Math.min(Math.max(imageAABB.yMin, absolutePosition.y), imageAABB.yMax)
+                        }
+
+                        let relativePosition = this.abs2Rel(clampedPosition)
+                        this.setState({
+                          ...this.state,
+                          relativePositionTest: relativePosition
+                        })
+
+                      }
                     }}
                   />
                 </Layer>
@@ -133,46 +137,82 @@ export default class ControlPointsContainer extends React.Component<ControlPoint
     )
   }
 
-  private renderImage() {
-    if (!this.imageElement) {
+  private imageAbsoluteAABB(): AABB | null {
+    let imageWidth = this.props.imageState.width
+    let imageHeight = this.props.imageState.height
+    let width = this.state.width
+    let height = this.state.height
+
+    if (!this.imageElement || !imageWidth || !imageHeight || !width || !height) {
       return null
     }
 
-    let width = this.state.width
-    let height = this.state.height
+    if (height <= 0 || imageHeight <= 0) {
+      return null
+    }
+
+    let pad = this.pad
+    let imageAspect = imageWidth / imageHeight
+    let aspect = (width - 2 * pad) / (height - 2 * pad)
+    let xOffset = pad
+    let yOffset = pad
+    let imageScale = 1
+    if (imageAspect > aspect) {
+      // wide image
+      imageScale = (width - 2 * pad) / imageWidth
+      yOffset = pad + 0.5 * (height - 2 * pad - imageScale * imageHeight)
+    } else {
+      // tall image
+      imageScale = (height - 2 * pad) / imageHeight
+      xOffset = pad + 0.5 * (width - 2 * pad - imageScale * imageWidth)
+    }
+
+    return {
+      xMin: xOffset,
+      yMin: yOffset,
+      xMax: xOffset + imageScale * imageWidth,
+      yMax: yOffset + imageScale * imageHeight
+    }
+  }
+
+  private renderImage() {
+    let imageAABB = this.imageAbsoluteAABB()
+    if (!imageAABB || !this.imageElement) {
+      return null
+    }
 
     return (
       <KonvaImage
         image={this.imageElement}
-        x={20}
-        y={20}
-        width={width! - 2 * 20}
-        height={height! - 2 * 20}
+        x={imageAABB.xMin}
+        y={imageAABB.yMin}
+        width={imageAABB.xMax - imageAABB.xMin}
+        height={imageAABB.yMax - imageAABB.yMin}
       />
     )
   }
 
   private rel2abs(point: Point2D): Point2D {
-    if (this.state.width === undefined || this.state.height === undefined) {
-      return {
-        x: 0, y: 0
-      }
+    let imageAABB = this.imageAbsoluteAABB()
+    if (!imageAABB) {
+      return { x: 0, y: 0 }
     }
+
     return {
-      x: this.state.width * point.x,
-      y: this.state.height * point.y
+      x: imageAABB.xMin + point.x * (imageAABB.xMax - imageAABB.xMin),
+      y: imageAABB.yMin + point.y * (imageAABB.yMax - imageAABB.yMin)
     }
   }
 
   private abs2Rel(point: Point2D): Point2D {
-    if (this.state.width === undefined || this.state.height === undefined) {
-      return {
-        x: 0, y: 0
-      }
+    let imageAABB = this.imageAbsoluteAABB()
+    if (!imageAABB) {
+      return { x: 0, y: 0 }
     }
+
     return {
-      x: point.x / this.state.width,
-      y: point.y / this.state.height
+      x: (point.x - imageAABB.xMin) / (imageAABB.xMax - imageAABB.xMin),
+      y: (point.y - imageAABB.yMin) / (imageAABB.yMax - imageAABB.yMin)
     }
   }
 }
