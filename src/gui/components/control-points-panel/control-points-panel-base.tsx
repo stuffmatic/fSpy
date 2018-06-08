@@ -4,20 +4,25 @@ import Measure, { ContentRect } from 'react-measure'
 import Point2D from '../../solver/point-2d'
 import { ImageState } from '../../types/image-state'
 import AABB from '../../solver/aabb'
-import ControlPoint from '../../components/control-points-panel/control-point'
-import { Palette } from '../../style/palette'
+import { ControlPointsContainerCallbacks } from '../../containers/control-points-container'
+import OriginControl from '../../components/control-points-panel/origin-control'
+import { ControlPointsStateBase } from '../../types/control-points-state'
+import { GlobalSettings } from '../../types/global-settings'
 
-interface ControlPointsPanelState {
+interface ControlPointsPanelBaseState {
   width: number | undefined
   height: number | undefined
   relativePositionTest: Point2D
 }
 
-interface ControlPointsPanelBaseProps {
+export interface ControlPointsPanelBaseProps {
+  globalSettings: GlobalSettings
   imageState: ImageState
+  callbacks: ControlPointsContainerCallbacks
+  controlPointsState: ControlPointsStateBase
 }
 
-export default class ControlPointsPanelBase extends React.Component<ControlPointsPanelBaseProps, ControlPointsPanelState> {
+export default class ControlPointsPanelBase extends React.Component<ControlPointsPanelBaseProps, ControlPointsPanelBaseState> {
 
   private previousImageUrl: string | null
   private imageElement: HTMLImageElement | null
@@ -85,6 +90,41 @@ export default class ControlPointsPanelBase extends React.Component<ControlPoint
     )
   }
 
+  protected renderImage() {
+    let imageAABB = this.imageAbsoluteAABB()
+    if (!imageAABB || !this.imageElement) {
+      return null
+    }
+
+    return (
+      <KonvaImage
+        image={this.imageElement}
+        x={imageAABB.xMin}
+        y={imageAABB.yMin}
+        width={imageAABB.xMax - imageAABB.xMin}
+        height={imageAABB.yMax - imageAABB.yMin}
+      />
+    )
+  }
+
+  protected renderControlPoints() {
+    // Override in derived classes
+    return (
+      <OriginControl
+        absolutePosition={this.rel2abs(this.props.controlPointsState.origin)}
+        dragCallback={(absolutePosition: Point2D) => {
+          let relativePosition = this.abs2Rel(absolutePosition)
+          relativePosition.x = Math.min(1, Math.max(0, relativePosition.x))
+          relativePosition.y = Math.min(1, Math.max(0, relativePosition.y))
+          this.props.callbacks.onOriginDrag(
+            this.props.globalSettings.calibrationMode,
+            relativePosition
+          )
+        }}
+      />
+    )
+  }
+
   protected imageAbsoluteAABB(): AABB | null {
     let imageWidth = this.props.imageState.width
     let imageHeight = this.props.imageState.height
@@ -121,48 +161,6 @@ export default class ControlPointsPanelBase extends React.Component<ControlPoint
       xMax: xOffset + imageScale * imageWidth,
       yMax: yOffset + imageScale * imageHeight
     }
-  }
-
-  protected renderImage() {
-    let imageAABB = this.imageAbsoluteAABB()
-    if (!imageAABB || !this.imageElement) {
-      return null
-    }
-
-    return (
-      <KonvaImage
-        image={this.imageElement}
-        x={imageAABB.xMin}
-        y={imageAABB.yMin}
-        width={imageAABB.xMax - imageAABB.xMin}
-        height={imageAABB.yMax - imageAABB.yMin}
-      />
-    )
-  }
-
-  protected renderControlPoints() {
-    return (
-      <ControlPoint
-        fill={Palette.blue}
-        absolutePosition={this.rel2abs(this.state.relativePositionTest)}
-        onControlPointDrag={(absolutePosition: Point2D) => {
-          let imageAABB = this.imageAbsoluteAABB()
-          if (imageAABB) {
-            let clampedPosition = {
-              x: Math.min(Math.max(imageAABB.xMin, absolutePosition.x), imageAABB.xMax),
-              y: Math.min(Math.max(imageAABB.yMin, absolutePosition.y), imageAABB.yMax)
-            }
-
-            let relativePosition = this.abs2Rel(clampedPosition)
-            this.setState({
-              ...this.state,
-              relativePositionTest: relativePosition
-            })
-
-          }
-        }}
-      />
-    )
   }
 
   protected rel2abs(point: Point2D): Point2D {
