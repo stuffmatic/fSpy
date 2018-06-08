@@ -13,17 +13,17 @@ interface ControlPointsPanelState {
   relativePositionTest: Point2D
 }
 
-interface ControlPointsPanelProps {
+interface ControlPointsPanelBaseProps {
   imageState: ImageState
 }
 
-export default class ControlPointsPanel extends React.Component<ControlPointsPanelProps, ControlPointsPanelState> {
+export default class ControlPointsPanelBase extends React.Component<ControlPointsPanelBaseProps, ControlPointsPanelState> {
 
   private previousImageUrl: string | null
   private imageElement: HTMLImageElement | null
   private readonly pad = 20
 
-  constructor(props: ControlPointsPanelProps) {
+  constructor(props: ControlPointsPanelBaseProps) {
     super(props)
 
     this.previousImageUrl = null
@@ -73,26 +73,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
               <Stage width={width} height={height}>
                 <Layer>
                   {this.renderImage()}
-                  <ControlPoint
-                    fill={Palette.blue}
-                    absolutePosition={this.rel2abs(this.state.relativePositionTest)}
-                    onControlPointDrag={(absolutePosition: Point2D) => {
-                      let imageAABB = this.imageAbsoluteAABB()
-                      if (imageAABB) {
-                        let clampedPosition = {
-                          x: Math.min(Math.max(imageAABB.xMin, absolutePosition.x), imageAABB.xMax),
-                          y: Math.min(Math.max(imageAABB.yMin, absolutePosition.y), imageAABB.yMax)
-                        }
-
-                        let relativePosition = this.abs2Rel(clampedPosition)
-                        this.setState({
-                          ...this.state,
-                          relativePositionTest: relativePosition
-                        })
-
-                      }
-                    }}
-                  />
+                  {this.renderControlPoints()}
                 </Layer>
               </Stage>
             </div>
@@ -104,7 +85,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     )
   }
 
-  private imageAbsoluteAABB(): AABB | null {
+  protected imageAbsoluteAABB(): AABB | null {
     let imageWidth = this.props.imageState.width
     let imageHeight = this.props.imageState.height
     let width = this.state.width
@@ -142,7 +123,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     }
   }
 
-  private renderImage() {
+  protected renderImage() {
     let imageAABB = this.imageAbsoluteAABB()
     if (!imageAABB || !this.imageElement) {
       return null
@@ -159,7 +140,32 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     )
   }
 
-  private rel2abs(point: Point2D): Point2D {
+  protected renderControlPoints() {
+    return (
+      <ControlPoint
+        fill={Palette.blue}
+        absolutePosition={this.rel2abs(this.state.relativePositionTest)}
+        onControlPointDrag={(absolutePosition: Point2D) => {
+          let imageAABB = this.imageAbsoluteAABB()
+          if (imageAABB) {
+            let clampedPosition = {
+              x: Math.min(Math.max(imageAABB.xMin, absolutePosition.x), imageAABB.xMax),
+              y: Math.min(Math.max(imageAABB.yMin, absolutePosition.y), imageAABB.yMax)
+            }
+
+            let relativePosition = this.abs2Rel(clampedPosition)
+            this.setState({
+              ...this.state,
+              relativePositionTest: relativePosition
+            })
+
+          }
+        }}
+      />
+    )
+  }
+
+  protected rel2abs(point: Point2D): Point2D {
     let imageAABB = this.imageAbsoluteAABB()
     if (!imageAABB) {
       return { x: 0, y: 0 }
@@ -171,7 +177,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     }
   }
 
-  private abs2Rel(point: Point2D): Point2D {
+  protected abs2Rel(point: Point2D): Point2D {
     let imageAABB = this.imageAbsoluteAABB()
     if (!imageAABB) {
       return { x: 0, y: 0 }
