@@ -37,7 +37,7 @@ class App extends React.PureComponent<AppProps> {
           onClose={() => this.props.onExportDialogVisiblityChange(false)}
         />
         <SettingsContainer isVisible={this.props.uiState.sidePanelsAreVisible} />
-        <ControlPointsContainer imageState={this.props.image}/>
+        <ControlPointsContainer />
         <ResultContainer isVisible={this.props.uiState.sidePanelsAreVisible} />
       </div>
     )
