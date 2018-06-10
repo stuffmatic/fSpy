@@ -54,11 +54,13 @@ export function recalculateCalibrationResult(): ThunkAction<void, StoreState, vo
 
       let result: CalibrationResult = {
         calibrationResult1VP: Solver.solve1VP(
+          state.calibrationSettingsBase,
           state.calibrationSettings1VP,
           state.controlPointsState1VP,
           state.image
         ),
         calibrationResult2VP: Solver.solve2VP(
+          state.calibrationSettingsBase,
           state.calibrationSettings2VP,
           state.controlPointsState2VP,
           state.image
@@ -224,14 +226,12 @@ export function setAbsoluteFocalLength1VP(absoluteFocalLength: number): SetAbsol
 //
 export interface SetReferenceDistance {
   type: ActionTypes.SET_REFERENCE_DISTANCE,
-  calibrationMode: CalibrationMode,
   distance: number
 }
 
-export function setReferenceDistance(calibrationMode: CalibrationMode, distance: number): SetReferenceDistance {
+export function setReferenceDistance(distance: number): SetReferenceDistance {
   return {
     type: ActionTypes.SET_REFERENCE_DISTANCE,
-    calibrationMode: calibrationMode,
     distance: distance
   }
 }
@@ -239,14 +239,12 @@ export function setReferenceDistance(calibrationMode: CalibrationMode, distance:
 //
 export interface SetReferenceDistanceUnit {
   type: ActionTypes.SET_REFERENCE_DISTANCE_UNIT,
-  calibrationMode: CalibrationMode,
   unit: ReferenceDistanceUnit
 }
 
-export function setReferenceDistanceUnit(calibrationMode: CalibrationMode, unit: ReferenceDistanceUnit): SetReferenceDistanceUnit {
+export function setReferenceDistanceUnit(unit: ReferenceDistanceUnit): SetReferenceDistanceUnit {
   return {
     type: ActionTypes.SET_REFERENCE_DISTANCE_UNIT,
-    calibrationMode: calibrationMode,
     unit: unit
   }
 }
@@ -254,14 +252,12 @@ export function setReferenceDistanceUnit(calibrationMode: CalibrationMode, unit:
 //
 export interface SetReferenceDistanceAxis {
   type: ActionTypes.SET_REFERENCE_DISTANCE_AXIS,
-  calibrationMode: CalibrationMode,
   axis: Axis | null
 }
 
-export function setReferenceDistanceAxis(calibrationMode: CalibrationMode, axis: Axis | null): SetReferenceDistanceAxis {
+export function setReferenceDistanceAxis(axis: Axis | null): SetReferenceDistanceAxis {
   return {
     type: ActionTypes.SET_REFERENCE_DISTANCE_AXIS,
-    calibrationMode: calibrationMode,
     axis: axis
   }
 }
@@ -269,14 +265,12 @@ export function setReferenceDistanceAxis(calibrationMode: CalibrationMode, axis:
 //
 export interface SetCameraPreset {
   type: ActionTypes.SET_CAMERA_PRESET,
-  calibrationMode: CalibrationMode,
   cameraPreset: string | null
 }
 
-export function setCameraPreset(calibrationMode: CalibrationMode, cameraPreset: string | null): SetCameraPreset {
+export function setCameraPreset(cameraPreset: string | null): SetCameraPreset {
   return {
     type: ActionTypes.SET_CAMERA_PRESET,
-    calibrationMode: calibrationMode,
     cameraPreset: cameraPreset
   }
 }
@@ -284,15 +278,13 @@ export function setCameraPreset(calibrationMode: CalibrationMode, cameraPreset: 
 //
 export interface SetCameraSensorSize {
   type: ActionTypes.SET_CAMERA_SENSOR_SIZE,
-  calibrationMode: CalibrationMode,
   width: number | undefined
   height: number | undefined
 }
 
-export function setCameraSensorSize(calibrationMode: CalibrationMode, width: number | undefined, height: number | undefined): SetCameraSensorSize {
+export function setCameraSensorSize(width: number | undefined, height: number | undefined): SetCameraSensorSize {
   return {
     type: ActionTypes.SET_CAMERA_SENSOR_SIZE,
-    calibrationMode: calibrationMode,
     width: width,
     height: height
   }

@@ -27,7 +27,8 @@ export default class Solver {
    * @param image
    */
   static solve1VP(
-    settings: CalibrationSettings1VP,
+    settingsBase: CalibrationSettingsBase,
+    settings1VP: CalibrationSettings1VP,
     controlPoints: ControlPointsState1VP,
     image: ImageState
   ): SolverResult {
@@ -44,10 +45,10 @@ export default class Solver {
     let imageHeight = image.height!
 
     // Compute a relative focal length from the provided absolute focal length and sensor size
-    let absoluteFocalLength = settings.absoluteFocalLength
-    let sensorWidth = settings.cameraData.customSensorWidth
-    let sensorHeight = settings.cameraData.customSensorHeight
-    let presetId = settings.cameraData.presetId
+    let absoluteFocalLength = settings1VP.absoluteFocalLength
+    let sensorWidth = settingsBase.cameraData.customSensorWidth
+    let sensorHeight = settingsBase.cameraData.customSensorHeight
+    let presetId = settingsBase.cameraData.presetId
     if (presetId) {
       let preset = cameraPresets[presetId]
       sensorWidth = preset.sensorWidth
@@ -81,7 +82,7 @@ export default class Solver {
 
     // Get the principal point
     let principalPoint = { x: 0, y: 0 }
-    if (settings.principalPointMode == PrincipalPointMode1VP.Manual) {
+    if (settings1VP.principalPointMode == PrincipalPointMode1VP.Manual) {
       principalPoint = CoordinatesUtil.convert(
         controlPoints.principalPoint,
         ImageCoordinateFrame.Relative,
@@ -93,7 +94,7 @@ export default class Solver {
 
     // Compute the horizon direction
     let horizonDirection: Point2D = { x: 1, y: 0 } // flat by default
-    if (settings.horizonMode == HorizonMode.Manual) {
+    if (settings1VP.horizonMode == HorizonMode.Manual) {
       // Compute two points on the horizon line in image plane coordinates
       let horizonStart = CoordinatesUtil.convert(
         controlPoints.horizon[0],
@@ -140,7 +141,7 @@ export default class Solver {
     this.computeCameraParameters(
       result,
       controlPoints,
-      settings,
+      settingsBase,
       axisAssignmentMatrix,
       principalPoint,
       inputVanishingPoints![0],
@@ -154,7 +155,8 @@ export default class Solver {
   }
 
   static solve2VP(
-    settings: CalibrationSettings2VP,
+    settingsBase: CalibrationSettingsBase,
+    settings2VP: CalibrationSettings2VP,
     controlPoints: ControlPointsState2VP,
     image: ImageState
   ): SolverResult {
@@ -196,7 +198,7 @@ export default class Solver {
       }
     ]
 
-    if (settings.quadModeEnabled) {
+    if (settings2VP.quadModeEnabled) {
       vanishingPointControlStates[1].lineSegments[0][0] = controlPoints.vanishingPoints[0].lineSegments[1][0]
       vanishingPointControlStates[1].lineSegments[0][1] = controlPoints.vanishingPoints[0].lineSegments[0][0]
       vanishingPointControlStates[1].lineSegments[1][0] = controlPoints.vanishingPoints[0].lineSegments[1][1]
@@ -217,7 +219,7 @@ export default class Solver {
 
     // Get the principal point
     let principalPoint = { x: 0, y: 0 }
-    switch (settings.principalPointMode) {
+    switch (settings2VP.principalPointMode) {
       case PrincipalPointMode2VP.Manual:
         principalPoint = CoordinatesUtil.convert(
           controlPoints.principalPoint,
@@ -253,8 +255,8 @@ export default class Solver {
 
     // Assing vanishing point axes
     let axisAssignmentMatrix = new Transform()
-    let row1 = this.axisVector(settings.vanishingPointAxes[0])
-    let row2 = this.axisVector(settings.vanishingPointAxes[1])
+    let row1 = this.axisVector(settings2VP.vanishingPointAxes[0])
+    let row2 = this.axisVector(settings2VP.vanishingPointAxes[1])
     let row3 = row1.cross(row2)
     axisAssignmentMatrix.matrix[0][0] = row1.x
     axisAssignmentMatrix.matrix[0][1] = row1.y
@@ -267,8 +269,8 @@ export default class Solver {
     axisAssignmentMatrix.matrix[2][2] = row3.z
 
     result.vanishingPointAxes = [
-      settings.vanishingPointAxes[0],
-      settings.vanishingPointAxes[1],
+      settings2VP.vanishingPointAxes[0],
+      settings2VP.vanishingPointAxes[1],
       this.vectorAxis(row3)
     ]
 
@@ -276,7 +278,7 @@ export default class Solver {
     this.computeCameraParameters(
       result,
       controlPoints,
-      settings,
+      settingsBase,
       axisAssignmentMatrix,
       principalPoint,
       inputVanishingPoints[0],

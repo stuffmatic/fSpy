@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { SettingsContainerProps } from '../../containers/settings-container'
-import { PrincipalPointMode1VP, HorizonMode, Axis, ReferenceDistanceUnit } from '../../types/calibration-settings'
+import { PrincipalPointMode1VP, HorizonMode, Axis } from '../../types/calibration-settings'
 import AxisDropdown from './axis-dropdown'
 import PanelSpacer from './../common/panel-spacer'
 import Dropdown from './../common/dropdown'
@@ -57,18 +57,12 @@ export default class SettingsSection1VP extends React.PureComponent<SettingsCont
         </div>
 
         <ReferenceDistanceForm
-          referenceAxis={this.props.calibrationSettings1VP.referenceDistanceAxis}
-          referenceDistance={this.props.calibrationSettings1VP.referenceDistance}
-          referenceDistanceUnit={this.props.calibrationSettings1VP.referenceDistanceUnit}
-          onReferenceAxisChange={(axis: Axis | null) => {
-            this.props.onReferenceDistanceAxisChange(this.props.globalSettings.calibrationMode, axis)
-          }}
-          onReferenceDistanceChange={(distance: number) => {
-            this.props.onReferenceDistanceChange(this.props.globalSettings.calibrationMode, distance)
-          }}
-          onReferenceDistanceUnitChange={(unit: ReferenceDistanceUnit) => {
-            this.props.onReferenceDistanceUnitChange(this.props.globalSettings.calibrationMode, unit)
-          }}
+          referenceAxis={this.props.calibrationSettingsBase.referenceDistanceAxis}
+          referenceDistance={this.props.calibrationSettingsBase.referenceDistance}
+          referenceDistanceUnit={this.props.calibrationSettingsBase.referenceDistanceUnit}
+          onReferenceAxisChange={ this.props.onReferenceDistanceAxisChange }
+          onReferenceDistanceChange={ this.props.onReferenceDistanceChange }
+          onReferenceDistanceUnitChange={ this.props.onReferenceDistanceUnitChange }
         />
 
         <PanelSpacer />
@@ -77,15 +71,11 @@ export default class SettingsSection1VP extends React.PureComponent<SettingsCont
         </div>
 
         <FocalLengthForm
-          cameraData={this.props.calibrationSettings1VP.cameraData}
+          cameraData={this.props.calibrationSettingsBase.cameraData}
           absoluteFocalLength={this.props.calibrationSettings1VP.absoluteFocalLength}
           onAbsoluteFocalLengthChange={this.props.onAbsoluteFocalLengthChange1VP}
-          onCameraPresetChange={(cameraPreset: string | null) => {
-            this.props.onCameraPresetChange(this.props.globalSettings.calibrationMode, cameraPreset)
-          }}
-          onSensorSizeChange={(width: number | undefined, height: number | undefined) => {
-            this.props.onSensorSizeChange(this.props.globalSettings.calibrationMode, width, height)
-          }}
+          onCameraPresetChange={ this.props.onCameraPresetChange }
+          onSensorSizeChange={ this.props.onSensorSizeChange }
         />
 
         <PanelSpacer />

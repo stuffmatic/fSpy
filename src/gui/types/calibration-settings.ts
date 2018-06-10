@@ -29,6 +29,12 @@ export enum ReferenceDistanceUnit {
   Yards = 'Yards'
 }
 
+export interface CameraData {
+  presetId: string | null
+  customSensorWidth: number
+  customSensorHeight: number
+}
+
 export interface CalibrationSettingsBase {
   referenceDistanceUnit: ReferenceDistanceUnit
   referenceDistance: number
@@ -36,13 +42,7 @@ export interface CalibrationSettingsBase {
   cameraData: CameraData
 }
 
-export interface CameraData {
-  presetId: string | null
-  customSensorWidth: number
-  customSensorHeight: number
-}
-
-export interface CalibrationSettings1VP extends CalibrationSettingsBase {
+export interface CalibrationSettings1VP {
   principalPointMode: PrincipalPointMode1VP
   vanishingPointAxis: Axis
   upAxis: Axis
@@ -50,7 +50,7 @@ export interface CalibrationSettings1VP extends CalibrationSettingsBase {
   absoluteFocalLength: number
 }
 
-export interface CalibrationSettings2VP extends CalibrationSettingsBase {
+export interface CalibrationSettings2VP {
   principalPointMode: PrincipalPointMode2VP
   quadModeEnabled: boolean
   vanishingPointAxes: [Axis, Axis]

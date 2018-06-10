@@ -5,11 +5,12 @@ import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1V
 import SettingsPanel from '../components/settings-panel/settings-panel'
 import { CalibrationMode, GlobalSettings } from '../types/global-settings'
 import { StoreState } from '../types/store-state'
-import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode, Axis, ReferenceDistanceUnit } from '../types/calibration-settings'
+import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode, Axis, ReferenceDistanceUnit, CalibrationSettingsBase } from '../types/calibration-settings'
 
 export interface SettingsContainerProps {
   isVisible: boolean
   globalSettings: GlobalSettings
+  calibrationSettingsBase: CalibrationSettingsBase
   calibrationSettings1VP: CalibrationSettings1VP
   calibrationSettings2VP: CalibrationSettings2VP
   onCalibrationModeChange(calibrationMode: CalibrationMode): void
@@ -22,11 +23,11 @@ export interface SettingsContainerProps {
   onVanishingPointAxisChange1VP(axis: Axis): void
   onVanishingPointAxisChange2VP(vanishingPointIndex: number, axis: Axis): void
   onAbsoluteFocalLengthChange1VP(absoluteFocalLength: number): void
-  onReferenceDistanceAxisChange(calibrationMode: CalibrationMode, axis: Axis | null): void
-  onReferenceDistanceUnitChange(calibrationMode: CalibrationMode, unit: ReferenceDistanceUnit): void
-  onReferenceDistanceChange(calibrationMode: CalibrationMode, distance: number): void
-  onCameraPresetChange(calibrationMode: CalibrationMode, cameraPreset: string | null): void
-  onSensorSizeChange(calibrationMode: CalibrationMode, width: number | undefined, height: number | undefined): void
+  onReferenceDistanceAxisChange(axis: Axis | null): void
+  onReferenceDistanceUnitChange(unit: ReferenceDistanceUnit): void
+  onReferenceDistanceChange(distance: number): void
+  onCameraPresetChange(cameraPreset: string | null): void
+  onSensorSizeChange(width: number | undefined, height: number | undefined): void
 }
 
 class SettingsContainer extends React.PureComponent<SettingsContainerProps> {
@@ -43,6 +44,7 @@ class SettingsContainer extends React.PureComponent<SettingsContainerProps> {
 export function mapStateToProps(state: StoreState) {
   return {
     globalSettings: state.globalSettings,
+    calibrationSettingsBase: state.calibrationSettingsBase,
     calibrationSettings1VP: state.calibrationSettings1VP,
     calibrationSettings2VP: state.calibrationSettings2VP
   }
@@ -80,20 +82,20 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     onAbsoluteFocalLengthChange1VP: (absoluteFocalLength: number) => {
       dispatch(setAbsoluteFocalLength1VP(absoluteFocalLength))
     },
-    onReferenceDistanceAxisChange: (calibrationMode: CalibrationMode, axis: Axis | null) => {
-      dispatch(setReferenceDistanceAxis(calibrationMode, axis))
+    onReferenceDistanceAxisChange: (axis: Axis | null) => {
+      dispatch(setReferenceDistanceAxis(axis))
     },
-    onReferenceDistanceUnitChange: (calibrationMode: CalibrationMode, unit: ReferenceDistanceUnit) => {
-      dispatch(setReferenceDistanceUnit(calibrationMode, unit))
+    onReferenceDistanceUnitChange: (unit: ReferenceDistanceUnit) => {
+      dispatch(setReferenceDistanceUnit(unit))
     },
-    onReferenceDistanceChange: (calibrationMode: CalibrationMode, distance: number) => {
-      dispatch(setReferenceDistance(calibrationMode, distance))
+    onReferenceDistanceChange: (distance: number) => {
+      dispatch(setReferenceDistance(distance))
     },
-    onCameraPresetChange: (calibrationMode: CalibrationMode, cameraPreset: string | null) => {
-      dispatch(setCameraPreset(calibrationMode, cameraPreset))
+    onCameraPresetChange: (cameraPreset: string | null) => {
+      dispatch(setCameraPreset(cameraPreset))
     },
-    onSensorSizeChange: (calibrationMode: CalibrationMode, width: number | undefined, height: number | undefined) => {
-      dispatch(setCameraSensorSize(calibrationMode, width, height))
+    onSensorSizeChange: (width: number | undefined, height: number | undefined) => {
+      dispatch(setCameraSensorSize(width, height))
     }
   }
 }

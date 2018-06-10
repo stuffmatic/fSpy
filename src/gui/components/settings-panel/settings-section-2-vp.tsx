@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { SettingsContainerProps } from '../../containers/settings-container'
-import { PrincipalPointMode2VP, Axis, ReferenceDistanceUnit } from '../../types/calibration-settings'
+import { PrincipalPointMode2VP, Axis } from '../../types/calibration-settings'
 import Checkbox from './checkbox'
 import Dropdown from './../common/dropdown'
 import AxisDropdown from './axis-dropdown'
@@ -72,19 +72,13 @@ export default class SettingsSection2VP extends React.PureComponent<SettingsCont
           Reference distance
         </div>
 
-        <ReferenceDistanceForm
-          referenceAxis={this.props.calibrationSettings2VP.referenceDistanceAxis}
-          referenceDistance={this.props.calibrationSettings2VP.referenceDistance}
-          referenceDistanceUnit={this.props.calibrationSettings2VP.referenceDistanceUnit}
-          onReferenceAxisChange={(axis: Axis | null) => {
-            this.props.onReferenceDistanceAxisChange(this.props.globalSettings.calibrationMode, axis)
-          }}
-          onReferenceDistanceChange={(distance: number) => {
-            this.props.onReferenceDistanceChange(this.props.globalSettings.calibrationMode, distance)
-          }}
-          onReferenceDistanceUnitChange={(unit: ReferenceDistanceUnit) => {
-            this.props.onReferenceDistanceUnitChange(this.props.globalSettings.calibrationMode, unit)
-          }}
+        <ReferenceDistanceForm // TODO: DRY
+          referenceAxis={this.props.calibrationSettingsBase.referenceDistanceAxis}
+          referenceDistance={this.props.calibrationSettingsBase.referenceDistance}
+          referenceDistanceUnit={this.props.calibrationSettingsBase.referenceDistanceUnit}
+          onReferenceAxisChange={ this.props.onReferenceDistanceAxisChange }
+          onReferenceDistanceChange={ this.props.onReferenceDistanceChange }
+          onReferenceDistanceUnitChange={ this.props.onReferenceDistanceUnitChange }
         />
 
         <PanelSpacer />

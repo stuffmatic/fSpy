@@ -2,7 +2,6 @@ import * as React from 'react'
 import ControlLine from './control-line'
 import ControlPoint from './control-point'
 import { VanishingPointControlState } from '../../types/control-points-state'
-import MathUtil from '../../solver/math-util'
 import Point2D from '../../solver/point-2d'
 
 interface VanishingPointControlProps {
