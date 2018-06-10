@@ -11,7 +11,7 @@ export interface ControlPointState {
 
 export type ControlPointPairState = [ControlPointState, ControlPointState]
 
-// Rename to BinaryIndex or something? Or remove if it doesnt provide type info
+// TODO: Rename to BinaryIndex or something? Or remove if it doesnt provide type info
 export enum ControlPointPairIndex {
   First = 0,
   Second = 1

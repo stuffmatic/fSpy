@@ -78,7 +78,7 @@ export default class ControlPointsPanelBase extends React.Component<ControlPoint
               <Stage width={width} height={height}>
                 <Layer>
                   {this.renderImage()}
-                  {this.renderControlPoints()}
+                  {this.renderCommonControlPoints()}
                 </Layer>
               </Stage>
             </div>
@@ -98,6 +98,7 @@ export default class ControlPointsPanelBase extends React.Component<ControlPoint
 
     return (
       <KonvaImage
+        opacity={this.props.globalSettings.imageOpacity}
         image={this.imageElement}
         x={imageAABB.xMin}
         y={imageAABB.yMin}
@@ -107,8 +108,7 @@ export default class ControlPointsPanelBase extends React.Component<ControlPoint
     )
   }
 
-  protected renderControlPoints() {
-    // Override in derived classes
+  protected renderCommonControlPoints() {
     return (
       <OriginControl
         absolutePosition={this.rel2abs(this.props.controlPointsState.origin)}
