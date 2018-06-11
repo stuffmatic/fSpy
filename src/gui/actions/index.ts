@@ -1,11 +1,11 @@
 import { CalibrationMode } from '../types/global-settings'
 import { ControlPointPairIndex } from '../types/control-points-state'
 import { PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode, Axis, ReferenceDistanceUnit } from '../types/calibration-settings'
-import CalibrationResult from '../types/calibration-result'
 import Point2D from '../solver/point-2d'
 import { StoreState } from '../types/store-state'
 import { ThunkAction, ThunkDispatch } from 'redux-thunk'
 import Solver from '../solver/solver'
+import { SolverResult } from '../solver/solver-result'
 
 export enum ActionTypes {
   // Global settings actions
@@ -43,7 +43,7 @@ export enum ActionTypes {
   ADJUST_REFERENCE_DISTANCE_HANDLE = 'ADJUST_REFERENCE_DISTANCE_HANDLE',
 
   //
-  SET_CALIBRATION_RESULT = 'SET_CALIBRATION_RESULT',
+  SET_SOLVER_RESULT = 'SET_SOLVER_RESULT',
 
   //
   SET_EXPORT_DIALOG_VISIBILITY = 'SET_EXPORT_DIALOG_VISIBILITY'
@@ -54,24 +54,23 @@ export function recalculateCalibrationResult(): ThunkAction<void, StoreState, vo
     setTimeout(() => {
       let state = getState()
 
-      let result: CalibrationResult = {
-        calibrationResult1VP: Solver.solve1VP(
-          state.calibrationSettingsBase,
-          state.calibrationSettings1VP,
-          state.controlPointsStateBase,
-          state.controlPointsState1VP,
-          state.image
-        ),
-        calibrationResult2VP: Solver.solve2VP(
-          state.calibrationSettingsBase,
-          state.calibrationSettings2VP,
-          state.controlPointsStateBase,
-          state.controlPointsState2VP,
-          state.image
-        )
-      }
+      let result1VP = Solver.solve1VP(
+        state.calibrationSettingsBase,
+        state.calibrationSettings1VP,
+        state.controlPointsStateBase,
+        state.controlPointsState1VP,
+        state.image
+      )
+      let result2VP = Solver.solve2VP(
+        state.calibrationSettingsBase,
+        state.calibrationSettings2VP,
+        state.controlPointsStateBase,
+        state.controlPointsState2VP,
+        state.image
+      )
 
-      dispatch(setCalibrationResult(result))
+      let is1VPMode = state.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint
+      dispatch(setSolverResult(is1VPMode ? result1VP : result2VP))
     },
     0)
   }
@@ -434,14 +433,14 @@ export function adjustReferenceDistanceHandle(
 }
 
 // Set calibration result
-export interface SetCalibrationResult {
-  type: ActionTypes.SET_CALIBRATION_RESULT,
-  result: CalibrationResult
+export interface SetSolverResult {
+  type: ActionTypes.SET_SOLVER_RESULT,
+  result: SolverResult
 }
 
-export function setCalibrationResult(result: CalibrationResult): SetCalibrationResult {
+export function setSolverResult(result: SolverResult): SetSolverResult {
   return {
-    type: ActionTypes.SET_CALIBRATION_RESULT,
+    type: ActionTypes.SET_SOLVER_RESULT,
     result: result
   }
 }
@@ -485,12 +484,13 @@ export type AppAction =
   AdjustFirstVanishingPoint |
   AdjustSecondVanishingPoint |
   AdjustThirdVanishingPoint |
-  SetCalibrationResult |
+  SetSolverResult |
   SetExportDialogVisibility
 
 // A list of action types that trigger calibration result calculation
 export const actionTypesTriggeringRecalculation: ActionTypes[] = [
   ActionTypes.SET_IMAGE,
+  ActionTypes.SET_CALIBRATION_MODE,
 
   ActionTypes.SET_HORIZON_MODE,
   ActionTypes.SET_QUAD_MODE_ENABLED,

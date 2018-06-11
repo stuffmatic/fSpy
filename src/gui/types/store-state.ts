@@ -2,8 +2,8 @@ import { GlobalSettings } from './global-settings'
 import { ControlPointsState2VP, ControlPointsState1VP, ControlPointsStateBase } from './control-points-state'
 import { CalibrationSettings2VP, CalibrationSettings1VP, CalibrationSettingsBase } from './calibration-settings'
 import { ImageState } from './image-state'
-import CalibrationResult from './calibration-result'
 import { UIState } from './ui-state'
+import { SolverResult } from '../solver/solver-result'
 
 export interface StoreState {
   globalSettings: GlobalSettings
@@ -18,6 +18,6 @@ export interface StoreState {
 
   image: ImageState
 
-  calibrationResult: CalibrationResult
+  solverResult: SolverResult
   uiState: UIState
 }
