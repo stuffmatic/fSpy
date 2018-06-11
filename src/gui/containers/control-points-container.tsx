@@ -8,6 +8,7 @@ import { GlobalSettings } from '../types/global-settings'
 import ControlPointsPanel from '../components/control-points-panel/control-points-panel'
 import Point2D from '../solver/point-2d'
 import { AppAction, setPrincipalPoint, setOrigin, setReferenceDistanceAnchor, adjustHorizon, adjustReferenceDistanceHandle, adjustFirstVanishingPoint } from '../actions'
+import { CalibrationSettingsBase, CalibrationSettings1VP, CalibrationSettings2VP } from '../types/calibration-settings'
 
 export interface ControlPointsContainerCallbacks {
   onPrincipalPointDrag(position: Point2D): void
@@ -28,6 +29,11 @@ export interface ControlPointsContainerCallbacks {
 interface ControlPointsContainerProps {
   imageState: ImageState
   globalSettings: GlobalSettings
+
+  calibrationSettingsBase: CalibrationSettingsBase
+  calibrationSettings1VP: CalibrationSettings1VP
+  calibrationSettings2VP: CalibrationSettings2VP
+
   controlPointsStateBase: ControlPointsStateBase
   controlPointsState1VP: ControlPointsState1VP
   controlPointsState2VP: ControlPointsState2VP
@@ -41,6 +47,9 @@ class ControlPointsContainer extends React.Component<ControlPointsContainerProps
         imageState={this.props.imageState}
         callbacks={this.props} // callbacks is a subset of props
         globalSettings={this.props.globalSettings}
+        calibrationSettingsBase={this.props.calibrationSettingsBase}
+        calbrationSettings1VP={this.props.calibrationSettings1VP}
+        calbrationSettings2VP={this.props.calibrationSettings2VP}
         controlPointsStateBase={this.props.controlPointsStateBase}
         controlPointsState1VP={this.props.controlPointsState1VP}
         controlPointsState2VP={this.props.controlPointsState2VP}
@@ -53,6 +62,9 @@ export function mapStateToProps(state: StoreState) {
   return {
     imageState: state.image,
     globalSettings: state.globalSettings,
+    calibrationSettingsBase: state.calibrationSettingsBase,
+    calibrationSettings1VP: state.calibrationSettings1VP,
+    calibrationSettings2VP: state.calibrationSettings2VP,
     controlPointsStateBase: state.controlPointsStateBase,
     controlPointsState1VP: state.controlPointsState1VP,
     controlPointsState2VP: state.controlPointsState2VP,

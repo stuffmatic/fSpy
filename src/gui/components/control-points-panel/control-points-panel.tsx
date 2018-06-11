@@ -5,11 +5,13 @@ import Point2D from '../../solver/point-2d'
 import AABB from '../../solver/aabb'
 import { ControlPointsContainerCallbacks } from '../../containers/control-points-container'
 import OriginControl from '../../components/control-points-panel/origin-control'
-import { ControlPointsStateBase, ControlPointsState1VP, ControlPointsState2VP, VanishingPointControlState, ControlPointPairState } from '../../types/control-points-state'
-import { GlobalSettings } from '../../types/global-settings'
+import { ControlPointsStateBase, ControlPointsState1VP, ControlPointsState2VP, VanishingPointControlState, ControlPointPairState, ControlPointPairIndex } from '../../types/control-points-state'
+import { GlobalSettings, CalibrationMode } from '../../types/global-settings'
 import { ImageState } from '../../types/image-state'
 import VanishingPointControl from './vanishing-point-control'
 import { Palette } from '../../style/palette'
+import HorizonControl from './horizon-control'
+import { CalibrationSettings1VP, CalibrationSettingsBase, CalibrationSettings2VP, HorizonMode } from '../../types/calibration-settings'
 
 interface ControlPointsPanelState {
   width: number | undefined
@@ -21,6 +23,11 @@ export interface ControlPointsPanelProps {
   globalSettings: GlobalSettings
   imageState: ImageState
   callbacks: ControlPointsContainerCallbacks
+
+  calibrationSettingsBase: CalibrationSettingsBase
+  calbrationSettings1VP: CalibrationSettings1VP
+  calbrationSettings2VP: CalibrationSettings2VP
+
   controlPointsStateBase: ControlPointsStateBase
   controlPointsState1VP: ControlPointsState1VP
   controlPointsState2VP: ControlPointsState2VP
@@ -61,6 +68,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     }
     this.previousImageUrl = this.props.imageState.url
 
+    let is1VPMode = this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint
     return (
       <div id='center-panel'>
         <Measure
@@ -82,7 +90,8 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
               <Stage width={width} height={height}>
                 <Layer>
                   {this.renderImage()}
-                  {this.renderControlPoints()}
+                  {this.renderCommonControlPoints()}
+                  {is1VPMode ? this.render1VPControlPoints() : this.render2VPControlPoints()}
                 </Layer>
               </Stage>
             </div>
@@ -94,7 +103,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     )
   }
 
-  protected renderImage() {
+  private renderImage() {
     let imageAABB = this.imageAbsoluteAABB()
     if (!imageAABB || !this.imageElement) {
       return null
@@ -112,7 +121,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     )
   }
 
-  protected renderControlPoints() {
+  private renderCommonControlPoints() {
     return (
       <Group>
         <VanishingPointControl
@@ -139,11 +148,35 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
             )
           }}
         />
+        {this.renderReferenceDistanceControl()}
       </Group>
     )
   }
 
-  protected imageAbsoluteAABB(): AABB | null {
+  private renderReferenceDistanceControl() {
+    return null
+  }
+
+  private render1VPControlPoints() {
+    return (
+      <HorizonControl
+        enabled={this.props.calbrationSettings1VP.horizonMode == HorizonMode.Manual}
+        pointPair={this.rel2AbsControlPointPairState(this.props.controlPointsState1VP.horizon)}
+        dragCallback={ (controlPointIndex: ControlPointPairIndex, position: Point2D) => {
+          this.props.callbacks.onHorizonDrag(
+            controlPointIndex,
+            this.abs2RelPoint(position)
+          )
+        }}
+      />
+    )
+  }
+
+  private render2VPControlPoints() {
+    return null
+  }
+
+  private imageAbsoluteAABB(): AABB | null {
     let imageWidth = this.props.imageState.width
     let imageHeight = this.props.imageState.height
     let width = this.state.width
