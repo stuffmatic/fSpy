@@ -38,7 +38,8 @@ export enum ActionTypes {
   SET_REFERENCE_DISTANCE_ANCHOR = 'SET_REFERENCE_DISTANCE_ANCHOR',
   ADJUST_HORIZON = 'ADJUST_HORIZON',
   ADJUST_FIRST_VANISHING_POINT = 'ADJUST_FIRST_VANISHING_POINT',
-  ADJUST_VANISHING_POINT_2VP = 'ADJUST_VANISHING_POINT_2VP',
+  ADJUST_SECOND_VANISHING_POINT = 'ADJUST_SECOND_VANISHING_POINT',
+  ADJUST_THIRD_VANISHING_POINT = 'ADJUST_THIRD_VANISHING_POINT',
   ADJUST_REFERENCE_DISTANCE_HANDLE = 'ADJUST_REFERENCE_DISTANCE_HANDLE',
 
   //
@@ -372,23 +373,41 @@ export function adjustFirstVanishingPoint(
 }
 
 //
-export interface AdjustVanishingPoint2VP {
-  type: ActionTypes.ADJUST_VANISHING_POINT_2VP
-  vanishingPointIndex: number
+export interface AdjustSecondVanishingPoint {
+  type: ActionTypes.ADJUST_SECOND_VANISHING_POINT
   lineSegmentIndex: number
   controlPointIndex: ControlPointPairIndex
   position: Point2D
 }
 
-export function adjustVanishingPoint2VP(
-  vanishingPointIndex: number,
+export function adjustSecondVanishingPoint(
   lineSegmentIndex: number,
   controlPointIndex: ControlPointPairIndex,
   position: Point2D
-): AdjustVanishingPoint2VP {
+): AdjustSecondVanishingPoint {
   return {
-    type: ActionTypes.ADJUST_VANISHING_POINT_2VP,
-    vanishingPointIndex:   vanishingPointIndex,
+    type: ActionTypes.ADJUST_SECOND_VANISHING_POINT,
+    lineSegmentIndex: lineSegmentIndex,
+    controlPointIndex: controlPointIndex,
+    position: position
+  }
+}
+
+//
+export interface AdjustThirdVanishingPoint {
+  type: ActionTypes.ADJUST_THIRD_VANISHING_POINT
+  lineSegmentIndex: number
+  controlPointIndex: ControlPointPairIndex
+  position: Point2D
+}
+
+export function adjustThirdVanishingPoint(
+  lineSegmentIndex: number,
+  controlPointIndex: ControlPointPairIndex,
+  position: Point2D
+): AdjustThirdVanishingPoint {
+  return {
+    type: ActionTypes.ADJUST_THIRD_VANISHING_POINT,
     lineSegmentIndex: lineSegmentIndex,
     controlPointIndex: controlPointIndex,
     position: position
@@ -464,6 +483,8 @@ export type AppAction =
   AdjustHorizon |
   AdjustReferenceDistanceHandle |
   AdjustFirstVanishingPoint |
+  AdjustSecondVanishingPoint |
+  AdjustThirdVanishingPoint |
   SetCalibrationResult |
   SetExportDialogVisibility
 
@@ -490,5 +511,7 @@ export const actionTypesTriggeringRecalculation: ActionTypes[] = [
   ActionTypes.SET_REFERENCE_DISTANCE_ANCHOR,
   ActionTypes.ADJUST_HORIZON,
   ActionTypes.ADJUST_FIRST_VANISHING_POINT,
+  ActionTypes.ADJUST_SECOND_VANISHING_POINT,
+  ActionTypes.ADJUST_THIRD_VANISHING_POINT,
   ActionTypes.ADJUST_REFERENCE_DISTANCE_HANDLE
 ]

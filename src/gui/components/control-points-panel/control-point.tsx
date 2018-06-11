@@ -4,8 +4,8 @@ import { Circle } from 'react-konva'
 
 interface ControlPointProps {
   absolutePosition: Point2D
-  fill?: string
-  stroke?: string
+  fill?: string | undefined
+  stroke?: string | undefined
   onControlPointDrag(absolutePosition: Point2D): void
 }
 
@@ -19,6 +19,7 @@ export default class ControlPoint extends React.Component<ControlPointProps> {
       <Circle
         draggable
         radius={4}
+        strokeWidth={1.5}
         fill={this.props.fill}
         stroke={this.props.stroke}
         x={this.props.absolutePosition.x}

@@ -4,18 +4,27 @@ import Point2D from '../../solver/point-2d'
 import { Palette } from '../../style/palette'
 
 interface PrincipalPointControlProps {
-  position: Point2D
+  absolutePosition: Point2D
   enabled: boolean
-  dragCallback(position: Point2D): void
+  visible: boolean
+  dragCallback(absolutePosition: Point2D): void
 }
 
 export default function PrincipalPointControl(props: PrincipalPointControlProps) {
+  if (!props.visible) {
+    return null
+  }
+
   return (
     <ControlPoint
-      absolutePosition={props.position}
-      onControlPointDrag={props.dragCallback}
-      fill={props.enabled ? Palette.orange : 'none'}
-      stroke={props.enabled ? 'none' : Palette.orange}
+      absolutePosition={props.absolutePosition}
+      onControlPointDrag={ (absolutePosition: Point2D) => {
+        if (props.enabled) {
+          props.dragCallback(absolutePosition)
+        }
+      }}
+      fill={props.enabled ? Palette.orange : undefined}
+      stroke={props.enabled ? undefined : Palette.orange}
     />
   )
 }

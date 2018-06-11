@@ -7,7 +7,7 @@ import { connect, Dispatch } from 'react-redux'
 import { GlobalSettings } from '../types/global-settings'
 import ControlPointsPanel from '../components/control-points-panel/control-points-panel'
 import Point2D from '../solver/point-2d'
-import { AppAction, setPrincipalPoint, setOrigin, setReferenceDistanceAnchor, adjustHorizon, adjustReferenceDistanceHandle, adjustFirstVanishingPoint } from '../actions'
+import { AppAction, setPrincipalPoint, setOrigin, setReferenceDistanceAnchor, adjustHorizon, adjustReferenceDistanceHandle, adjustFirstVanishingPoint, adjustSecondVanishingPoint, adjustThirdVanishingPoint } from '../actions'
 import { CalibrationSettingsBase, CalibrationSettings1VP, CalibrationSettings2VP } from '../types/calibration-settings'
 
 export interface ControlPointsContainerCallbacks {
@@ -16,6 +16,16 @@ export interface ControlPointsContainerCallbacks {
   onReferenceDistanceHandleDrag(handleIndex: number, position: number): void
   onReferenceDistanceAnchorDrag(position: Point2D): void
   onFirstVanishingPointControlPointDrag(
+    lineSegmentIndex: number,
+    controlPointIndex: ControlPointPairIndex,
+    position: Point2D
+  ): void
+  onSecondVanishingPointControlPointDrag(
+    lineSegmentIndex: number,
+    controlPointIndex: ControlPointPairIndex,
+    position: Point2D
+  ): void
+  onThirdVanishingPointControlPointDrag(
     lineSegmentIndex: number,
     controlPointIndex: ControlPointPairIndex,
     position: Point2D
@@ -95,6 +105,24 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     ) => {
       dispatch(
         adjustFirstVanishingPoint(lineSegmentIndex, controlPointIndex, position)
+      )
+    },
+    onSecondVanishingPointControlPointDrag: (
+      lineSegmentIndex: number,
+      controlPointIndex: ControlPointPairIndex,
+      position: Point2D
+    ) => {
+      dispatch(
+        adjustSecondVanishingPoint(lineSegmentIndex, controlPointIndex, position)
+      )
+    },
+    onThirdVanishingPointControlPointDrag: (
+      lineSegmentIndex: number,
+      controlPointIndex: ControlPointPairIndex,
+      position: Point2D
+    ) => {
+      dispatch(
+        adjustThirdVanishingPoint(lineSegmentIndex, controlPointIndex, position)
       )
     },
     onHorizonDrag: (

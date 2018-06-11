@@ -11,7 +11,8 @@ import { ImageState } from '../../types/image-state'
 import VanishingPointControl from './vanishing-point-control'
 import { Palette } from '../../style/palette'
 import HorizonControl from './horizon-control'
-import { CalibrationSettings1VP, CalibrationSettingsBase, CalibrationSettings2VP, HorizonMode } from '../../types/calibration-settings'
+import { CalibrationSettings1VP, CalibrationSettingsBase, CalibrationSettings2VP, HorizonMode, PrincipalPointMode2VP, PrincipalPointMode1VP } from '../../types/calibration-settings'
+import PrincipalPointControl from './principal-point-control'
 
 interface ControlPointsPanelState {
   width: number | undefined
@@ -159,21 +160,88 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
 
   private render1VPControlPoints() {
     return (
-      <HorizonControl
-        enabled={this.props.calbrationSettings1VP.horizonMode == HorizonMode.Manual}
-        pointPair={this.rel2AbsControlPointPairState(this.props.controlPointsState1VP.horizon)}
-        dragCallback={ (controlPointIndex: ControlPointPairIndex, position: Point2D) => {
-          this.props.callbacks.onHorizonDrag(
-            controlPointIndex,
+      <Group>
+        <HorizonControl
+          enabled={this.props.calbrationSettings1VP.horizonMode == HorizonMode.Manual}
+          pointPair={this.rel2AbsControlPointPairState(this.props.controlPointsState1VP.horizon)}
+          dragCallback={(controlPointIndex: ControlPointPairIndex, position: Point2D) => {
+            this.props.callbacks.onHorizonDrag(
+              controlPointIndex,
+              this.abs2RelPoint(position)
+            )
+          }}
+        />
+        <PrincipalPointControl
+          absolutePosition={this.rel2AbsPoint(this.props.controlPointsStateBase.principalPoint)}
+          enabled={this.props.calbrationSettings1VP.principalPointMode == PrincipalPointMode1VP.Manual}
+          visible={this.props.calbrationSettings1VP.principalPointMode == PrincipalPointMode1VP.Manual}
+          dragCallback={ (absolutePosition: Point2D) => {
+            this.props.callbacks.onPrincipalPointDrag(
+              this.abs2RelPoint(absolutePosition)
+            )
+          }}
+        />
+      </Group>
+    )
+  }
+
+  private render2VPControlPoints() {
+    return (
+      <Group>
+        <VanishingPointControl
+          color={Palette.green}
+          controlState={
+            this.rel2AbsVanishingPointControlState(
+              this.props.controlPointsState2VP.secondVanishingPoint
+            )
+          }
+          vanishingPoint={null}
+          onControlPointDrag={(lineSegmentIndex: number, pointPairIndex: number, position: Point2D) => {
+            this.props.callbacks.onSecondVanishingPointControlPointDrag(
+              lineSegmentIndex,
+              pointPairIndex,
+              this.abs2RelPoint(position)
+            )
+          }}
+        />
+        {this.renderThirdVanishingPointControl()}
+        <PrincipalPointControl
+          absolutePosition={this.rel2AbsPoint(this.props.controlPointsStateBase.principalPoint)}
+          enabled={this.props.calbrationSettings2VP.principalPointMode == PrincipalPointMode2VP.Manual}
+          visible={this.props.calbrationSettings2VP.principalPointMode != PrincipalPointMode2VP.Default}
+          dragCallback={ (absolutePosition: Point2D) => {
+            this.props.callbacks.onPrincipalPointDrag(
+              this.abs2RelPoint(absolutePosition)
+            )
+          }}
+        />
+      </Group>
+    )
+  }
+
+  private renderThirdVanishingPointControl() {
+    if (this.props.calbrationSettings2VP.principalPointMode != PrincipalPointMode2VP.FromThirdVanishingPoint) {
+      return null
+    }
+
+    return (
+      <VanishingPointControl
+        color={Palette.orange}
+        controlState={
+          this.rel2AbsVanishingPointControlState(
+            this.props.controlPointsState2VP.thirdVanishingPoint
+          )
+        }
+        vanishingPoint={null}
+        onControlPointDrag={(lineSegmentIndex: number, pointPairIndex: number, position: Point2D) => {
+          this.props.callbacks.onThirdVanishingPointControlPointDrag(
+            lineSegmentIndex,
+            pointPairIndex,
             this.abs2RelPoint(position)
           )
         }}
       />
     )
-  }
-
-  private render2VPControlPoints() {
-    return null
   }
 
   private imageAbsoluteAABB(): AABB | null {

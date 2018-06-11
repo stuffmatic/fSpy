@@ -11,19 +11,28 @@ export function controlPointsState2VP(state: ControlPointsState2VP | undefined, 
   }
 
   switch (action.type) {
-    case ActionTypes.ADJUST_VANISHING_POINT_2VP:
+    case ActionTypes.ADJUST_SECOND_VANISHING_POINT: {
+      // TODO: proper deep copy
       let secondVanishingPoint = { ...state.secondVanishingPoint }
-      let thirdVanishingPoint = { ...state.secondVanishingPoint }
-
-      let adjustedVanishingPoint = action.vanishingPointIndex == 1 ? secondVanishingPoint : thirdVanishingPoint
-      let adjustedLineSegment = adjustedVanishingPoint.lineSegments[action.lineSegmentIndex]
+      let adjustedLineSegment = secondVanishingPoint.lineSegments[action.lineSegmentIndex]
       adjustedLineSegment[action.controlPointIndex] = action.position
 
       return {
         ...state,
-        secondVanishingPoint: secondVanishingPoint,
+        secondVanishingPoint: secondVanishingPoint
+      }
+    }
+    case ActionTypes.ADJUST_THIRD_VANISHING_POINT: {
+      // TODO: proper deep copy
+      let thirdVanishingPoint = { ...state.thirdVanishingPoint }
+      let adjustedLineSegment = thirdVanishingPoint.lineSegments[action.lineSegmentIndex]
+      adjustedLineSegment[action.controlPointIndex] = action.position
+
+      return {
+        ...state,
         thirdVanishingPoint: thirdVanishingPoint
       }
+    }
   }
 
   return state
