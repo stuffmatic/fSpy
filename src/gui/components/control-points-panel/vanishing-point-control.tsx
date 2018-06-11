@@ -1,17 +1,16 @@
 import * as React from 'react'
 import ControlLine from './control-line'
 import ControlPoint from './control-point'
+import { Group } from 'react-konva'
 import { VanishingPointControlState } from '../../types/control-points-state'
 import Point2D from '../../solver/point-2d'
 
 interface VanishingPointControlProps {
   color: string
-  vanishingPointIndex: number
   controlState: VanishingPointControlState
   vanishingPoint: Point2D | null
 
   onControlPointDrag(
-    vanishingPointIndex: number,
     lineSegmentIndex: number,
     pointPairIndex: number,
     position: Point2D
@@ -21,17 +20,17 @@ interface VanishingPointControlProps {
 export default class VanishingPointControl extends React.PureComponent<VanishingPointControlProps> {
   render() {
     return (
-      <g>
+      <Group>
         {this.renderLineSegment(0)}
         {this.renderLineSegment(1)}
         {this.renderVanishingPoint()}
-      </g>
+      </Group>
     )
   }
 
   private renderLineSegment(index: number) {
     return (
-      <g>
+      <Group>
         <ControlLine
           start={this.props.controlState.lineSegments[index][0]}
           end={this.props.controlState.lineSegments[index][1]}
@@ -40,18 +39,18 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
         <ControlPoint
           absolutePosition={this.props.controlState.lineSegments[index][0]}
           onControlPointDrag={(position: Point2D) => {
-            this.props.onControlPointDrag(this.props.vanishingPointIndex, index, 0, position)
+            this.props.onControlPointDrag(index, 0, position)
           }}
           fill={this.props.color}
         />
         <ControlPoint
           absolutePosition={this.props.controlState.lineSegments[index][1]}
           onControlPointDrag={(position: Point2D) => {
-            this.props.onControlPointDrag(this.props.vanishingPointIndex, index, 1, position)
+            this.props.onControlPointDrag(index, 1, position)
           }}
           fill={this.props.color}
         />
-      </g>
+      </Group>
     )
   }
 

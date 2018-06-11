@@ -1,13 +1,15 @@
 import * as React from 'react'
-import { Image as KonvaImage, Stage, Layer } from 'react-konva'
+import { Image as KonvaImage, Stage, Layer, Group } from 'react-konva'
 import Measure, { ContentRect } from 'react-measure'
 import Point2D from '../../solver/point-2d'
-import { ImageState } from '../../types/image-state'
 import AABB from '../../solver/aabb'
 import { ControlPointsContainerCallbacks } from '../../containers/control-points-container'
 import OriginControl from '../../components/control-points-panel/origin-control'
-import { ControlPointsStateBase, ControlPointsState1VP, ControlPointsState2VP } from '../../types/control-points-state'
+import { ControlPointsStateBase, ControlPointsState1VP, ControlPointsState2VP, VanishingPointControlState, ControlPointPairState } from '../../types/control-points-state'
 import { GlobalSettings } from '../../types/global-settings'
+import { ImageState } from '../../types/image-state'
+import VanishingPointControl from './vanishing-point-control'
+import { Palette } from '../../style/palette'
 
 interface ControlPointsPanelState {
   width: number | undefined
@@ -80,7 +82,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
               <Stage width={width} height={height}>
                 <Layer>
                   {this.renderImage()}
-                  {this.renderCommonControlPoints()}
+                  {this.renderControlPoints()}
                 </Layer>
               </Stage>
             </div>
@@ -110,20 +112,37 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     )
   }
 
-  protected renderCommonControlPoints() {
+  protected renderControlPoints() {
     return (
-      <OriginControl
-        absolutePosition={this.rel2abs(this.props.controlPointsStateBase.origin)}
-        dragCallback={(absolutePosition: Point2D) => {
-          let relativePosition = this.abs2Rel(absolutePosition)
-          relativePosition.x = Math.min(1, Math.max(0, relativePosition.x))
-          relativePosition.y = Math.min(1, Math.max(0, relativePosition.y))
-          this.props.callbacks.onOriginDrag(
-            this.props.globalSettings.calibrationMode,
-            relativePosition
-          )
-        }}
-      />
+      <Group>
+        <VanishingPointControl
+          color={Palette.red}
+          controlState={
+            this.rel2AbsVanishingPointControlState(
+              this.props.controlPointsStateBase.firstVanishingPoint
+            )
+          }
+          vanishingPoint={null}
+          onControlPointDrag={ (lineSegmentIndex: number, pointPairIndex: number, position: Point2D) => {
+            this.props.callbacks.onFirstVanishingPointControlPointDrag(
+                lineSegmentIndex,
+                pointPairIndex,
+                this.abs2RelPoint(position)
+              )
+          }}
+        />
+        <OriginControl
+          absolutePosition={this.rel2AbsPoint(this.props.controlPointsStateBase.origin)}
+          dragCallback={(absolutePosition: Point2D) => {
+            let relativePosition = this.abs2RelPoint(absolutePosition)
+            relativePosition.x = Math.min(1, Math.max(0, relativePosition.x))
+            relativePosition.y = Math.min(1, Math.max(0, relativePosition.y))
+            this.props.callbacks.onOriginDrag(
+              relativePosition
+            )
+          }}
+        />
+      </Group>
     )
   }
 
@@ -165,7 +184,23 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     }
   }
 
-  protected rel2abs(point: Point2D): Point2D {
+  protected rel2AbsVanishingPointControlState(state: VanishingPointControlState): VanishingPointControlState {
+    return {
+      lineSegments: [
+        this.rel2AbsControlPointPairState(state.lineSegments[0]),
+        this.rel2AbsControlPointPairState(state.lineSegments[1])
+      ]
+    }
+  }
+
+  protected rel2AbsControlPointPairState(rel: ControlPointPairState): ControlPointPairState {
+    return [
+      this.rel2AbsPoint(rel[0]),
+      this.rel2AbsPoint(rel[1])
+    ]
+  }
+
+  protected rel2AbsPoint(point: Point2D): Point2D {
     let imageAABB = this.imageAbsoluteAABB()
     if (!imageAABB) {
       return { x: 0, y: 0 }
@@ -177,7 +212,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     }
   }
 
-  protected abs2Rel(point: Point2D): Point2D {
+  protected abs2RelPoint(point: Point2D): Point2D {
     let imageAABB = this.imageAbsoluteAABB()
     if (!imageAABB) {
       return { x: 0, y: 0 }

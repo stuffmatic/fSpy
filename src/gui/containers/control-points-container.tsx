@@ -4,16 +4,16 @@ import { StoreState } from '../types/store-state'
 import { ControlPointsState1VP, ControlPointsState2VP, ControlPointPairIndex, ControlPointsStateBase } from '../types/control-points-state'
 import CalibrationResult from '../types/calibration-result'
 import { connect, Dispatch } from 'react-redux'
-import { GlobalSettings, CalibrationMode } from '../types/global-settings'
+import { GlobalSettings } from '../types/global-settings'
 import ControlPointsPanel from '../components/control-points-panel/control-points-panel'
 import Point2D from '../solver/point-2d'
 import { AppAction, setPrincipalPoint, setOrigin, setReferenceDistanceAnchor, adjustHorizon, adjustReferenceDistanceHandle, adjustFirstVanishingPoint } from '../actions'
 
 export interface ControlPointsContainerCallbacks {
-  onPrincipalPointDrag(calibrationMode: CalibrationMode, position: Point2D): void
-  onOriginDrag(calibrationMode: CalibrationMode, position: Point2D): void
-  onReferenceDistanceHandleDrag(calibrationMode: CalibrationMode, handleIndex: number, position: number): void
-  onReferenceDistanceAnchorDrag(calibrationMode: CalibrationMode, position: Point2D): void
+  onPrincipalPointDrag(position: Point2D): void
+  onOriginDrag(position: Point2D): void
+  onReferenceDistanceHandleDrag(handleIndex: number, position: number): void
+  onReferenceDistanceAnchorDrag(position: Point2D): void
   onFirstVanishingPointControlPointDrag(
     lineSegmentIndex: number,
     controlPointIndex: ControlPointPairIndex,
