@@ -25,23 +25,18 @@ export interface ControlPointsStateBase {
   principalPoint: ControlPointState
   origin: ControlPointState
   referenceDistanceAnchor: ControlPointState
+  firstVanishingPoint: VanishingPointControlState
   // The offsets are the distances in relative image coordinates
   // along the axis from the anchor to the vanishing point corresponding
   // to the selected reference axis
   referenceDistanceHandleOffsets: [number, number]
 }
 
-export interface ControlPointsState1VP extends ControlPointsStateBase {
+export interface ControlPointsState1VP {
   horizon: ControlPointPairState
-  vanishingPoints: [
-    VanishingPointControlState
-  ]
 }
 
-export interface ControlPointsState2VP extends ControlPointsStateBase {
-  vanishingPoints: [
-    VanishingPointControlState,
-    VanishingPointControlState,
-    VanishingPointControlState
-  ]
+export interface ControlPointsState2VP {
+  secondVanishingPoint: VanishingPointControlState
+  thirdVanishingPoint: VanishingPointControlState
 }

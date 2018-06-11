@@ -1,6 +1,5 @@
 import { ActionTypes } from '../actions'
-import { ControlPointsState2VP, VanishingPointControlState } from '../types/control-points-state'
-import { CalibrationMode } from '../types/global-settings'
+import { ControlPointsState2VP } from '../types/control-points-state'
 import { defaultControlPointsState2VP } from '../defaults/control-points-state'
 import { AnyAction } from 'redux'
 
@@ -11,47 +10,19 @@ export function controlPointsState2VP(state: ControlPointsState2VP | undefined, 
     }
   }
 
-  // Early exit if the action is associated with the wrong calibration mode
-  if ((action as any).calibrationMode == CalibrationMode.OneVanishingPoint) {
-    return state
-  }
-
   switch (action.type) {
-    case ActionTypes.SET_ORIGIN:
-      return {
-        ...state,
-        origin: action.position
-      }
-    case ActionTypes.SET_PRINCIPAL_POINT:
-      return {
-        ...state,
-        principalPoint: action.position
-      }
-    case ActionTypes.ADJUST_VANISHING_POINT:
-      let adjustedVanishingPoints: [VanishingPointControlState, VanishingPointControlState, VanishingPointControlState] = [
-        { ...state.vanishingPoints[0] },
-        { ...state.vanishingPoints[1] },
-        { ...state.vanishingPoints[2] }
-      ]
-      let adjustedVanishingPoint = adjustedVanishingPoints[action.vanishingPointIndex]
+    case ActionTypes.ADJUST_VANISHING_POINT_2VP:
+      let secondVanishingPoint = { ...state.secondVanishingPoint }
+      let thirdVanishingPoint = { ...state.secondVanishingPoint }
+
+      let adjustedVanishingPoint = action.vanishingPointIndex == 1 ? secondVanishingPoint : thirdVanishingPoint
       let adjustedLineSegment = adjustedVanishingPoint.lineSegments[action.lineSegmentIndex]
       adjustedLineSegment[action.controlPointIndex] = action.position
 
       return {
         ...state,
-        vanishingPoints: adjustedVanishingPoints
-      }
-    case ActionTypes.SET_REFERENCE_DISTANCE_ANCHOR:
-      return {
-        ...state,
-        referenceDistanceAnchor: action.position
-      }
-    case ActionTypes.ADJUST_REFERENCE_DISTANCE_HANDLE:
-      let adjustedOffsets = [...state.referenceDistanceHandleOffsets]
-      adjustedOffsets[action.handleIndex] = action.position
-      return {
-        ...state,
-        referenceDistanceHandleOffsets: [adjustedOffsets[0], adjustedOffsets[1]]
+        secondVanishingPoint: secondVanishingPoint,
+        thirdVanishingPoint: thirdVanishingPoint
       }
   }
 

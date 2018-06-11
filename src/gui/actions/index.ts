@@ -37,7 +37,8 @@ export enum ActionTypes {
   SET_ORIGIN = 'SET_ORIGIN',
   SET_REFERENCE_DISTANCE_ANCHOR = 'SET_REFERENCE_DISTANCE_ANCHOR',
   ADJUST_HORIZON = 'ADJUST_HORIZON',
-  ADJUST_VANISHING_POINT = 'ADJUST_VANISHING_POINT',
+  ADJUST_FIRST_VANISHING_POINT = 'ADJUST_FIRST_VANISHING_POINT',
+  ADJUST_VANISHING_POINT_2VP = 'ADJUST_VANISHING_POINT_2VP',
   ADJUST_REFERENCE_DISTANCE_HANDLE = 'ADJUST_REFERENCE_DISTANCE_HANDLE',
 
   //
@@ -56,12 +57,14 @@ export function recalculateCalibrationResult(): ThunkAction<void, StoreState, vo
         calibrationResult1VP: Solver.solve1VP(
           state.calibrationSettingsBase,
           state.calibrationSettings1VP,
+          state.controlPointsStateBase,
           state.controlPointsState1VP,
           state.image
         ),
         calibrationResult2VP: Solver.solve2VP(
           state.calibrationSettingsBase,
           state.calibrationSettings2VP,
+          state.controlPointsStateBase,
           state.controlPointsState2VP,
           state.image
         )
@@ -293,45 +296,39 @@ export function setCameraSensorSize(width: number | undefined, height: number | 
 // Set principal point
 export interface SetPrincipalPoint {
   type: ActionTypes.SET_PRINCIPAL_POINT
-  calibrationMode: CalibrationMode
   position: Point2D
 }
 
-export function setPrincipalPoint(calibrationMode: CalibrationMode, position: Point2D): SetPrincipalPoint {
+export function setPrincipalPoint(position: Point2D): SetPrincipalPoint {
   return {
     type: ActionTypes.SET_PRINCIPAL_POINT,
-    position: position,
-    calibrationMode: calibrationMode
+    position: position
   }
 }
 
 // Set origin
 export interface SetOrigin {
   type: ActionTypes.SET_ORIGIN
-  calibrationMode: CalibrationMode
   position: Point2D
 }
 
-export function setOrigin(calibrationMode: CalibrationMode, position: Point2D): SetOrigin {
+export function setOrigin(position: Point2D): SetOrigin {
   return {
     type: ActionTypes.SET_ORIGIN,
-    position: position,
-    calibrationMode: calibrationMode
+    position: position
   }
 }
 
 // Set reference distance anchor
 export interface SetReferenceDistanceAnchor {
   type: ActionTypes.SET_REFERENCE_DISTANCE_ANCHOR
-  calibrationMode: CalibrationMode
   position: Point2D
 }
 
-export function setReferenceDistanceAnchor(calibrationMode: CalibrationMode, position: Point2D): SetReferenceDistanceAnchor {
+export function setReferenceDistanceAnchor(position: Point2D): SetReferenceDistanceAnchor {
   return {
     type: ActionTypes.SET_REFERENCE_DISTANCE_ANCHOR,
-    position: position,
-    calibrationMode: calibrationMode
+    position: position
   }
 }
 
@@ -353,28 +350,45 @@ export function adjustHorizon(
   }
 }
 
-// Adjust a vanishing point (i.e set the position of an endpoint of a line
-// segment of a vanishing point control)
-export interface AdjustVanishingPoint {
-  type: ActionTypes.ADJUST_VANISHING_POINT,
-  calibrationMode: CalibrationMode,
-  vanishingPointIndex: number,
+//
+export interface AdjustFirstVanishingPoint {
+  type: ActionTypes.ADJUST_FIRST_VANISHING_POINT,
   lineSegmentIndex: number,
   controlPointIndex: ControlPointPairIndex,
   position: Point2D
 }
 
-export function adjustVanishingPoint(
-  calibrationMode: CalibrationMode,
-  vanshingPointIndex: number,
+export function adjustFirstVanishingPoint(
   lineSegmentIndex: number,
   controlPointIndex: ControlPointPairIndex,
   position: Point2D
-): AdjustVanishingPoint {
+): AdjustFirstVanishingPoint {
   return {
-    type: ActionTypes.ADJUST_VANISHING_POINT,
-    calibrationMode: calibrationMode,
-    vanishingPointIndex: vanshingPointIndex,
+    type: ActionTypes.ADJUST_FIRST_VANISHING_POINT,
+    lineSegmentIndex: lineSegmentIndex,
+    controlPointIndex: controlPointIndex,
+    position: position
+  }
+}
+
+//
+export interface AdjustVanishingPoint2VP {
+  type: ActionTypes.ADJUST_VANISHING_POINT_2VP
+  vanishingPointIndex: number
+  lineSegmentIndex: number
+  controlPointIndex: ControlPointPairIndex
+  position: Point2D
+}
+
+export function adjustVanishingPoint2VP(
+  vanishingPointIndex: number,
+  lineSegmentIndex: number,
+  controlPointIndex: ControlPointPairIndex,
+  position: Point2D
+): AdjustVanishingPoint2VP {
+  return {
+    type: ActionTypes.ADJUST_VANISHING_POINT_2VP,
+    vanishingPointIndex:   vanishingPointIndex,
     lineSegmentIndex: lineSegmentIndex,
     controlPointIndex: controlPointIndex,
     position: position
@@ -385,19 +399,16 @@ export function adjustVanishingPoint(
 
 export interface AdjustReferenceDistanceHandle {
   type: ActionTypes.ADJUST_REFERENCE_DISTANCE_HANDLE,
-  calibrationMode: CalibrationMode,
   handleIndex: number,
   position: number
 }
 
 export function adjustReferenceDistanceHandle(
-  calibrationMode: CalibrationMode,
   handleIndex: number,
   position: number
 ): AdjustReferenceDistanceHandle {
   return {
     type: ActionTypes.ADJUST_REFERENCE_DISTANCE_HANDLE,
-    calibrationMode: calibrationMode,
     handleIndex: handleIndex,
     position: position
   }
@@ -452,7 +463,7 @@ export type AppAction =
   SetPrincipalPoint |
   AdjustHorizon |
   AdjustReferenceDistanceHandle |
-  AdjustVanishingPoint |
+  AdjustFirstVanishingPoint |
   SetCalibrationResult |
   SetExportDialogVisibility
 
@@ -478,6 +489,6 @@ export const actionTypesTriggeringRecalculation: ActionTypes[] = [
   ActionTypes.SET_ORIGIN,
   ActionTypes.SET_REFERENCE_DISTANCE_ANCHOR,
   ActionTypes.ADJUST_HORIZON,
-  ActionTypes.ADJUST_VANISHING_POINT,
+  ActionTypes.ADJUST_FIRST_VANISHING_POINT,
   ActionTypes.ADJUST_REFERENCE_DISTANCE_HANDLE
 ]

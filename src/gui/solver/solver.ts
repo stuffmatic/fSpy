@@ -29,7 +29,8 @@ export default class Solver {
   static solve1VP(
     settingsBase: CalibrationSettingsBase,
     settings1VP: CalibrationSettings1VP,
-    controlPoints: ControlPointsState1VP,
+    controlPointsBase: ControlPointsStateBase,
+    controlPoints1VP: ControlPointsState1VP,
     image: ImageState
   ): SolverResult {
     // Create a blank result object
@@ -71,7 +72,7 @@ export default class Solver {
     // Compute the input vanishing point in image plane coordinates
     let inputVanishingPoints = this.computeVanishingPointsFromControlPoints(
       image,
-      controlPoints.vanishingPoints,
+      [controlPointsBase.firstVanishingPoint],
       result.errors
     )
 
@@ -84,7 +85,7 @@ export default class Solver {
     let principalPoint = { x: 0, y: 0 }
     if (settings1VP.principalPointMode == PrincipalPointMode1VP.Manual) {
       principalPoint = CoordinatesUtil.convert(
-        controlPoints.principalPoint,
+        controlPointsBase.principalPoint,
         ImageCoordinateFrame.Relative,
         ImageCoordinateFrame.ImagePlane,
         imageWidth,
@@ -97,14 +98,14 @@ export default class Solver {
     if (settings1VP.horizonMode == HorizonMode.Manual) {
       // Compute two points on the horizon line in image plane coordinates
       let horizonStart = CoordinatesUtil.convert(
-        controlPoints.horizon[0],
+        controlPoints1VP.horizon[0],
         ImageCoordinateFrame.Relative,
         ImageCoordinateFrame.ImagePlane,
         imageWidth,
         imageHeight
       )
       let horizonEnd = CoordinatesUtil.convert(
-        controlPoints.horizon[1],
+        controlPoints1VP.horizon[1],
         ImageCoordinateFrame.Relative,
         ImageCoordinateFrame.ImagePlane,
         imageWidth,
@@ -140,7 +141,7 @@ export default class Solver {
 
     this.computeCameraParameters(
       result,
-      controlPoints,
+      controlPointsBase,
       settingsBase,
       axisAssignmentMatrix,
       principalPoint,
@@ -157,7 +158,8 @@ export default class Solver {
   static solve2VP(
     settingsBase: CalibrationSettingsBase,
     settings2VP: CalibrationSettings2VP,
-    controlPoints: ControlPointsState2VP,
+    controlPointsBase: ControlPointsStateBase,
+    controlPoints2VP: ControlPointsState2VP,
     image: ImageState
   ): SolverResult {
     let result = this.blankSolverResult()
@@ -175,40 +177,40 @@ export default class Solver {
       {
         lineSegments: [
           [
-            { ...controlPoints.vanishingPoints[0].lineSegments[0][0] },
-            { ...controlPoints.vanishingPoints[0].lineSegments[0][1] }
+            { ...controlPointsBase.firstVanishingPoint.lineSegments[0][0] },
+            { ...controlPointsBase.firstVanishingPoint.lineSegments[0][1] }
           ],
           [
-            { ...controlPoints.vanishingPoints[0].lineSegments[1][0] },
-            { ...controlPoints.vanishingPoints[0].lineSegments[1][1] }
+            { ...controlPointsBase.firstVanishingPoint.lineSegments[1][0] },
+            { ...controlPointsBase.firstVanishingPoint.lineSegments[1][1] }
           ]
         ]
       },
       {
         lineSegments: [
           [
-            { ...controlPoints.vanishingPoints[1].lineSegments[0][0] },
-            { ...controlPoints.vanishingPoints[1].lineSegments[0][1] }
+            { ...controlPoints2VP.secondVanishingPoint.lineSegments[0][0] },
+            { ...controlPoints2VP.secondVanishingPoint.lineSegments[0][1] }
           ],
           [
-            { ...controlPoints.vanishingPoints[0].lineSegments[1][0] },
-            { ...controlPoints.vanishingPoints[0].lineSegments[1][1] }
+            { ...controlPoints2VP.secondVanishingPoint.lineSegments[1][0] },
+            { ...controlPoints2VP.secondVanishingPoint.lineSegments[1][1] }
           ]
         ]
       }
     ]
 
     if (settings2VP.quadModeEnabled) {
-      vanishingPointControlStates[1].lineSegments[0][0] = controlPoints.vanishingPoints[0].lineSegments[1][0]
-      vanishingPointControlStates[1].lineSegments[0][1] = controlPoints.vanishingPoints[0].lineSegments[0][0]
-      vanishingPointControlStates[1].lineSegments[1][0] = controlPoints.vanishingPoints[0].lineSegments[1][1]
-      vanishingPointControlStates[1].lineSegments[1][1] = controlPoints.vanishingPoints[0].lineSegments[0][1]
+      vanishingPointControlStates[1].lineSegments[0][0] = controlPointsBase.firstVanishingPoint.lineSegments[1][0]
+      vanishingPointControlStates[1].lineSegments[0][1] = controlPointsBase.firstVanishingPoint.lineSegments[0][0]
+      vanishingPointControlStates[1].lineSegments[1][0] = controlPointsBase.firstVanishingPoint.lineSegments[1][1]
+      vanishingPointControlStates[1].lineSegments[1][1] = controlPointsBase.firstVanishingPoint.lineSegments[0][1]
     }
 
     // Compute the two input vanishing points from the provided control points
     let inputVanishingPoints = this.computeVanishingPointsFromControlPoints(
       image,
-      controlPoints.vanishingPoints,
+      [controlPointsBase.firstVanishingPoint, controlPoints2VP.secondVanishingPoint],
       errors
     )
 
@@ -222,7 +224,7 @@ export default class Solver {
     switch (settings2VP.principalPointMode) {
       case PrincipalPointMode2VP.Manual:
         principalPoint = CoordinatesUtil.convert(
-          controlPoints.principalPoint,
+          controlPointsBase.principalPoint,
           ImageCoordinateFrame.Relative,
           ImageCoordinateFrame.ImagePlane,
           image.width!,
@@ -232,7 +234,7 @@ export default class Solver {
       case PrincipalPointMode2VP.FromThirdVanishingPoint:
         let thirdVanishingPointArray = this.computeVanishingPointsFromControlPoints(
           image,
-          [controlPoints.vanishingPoints[2]],
+          [controlPoints2VP.thirdVanishingPoint],
           errors
         )
         if (thirdVanishingPointArray) {
@@ -277,7 +279,7 @@ export default class Solver {
     // compute camera parameters
     this.computeCameraParameters(
       result,
-      controlPoints,
+      controlPointsBase,
       settingsBase,
       axisAssignmentMatrix,
       principalPoint,

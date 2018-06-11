@@ -6,29 +6,31 @@ import { ImageState } from '../../types/image-state'
 import AABB from '../../solver/aabb'
 import { ControlPointsContainerCallbacks } from '../../containers/control-points-container'
 import OriginControl from '../../components/control-points-panel/origin-control'
-import { ControlPointsStateBase } from '../../types/control-points-state'
+import { ControlPointsStateBase, ControlPointsState1VP, ControlPointsState2VP } from '../../types/control-points-state'
 import { GlobalSettings } from '../../types/global-settings'
 
-interface ControlPointsPanelBaseState {
+interface ControlPointsPanelState {
   width: number | undefined
   height: number | undefined
   relativePositionTest: Point2D
 }
 
-export interface ControlPointsPanelBaseProps {
+export interface ControlPointsPanelProps {
   globalSettings: GlobalSettings
   imageState: ImageState
   callbacks: ControlPointsContainerCallbacks
-  controlPointsState: ControlPointsStateBase
+  controlPointsStateBase: ControlPointsStateBase
+  controlPointsState1VP: ControlPointsState1VP
+  controlPointsState2VP: ControlPointsState2VP
 }
 
-export default class ControlPointsPanelBase extends React.Component<ControlPointsPanelBaseProps, ControlPointsPanelBaseState> {
+export default class ControlPointsPanel extends React.Component<ControlPointsPanelProps, ControlPointsPanelState> {
 
   private previousImageUrl: string | null
   private imageElement: HTMLImageElement | null
   private readonly pad = 20
 
-  constructor(props: ControlPointsPanelBaseProps) {
+  constructor(props: ControlPointsPanelProps) {
     super(props)
 
     this.previousImageUrl = null
@@ -111,7 +113,7 @@ export default class ControlPointsPanelBase extends React.Component<ControlPoint
   protected renderCommonControlPoints() {
     return (
       <OriginControl
-        absolutePosition={this.rel2abs(this.props.controlPointsState.origin)}
+        absolutePosition={this.rel2abs(this.props.controlPointsStateBase.origin)}
         dragCallback={(absolutePosition: Point2D) => {
           let relativePosition = this.abs2Rel(absolutePosition)
           relativePosition.x = Math.min(1, Math.max(0, relativePosition.x))
