@@ -166,9 +166,12 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
   }
 
   private render1VPControlPoints() {
+    let secondVanishingPoint = this.props.solverResult.vanishingPoints ? this.props.solverResult.vanishingPoints[1] : null
     return (
       <Group>
         <HorizonControl
+          vanishingPoint={secondVanishingPoint ? this.imagePlane2Abs(secondVanishingPoint) : null}
+          vanishingPointColor={this.vanishingPointColor(1)}
           enabled={this.props.calbrationSettings1VP.horizonMode == HorizonMode.Manual}
           pointPair={this.rel2AbsControlPointPairState(this.props.controlPointsState1VP.horizon)}
           dragCallback={(controlPointIndex: ControlPointPairIndex, position: Point2D) => {
