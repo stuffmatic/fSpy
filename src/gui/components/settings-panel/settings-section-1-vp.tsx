@@ -43,11 +43,8 @@ export default class SettingsSection1VP extends React.PureComponent<SettingsCont
         </div>
         <div className='panel-row'>
           <AxisDropdown
-            selectedAxis={this.props.calibrationSettings1VP.vanishingPointAxis}
-            onChange={(axis: Axis) => {
-              this.props.onVanishingPointAxisChange1VP(axis)
-            }
-            }
+            selectedAxis={this.props.calibrationSettingsBase.firstVanishingPointAxis}
+            onChange={this.props.onFirstVanishingPointAxisChange}
           />
         </div>
 

@@ -42,6 +42,16 @@ export function calibrationSettingsBase(state: CalibrationSettingsBase | undefin
           customSensorHeight: action.height != undefined ? action.height : oldCameraData.customSensorHeight
         }
       }
+    case ActionTypes.SET_FIRST_VANISHING_POINT_AXIS:
+      return {
+        ...state,
+        firstVanishingPointAxis: action.axis
+      }
+    case ActionTypes.SET_SECOND_VANISHING_POINT_AXIS:
+      return {
+        ...state,
+        secondVanishingPointAxis: action.axis
+      }
   }
 
   return state

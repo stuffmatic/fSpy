@@ -27,8 +27,8 @@ export enum ActionTypes {
 
   SET_PRINCIPAL_POINT_MODE_1VP = 'SET_PRINCIPAL_POINT_MODE_1VP',
   SET_PRINCIPAL_POINT_MODE_2VP = 'SET_PRINCIPAL_POINT_MODE_2VP',
-  SET_VANISHING_POINT_AXIS_1VP = 'SET_VANISHING_POINT_AXIS_1VP',
-  SET_VANISHING_POINT_AXIS_2VP = 'SET_VANISHING_POINT_AXIS_2VP',
+  SET_FIRST_VANISHING_POINT_AXIS = 'SET_FIRST_VANISHING_POINT_AXIS',
+  SET_SECOND_VANISHING_POINT_AXIS = 'SET_SECOND_VANISHING_POINT_AXIS',
 
   SET_ABSOLUTE_FOCAL_LENGTH_1VP = 'SET_RELATIVE_FOCAL_LENGTH_1VP',
 
@@ -185,29 +185,27 @@ export function setPrincipalPointMode2VP(principalPointMode: PrincipalPointMode2
 }
 
 //
-export interface SetVanishingPointAxis1VP {
-  type: ActionTypes.SET_VANISHING_POINT_AXIS_1VP
+export interface SetFirstVanishingPointAxis {
+  type: ActionTypes.SET_FIRST_VANISHING_POINT_AXIS
   axis: Axis
 }
 
-export function setVanishingPointAxis1VP(axis: Axis): SetVanishingPointAxis1VP {
+export function setFirstVanishingPointAxis(axis: Axis): SetFirstVanishingPointAxis {
   return {
-    type: ActionTypes.SET_VANISHING_POINT_AXIS_1VP,
+    type: ActionTypes.SET_FIRST_VANISHING_POINT_AXIS,
     axis: axis
   }
 }
 
 //
-export interface SetVanishingPointAxis2VP {
-  type: ActionTypes.SET_VANISHING_POINT_AXIS_2VP,
-  vanishingPointIndex: number,
+export interface SetSecondVanishingPointAxis {
+  type: ActionTypes.SET_SECOND_VANISHING_POINT_AXIS,
   axis: Axis
 }
 
-export function setVanishingPointAxis2VP(vanishingPointIndex: number, axis: Axis): SetVanishingPointAxis2VP {
+export function setSecondVanishingPointAxis(axis: Axis): SetSecondVanishingPointAxis {
   return {
-    type: ActionTypes.SET_VANISHING_POINT_AXIS_2VP,
-    vanishingPointIndex: vanishingPointIndex,
+    type: ActionTypes.SET_SECOND_VANISHING_POINT_AXIS,
     axis: axis
   }
 }
@@ -468,8 +466,8 @@ export type AppAction =
   SetQuadModeEnabled |
   SetPrincipalPointMode1VP |
   SetPrincipalPointMode2VP |
-  SetVanishingPointAxis1VP |
-  SetVanishingPointAxis2VP |
+  SetFirstVanishingPointAxis |
+  SetSecondVanishingPointAxis |
   SetAbsoluteFocalLength1VP |
   SetReferenceDistanceAxis |
   SetReferenceDistanceUnit |
@@ -502,8 +500,8 @@ export const actionTypesTriggeringRecalculation: ActionTypes[] = [
 
   ActionTypes.SET_PRINCIPAL_POINT_MODE_1VP,
   ActionTypes.SET_PRINCIPAL_POINT_MODE_2VP,
-  ActionTypes.SET_VANISHING_POINT_AXIS_1VP,
-  ActionTypes.SET_VANISHING_POINT_AXIS_2VP,
+  ActionTypes.SET_FIRST_VANISHING_POINT_AXIS,
+  ActionTypes.SET_SECOND_VANISHING_POINT_AXIS,
 
   ActionTypes.SET_ABSOLUTE_FOCAL_LENGTH_1VP,
   ActionTypes.SET_PRINCIPAL_POINT,

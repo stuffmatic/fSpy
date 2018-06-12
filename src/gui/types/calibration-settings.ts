@@ -40,11 +40,12 @@ export interface CalibrationSettingsBase {
   referenceDistance: number
   referenceDistanceAxis: Axis | null
   cameraData: CameraData
+  firstVanishingPointAxis: Axis
+  secondVanishingPointAxis: Axis
 }
 
 export interface CalibrationSettings1VP {
   principalPointMode: PrincipalPointMode1VP
-  vanishingPointAxis: Axis
   upAxis: Axis
   horizonMode: HorizonMode
   absoluteFocalLength: number
@@ -53,5 +54,4 @@ export interface CalibrationSettings1VP {
 export interface CalibrationSettings2VP {
   principalPointMode: PrincipalPointMode2VP
   quadModeEnabled: boolean
-  vanishingPointAxes: [Axis, Axis]
 }

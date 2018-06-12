@@ -1,5 +1,5 @@
 import * as React from 'react'
-import ControlLine from './control-line'
+import ControlPolyline from './control-polyline'
 import ControlPoint from './control-point'
 import { Group } from 'react-konva'
 import { ControlPointPairState, ControlPointPairIndex } from '../../types/control-points-state'
@@ -19,9 +19,9 @@ export default function HorizonControl(props: HorizonControlProps) {
 
   return (
     <Group>
-      <ControlLine
-        start={props.pointPair[0]}
-        end={props.pointPair[1]}
+      <ControlPolyline
+        dimmed={false}
+        points={props.pointPair}
         color={Palette.yellow}
       />
       <ControlPoint

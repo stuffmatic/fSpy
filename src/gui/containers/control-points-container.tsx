@@ -63,6 +63,7 @@ class ControlPointsContainer extends React.Component<ControlPointsContainerProps
         controlPointsStateBase={this.props.controlPointsStateBase}
         controlPointsState1VP={this.props.controlPointsState1VP}
         controlPointsState2VP={this.props.controlPointsState2VP}
+        solverResult={this.props.solverResult}
       />
     )
   }

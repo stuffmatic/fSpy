@@ -257,8 +257,8 @@ export default class Solver {
 
     // Assing vanishing point axes
     let axisAssignmentMatrix = new Transform()
-    let row1 = this.axisVector(settings2VP.vanishingPointAxes[0])
-    let row2 = this.axisVector(settings2VP.vanishingPointAxes[1])
+    let row1 = this.axisVector(settingsBase.firstVanishingPointAxis)
+    let row2 = this.axisVector(settingsBase.secondVanishingPointAxis)
     let row3 = row1.cross(row2)
     axisAssignmentMatrix.matrix[0][0] = row1.x
     axisAssignmentMatrix.matrix[0][1] = row1.y
@@ -271,8 +271,8 @@ export default class Solver {
     axisAssignmentMatrix.matrix[2][2] = row3.z
 
     result.vanishingPointAxes = [
-      settings2VP.vanishingPointAxes[0],
-      settings2VP.vanishingPointAxes[1],
+      settingsBase.firstVanishingPointAxis,
+      settingsBase.secondVanishingPointAxis,
       this.vectorAxis(row3)
     ]
 

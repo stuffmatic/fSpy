@@ -1,12 +1,14 @@
 import * as React from 'react'
-import ControlLine from './control-line'
+import ControlPolyline from './control-polyline'
 import ControlPoint from './control-point'
 import { Group } from 'react-konva'
 import { VanishingPointControlState } from '../../types/control-points-state'
 import Point2D from '../../solver/point-2d'
+import MathUtil from '../../solver/math-util'
 
 interface VanishingPointControlProps {
   color: string
+  vanishingPointColor: string | null
   controlState: VanishingPointControlState
   vanishingPoint: Point2D | null
 
@@ -21,9 +23,9 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
   render() {
     return (
       <Group>
+        {this.renderVanishingPoint()}
         {this.renderLineSegment(0)}
         {this.renderLineSegment(1)}
-        {this.renderVanishingPoint()}
       </Group>
     )
   }
@@ -31,9 +33,9 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
   private renderLineSegment(index: number) {
     return (
       <Group>
-        <ControlLine
-          start={this.props.controlState.lineSegments[index][0]}
-          end={this.props.controlState.lineSegments[index][1]}
+        <ControlPolyline
+          dimmed={false}
+          points={this.props.controlState.lineSegments[index]}
           color={this.props.color}
         />
         <ControlPoint
@@ -55,9 +57,7 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
   }
 
   private renderVanishingPoint() {
-    return null
-    /*
-    if (this.props.vanishingPoint === null) {
+    if (!this.props.vanishingPoint || !this.props.vanishingPointColor) {
       return null
     }
 
@@ -69,13 +69,11 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
       this.props.controlState.lineSegments[1]
     )
     return (
-      <Line
-        points={p1.x + ', ' + p1.y + ' ' + p2.x + ', ' + p2.y + ' ' + p3.x + ', ' + p3.y}
-        fill='none'
-        stroke={this.props.color}
-
-        opacity={0.5}
+      <ControlPolyline
+        color={this.props.vanishingPointColor}
+        dimmed={true}
+        points={[p1, p2, p3]}
       />
-    )*/
+    )
   }
 }

@@ -13,6 +13,8 @@ import { Palette } from '../../style/palette'
 import HorizonControl from './horizon-control'
 import { CalibrationSettings1VP, CalibrationSettingsBase, CalibrationSettings2VP, HorizonMode, PrincipalPointMode2VP, PrincipalPointMode1VP } from '../../types/calibration-settings'
 import PrincipalPointControl from './principal-point-control'
+import { SolverResult } from '../../solver/solver-result'
+import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util'
 
 interface ControlPointsPanelState {
   width: number | undefined
@@ -32,6 +34,8 @@ export interface ControlPointsPanelProps {
   controlPointsStateBase: ControlPointsStateBase
   controlPointsState1VP: ControlPointsState1VP
   controlPointsState2VP: ControlPointsState2VP
+
+  solverResult: SolverResult
 }
 
 export default class ControlPointsPanel extends React.Component<ControlPointsPanelProps, ControlPointsPanelState> {
@@ -126,13 +130,16 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     return (
       <Group>
         <VanishingPointControl
-          color={Palette.red}
+          color={
+            Palette.colorForAxis(this.props.calibrationSettingsBase.firstVanishingPointAxis)
+          }
+          vanishingPointColor={this.vanishingPointColor(0)}
           controlState={
             this.rel2AbsVanishingPointControlState(
               this.props.controlPointsStateBase.firstVanishingPoint
             )
           }
-          vanishingPoint={null}
+          vanishingPoint={this.vanishingPointAbs(0)}
           onControlPointDrag={(lineSegmentIndex: number, pointPairIndex: number, position: Point2D) => {
             this.props.callbacks.onFirstVanishingPointControlPointDrag(
               lineSegmentIndex,
@@ -175,7 +182,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
           absolutePosition={this.rel2AbsPoint(this.props.controlPointsStateBase.principalPoint)}
           enabled={this.props.calbrationSettings1VP.principalPointMode == PrincipalPointMode1VP.Manual}
           visible={this.props.calbrationSettings1VP.principalPointMode == PrincipalPointMode1VP.Manual}
-          dragCallback={ (absolutePosition: Point2D) => {
+          dragCallback={(absolutePosition: Point2D) => {
             this.props.callbacks.onPrincipalPointDrag(
               this.abs2RelPoint(absolutePosition)
             )
@@ -189,13 +196,16 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     return (
       <Group>
         <VanishingPointControl
-          color={Palette.green}
+          color={
+            Palette.colorForAxis(this.props.calibrationSettingsBase.secondVanishingPointAxis)
+          }
+          vanishingPointColor={this.vanishingPointColor(1)}
           controlState={
             this.rel2AbsVanishingPointControlState(
               this.props.controlPointsState2VP.secondVanishingPoint
             )
           }
-          vanishingPoint={null}
+          vanishingPoint={this.vanishingPointAbs(1)}
           onControlPointDrag={(lineSegmentIndex: number, pointPairIndex: number, position: Point2D) => {
             this.props.callbacks.onSecondVanishingPointControlPointDrag(
               lineSegmentIndex,
@@ -205,16 +215,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
           }}
         />
         {this.renderThirdVanishingPointControl()}
-        <PrincipalPointControl
-          absolutePosition={this.rel2AbsPoint(this.props.controlPointsStateBase.principalPoint)}
-          enabled={this.props.calbrationSettings2VP.principalPointMode == PrincipalPointMode2VP.Manual}
-          visible={this.props.calbrationSettings2VP.principalPointMode != PrincipalPointMode2VP.Default}
-          dragCallback={ (absolutePosition: Point2D) => {
-            this.props.callbacks.onPrincipalPointDrag(
-              this.abs2RelPoint(absolutePosition)
-            )
-          }}
-        />
+        {this.renderPrincipalPoint2VP()}
       </Group>
     )
   }
@@ -227,17 +228,51 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     return (
       <VanishingPointControl
         color={Palette.orange}
+        vanishingPointColor={this.vanishingPointColor(2)}
         controlState={
           this.rel2AbsVanishingPointControlState(
             this.props.controlPointsState2VP.thirdVanishingPoint
           )
         }
-        vanishingPoint={null}
+        vanishingPoint={this.vanishingPointAbs(2)}
         onControlPointDrag={(lineSegmentIndex: number, pointPairIndex: number, position: Point2D) => {
           this.props.callbacks.onThirdVanishingPointControlPointDrag(
             lineSegmentIndex,
             pointPairIndex,
             this.abs2RelPoint(position)
+          )
+        }}
+      />
+    )
+  }
+
+  private renderPrincipalPoint2VP() {
+    let absolutePosition: Point2D | null = null
+    switch (this.props.calbrationSettings2VP.principalPointMode) {
+      case PrincipalPointMode2VP.FromThirdVanishingPoint:
+        if (this.props.solverResult.principalPoint) {
+          absolutePosition = this.imagePlane2Abs(this.props.solverResult.principalPoint)
+        }
+        break
+      case PrincipalPointMode2VP.Manual:
+        absolutePosition = this.rel2AbsPoint(this.props.controlPointsStateBase.principalPoint)
+        break
+      default:
+        break
+    }
+
+    if (!absolutePosition) {
+      return null
+    }
+
+    return (
+      <PrincipalPointControl
+        absolutePosition={absolutePosition}
+        enabled={this.props.calbrationSettings2VP.principalPointMode == PrincipalPointMode2VP.Manual}
+        visible={this.props.calbrationSettings2VP.principalPointMode != PrincipalPointMode2VP.Default}
+        dragCallback={(absolutePosition: Point2D) => {
+          this.props.callbacks.onPrincipalPointDrag(
+            this.abs2RelPoint(absolutePosition)
           )
         }}
       />
@@ -326,5 +361,41 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     relativePosition.y = Math.min(1, Math.max(0, relativePosition.y))
 
     return relativePosition
+  }
+
+  private imagePlane2Abs(imagePlanePosition: Point2D): Point2D {
+    let imageWidth = this.props.imageState.width
+    let imageHeight = this.props.imageState.height
+    if (!imageWidth || !imageHeight) {
+      return { x: 0, y: 0 }
+    }
+    let realtivePos = CoordinatesUtil.convert(
+      imagePlanePosition,
+      ImageCoordinateFrame.ImagePlane,
+      ImageCoordinateFrame.Relative,
+      imageWidth,
+      imageHeight
+    )
+    return this.rel2AbsPoint(realtivePos)
+  }
+
+  private vanishingPointAbs(vanishingPointIndex: number): Point2D | null {
+    let imageWidth = this.props.imageState.width
+    let imageHeight = this.props.imageState.height
+    if (this.props.solverResult.vanishingPoints && imageWidth && imageHeight) {
+      let imagePlanePos = this.props.solverResult.vanishingPoints[vanishingPointIndex]
+      return this.imagePlane2Abs(imagePlanePos)
+    }
+    return null
+  }
+
+  private vanishingPointColor(vanishingPointIndex: number): string | null {
+    if (!this.props.solverResult.vanishingPointAxes) {
+      return null
+    }
+
+    return Palette.colorForAxis(
+      this.props.solverResult.vanishingPointAxes[vanishingPointIndex]
+    )
   }
 }

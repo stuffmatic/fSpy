@@ -19,11 +19,6 @@ export function calibrationSettings1VP(state: CalibrationSettings1VP | undefined
         ...state,
         horizonMode: action.horizonMode
       }
-    case ActionTypes.SET_VANISHING_POINT_AXIS_1VP:
-      return {
-        ...state,
-        vanishingPointAxis: action.axis
-      }
     case ActionTypes.SET_ABSOLUTE_FOCAL_LENGTH_1VP:
       return {
         ...state,

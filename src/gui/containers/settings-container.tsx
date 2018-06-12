@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setVanishingPointAxis1VP, setVanishingPointAxis2VP, setGridFloorNormal, setReferenceDistanceUnit, setReferenceDistance, setReferenceDistanceAxis, setAbsoluteFocalLength1VP, setCameraPreset, setCameraSensorSize } from '../actions'
+import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setGridFloorNormal, setReferenceDistanceUnit, setReferenceDistance, setReferenceDistanceAxis, setCameraPreset, setCameraSensorSize, setFirstVanishingPointAxis, setSecondVanishingPointAxis, setAbsoluteFocalLength1VP } from '../actions'
 import SettingsPanel from '../components/settings-panel/settings-panel'
 import { CalibrationMode, GlobalSettings } from '../types/global-settings'
 import { StoreState } from '../types/store-state'
@@ -20,8 +20,8 @@ export interface SettingsContainerProps {
   onPrincipalPointModeChange1VP(principalPointMode: PrincipalPointMode1VP): void
   onPrincipalPointModeChange2VP(principalPointMode: PrincipalPointMode2VP): void
   onQuadModeEnabledChange(quadModeEnabled: boolean): void
-  onVanishingPointAxisChange1VP(axis: Axis): void
-  onVanishingPointAxisChange2VP(vanishingPointIndex: number, axis: Axis): void
+  onFirstVanishingPointAxisChange(axis: Axis): void
+  onSecondVanishingPointAxisChange(axis: Axis): void
   onAbsoluteFocalLengthChange1VP(absoluteFocalLength: number): void
   onReferenceDistanceAxisChange(axis: Axis | null): void
   onReferenceDistanceUnitChange(unit: ReferenceDistanceUnit): void
@@ -73,11 +73,11 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     onQuadModeEnabledChange: (quadModeEnabled: boolean) => {
       dispatch(setQuadModeEnabled(quadModeEnabled))
     },
-    onVanishingPointAxisChange1VP: (axis: Axis): void => {
-      dispatch(setVanishingPointAxis1VP(axis))
+    onFirstVanishingPointAxisChange: (axis: Axis) => {
+      dispatch(setFirstVanishingPointAxis(axis))
     },
-    onVanishingPointAxisChange2VP: (vanishingPointIndex: number, axis: Axis) => {
-      dispatch(setVanishingPointAxis2VP(vanishingPointIndex, axis))
+    onSecondVanishingPointAxisChange: (axis: Axis) => {
+      dispatch(setSecondVanishingPointAxis(axis))
     },
     onAbsoluteFocalLengthChange1VP: (absoluteFocalLength: number) => {
       dispatch(setAbsoluteFocalLength1VP(absoluteFocalLength))

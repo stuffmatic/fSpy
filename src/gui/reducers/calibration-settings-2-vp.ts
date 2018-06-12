@@ -19,13 +19,6 @@ export function calibrationSettings2VP(state: CalibrationSettings2VP | undefined
         ...state,
         quadModeEnabled: action.quadModeEnabled
       }
-    case ActionTypes.SET_VANISHING_POINT_AXIS_2VP:
-      let newAxes = [...state.vanishingPointAxes]
-      newAxes[action.vanishingPointIndex] = action.axis
-      return {
-        ...state,
-        vanishingPointAxes: [newAxes[0], newAxes[1]]
-      }
   }
 
   return state
