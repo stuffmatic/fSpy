@@ -1,22 +1,21 @@
 import * as React from 'react'
 import { SettingsContainerProps } from '../../containers/settings-container'
 import { CalibrationMode } from '../../types/global-settings'
-import SettingsSection1VP from './settings-section-1-vp'
-import SettingsSection2VP from './settings-section-2-vp'
-import SettingsSectionBottom from './settings-section-bottom'
+import GridFloorNormalDropdown from './grid-floor-normal-dropdown'
+import { Axis, PrincipalPointMode1VP, HorizonMode, PrincipalPointMode2VP } from '../../types/calibration-settings'
+import Checkbox from './checkbox'
 import Dropdown from './../common/dropdown'
+import PanelSpacer from './../common/panel-spacer'
+import ReferenceDistanceForm from './reference-distance-form'
+import AxisDropdown from './axis-dropdown'
+import FocalLengthForm from './../common/focal-length-form'
 
 export default class SettingsPanel extends React.PureComponent<SettingsContainerProps> {
   render() {
-
-    let is1VPMode = this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint
-    let settingsSection = is1VPMode ? (<SettingsSection1VP {...this.props} />) :
-      (<SettingsSection2VP {...this.props} />)
-
     return (
       <div id='left-panel' className='side-panel'>
         <div id='panel-container'>
-          <div id='panel-top-container'>
+          <div>
             <div className='panel-section bottom-border'>
               <div className='panel-row'>Number of vanishing points</div>
               <Dropdown
@@ -39,11 +38,189 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
                   this.props.onCalibrationModeChange(selectedValue)
                 }}
               />
-
             </div>
-            {settingsSection}
+            <PanelSpacer />
+            <div className='panel-row'>
+              Vanishing point axes
+            </div>
+
+            <div className='panel-row'>
+              <AxisDropdown
+                selectedAxis={this.props.calibrationSettingsBase.firstVanishingPointAxis}
+                onChange={this.props.onFirstVanishingPointAxisChange}
+              />
+            </div>
+            <PanelSpacer />
+            <div className='panel-row'>
+              <AxisDropdown
+                selectedAxis={this.props.calibrationSettingsBase.secondVanishingPointAxis}
+                onChange={this.props.onSecondVanishingPointAxisChange}
+              />
+            </div>
+            <PanelSpacer />
+
+            <div className='panel-row'>
+              Reference distance
+            </div>
+
+            <ReferenceDistanceForm // TODO: DRY
+              referenceAxis={this.props.calibrationSettingsBase.referenceDistanceAxis}
+              referenceDistance={this.props.calibrationSettingsBase.referenceDistance}
+              referenceDistanceUnit={this.props.calibrationSettingsBase.referenceDistanceUnit}
+              onReferenceAxisChange={this.props.onReferenceDistanceAxisChange}
+              onReferenceDistanceChange={this.props.onReferenceDistanceChange}
+              onReferenceDistanceUnitChange={this.props.onReferenceDistanceUnitChange}
+            />
           </div>
-          <SettingsSectionBottom {...this.props} />
+
+          {this.renderModeSpecificSettings()}
+
+          <div className='panel-section top-border'>
+            <div className='panel-row'>
+              <input
+                name='imageIsDimmed'
+                type='checkbox'
+                checked={this.props.globalSettings.imageOpacity < 1}
+                onChange={(event: any) => {
+                  this.props.onImageOpacityChange(event.target.checked ? 0.2 : 1)
+                }}
+              /> Dimmed
+            </div>
+
+            <div className='panel-row'>
+              Grid floor
+            </div>
+            <div className='panel-row'>
+              <GridFloorNormalDropdown
+                selectedAxis={this.props.globalSettings.gridFloorNormal}
+                onChange={(axis: Axis | null) => {
+                  this.props.onGridFloorNormalChange(axis)
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  private renderModeSpecificSettings() {
+    let is1VPMode = this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint
+    return is1VPMode ? this.render1VPSettings() : this.render2VPSettings()
+  }
+
+  private render1VPSettings() {
+    return (
+      <div className='panel-section'>
+        <div className='panel-row'>
+          Principal point
+        </div>
+        <div className='panel-row'>
+          <Dropdown
+            options={
+              [
+                {
+                  value: PrincipalPointMode1VP.Default,
+                  id: PrincipalPointMode1VP.Default,
+                  label: 'Image midpoint'
+                },
+                {
+                  value: PrincipalPointMode1VP.Manual,
+                  id: PrincipalPointMode1VP.Manual,
+                  label: PrincipalPointMode1VP.Manual
+                }
+              ]
+            }
+            selectedOptionId={this.props.calibrationSettings1VP.principalPointMode}
+            onChange={(selectedValue: PrincipalPointMode1VP) => {
+              this.props.onPrincipalPointModeChange1VP(selectedValue)
+            }}
+          />
+        </div>
+
+        <PanelSpacer />
+        <div className='panel-row'>
+          Camera data
+        </div>
+
+        <FocalLengthForm
+          cameraData={this.props.calibrationSettingsBase.cameraData}
+          absoluteFocalLength={this.props.calibrationSettings1VP.absoluteFocalLength}
+          onAbsoluteFocalLengthChange={this.props.onAbsoluteFocalLengthChange1VP}
+          onCameraPresetChange={this.props.onCameraPresetChange}
+          onSensorSizeChange={this.props.onSensorSizeChange}
+        />
+
+        <PanelSpacer />
+        <div className='panel-row'>
+          Horizon
+        </div>
+        <div className='panel-row'>
+          <Dropdown
+            options={
+              [
+                {
+                  value: HorizonMode.Default,
+                  id: HorizonMode.Default,
+                  label: 'Flat'
+                },
+                {
+                  value: HorizonMode.Manual,
+                  id: HorizonMode.Manual,
+                  label: HorizonMode.Manual
+                }
+              ]
+            }
+            selectedOptionId={this.props.calibrationSettings1VP.horizonMode}
+            onChange={(selectedValue: HorizonMode) => {
+              this.props.onHorizonModeChange(selectedValue)
+            }}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  private render2VPSettings() {
+    return (
+      <div className='panel-section'>
+        <div className='panel-row'>
+          Principal point
+        </div>
+        <div className='panel-row'>
+          <Dropdown
+            options={
+              [
+                {
+                  value: PrincipalPointMode2VP.Default,
+                  id: PrincipalPointMode2VP.Default,
+                  label: 'Image midpoint'
+                },
+                {
+                  value: PrincipalPointMode2VP.Manual,
+                  id: PrincipalPointMode2VP.Manual,
+                  label: PrincipalPointMode2VP.Manual
+                },
+                {
+                  value: PrincipalPointMode2VP.FromThirdVanishingPoint,
+                  id: PrincipalPointMode2VP.FromThirdVanishingPoint,
+                  label: 'From 3rd vanishing point'
+                }
+              ]
+            }
+            selectedOptionId={this.props.calibrationSettings2VP.principalPointMode}
+            onChange={(selectedValue: PrincipalPointMode2VP) => {
+              this.props.onPrincipalPointModeChange2VP(selectedValue)
+            }}
+          />
+        </div>
+        <PanelSpacer />
+        <div className='panel-row'>
+          <Checkbox
+            title='Rectangle mode'
+            isSelected={this.props.calibrationSettings2VP.quadModeEnabled}
+            onChange={(isSelected: boolean) => this.props.onQuadModeEnabledChange(isSelected)}
+          />
         </div>
       </div>
     )
