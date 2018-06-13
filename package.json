@@ -78,7 +78,13 @@
     ],
     "directories": {
       "buildResources": "assets/electron"
-    }
+    },
+    "fileAssociations": [{
+      "ext": "fspy",
+      "name": "fSpy",
+      "description": "TODO",
+      "role": "Editor"
+    }]
   },
   "jest": {
     "testRegex": "/__tests__/.*\\.jsx?",
