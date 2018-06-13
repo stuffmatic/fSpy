@@ -81,8 +81,9 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
 
     return (
       <Group>
-        {gridLines2D.map((endpoints: [Point2D, Point2D]) => {
+        {gridLines2D.map((endpoints: [Point2D, Point2D], index: number) => {
           return (<Line
+            key={index}
             points={[endpoints[0].x, endpoints[0].y, endpoints[1].x, endpoints[1].y]}
             stroke={Palette.lightGray}
             strokeWidth={0.7}
