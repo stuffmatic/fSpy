@@ -97,8 +97,8 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
                 <Layer>
                   {this.render3DOverlay()}
                   {this.renderImage()}
-                  {this.renderCommonControlPoints()}
                   {is1VPMode ? this.render1VPControlPoints() : this.render2VPControlPoints()}
+                  {this.renderCommonControlPoints()}
                 </Layer>
               </Stage>
             </div>
