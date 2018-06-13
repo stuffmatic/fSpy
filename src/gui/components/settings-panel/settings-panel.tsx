@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { SettingsContainerProps } from '../../containers/settings-container'
-import { CalibrationMode } from '../../types/global-settings'
-import GridFloorNormalDropdown from './grid-floor-normal-dropdown'
-import { Axis, PrincipalPointMode1VP, HorizonMode, PrincipalPointMode2VP } from '../../types/calibration-settings'
+import { CalibrationMode, Overlay3DGuide } from '../../types/global-settings'
+import Overlay3DGuideDropdown from './overlay-3d-guide-dropdown'
+import { PrincipalPointMode1VP, HorizonMode, PrincipalPointMode2VP } from '../../types/calibration-settings'
 import Checkbox from './checkbox'
 import Dropdown from './../common/dropdown'
 import PanelSpacer from './../common/panel-spacer'
@@ -88,13 +88,13 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
             </div>
 
             <div className='panel-row'>
-              Grid floor
+              3D guide
             </div>
             <div className='panel-row'>
-              <GridFloorNormalDropdown
-                selectedAxis={this.props.globalSettings.gridFloorNormal}
-                onChange={(axis: Axis | null) => {
-                  this.props.onGridFloorNormalChange(axis)
+              <Overlay3DGuideDropdown
+                overlay3DGuide={this.props.globalSettings.overlay3DGuide}
+                onChange={(overlay3DGuide: Overlay3DGuide) => {
+                  this.props.onOverlay3DGuideChange(overlay3DGuide)
                 }}
               />
             </div>

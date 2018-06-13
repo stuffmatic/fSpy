@@ -19,10 +19,10 @@ export function globalSettings(state: GlobalSettings | undefined, action: AnyAct
         ...state,
         imageOpacity: action.opacity
       }
-    case ActionTypes.SET_GRID_FLOOR_NORMAL:
+    case ActionTypes.SET_OVERLAY_3D_GUIDE:
       return {
         ...state,
-        gridFloorNormal: action.axis
+        overlay3DGuide: action.overlay3DGuide
       }
   }
 

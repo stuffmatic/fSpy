@@ -1,4 +1,4 @@
-import { CalibrationMode } from '../types/global-settings'
+import { CalibrationMode, Overlay3DGuide } from '../types/global-settings'
 import { ControlPointPairIndex } from '../types/control-points-state'
 import { PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode, Axis, ReferenceDistanceUnit } from '../types/calibration-settings'
 import Point2D from '../solver/point-2d'
@@ -11,7 +11,7 @@ export enum ActionTypes {
   // Global settings actions
   SET_CALIBRATION_MODE = 'SET_CALIBRATION_MODE',
   SET_IMAGE_OPACITY = 'SET_IMAGE_OPACITY',
-  SET_GRID_FLOOR_NORMAL = 'SET_GRID_FLOOR_NORMAL',
+  SET_OVERLAY_3D_GUIDE = 'SET_OVERLAY_3D_GUIDE',
 
   // Image loading actions
   SET_IMAGE = 'SET_IMAGE',
@@ -102,16 +102,16 @@ export function setImageOpacity(opacity: number): SetImageOpacity {
   }
 }
 
-// Set grid floor normal
-export interface SetGridFloorNormal {
-  type: ActionTypes.SET_GRID_FLOOR_NORMAL
-  axis: Axis | null
+// Set overlay 3D guide type
+export interface SetOverlay3DGuide {
+  type: ActionTypes.SET_OVERLAY_3D_GUIDE
+  overlay3DGuide: Overlay3DGuide
 }
 
-export function setGridFloorNormal(axis: Axis | null): SetGridFloorNormal {
+export function setOverlay3DGuide(overlay3DGuide: Overlay3DGuide): SetOverlay3DGuide {
   return {
-    type: ActionTypes.SET_GRID_FLOOR_NORMAL,
-    axis: axis
+    type: ActionTypes.SET_OVERLAY_3D_GUIDE,
+    overlay3DGuide: overlay3DGuide
   }
 }
 
@@ -460,7 +460,7 @@ export function setExportDialogVisibility(isVisible: boolean): SetExportDialogVi
 export type AppAction =
   SetCalibrationMode |
   SetImageOpacity |
-  SetGridFloorNormal |
+  SetOverlay3DGuide |
   SetImage |
   SetHorizonMode |
   SetQuadModeEnabled |

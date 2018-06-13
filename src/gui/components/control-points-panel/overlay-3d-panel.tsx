@@ -4,7 +4,7 @@ import Point2D from '../../solver/point-2d'
 import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util'
 import { Palette } from '../../style/palette'
 import { Axis } from '../../types/calibration-settings'
-import { GlobalSettings } from '../../types/global-settings'
+import { GlobalSettings, Overlay3DGuide } from '../../types/global-settings'
 import { SolverResult } from '../../solver/solver-result'
 import MathUtil from '../../solver/math-util'
 import { Group, Line } from 'react-konva'
@@ -23,17 +23,32 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   render() {
     return (
       <Group>
-        {this.renderGridFloor(this.props.globalSettings.gridFloorNormal)}
+        {this.render3DGuide(this.props.globalSettings.overlay3DGuide)}
         {this.renderAxes()}
       </Group>
     )
   }
 
-  private renderGridFloor(normalAxis: Axis | null) {
-    if (!normalAxis) {
-      return null
+  private render3DGuide(overlay3DGuide: Overlay3DGuide) {
+    switch (overlay3DGuide) {
+      case Overlay3DGuide.Box:
+        return this.renderBox()
+      case Overlay3DGuide.XYGridFloor:
+        return this.renderGridFloor(Axis.PositiveZ)
+      case Overlay3DGuide.YZGridFloor:
+        return this.renderGridFloor(Axis.PositiveX)
+      case Overlay3DGuide.ZXGridFloor:
+        return this.renderGridFloor(Axis.PositiveY)
     }
 
+    return null
+  }
+
+  private renderBox() {
+    return null
+  }
+
+  private renderGridFloor(normalAxis: Axis) {
     let cellCount = 10
     let cellSize = 0.15 * this.normalizationFactor
     let gridLines3D: [Vector3D, Vector3D][] = []

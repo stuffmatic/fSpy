@@ -1,7 +1,7 @@
-import { CalibrationMode, GlobalSettings } from '../types/global-settings'
+import { CalibrationMode, GlobalSettings, Overlay3DGuide } from '../types/global-settings'
 
 export const defaultGlobalSettings: GlobalSettings = {
   calibrationMode: CalibrationMode.OneVanishingPoint,
   imageOpacity: 0.2,
-  gridFloorNormal: null
+  overlay3DGuide: Overlay3DGuide.None
 }
