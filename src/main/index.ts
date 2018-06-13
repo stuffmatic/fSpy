@@ -4,16 +4,27 @@ import { OpenImageMessage } from './messages'
 const path = require('path')
 const url = require('url')
 
+import windowStateKeeper from 'electron-window-state'
+
 let mainWindow: Electron.BrowserWindow | null
 
 function createWindow() {
+
+  let mainWindowState = windowStateKeeper({
+    defaultWidth: 800,
+    defaultHeight: 600
+  })
+
   let window = new BrowserWindow({
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
     minWidth: 800,
     minHeight: 600,
-    width: 800,
-    height: 600,
     show: false
   })
+  mainWindowState.manage(window)
   mainWindow = window
 
   window.on('ready-to-show', () => {
