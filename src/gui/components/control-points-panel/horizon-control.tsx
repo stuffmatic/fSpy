@@ -25,7 +25,6 @@ export default class HorizonControl extends React.PureComponent<HorizonControlPr
       <Group>
         {this.renderVanishingPoint()}
         <ControlPolyline
-          dimmed={false}
           points={this.props.pointPair}
           color={Palette.yellow}
         />

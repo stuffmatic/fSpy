@@ -16,6 +16,9 @@ import PrincipalPointControl from './principal-point-control'
 import { SolverResult } from '../../solver/solver-result'
 import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util'
 import Overlay3DPanel from './overlay-3d-panel'
+import ReferenceDistanceControl from './reference-distance-control'
+import Solver from '../../solver/solver'
+import MathUtil from '../../solver/math-util'
 
 interface ControlPointsPanelState {
   width: number | undefined
@@ -182,7 +185,116 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
   }
 
   private renderReferenceDistanceControl() {
-    return null
+    let referenceAxis = this.props.calibrationSettingsBase.referenceDistanceAxis
+    if (referenceAxis === null) {
+      return null
+    }
+
+    let result = this.props.solverResult
+    if (!result.vanishingPoints || !result.vanishingPointAxes) {
+      return null
+    }
+
+    let imageWidth = this.props.imageState.width
+    let imageHeight = this.props.imageState.height
+    if (!imageWidth || !imageHeight) {
+      return null
+    }
+
+    let referenceAxisVpIndex = Solver.vanishingPointIndexForAxis(
+      referenceAxis,
+      result.vanishingPointAxes
+    )
+    let uIndex = (referenceAxisVpIndex + 1) % 3
+    let vIndex = (referenceAxisVpIndex + 2) % 3
+
+    let positionRel = this.props.controlPointsStateBase.referenceDistanceAnchor
+    let position = CoordinatesUtil.convert(
+      positionRel,
+      ImageCoordinateFrame.Relative,
+      ImageCoordinateFrame.ImagePlane,
+      imageWidth,
+      imageHeight
+    )
+
+    let origin = CoordinatesUtil.convert(
+      this.props.controlPointsStateBase.origin,
+      ImageCoordinateFrame.Relative,
+      ImageCoordinateFrame.ImagePlane,
+      imageWidth,
+      imageHeight
+    )
+
+    let uIntersection = this.imagePlane2Abs(
+      MathUtil.lineIntersection(
+        [origin, result.vanishingPoints[uIndex]],
+        [position, result.vanishingPoints[vIndex]]
+      )!
+    )
+
+    let vIntersection = this.imagePlane2Abs(
+      MathUtil.lineIntersection(
+        [origin, result.vanishingPoints[vIndex]],
+        [position, result.vanishingPoints[uIndex]]
+      )!
+    )
+
+    let posAbs = this.imagePlane2Abs(position)
+
+    let originAbs = this.imagePlane2Abs(origin)
+
+    // anchor point + length
+    let referenceAxisVpRel = CoordinatesUtil.convert(
+      result.vanishingPoints[referenceAxisVpIndex],
+      ImageCoordinateFrame.ImagePlane,
+      ImageCoordinateFrame.Relative,
+      imageWidth,
+      imageHeight
+    )
+
+    let anchorToVpRel = MathUtil.normalized({
+      x: referenceAxisVpRel.x - positionRel.x,
+      y: referenceAxisVpRel.y - positionRel.y
+    })
+
+    let handlePositions = Solver.referenceDistanceHandlesRelativePositions(
+      this.props.controlPointsStateBase,
+      referenceAxis,
+      result.vanishingPoints,
+      result.vanishingPointAxes,
+      imageWidth,
+      imageHeight
+    )
+
+    return (
+      <ReferenceDistanceControl
+        origin={originAbs}
+        uIntersection={uIntersection}
+        vIntersection={vIntersection}
+        anchorPosition={
+          posAbs
+        }
+        handlePositions={
+          [
+            this.rel2AbsPoint(handlePositions[0]),
+            this.rel2AbsPoint(handlePositions[1])
+          ]
+        }
+        anchorDragCallback={(position: Point2D) => {
+          this.props.callbacks.onReferenceDistanceAnchorDrag(
+            this.abs2RelPoint(position)
+          )
+        }}
+        handleDragCallback={(handleIndex: number, dragPosition: Point2D) => {
+          let dragRel = this.abs2RelPoint(dragPosition)
+          let a = { x: dragRel.x - positionRel.x, y: dragRel.y - positionRel.y }
+          let offset = MathUtil.dot(anchorToVpRel, a)
+          this.props.callbacks.onReferenceDistanceHandleDrag(
+            handleIndex, offset
+          )
+        }}
+      />
+    )
   }
 
   private render1VPControlPoints() {

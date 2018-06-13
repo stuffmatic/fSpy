@@ -5,7 +5,8 @@ import Point2D from '../../solver/point-2d'
 interface ControlPolylineProps {
   points: Point2D[]
   color: string
-  dimmed: boolean
+  dimmed?: boolean
+  dashed?: boolean
 }
 
 export default function ControlPolyline(props: ControlPolylineProps) {
@@ -19,6 +20,7 @@ export default function ControlPolyline(props: ControlPolylineProps) {
       stroke={props.color}
       strokeWidth={1}
       opacity={props.dimmed ? 0.35 : 1}
+      dash={ props.dashed ? [3, 6] : undefined }
     />
   )
 }

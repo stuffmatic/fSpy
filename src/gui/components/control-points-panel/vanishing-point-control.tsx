@@ -34,7 +34,6 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
     return (
       <Group>
         <ControlPolyline
-          dimmed={false}
           points={this.props.controlState.lineSegments[index]}
           color={this.props.color}
         />
