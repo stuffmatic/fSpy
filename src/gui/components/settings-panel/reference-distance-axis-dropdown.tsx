@@ -16,17 +16,17 @@ const options = [
   {
     value: Axis.PositiveX,
     id: Axis.PositiveX,
-    label: 'Along the x axis'
+    label: 'In the x direction'
   },
   {
     value: Axis.PositiveY,
     id: Axis.PositiveY,
-    label: 'Along the y axis'
+    label: 'In the y direction'
   },
   {
     value: Axis.PositiveZ,
     id: Axis.PositiveZ,
-    label: 'Along the z axis'
+    label: 'In the z direction'
   }
 ]
 
