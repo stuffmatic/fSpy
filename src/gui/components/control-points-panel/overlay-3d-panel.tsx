@@ -10,6 +10,30 @@ import MathUtil from '../../solver/math-util'
 import { Group, Line } from 'react-konva'
 import AABB from '../../solver/aabb'
 import AABBOps from '../../solver/aabb-ops'
+import { Point } from 'electron'
+
+interface GridLineProps {
+  points: Point2D[]
+  isClosed?: boolean
+}
+
+function GridPolyline(props: GridLineProps) {
+  let coords: number[] = []
+  for (let point of props.points) {
+    coords.push(point.x)
+    coords.push(point.y)
+  }
+
+  return (
+    <Line
+      closed={props.isClosed}
+      points={coords}
+      stroke={Palette.lightGray}
+      strokeWidth={0.7}
+      opacity={0.5}
+    />
+  )
+}
 
 interface Overlay3DPanelProps {
   width: number
@@ -45,7 +69,52 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   }
 
   private renderBox() {
-    return null
+    let size = 0.3 * this.normalizationFactor
+
+    let zMinFace: Vector3D[] = [
+      new Vector3D(-1, -1, -1),
+      new Vector3D(1, -1, -1),
+      new Vector3D(1, 1, -1),
+      new Vector3D(-1, 1, -1)
+    ]
+
+    let zMaxFace: Vector3D[] = [
+      new Vector3D(-1, -1, 1),
+      new Vector3D(1, -1, 1),
+      new Vector3D(1, 1, 1),
+      new Vector3D(-1, 1, 1)
+    ]
+
+    let edges: Vector3D[][] = [
+      [new Vector3D(-1, -1, -1), new Vector3D(-1, -1, 1)],
+      [new Vector3D(1, -1, -1), new Vector3D(1, -1, 1)],
+      [new Vector3D(1, 1, -1), new Vector3D(1, 1, 1)],
+      [new Vector3D(-1, 1, -1), new Vector3D(-1, 1, 1)]
+    ]
+
+    let projectedFaces: Point[][] = []
+    for (let face of [zMinFace, zMaxFace]) {
+      let projected = face.map((vector: Vector3D) => this.project(vector.multipliedByScalar(size)))
+      projectedFaces.push(projected)
+    }
+
+    let projectedEdges: Point2D[][] = []
+    for (let edge of edges) {
+      projectedEdges.push(
+        edge.map((vector: Vector3D) => this.project(vector.multipliedByScalar(size)))
+      )
+    }
+
+    return (
+      <Group>
+        <GridPolyline points={projectedFaces[0]} isClosed={true} />
+        <GridPolyline points={projectedFaces[1]} isClosed={true} />
+        <GridPolyline points={projectedEdges[0]} />
+        <GridPolyline points={projectedEdges[1]} />
+        <GridPolyline points={projectedEdges[2]} />
+        <GridPolyline points={projectedEdges[3]} />
+      </Group>
+    )
   }
 
   private renderGridFloor(normalAxis: Axis) {
@@ -97,12 +166,9 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
     return (
       <Group>
         {gridLines2D.map((endpoints: [Point2D, Point2D], index: number) => {
-          return (<Line
+          return (<GridPolyline
             key={index}
-            points={[endpoints[0].x, endpoints[0].y, endpoints[1].x, endpoints[1].y]}
-            stroke={Palette.lightGray}
-            strokeWidth={0.7}
-            opacity={0.5}
+            points={endpoints}
           />)
         })}
       </Group>
