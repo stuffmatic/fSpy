@@ -328,6 +328,25 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
   }
 
   private render2VPControlPoints() {
+
+    let firstVanishingPointControlState = this.props.controlPointsStateBase.firstVanishingPoint
+    let secondVanishingPointControlState = this.props.controlPointsState2VP.secondVanishingPoint
+    if (this.props.calbrationSettings2VP.quadModeEnabled) {
+      // quad mode is enabled. use the control point positions of the first vanishing point control
+      secondVanishingPointControlState = {
+        lineSegments: [
+          [
+            firstVanishingPointControlState.lineSegments[0][0],
+            firstVanishingPointControlState.lineSegments[1][0]
+          ],
+          [
+            firstVanishingPointControlState.lineSegments[0][1],
+            firstVanishingPointControlState.lineSegments[1][1]
+          ]
+        ]
+      }
+    }
+
     return (
       <Group>
         <VanishingPointControl
@@ -337,16 +356,20 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
           vanishingPointColor={this.vanishingPointColor(1)}
           controlState={
             this.rel2AbsVanishingPointControlState(
-              this.props.controlPointsState2VP.secondVanishingPoint
+              secondVanishingPointControlState
             )
           }
           vanishingPoint={this.vanishingPointAbs(1)}
           onControlPointDrag={(lineSegmentIndex: number, pointPairIndex: number, position: Point2D) => {
-            this.props.callbacks.onSecondVanishingPointControlPointDrag(
-              lineSegmentIndex,
-              pointPairIndex,
-              this.abs2RelPoint(position)
-            )
+            if (this.props.calbrationSettings2VP.quadModeEnabled) {
+              // quad mode is enabled. don't allow dragging
+            } else {
+              this.props.callbacks.onSecondVanishingPointControlPointDrag(
+                lineSegmentIndex,
+                pointPairIndex,
+                this.abs2RelPoint(position)
+              )
+            }
           }}
         />
         {this.renderThirdVanishingPointControl()}

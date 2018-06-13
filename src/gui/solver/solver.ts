@@ -172,45 +172,27 @@ export default class Solver {
     let imageWidth = image.width!
     let imageHeight = image.height!
 
-    // TODO: clean up this cloning
-    let vanishingPointControlStates: VanishingPointControlState[] = [
-      {
+    let firstVanishingPointControlState = controlPointsBase.firstVanishingPoint
+    let secondVanishingPointControlState = controlPoints2VP.secondVanishingPoint
+    if (settings2VP.quadModeEnabled) {
+      secondVanishingPointControlState = {
         lineSegments: [
           [
-            { ...controlPointsBase.firstVanishingPoint.lineSegments[0][0] },
-            { ...controlPointsBase.firstVanishingPoint.lineSegments[0][1] }
+            firstVanishingPointControlState.lineSegments[0][0],
+            firstVanishingPointControlState.lineSegments[1][0]
           ],
           [
-            { ...controlPointsBase.firstVanishingPoint.lineSegments[1][0] },
-            { ...controlPointsBase.firstVanishingPoint.lineSegments[1][1] }
-          ]
-        ]
-      },
-      {
-        lineSegments: [
-          [
-            { ...controlPoints2VP.secondVanishingPoint.lineSegments[0][0] },
-            { ...controlPoints2VP.secondVanishingPoint.lineSegments[0][1] }
-          ],
-          [
-            { ...controlPoints2VP.secondVanishingPoint.lineSegments[1][0] },
-            { ...controlPoints2VP.secondVanishingPoint.lineSegments[1][1] }
+            firstVanishingPointControlState.lineSegments[0][1],
+            firstVanishingPointControlState.lineSegments[1][1]
           ]
         ]
       }
-    ]
-
-    if (settings2VP.quadModeEnabled) {
-      vanishingPointControlStates[1].lineSegments[0][0] = controlPointsBase.firstVanishingPoint.lineSegments[1][0]
-      vanishingPointControlStates[1].lineSegments[0][1] = controlPointsBase.firstVanishingPoint.lineSegments[0][0]
-      vanishingPointControlStates[1].lineSegments[1][0] = controlPointsBase.firstVanishingPoint.lineSegments[1][1]
-      vanishingPointControlStates[1].lineSegments[1][1] = controlPointsBase.firstVanishingPoint.lineSegments[0][1]
     }
 
     // Compute the two input vanishing points from the provided control points
     let inputVanishingPoints = this.computeVanishingPointsFromControlPoints(
       image,
-      [controlPointsBase.firstVanishingPoint, controlPoints2VP.secondVanishingPoint],
+      [controlPointsBase.firstVanishingPoint, secondVanishingPointControlState],
       errors
     )
 
