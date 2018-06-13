@@ -7,10 +7,14 @@ import { Axis } from '../../types/calibration-settings'
 import { GlobalSettings } from '../../types/global-settings'
 import { SolverResult } from '../../solver/solver-result'
 import MathUtil from '../../solver/math-util'
+import { Group, Line } from 'react-konva'
+import AABB from '../../solver/aabb'
+import AABBOps from '../../solver/aabb-ops'
 
 interface Overlay3DPanelProps {
   width: number
   height: number
+  imageAABB: AABB
   solverResult: SolverResult
   globalSettings: GlobalSettings
 }
@@ -18,10 +22,10 @@ interface Overlay3DPanelProps {
 export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelProps> {
   render() {
     return (
-      <g>
+      <Group>
         {this.renderGridFloor(this.props.globalSettings.gridFloorNormal)}
         {this.renderAxes()}
-      </g>
+      </Group>
     )
   }
 
@@ -76,11 +80,16 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
     }
 
     return (
-      <g stroke={Palette.lightGray} opacity={0.25}>
+      <Group>
         {gridLines2D.map((endpoints: [Point2D, Point2D]) => {
-          return <line x1={endpoints[0].x} y1={endpoints[0].y} x2={endpoints[1].x} y2={endpoints[1].y} />
+          return (<Line
+            points={[endpoints[0].x, endpoints[0].y, endpoints[1].x, endpoints[1].y]}
+            stroke={Palette.lightGray}
+            strokeWidth={0.7}
+            opacity={0.5}
+          />)
         })}
-      </g>
+      </Group>
     )
   }
 
@@ -102,11 +111,11 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
     let axisLength = 0.3 * this.normalizationFactor
 
     return (
-      <g>
+      <Group>
         {this.renderAxis(Axis.PositiveX, axisLength, Palette.red)}
         {this.renderAxis(Axis.PositiveY, axisLength, Palette.green)}
         {this.renderAxis(Axis.PositiveZ, axisLength, Palette.blue)}
-      </g>
+      </Group>
     )
   }
 
@@ -152,20 +161,16 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
 
     let projectedEndpoint = this.project(endpoint)
     return (
-      <g>
-        <line
-          x1={projectedOrigin.x}
-          y1={projectedOrigin.y}
-          x2={projectedEndpoint.x}
-          y2={projectedEndpoint.y}
+      <Group>
+        <Line
+          points={[projectedOrigin.x, projectedOrigin.y, projectedEndpoint.x, projectedEndpoint.y]}
           stroke={color}
         />
-        <polyline
-          points={'' + arrowWedgeStart.x + ', ' + arrowWedgeStart.y + ', ' + projectedEndpoint.x + ', ' + projectedEndpoint.y + ', ' + arrowWedgeEnd.x + ', ' + arrowWedgeEnd.y}
+        <Line
+          points={[arrowWedgeStart.x, arrowWedgeStart.y, projectedEndpoint.x, projectedEndpoint.y, arrowWedgeEnd.x, arrowWedgeEnd.y]}
           stroke={color}
-          fill='none'
         />
-      </g>
+      </Group>
     )
   }
 
@@ -178,7 +183,7 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
       return { x: 0, y: 0 }
     }
 
-    return CoordinatesUtil.convert(
+    let relatiePosition = CoordinatesUtil.convert(
       MathUtil.perspectiveProject(
         point,
         cameraTransform,
@@ -186,9 +191,14 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
         horizontalFieldOfView
       ),
       ImageCoordinateFrame.ImagePlane,
-      ImageCoordinateFrame.Absolute,
-      this.props.width,
-      this.props.height
+      ImageCoordinateFrame.Relative,
+      AABBOps.width(this.props.imageAABB),
+      AABBOps.height(this.props.imageAABB)
     )
+
+    return {
+      x: this.props.imageAABB.xMin + relatiePosition.x * AABBOps.width(this.props.imageAABB),
+      y: this.props.imageAABB.yMin + relatiePosition.y * AABBOps.height(this.props.imageAABB)
+    }
   }
 }

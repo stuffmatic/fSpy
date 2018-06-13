@@ -15,6 +15,7 @@ import { CalibrationSettings1VP, CalibrationSettingsBase, CalibrationSettings2VP
 import PrincipalPointControl from './principal-point-control'
 import { SolverResult } from '../../solver/solver-result'
 import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util'
+import Overlay3DPanel from './overlay-3d-panel'
 
 interface ControlPointsPanelState {
   width: number | undefined
@@ -94,6 +95,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
             return (<div id='image-panel' ref={measureRef} >
               <Stage width={width} height={height}>
                 <Layer>
+                  {this.render3DOverlay()}
                   {this.renderImage()}
                   {this.renderCommonControlPoints()}
                   {is1VPMode ? this.render1VPControlPoints() : this.render2VPControlPoints()}
@@ -106,6 +108,24 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
         </Measure>
       </div>
     )
+  }
+
+  private render3DOverlay() {
+    let imageAABB = this.imageAbsoluteAABB()
+
+    if (!imageAABB || !this.state.width || !this.state.height) {
+      return null
+    }
+    return (
+      <Overlay3DPanel
+        imageAABB={imageAABB}
+        width={this.state.width}
+        height={this.state.height}
+        solverResult={this.props.solverResult}
+        globalSettings={this.props.globalSettings}
+      />
+    )
+
   }
 
   private renderImage() {
