@@ -6,6 +6,7 @@ interface ControlPointProps {
   absolutePosition: Point2D
   fill?: string | undefined
   stroke?: string | undefined
+  isDragDisabled?: boolean
   onControlPointDrag(absolutePosition: Point2D): void
 }
 
@@ -17,7 +18,7 @@ export default class ControlPoint extends React.Component<ControlPointProps> {
   render() {
     return (
       <Circle
-        draggable
+        draggable={!this.props.isDragDisabled}
         radius={4}
         strokeWidth={1.5}
         fill={this.props.fill}

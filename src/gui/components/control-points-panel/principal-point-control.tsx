@@ -17,12 +17,9 @@ export default function PrincipalPointControl(props: PrincipalPointControlProps)
 
   return (
     <ControlPoint
+      isDragDisabled={!props.enabled}
       absolutePosition={props.absolutePosition}
-      onControlPointDrag={ (absolutePosition: Point2D) => {
-        if (props.enabled) {
-          props.dragCallback(absolutePosition)
-        }
-      }}
+      onControlPointDrag={ props.dragCallback }
       fill={props.enabled ? Palette.orange : undefined}
       stroke={props.enabled ? undefined : Palette.orange}
     />
