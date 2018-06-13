@@ -38,39 +38,39 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
                   this.props.onCalibrationModeChange(selectedValue)
                 }}
               />
-            </div>
-            <PanelSpacer />
-            <div className='panel-row'>
-              Vanishing point axes
+              <PanelSpacer />
+              <div className='panel-row'>
+                Vanishing point axes
             </div>
 
-            <div className='panel-row'>
-              <AxisDropdown
-                selectedAxis={this.props.calibrationSettingsBase.firstVanishingPointAxis}
-                onChange={this.props.onFirstVanishingPointAxisChange}
+              <div className='panel-row'>
+                <AxisDropdown
+                  selectedAxis={this.props.calibrationSettingsBase.firstVanishingPointAxis}
+                  onChange={this.props.onFirstVanishingPointAxisChange}
+                />
+              </div>
+              <PanelSpacer />
+              <div className='panel-row'>
+                <AxisDropdown
+                  selectedAxis={this.props.calibrationSettingsBase.secondVanishingPointAxis}
+                  onChange={this.props.onSecondVanishingPointAxisChange}
+                />
+              </div>
+              <PanelSpacer />
+
+              <div className='panel-row'>
+                Reference distance
+            </div>
+
+              <ReferenceDistanceForm // TODO: DRY
+                referenceAxis={this.props.calibrationSettingsBase.referenceDistanceAxis}
+                referenceDistance={this.props.calibrationSettingsBase.referenceDistance}
+                referenceDistanceUnit={this.props.calibrationSettingsBase.referenceDistanceUnit}
+                onReferenceAxisChange={this.props.onReferenceDistanceAxisChange}
+                onReferenceDistanceChange={this.props.onReferenceDistanceChange}
+                onReferenceDistanceUnitChange={this.props.onReferenceDistanceUnitChange}
               />
             </div>
-            <PanelSpacer />
-            <div className='panel-row'>
-              <AxisDropdown
-                selectedAxis={this.props.calibrationSettingsBase.secondVanishingPointAxis}
-                onChange={this.props.onSecondVanishingPointAxisChange}
-              />
-            </div>
-            <PanelSpacer />
-
-            <div className='panel-row'>
-              Reference distance
-            </div>
-
-            <ReferenceDistanceForm // TODO: DRY
-              referenceAxis={this.props.calibrationSettingsBase.referenceDistanceAxis}
-              referenceDistance={this.props.calibrationSettingsBase.referenceDistance}
-              referenceDistanceUnit={this.props.calibrationSettingsBase.referenceDistanceUnit}
-              onReferenceAxisChange={this.props.onReferenceDistanceAxisChange}
-              onReferenceDistanceChange={this.props.onReferenceDistanceChange}
-              onReferenceDistanceUnitChange={this.props.onReferenceDistanceUnitChange}
-            />
           </div>
 
           {this.renderModeSpecificSettings()}
