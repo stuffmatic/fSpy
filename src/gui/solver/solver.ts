@@ -131,19 +131,10 @@ export default class Solver {
       return result
     }
 
-    // TODO: assign axes
-    let axisAssignmentMatrix = new Transform()
-    result.vanishingPointAxes = [
-      Axis.PositiveX,
-      Axis.PositiveY,
-      Axis.PositiveZ
-    ]
-
     this.computeCameraParameters(
       result,
       controlPointsBase,
       settingsBase,
-      axisAssignmentMatrix,
       principalPoint,
       inputVanishingPoints![0],
       secondVanishingPoint,
@@ -237,33 +228,11 @@ export default class Solver {
       return result
     }
 
-    // Assing vanishing point axes
-    let axisAssignmentMatrix = new Transform()
-    let row1 = this.axisVector(settingsBase.firstVanishingPointAxis)
-    let row2 = this.axisVector(settingsBase.secondVanishingPointAxis)
-    let row3 = row1.cross(row2)
-    axisAssignmentMatrix.matrix[0][0] = row1.x
-    axisAssignmentMatrix.matrix[0][1] = row1.y
-    axisAssignmentMatrix.matrix[0][2] = row1.z
-    axisAssignmentMatrix.matrix[1][0] = row2.x
-    axisAssignmentMatrix.matrix[1][1] = row2.y
-    axisAssignmentMatrix.matrix[1][2] = row2.z
-    axisAssignmentMatrix.matrix[2][0] = row3.x
-    axisAssignmentMatrix.matrix[2][1] = row3.y
-    axisAssignmentMatrix.matrix[2][2] = row3.z
-
-    result.vanishingPointAxes = [
-      settingsBase.firstVanishingPointAxis,
-      settingsBase.secondVanishingPointAxis,
-      this.vectorAxis(row3)
-    ]
-
     // compute camera parameters
     this.computeCameraParameters(
       result,
       controlPointsBase,
       settingsBase,
-      axisAssignmentMatrix,
       principalPoint,
       inputVanishingPoints[0],
       inputVanishingPoints[1],
@@ -720,7 +689,6 @@ export default class Solver {
     result: SolverResult,
     controlPoints: ControlPointsStateBase,
     settings: CalibrationSettingsBase,
-    axisAssignmentMatrix: Transform,
     principalPoint: Point2D,
     vp1: Point2D,
     vp2: Point2D,
@@ -728,6 +696,28 @@ export default class Solver {
     imageWidth: number,
     imageHeight: number
   ) {
+
+    // Assing vanishing point axes
+    let axisAssignmentMatrix = new Transform()
+    let row1 = this.axisVector(settings.firstVanishingPointAxis)
+    let row2 = this.axisVector(settings.secondVanishingPointAxis)
+    let row3 = row1.cross(row2)
+    axisAssignmentMatrix.matrix[0][0] = row1.x
+    axisAssignmentMatrix.matrix[0][1] = row1.y
+    axisAssignmentMatrix.matrix[0][2] = row1.z
+    axisAssignmentMatrix.matrix[1][0] = row2.x
+    axisAssignmentMatrix.matrix[1][1] = row2.y
+    axisAssignmentMatrix.matrix[1][2] = row2.z
+    axisAssignmentMatrix.matrix[2][0] = row3.x
+    axisAssignmentMatrix.matrix[2][1] = row3.y
+    axisAssignmentMatrix.matrix[2][2] = row3.z
+
+    result.vanishingPointAxes = [
+      settings.firstVanishingPointAxis,
+      settings.secondVanishingPointAxis,
+      this.vectorAxis(row3)
+    ]
+
     // principal point
     result.principalPoint = principalPoint
     // focal length
