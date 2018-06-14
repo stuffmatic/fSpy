@@ -11,6 +11,7 @@ import SavedState from '../io/saved-state'
 export enum ActionTypes {
   // IO actions
   LOAD_SAVED_STATE = 'LOAD_SAVED_STATE',
+  SET_PROJECT_FILE_PATH = 'SET_PROJECT_FILE_PATH',
 
   // Global settings actions
   SET_CALIBRATION_MODE = 'SET_CALIBRATION_MODE',
@@ -93,6 +94,19 @@ export function loadSavedState(savedState: SavedState): LoadSavedState {
   }
 }
 
+//
+export interface SetProjectFilePath {
+  type: ActionTypes.SET_PROJECT_FILE_PATH,
+  filePath: string | null
+}
+
+export function setProjectFilePath(filePath: string | null): SetProjectFilePath {
+  return {
+    type: ActionTypes.SET_PROJECT_FILE_PATH,
+    filePath: filePath
+  }
+}
+
 // Set active calibration mode
 export interface SetCalibrationMode {
   type: ActionTypes.SET_CALIBRATION_MODE
@@ -136,14 +150,15 @@ export function setOverlay3DGuide(overlay3DGuide: Overlay3DGuide): SetOverlay3DG
 export interface SetImage {
   type: ActionTypes.SET_IMAGE
   url: string
+  data: Buffer
   width: number
   height: number
 }
-
-export function setImage(url: string, width: number, height: number): SetImage {
+export function setImage(url: string, data: Buffer, width: number, height: number): SetImage {
   return {
     type: ActionTypes.SET_IMAGE,
     url: url,
+    data: data,
     width: width,
     height: height
   }
@@ -476,6 +491,7 @@ export function setExportDialogVisibility(isVisible: boolean): SetExportDialogVi
 // Define a type covering all actions
 export type AppAction =
   LoadSavedState |
+  SetProjectFilePath |
   SetCalibrationMode |
   SetImageOpacity |
   SetOverlay3DGuide |
@@ -506,6 +522,7 @@ export type AppAction =
 // A list of action types that trigger calibration result calculation
 export const actionTypesTriggeringRecalculation: ActionTypes[] = [
   ActionTypes.LOAD_SAVED_STATE,
+  ActionTypes.SET_PROJECT_FILE_PATH,
 
   ActionTypes.SET_IMAGE,
   ActionTypes.SET_CALIBRATION_MODE,

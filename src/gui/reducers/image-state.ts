@@ -1,6 +1,6 @@
 import { ActionTypes, AppAction } from '../actions'
 import { ImageState } from '../types/image-state'
-import { defaultImageState } from '../defaults/default-image-state'
+import { defaultImageState } from '../defaults/image-state'
 
 export function imageState(state: ImageState | undefined, action: AppAction): ImageState {
   if (state === undefined) {
@@ -11,6 +11,7 @@ export function imageState(state: ImageState | undefined, action: AppAction): Im
     case ActionTypes.SET_IMAGE:
       return {
         ...state,
+        data: action.data,
         url: action.url,
         width: action.width,
         height: action.height

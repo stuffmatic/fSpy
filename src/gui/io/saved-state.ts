@@ -3,8 +3,6 @@ import { CalibrationSettingsBase, CalibrationSettings1VP, CalibrationSettings2VP
 import { ControlPointsStateBase, ControlPointsState1VP, ControlPointsState2VP } from '../types/control-points-state'
 
 export default interface SavedState {
-  projectFileVersion: number
-
   globalSettings: GlobalSettings
 
   calibrationSettingsBase: CalibrationSettingsBase

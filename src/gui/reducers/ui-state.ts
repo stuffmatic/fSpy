@@ -13,6 +13,11 @@ export function uiState(state: UIState | undefined, action: AppAction): UIState 
         ...state,
         isExportDialogOpen: action.isVisible
       }
+    case ActionTypes.SET_PROJECT_FILE_PATH:
+      return {
+        ...state,
+        projectFilePath: action.filePath
+      }
   }
 
   return state
