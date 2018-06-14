@@ -1,14 +1,30 @@
-import { app, BrowserWindow, Menu } from 'electron'
+import { app, BrowserWindow, Menu, ipcMain, dialog } from 'electron'
 import menuTemplate from './menu-template'
-import { OpenImageMessage } from './messages'
+import { OpenImageMessage, SaveProjectAsMessage } from './ipc-messages'
 const path = require('path')
 const url = require('url')
 
 import windowStateKeeper from 'electron-window-state'
+import { SpecifyProjectPathMessage } from '../gui/ipc-messages'
 
 let mainWindow: Electron.BrowserWindow | null
 
 function createWindow() {
+
+  ipcMain.on(SpecifyProjectPathMessage.type, (_: any, __: SpecifyProjectPathMessage) => {
+    // TODO: DRY
+    dialog.showSaveDialog(
+      {},
+      (filePath: string) => {
+        if (filePath !== undefined) {
+          BrowserWindow.getFocusedWindow().webContents.send(
+            SaveProjectAsMessage.type,
+            new SaveProjectAsMessage(filePath)
+          )
+        }
+      }
+    )
+  })
 
   let mainWindowState = windowStateKeeper({
     defaultWidth: 800,
