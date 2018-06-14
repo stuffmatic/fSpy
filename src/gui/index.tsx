@@ -26,13 +26,13 @@ ipcRenderer.on(NewProjectMessage.type, (_: any, message: NewProjectMessage) => {
 })
 
 ipcRenderer.on(OpenProjectMessage.type, (_: any, message: OpenProjectMessage) => {
-  console.log(message.filePath)
+  ProjectFile.load(message.filePath)
 })
 
 ipcRenderer.on(SaveProjectMessage.type, (_: any, message: SaveProjectMessage) => {
   console.log('Got SaveProjectMessage ' + message)
 
-  let projectPath = '/Users/perarne/code/f-spy/app/test_data'
+  let projectPath = '/Users/perarne/code/f-spy/app/test_data/omg.fspy'
   if (projectPath) {
     ProjectFile.save(projectPath)
   } else {
@@ -42,6 +42,7 @@ ipcRenderer.on(SaveProjectMessage.type, (_: any, message: SaveProjectMessage) =>
 
 ipcRenderer.on(SaveProjectAsMessage.type, (_: any, message: SaveProjectAsMessage) => {
   console.log('Got SaveProjectAsMessage, path ' + message.filePath)
+  ProjectFile.save(message.filePath)
 })
 
 ipcRenderer.on(OpenImageMessage.type, (_: any, message: OpenImageMessage) => {

@@ -24,6 +24,8 @@ export function globalSettings(state: GlobalSettings | undefined, action: AnyAct
         ...state,
         overlay3DGuide: action.overlay3DGuide
       }
+    case ActionTypes.LOAD_SAVED_STATE:
+      return action.savedState.globalSettings
   }
 
   return state

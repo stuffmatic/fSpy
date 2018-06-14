@@ -52,6 +52,8 @@ export function calibrationSettingsBase(state: CalibrationSettingsBase | undefin
         ...state,
         secondVanishingPointAxis: action.axis
       }
+    case ActionTypes.LOAD_SAVED_STATE:
+      return action.savedState.calibrationSettingsBase
   }
 
   return state

@@ -6,8 +6,12 @@ import { StoreState } from '../types/store-state'
 import { ThunkAction, ThunkDispatch } from 'redux-thunk'
 import Solver from '../solver/solver'
 import { SolverResult } from '../solver/solver-result'
+import SavedState from '../io/saved-state'
 
 export enum ActionTypes {
+  // IO actions
+  LOAD_SAVED_STATE = 'LOAD_SAVED_STATE',
+
   // Global settings actions
   SET_CALIBRATION_MODE = 'SET_CALIBRATION_MODE',
   SET_IMAGE_OPACITY = 'SET_IMAGE_OPACITY',
@@ -73,6 +77,19 @@ export function recalculateCalibrationResult(): ThunkAction<void, StoreState, vo
       dispatch(setSolverResult(is1VPMode ? result1VP : result2VP))
     },
     0)
+  }
+}
+
+//
+export interface LoadSavedState {
+  type: ActionTypes.LOAD_SAVED_STATE,
+  savedState: SavedState
+}
+
+export function loadSavedState(savedState: SavedState): LoadSavedState {
+  return {
+    type: ActionTypes.LOAD_SAVED_STATE,
+    savedState: savedState
   }
 }
 
@@ -458,6 +475,7 @@ export function setExportDialogVisibility(isVisible: boolean): SetExportDialogVi
 
 // Define a type covering all actions
 export type AppAction =
+  LoadSavedState |
   SetCalibrationMode |
   SetImageOpacity |
   SetOverlay3DGuide |

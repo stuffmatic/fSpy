@@ -18,7 +18,8 @@ export function controlPointsState1VP(state: ControlPointsState1VP | undefined, 
         ...state,
         horizon: updatedHorizon
       }
-
+    case ActionTypes.LOAD_SAVED_STATE:
+      return action.savedState.controlPointsState1VP
   }
 
   return state

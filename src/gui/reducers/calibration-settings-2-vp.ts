@@ -19,6 +19,8 @@ export function calibrationSettings2VP(state: CalibrationSettings2VP | undefined
         ...state,
         quadModeEnabled: action.quadModeEnabled
       }
+    case ActionTypes.LOAD_SAVED_STATE:
+      return action.savedState.calibrationSettings2VP
   }
 
   return state

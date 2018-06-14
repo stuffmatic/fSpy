@@ -24,6 +24,8 @@ export function calibrationSettings1VP(state: CalibrationSettings1VP | undefined
         ...state,
         absoluteFocalLength: action.absoluteFocalLength
       }
+    case ActionTypes.SET_CAMERA_PRESET:
+      return action.savedState.calibrationSettings1VP
   }
 
   return state

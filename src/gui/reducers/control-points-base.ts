@@ -43,6 +43,8 @@ export function controlPointsStateBase(state: ControlPointsStateBase | undefined
         ...state,
         firstVanishingPoint: adjustedVanishingPoint
       }
+    case ActionTypes.LOAD_SAVED_STATE:
+      return action.savedState.controlPointsStateBase
   }
 
   return state
