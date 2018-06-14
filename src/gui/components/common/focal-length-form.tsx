@@ -4,6 +4,7 @@ import NumericInputField from './../common/numeric-input-field'
 import PanelSpacer from './../common/panel-spacer'
 import { CameraData } from '../../types/calibration-settings'
 import { cameraPresets } from '../../solver/camera-presets'
+import strings from '../../strings/strings'
 
 export interface FocalLengthFormProps {
   absoluteFocalLength: number
@@ -41,7 +42,7 @@ export default class FocalLengthForm extends React.PureComponent<FocalLengthForm
           <NumericInputField
             isDisabled={presetId !== null}
             value={sensorHeight}
-            onSubmit={(value: number) => { this.props.onSensorSizeChange(undefined, value) }} /> mm
+            onSubmit={(value: number) => { this.props.onSensorSizeChange(undefined, value) }} /> {strings.unitMm}
         </div>
         <PanelSpacer />
         <div className='panel-row'>

@@ -2,6 +2,7 @@ import * as React from 'react'
 import Dropdown from './dropdown'
 import { cameraPresets } from '../../solver/camera-presets'
 import { CameraData } from '../../types/calibration-settings'
+import strings from '../../strings/strings'
 
 export interface CameraPresetsDropdownProps {
   cameraData: CameraData
@@ -25,7 +26,7 @@ export default function CameraPresetsDropdown(props: CameraPresetsDropdownProps)
               return {
                 value: id,
                 id: id === null ? 'null' : id,
-                label: id === null ? 'Custom camera' : cameraPresets[id].displayName
+                label: id === null ? strings.customCameraPresetName : cameraPresets[id].displayName
               }
             }
           )
