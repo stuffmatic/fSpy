@@ -1,5 +1,5 @@
 import { app, BrowserWindow, Menu, ipcMain, dialog } from 'electron'
-import menuTemplate from './menu-template'
+import appMenuManager from './app-menu-manager'
 import { OpenImageMessage, SaveProjectAsMessage } from './ipc-messages'
 const path = require('path')
 const url = require('url')
@@ -68,8 +68,7 @@ function createWindow() {
 
   window.loadURL(process.env.DEV ? devUrl : startUrl)
 
-  let menu = Menu.buildFromTemplate(menuTemplate)
-  Menu.setApplicationMenu(menu)
+  Menu.setApplicationMenu(appMenuManager.menu)
 
   // Emitted when the window is closed.
   window.on('closed', () => {

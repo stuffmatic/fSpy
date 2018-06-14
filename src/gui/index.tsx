@@ -32,9 +32,9 @@ ipcRenderer.on(OpenProjectMessage.type, (_: any, message: OpenProjectMessage) =>
 ipcRenderer.on(SaveProjectMessage.type, (_: any, message: SaveProjectMessage) => {
   console.log('Got SaveProjectMessage ' + message)
 
-  let hasProjectPath = false
-  if (hasProjectPath) {
-    ProjectFile.save('/Users/perarne/code/f-spy/app/test_data')
+  let projectPath = '/Users/perarne/code/f-spy/app/test_data'
+  if (projectPath) {
+    ProjectFile.save(projectPath)
   } else {
     ipcRenderer.send(SpecifyProjectPathMessage.type, new SpecifyProjectPathMessage())
   }

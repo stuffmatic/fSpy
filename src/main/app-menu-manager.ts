@@ -1,10 +1,16 @@
-import { app, dialog, BrowserWindow } from 'electron'
+import { app, dialog, BrowserWindow, Menu } from 'electron'
 import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAsMessage, NewProjectMessage } from './ipc-messages'
 
-let fileMenu: Electron.MenuItemConstructorOptions = {
-  label: 'File',
-  submenu: [
-    {
+export class AppMenuManager {
+  readonly menu: Menu
+  readonly fileMenu: Electron.MenuItemConstructorOptions
+  readonly menuTemplate: Electron.MenuItemConstructorOptions[]
+  readonly saveItem: Electron.MenuItemConstructorOptions
+  readonly saveAsItem: Electron.MenuItemConstructorOptions
+
+  constructor() {
+
+    let newItem = {
       label: 'New',
       accelerator: 'CommandOrControl+N',
       click: () => {
@@ -13,8 +19,9 @@ let fileMenu: Electron.MenuItemConstructorOptions = {
           new NewProjectMessage()
         )
       }
-    },
-    {
+    }
+
+    let openItem = {
       label: 'Open',
       accelerator: 'CommandOrControl+O',
       click: () => {
@@ -35,9 +42,11 @@ let fileMenu: Electron.MenuItemConstructorOptions = {
           }
         )
       }
-    },
-    {
+    }
+
+    this.saveItem = {
       label: 'Save',
+      id: 'save',
       accelerator: 'CommandOrControl+S',
       click: () => {
         BrowserWindow.getFocusedWindow().webContents.send(
@@ -45,9 +54,11 @@ let fileMenu: Electron.MenuItemConstructorOptions = {
           new SaveProjectMessage()
         )
       }
-    },
-    {
+    }
+
+    this.saveAsItem = {
       label: 'Save as',
+      id: 'save-as',
       accelerator: 'CommandOrControl+Shift+S',
       click: () => {
         dialog.showSaveDialog(
@@ -62,9 +73,9 @@ let fileMenu: Electron.MenuItemConstructorOptions = {
           }
         )
       }
-    },
-    { type: 'separator' },
-    {
+    }
+
+    let openImageItem = {
       label: 'Open image',
       accelerator: 'CommandOrControl+Shift+O',
       click: () => {
@@ -83,24 +94,56 @@ let fileMenu: Electron.MenuItemConstructorOptions = {
         )
       }
     }
-  ]
-}
 
-let menuTemplate: Electron.MenuItemConstructorOptions[] = [
-  fileMenu
-]
+    let quitMenuItem: Electron.MenuItemConstructorOptions = {
+      label: 'Quit',
+      accelerator: 'Command+Q',
+      click: () => { app.quit() }
+    }
 
-if (process.platform === 'darwin') {
-  menuTemplate.unshift({
-    label: app.getName(),
-    submenu: [
-      {
-        label: 'Quit',
-        accelerator: 'Command+Q',
-        click: () => { app.quit() }
-      }
+    let fileMenuItems: Electron.MenuItemConstructorOptions[] = [
+      newItem,
+      openItem,
+      this.saveItem,
+      this.saveAsItem,
+      { type: 'separator' },
+      openImageItem
     ]
-  })
+
+    if (process.platform !== 'darwin') {
+      fileMenuItems.push({ type: 'separator' })
+      fileMenuItems.push(quitMenuItem)
+    }
+
+    this.fileMenu = {
+      label: 'File',
+      submenu: fileMenuItems
+    }
+
+    this.menuTemplate = [
+      this.fileMenu
+    ]
+
+    if (process.platform === 'darwin') {
+      this.menuTemplate.unshift({
+        label: app.getName(),
+        submenu: [
+          quitMenuItem
+        ]
+      })
+    }
+
+    this.menu = Menu.buildFromTemplate(this.menuTemplate)
+  }
+
+  setSaveItemEnabled(enabled: boolean) {
+    this.menu.getMenuItemById('save').enabled = enabled
+  }
+
+  setSaveAsItemEnabled(enabled: boolean) {
+    this.menu.getMenuItemById('save-as').enabled = enabled
+  }
 }
 
-export default menuTemplate
+const appMenuManager = new AppMenuManager()
+export default appMenuManager
