@@ -1,5 +1,6 @@
-import { app, dialog, BrowserWindow, Menu } from 'electron'
+import { app, dialog, BrowserWindow, Menu, clipboard } from 'electron'
 import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAsMessage, NewProjectMessage } from './ipc-messages'
+import ProjectFile from '../gui/io/project-file'
 
 export class AppMenuManager {
   readonly menu: Menu
@@ -116,12 +117,30 @@ export class AppMenuManager {
       submenu: fileMenuItems
     }
 
-    let menuTemplate = [
-      fileMenu
-    ]
+    let menus = [fileMenu]
+    if (process.env.DEV) {
+      let devMenu = {
+        label: 'Dev',
+        submenu: [
+          {
+            label: 'Copy state to clipboard',
+            click: () => {
+              clipboard.writeText(
+                JSON.stringify(ProjectFile.getStateToSave(),
+                  null,
+                  2
+                )
+              )
+              console.log('Copied state to clipboard')
+            }
+          }
+        ]
+      }
+      menus.push(devMenu)
+    }
 
     if (process.platform === 'darwin') {
-      menuTemplate.unshift({
+      menus.unshift({
         label: app.getName(),
         submenu: [
           quitMenuItem
@@ -129,7 +148,7 @@ export class AppMenuManager {
       })
     }
 
-    this.menu = Menu.buildFromTemplate(menuTemplate)
+    this.menu = Menu.buildFromTemplate(menus)
   }
 
   setSaveItemEnabled(enabled: boolean) {
