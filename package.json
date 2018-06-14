@@ -76,6 +76,13 @@
     "files": [
       "build/**/*"
     ],
+    "extraResources": [
+      {
+        "from": "assets/electron",
+        "to": "",
+        "filter": ["example.fspy"]
+      }
+    ],
     "directories": {
       "buildResources": "assets/electron"
     },

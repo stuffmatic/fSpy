@@ -10,6 +10,7 @@ import { AppAction, setPrincipalPoint, setOrigin, setReferenceDistanceAnchor, ad
 import { CalibrationSettingsBase, CalibrationSettings1VP, CalibrationSettings2VP } from '../types/calibration-settings'
 import { SolverResult } from '../solver/solver-result'
 import ProjectFile from '../io/project-file'
+import { join } from 'path'
 
 export interface ControlPointsContainerCallbacks {
   onLoadExampleProject(): void
@@ -88,7 +89,10 @@ export function mapStateToProps(state: StoreState) {
 export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
   return {
     onLoadExampleProject: () => {
-      ProjectFile.load('TODO', dispatch, true)
+      if (process.resourcesPath) {
+        let examplePath = join(process.resourcesPath, 'example.fspy')
+        ProjectFile.load(examplePath, dispatch, true)
+      }
     },
     onPrincipalPointDrag: (position: Point2D) => {
       dispatch(setPrincipalPoint(position))
