@@ -5,27 +5,11 @@ const path = require('path')
 const url = require('url')
 
 import windowStateKeeper from 'electron-window-state'
-import { SpecifyProjectPathMessage } from '../gui/ipc-messages'
+import { SpecifyProjectPathMessage, SetNeedsSaveFlagMessage } from '../gui/ipc-messages'
 
 let mainWindow: Electron.BrowserWindow | null
 
 function createWindow() {
-
-  ipcMain.on(SpecifyProjectPathMessage.type, (_: any, __: SpecifyProjectPathMessage) => {
-    // TODO: DRY
-    dialog.showSaveDialog(
-      {},
-      (filePath: string) => {
-        if (filePath !== undefined) {
-          BrowserWindow.getFocusedWindow().webContents.send(
-            SaveProjectAsMessage.type,
-            new SaveProjectAsMessage(filePath)
-          )
-        }
-      }
-    )
-  })
-
   let mainWindowState = windowStateKeeper({
     defaultWidth: 800,
     defaultHeight: 600
@@ -73,6 +57,25 @@ function createWindow() {
   // Emitted when the window is closed.
   window.on('closed', () => {
     mainWindow = null
+  })
+
+  ipcMain.on(SpecifyProjectPathMessage.type, (_: any, __: SpecifyProjectPathMessage) => {
+    // TODO: DRY
+    dialog.showSaveDialog(
+      {},
+      (filePath: string) => {
+        if (filePath !== undefined) {
+          BrowserWindow.getFocusedWindow().webContents.send(
+            SaveProjectAsMessage.type,
+            new SaveProjectAsMessage(filePath)
+          )
+        }
+      }
+    )
+  })
+
+  ipcMain.on(SetNeedsSaveFlagMessage.type, (_: any, __: SpecifyProjectPathMessage) => {
+    window.setTitle('needs saving')
   })
 }
 

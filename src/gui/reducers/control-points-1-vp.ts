@@ -19,6 +19,8 @@ export function controlPointsState1VP(state: ControlPointsState1VP | undefined, 
       }
     case ActionTypes.LOAD_SAVED_STATE:
       return action.savedState.controlPointsState1VP
+    case ActionTypes.LOAD_DEFAULT_STATE:
+      return defaultControlPointsState1VP
   }
 
   return state

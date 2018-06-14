@@ -10,6 +10,7 @@ import SavedState from '../io/saved-state'
 
 export enum ActionTypes {
   // IO actions
+  LOAD_DEFAULT_STATE = 'LOAD_DEFAULT_STATE',
   LOAD_SAVED_STATE = 'LOAD_SAVED_STATE',
   SET_PROJECT_FILE_PATH = 'SET_PROJECT_FILE_PATH',
 
@@ -78,6 +79,17 @@ export function recalculateCalibrationResult(): ThunkAction<void, StoreState, vo
       dispatch(setSolverResult(is1VPMode ? result1VP : result2VP))
     },
     0)
+  }
+}
+
+//
+export interface LoadDefaultState {
+  type: ActionTypes.LOAD_DEFAULT_STATE
+}
+
+export function loadDefaultState(): LoadDefaultState {
+  return {
+    type: ActionTypes.LOAD_DEFAULT_STATE
   }
 }
 
@@ -491,6 +503,7 @@ export function setExportDialogVisibility(isVisible: boolean): SetExportDialogVi
 // Define a type covering all actions
 export type AppAction =
   LoadSavedState |
+  LoadDefaultState |
   SetProjectFilePath |
   SetCalibrationMode |
   SetImageOpacity |
@@ -521,6 +534,7 @@ export type AppAction =
 
 // A list of action types that trigger calibration result calculation
 export const actionTypesTriggeringRecalculation: ActionTypes[] = [
+  ActionTypes.LOAD_DEFAULT_STATE,
   ActionTypes.LOAD_SAVED_STATE,
   ActionTypes.SET_PROJECT_FILE_PATH,
 
@@ -541,6 +555,38 @@ export const actionTypesTriggeringRecalculation: ActionTypes[] = [
   ActionTypes.SET_SECOND_VANISHING_POINT_AXIS,
 
   ActionTypes.SET_ABSOLUTE_FOCAL_LENGTH_1VP,
+  ActionTypes.SET_PRINCIPAL_POINT,
+  ActionTypes.SET_ORIGIN,
+  ActionTypes.SET_REFERENCE_DISTANCE_ANCHOR,
+  ActionTypes.ADJUST_HORIZON,
+  ActionTypes.ADJUST_FIRST_VANISHING_POINT,
+  ActionTypes.ADJUST_SECOND_VANISHING_POINT,
+  ActionTypes.ADJUST_THIRD_VANISHING_POINT,
+  ActionTypes.ADJUST_REFERENCE_DISTANCE_HANDLE
+]
+
+export const actionTypesSettingNeedsSaveFlag: ActionTypes[] = [
+  ActionTypes.SET_CALIBRATION_MODE,
+  ActionTypes.SET_IMAGE_OPACITY,
+  ActionTypes.SET_OVERLAY_3D_GUIDE,
+
+  ActionTypes.SET_IMAGE,
+
+  ActionTypes.SET_HORIZON_MODE,
+  ActionTypes.SET_QUAD_MODE_ENABLED,
+  ActionTypes.SET_REFERENCE_DISTANCE,
+  ActionTypes.SET_REFERENCE_DISTANCE_UNIT,
+  ActionTypes.SET_REFERENCE_DISTANCE_AXIS,
+  ActionTypes.SET_CAMERA_PRESET,
+  ActionTypes.SET_CAMERA_SENSOR_SIZE,
+
+  ActionTypes.SET_PRINCIPAL_POINT_MODE_1VP,
+  ActionTypes.SET_PRINCIPAL_POINT_MODE_2VP,
+  ActionTypes.SET_FIRST_VANISHING_POINT_AXIS,
+  ActionTypes.SET_SECOND_VANISHING_POINT_AXIS,
+
+  ActionTypes.SET_ABSOLUTE_FOCAL_LENGTH_1VP,
+
   ActionTypes.SET_PRINCIPAL_POINT,
   ActionTypes.SET_ORIGIN,
   ActionTypes.SET_REFERENCE_DISTANCE_ANCHOR,

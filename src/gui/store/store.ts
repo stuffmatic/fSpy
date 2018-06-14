@@ -3,11 +3,11 @@ import rootReducer from '../reducers/root'
 import { Store } from 'react-redux'
 import { StoreState } from '../types/store-state'
 import thunk from 'redux-thunk'
-import { recalculationTriggerMiddleware } from './recalculation-trigger-middleware'
+import { appMiddleware } from './app-middleware'
 
 const store: Store<any> = createStore<StoreState, AnyAction, {}, {}>(
   rootReducer,
-  applyMiddleware(recalculationTriggerMiddleware, thunk)
+  applyMiddleware(appMiddleware, thunk)
 )
 
 export default store

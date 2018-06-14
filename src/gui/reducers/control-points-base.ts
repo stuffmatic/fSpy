@@ -44,6 +44,8 @@ export function controlPointsStateBase(state: ControlPointsStateBase | undefined
       }
     case ActionTypes.LOAD_SAVED_STATE:
       return action.savedState.controlPointsStateBase
+    case ActionTypes.LOAD_DEFAULT_STATE:
+      return defaultControlPointsStateBase
   }
 
   return state

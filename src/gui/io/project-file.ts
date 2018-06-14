@@ -5,6 +5,7 @@ import SavedState from './saved-state'
 import { AppAction, setProjectFilePath, loadSavedState, setImage } from '../actions'
 import { Dispatch } from 'react-redux'
 import { loadImage } from './util'
+import { remote } from 'electron'
 
 export default class ProjectFile {
   static readonly PROJECT_FILE_ID = 'fspy'
@@ -55,13 +56,29 @@ export default class ProjectFile {
 
   static load(path: string, dispatch: Dispatch<AppAction>, isExampleProject: boolean = false) {
     if (!this.isProjectFile(path)) {
-      alert('Not a project file')
+      remote.dialog.showErrorBox(
+        'Failed to load project',
+        'This does not appear to be a valid project file'
+      )
     } else {
+      let buffer = new Buffer(0)
+      try {
+        buffer = readFileSync(path)
+      } catch {
+        remote.dialog.showErrorBox(
+          'Failed to load image data',
+          'Could not load the image data contained in the project file'
+        )
+        return
+      }
+
       let headerSize = 16
-      let buffer = readFileSync(path)
       let projectFileVersion = buffer.readUInt32LE(4)
       if (projectFileVersion != this.PROJECT_FILE_VERSION) {
-        alert('Cannot load project file with version ' + projectFileVersion)
+        remote.dialog.showErrorBox(
+          'Failed to load project',
+          'Cannot load project file with version ' + projectFileVersion
+        )
       } else {
         let stateStringSize = buffer.readUInt32LE(8)
         let stateStringBuffer = buffer.slice(headerSize, headerSize + stateStringSize)
@@ -79,7 +96,10 @@ export default class ProjectFile {
               dispatch(setImage(url, imageBuffer!, width, height))
             },
             () => {
-              alert('Failed to load image in project file')
+              remote.dialog.showErrorBox(
+                'Failed to load image data',
+                'Could not load the image data contained in the project file'
+              )
             }
           )
         }
@@ -94,7 +114,13 @@ export default class ProjectFile {
   }
 
   static isProjectFile(path: string): boolean {
-    let file = openSync(path, 'r')
+    let file = 0
+    try {
+      file = openSync(path, 'r')
+    } catch {
+      return false
+    }
+
     let buffer = new Buffer(4)
     readSync(file, buffer, 0, 4, 0)
     closeSync(file)

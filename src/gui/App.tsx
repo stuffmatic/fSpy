@@ -6,7 +6,7 @@ import ExportDialog from './components/export-dialog/export-dialog'
 
 import { StoreState } from './types/store-state'
 import { Dispatch, connect } from 'react-redux'
-import { AppAction, setExportDialogVisibility, setImage } from './actions'
+import { AppAction, setExportDialogVisibility, setImage, loadDefaultState } from './actions'
 import { GlobalSettings } from './types/global-settings'
 import { UIState } from './types/ui-state'
 import { ImageState } from './types/image-state'
@@ -97,7 +97,19 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
       dispatch(setExportDialogVisibility(isVisible))
     },
     onNewProject: () => {
-      //
+      /*let choice = remote.dialog.showMessageBox(
+        remote.getCurrentWindow(),
+        {
+          type: 'question',
+          buttons: ['Yes', 'No'],
+          title: 'Confirm',
+          message: 'Are you sure you want to quit?'
+        }
+      )
+
+      if (choice == 0) {
+      }*/
+      dispatch(loadDefaultState())
     },
     onOpenProject: (filePath: string) => {
       ProjectFile.load(filePath, dispatch)

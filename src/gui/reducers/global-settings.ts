@@ -25,6 +25,8 @@ export function globalSettings(state: GlobalSettings | undefined, action: AppAct
       }
     case ActionTypes.LOAD_SAVED_STATE:
       return action.savedState.globalSettings
+    case ActionTypes.LOAD_DEFAULT_STATE:
+      return defaultGlobalSettings
   }
 
   return state

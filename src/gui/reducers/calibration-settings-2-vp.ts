@@ -20,6 +20,8 @@ export function calibrationSettings2VP(state: CalibrationSettings2VP | undefined
       }
     case ActionTypes.LOAD_SAVED_STATE:
       return action.savedState.calibrationSettings2VP
+    case ActionTypes.LOAD_DEFAULT_STATE:
+      return defaultCalibrationSettings2VP
   }
 
   return state

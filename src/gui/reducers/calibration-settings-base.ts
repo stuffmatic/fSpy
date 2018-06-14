@@ -53,6 +53,8 @@ export function calibrationSettingsBase(state: CalibrationSettingsBase | undefin
       }
     case ActionTypes.LOAD_SAVED_STATE:
       return action.savedState.calibrationSettingsBase
+    case ActionTypes.LOAD_DEFAULT_STATE:
+      return defaultCalibrationSettingsBase
   }
 
   return state

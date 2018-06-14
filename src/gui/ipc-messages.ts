@@ -3,3 +3,11 @@
 export class SpecifyProjectPathMessage {
   static readonly type = 'SpecifyProjectPathMessage'
 }
+
+export class SetNeedsSaveFlagMessage {
+  static readonly type = 'SetNeedsSaveFlagMessage'
+  readonly flag: boolean
+  constructor(flag: boolean) {
+    this.flag = flag
+  }
+}

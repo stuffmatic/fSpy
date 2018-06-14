@@ -16,6 +16,14 @@ export function imageState(state: ImageState | undefined, action: AppAction): Im
         width: action.width,
         height: action.height
       }
+    case ActionTypes.LOAD_DEFAULT_STATE:
+      return {
+        ...state,
+        data: null,
+        url: null,
+        width: null,
+        height: null
+      }
   }
 
   return state
