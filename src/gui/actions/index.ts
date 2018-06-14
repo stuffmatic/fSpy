@@ -505,6 +505,8 @@ export type AppAction =
 
 // A list of action types that trigger calibration result calculation
 export const actionTypesTriggeringRecalculation: ActionTypes[] = [
+  ActionTypes.LOAD_SAVED_STATE,
+
   ActionTypes.SET_IMAGE,
   ActionTypes.SET_CALIBRATION_MODE,
 
