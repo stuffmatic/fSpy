@@ -3,10 +3,6 @@ import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAs
 
 export class AppMenuManager {
   readonly menu: Menu
-  readonly fileMenu: Electron.MenuItemConstructorOptions
-  readonly menuTemplate: Electron.MenuItemConstructorOptions[]
-  readonly saveItem: Electron.MenuItemConstructorOptions
-  readonly saveAsItem: Electron.MenuItemConstructorOptions
 
   constructor() {
 
@@ -44,7 +40,7 @@ export class AppMenuManager {
       }
     }
 
-    this.saveItem = {
+    let saveItem = {
       label: 'Save',
       id: 'save',
       accelerator: 'CommandOrControl+S',
@@ -56,7 +52,7 @@ export class AppMenuManager {
       }
     }
 
-    this.saveAsItem = {
+    let saveAsItem = {
       label: 'Save as',
       id: 'save-as',
       accelerator: 'CommandOrControl+Shift+S',
@@ -104,8 +100,8 @@ export class AppMenuManager {
     let fileMenuItems: Electron.MenuItemConstructorOptions[] = [
       newItem,
       openItem,
-      this.saveItem,
-      this.saveAsItem,
+      saveItem,
+      saveAsItem,
       { type: 'separator' },
       openImageItem
     ]
@@ -115,17 +111,17 @@ export class AppMenuManager {
       fileMenuItems.push(quitMenuItem)
     }
 
-    this.fileMenu = {
+    let fileMenu = {
       label: 'File',
       submenu: fileMenuItems
     }
 
-    this.menuTemplate = [
-      this.fileMenu
+    let menuTemplate = [
+      fileMenu
     ]
 
     if (process.platform === 'darwin') {
-      this.menuTemplate.unshift({
+      menuTemplate.unshift({
         label: app.getName(),
         submenu: [
           quitMenuItem
@@ -133,7 +129,7 @@ export class AppMenuManager {
       })
     }
 
-    this.menu = Menu.buildFromTemplate(this.menuTemplate)
+    this.menu = Menu.buildFromTemplate(menuTemplate)
   }
 
   setSaveItemEnabled(enabled: boolean) {
