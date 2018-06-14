@@ -10,12 +10,9 @@ export default class ProjectFile {
   static readonly PROJECT_FILE_ID = 'fspy'
   static readonly PROJECT_FILE_VERSION = 1
 
-  static save(path: string, dispatch: Dispatch<AppAction>) {
-
+  static getStateToSave(): SavedState {
     let storeState: StoreState = store.getState()
-
-    let imageData = storeState.image.data
-    let stateToSave: SavedState = {
+    return {
       globalSettings: storeState.globalSettings,
       calibrationSettingsBase: storeState.calibrationSettingsBase,
       calibrationSettings1VP: storeState.calibrationSettings1VP,
@@ -24,6 +21,14 @@ export default class ProjectFile {
       controlPointsState1VP: storeState.controlPointsState1VP,
       controlPointsState2VP: storeState.controlPointsState2VP
     }
+  }
+
+  static save(path: string, dispatch: Dispatch<AppAction>) {
+
+    let storeState: StoreState = store.getState()
+
+    let imageData = storeState.image.data
+    let stateToSave = this.getStateToSave()
 
     let stateJsonString = JSON.stringify(stateToSave)
     let stateBuffer = new Buffer(stateJsonString)
@@ -48,7 +53,7 @@ export default class ProjectFile {
     dispatch(setProjectFilePath(path))
   }
 
-  static load(path: string, dispatch: Dispatch<AppAction>) {
+  static load(path: string, dispatch: Dispatch<AppAction>, isExampleProject: boolean = false) {
     if (!this.isProjectFile(path)) {
       alert('Not a project file')
     } else {
@@ -81,7 +86,9 @@ export default class ProjectFile {
 
         let loadedState: SavedState = JSON.parse(stateString)
         dispatch(loadSavedState(loadedState))
-        dispatch(setProjectFilePath(path))
+        if (!isExampleProject) {
+          dispatch(setProjectFilePath(path))
+        }
       }
     }
   }

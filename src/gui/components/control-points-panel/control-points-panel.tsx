@@ -77,6 +77,8 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     }
     this.previousImageUrl = this.props.imageState.url
 
+    let hasImage = this.props.imageState.url !== null
+
     let is1VPMode = this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint
     return (
       <div id='center-panel'>
@@ -96,20 +98,41 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
         >
           {({ measureRef }) => {
             return (<div id='image-panel' ref={measureRef} >
-              <Stage width={width} height={height}>
-                <Layer>
-                  {this.render3DOverlay()}
-                  {this.renderImage()}
-                  {is1VPMode ? this.render1VPControlPoints() : this.render2VPControlPoints()}
-                  {this.renderCommonControlPoints()}
-                </Layer>
-              </Stage>
+              {hasImage ? this.renderImageAndControlPoints(width, height, is1VPMode) : this.renderPlaceholder()}
             </div>
             )
           }
           }
         </Measure>
       </div>
+    )
+  }
+
+  private renderPlaceholder() {
+    return (
+      <div>
+        Drag an image or project onto this area.
+        <button onClick={(_: any) => { this.props.callbacks.onLoadExampleProject() } }>
+          Load example project
+        </button>
+      </div>
+    )
+  }
+
+  private renderImageAndControlPoints(
+    width: number | undefined,
+    height: number | undefined,
+    is1VPMode: boolean
+  ) {
+    return (
+      <Stage width={width} height={height}>
+        <Layer>
+          {this.render3DOverlay()}
+          {this.renderImage()}
+          {is1VPMode ? this.render1VPControlPoints() : this.render2VPControlPoints()}
+          {this.renderCommonControlPoints()}
+        </Layer>
+      </Stage>
     )
   }
 
