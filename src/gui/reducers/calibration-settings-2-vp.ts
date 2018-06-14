@@ -1,9 +1,8 @@
 import { CalibrationSettings2VP } from '../types/calibration-settings'
-import { ActionTypes } from '../actions'
+import { ActionTypes, AppAction } from '../actions'
 import { defaultCalibrationSettings2VP } from '../defaults/calibration-settings'
-import { AnyAction } from 'redux'
 
-export function calibrationSettings2VP(state: CalibrationSettings2VP | undefined, action: AnyAction): CalibrationSettings2VP {
+export function calibrationSettings2VP(state: CalibrationSettings2VP | undefined, action: AppAction): CalibrationSettings2VP {
   if (state === undefined) {
     return defaultCalibrationSettings2VP
   }

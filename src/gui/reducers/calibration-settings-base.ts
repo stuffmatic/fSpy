@@ -1,9 +1,8 @@
 import { CalibrationSettingsBase } from '../types/calibration-settings'
-import { AnyAction } from 'redux'
 import { defaultCalibrationSettingsBase } from '../defaults/calibration-settings'
-import { ActionTypes } from '../actions'
+import { ActionTypes, AppAction } from '../actions'
 
-export function calibrationSettingsBase(state: CalibrationSettingsBase | undefined, action: AnyAction): CalibrationSettingsBase {
+export function calibrationSettingsBase(state: CalibrationSettingsBase | undefined, action: AppAction): CalibrationSettingsBase {
   if (state === undefined) {
     return defaultCalibrationSettingsBase
   }

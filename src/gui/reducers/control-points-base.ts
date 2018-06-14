@@ -1,9 +1,8 @@
-import { AnyAction } from 'redux'
 import { ControlPointsStateBase } from '../types/control-points-state'
 import { defaultControlPointsStateBase } from '../defaults/control-points-state'
-import { ActionTypes } from '../actions'
+import { ActionTypes, AppAction } from '../actions'
 
-export function controlPointsStateBase(state: ControlPointsStateBase | undefined, action: AnyAction): ControlPointsStateBase {
+export function controlPointsStateBase(state: ControlPointsStateBase | undefined, action: AppAction): ControlPointsStateBase {
   if (state === undefined) {
     return {
       ...defaultControlPointsStateBase

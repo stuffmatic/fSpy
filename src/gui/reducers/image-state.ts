@@ -1,9 +1,8 @@
-import { ActionTypes } from '../actions'
+import { ActionTypes, AppAction } from '../actions'
 import { ImageState } from '../types/image-state'
 import { defaultImageState } from '../defaults/default-image-state'
-import { AnyAction } from 'redux'
 
-export function imageState(state: ImageState | undefined, action: AnyAction): ImageState {
+export function imageState(state: ImageState | undefined, action: AppAction): ImageState {
   if (state === undefined) {
     return defaultImageState
   }

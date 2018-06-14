@@ -1,9 +1,8 @@
-import { ActionTypes } from '../actions'
+import { ActionTypes, AppAction } from '../actions'
 import { UIState } from '../types/ui-state'
 import { defaultUIState } from '../defaults/ui-state'
-import { AnyAction } from 'redux'
 
-export function uiState(state: UIState | undefined, action: AnyAction): UIState {
+export function uiState(state: UIState | undefined, action: AppAction): UIState {
   if (state === undefined) {
     return defaultUIState
   }

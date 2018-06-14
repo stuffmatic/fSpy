@@ -1,9 +1,8 @@
-import { ActionTypes } from '../actions'
+import { ActionTypes, AppAction } from '../actions'
 import { GlobalSettings } from './../types/global-settings'
 import { defaultGlobalSettings } from './../defaults/global-settings'
-import { AnyAction } from 'redux'
 
-export function globalSettings(state: GlobalSettings | undefined, action: AnyAction): GlobalSettings {
+export function globalSettings(state: GlobalSettings | undefined, action: AppAction): GlobalSettings {
   if (state === undefined) {
     return defaultGlobalSettings
   }
