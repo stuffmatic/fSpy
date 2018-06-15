@@ -6,8 +6,10 @@ import { AppAction, setProjectFilePath, loadSavedState, setImage } from '../acti
 import { Dispatch } from 'react-redux'
 import { loadImage } from './util'
 import { remote } from 'electron'
+import { join } from 'path'
 
 export default class ProjectFile {
+  static readonly EXAMPLE_PROJECT_FILENAME = 'example.fspy'
   static readonly PROJECT_FILE_ID = 'fspy'
   static readonly PROJECT_FILE_VERSION = 1
 
@@ -52,6 +54,13 @@ export default class ProjectFile {
     }
     closeSync(file)
     dispatch(setProjectFilePath(path))
+  }
+
+  static loadExample(dispatch: Dispatch<AppAction>) {
+    if (process.resourcesPath) {
+      let examplePath = join(process.resourcesPath, this.EXAMPLE_PROJECT_FILENAME)
+      this.load(examplePath, dispatch, true)
+    }
   }
 
   static load(path: string, dispatch: Dispatch<AppAction>, isExampleProject: boolean = false) {
@@ -103,8 +112,8 @@ export default class ProjectFile {
             }
           )
         }
-
         let loadedState: SavedState = JSON.parse(stateString)
+
         dispatch(loadSavedState(loadedState))
         if (!isExampleProject) {
           dispatch(setProjectFilePath(path))

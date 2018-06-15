@@ -12,7 +12,7 @@ import { UIState } from './types/ui-state'
 import { ImageState } from './types/image-state'
 import { SolverResult } from './solver/solver-result'
 import { ipcRenderer } from 'electron'
-import { NewProjectMessage, OpenProjectMessage, SaveProjectMessage, SaveProjectAsMessage, OpenImageMessage } from '../main/ipc-messages'
+import { NewProjectMessage, OpenProjectMessage, SaveProjectMessage, SaveProjectAsMessage, OpenImageMessage, OpenExampleProjectMessage } from '../main/ipc-messages'
 import ProjectFile from './io/project-file'
 import { readFileSync } from 'fs'
 import { SpecifyProjectPathMessage } from './ipc-messages'
@@ -24,10 +24,12 @@ interface AppProps {
   solverResult: SolverResult,
   image: ImageState,
   onExportDialogVisiblityChange(isVisible: boolean): void
-  onNewProject(): void
-  onOpenProject(filePath: string): void
-  onSaveProjectAs(filePath: string): void
-  onOpenImage(imagePath: string): void
+
+  onNewProjectIPCMessage(): void
+  onOpenProjectIPCMessage(filePath: string): void
+  onSaveProjectAsIPCMessage(filePath: string): void
+  onOpenImageIPCMessage(imagePath: string): void
+  onOpenExampleProjectIPCMessage(): void
 }
 
 class App extends React.PureComponent<AppProps> {
@@ -38,30 +40,7 @@ class App extends React.PureComponent<AppProps> {
 
   componentWillMount() {
     // TODO: Is this the right place to do this?
-    ipcRenderer.on(NewProjectMessage.type, (_: any, __: NewProjectMessage) => {
-      this.props.onNewProject()
-    })
-
-    ipcRenderer.on(OpenProjectMessage.type, (_: any, message: OpenProjectMessage) => {
-      this.props.onOpenProject(message.filePath)
-    })
-
-    ipcRenderer.on(SaveProjectMessage.type, (_: any, __: SaveProjectMessage) => {
-      console.log(JSON.stringify(this.props.uiState))
-      if (this.props.uiState.projectFilePath) {
-        this.props.onSaveProjectAs(this.props.uiState.projectFilePath)
-      } else {
-        ipcRenderer.send(SpecifyProjectPathMessage.type, new SpecifyProjectPathMessage())
-      }
-    })
-
-    ipcRenderer.on(SaveProjectAsMessage.type, (_: any, message: SaveProjectAsMessage) => {
-      this.props.onSaveProjectAs(message.filePath)
-    })
-
-    ipcRenderer.on(OpenImageMessage.type, (_: any, message: OpenImageMessage) => {
-      this.props.onOpenImage(message.filePath)
-    })
+    this.registerIPCHandlers()
   }
 
   render() {
@@ -80,6 +59,37 @@ class App extends React.PureComponent<AppProps> {
       </div>
     )
   }
+
+  private registerIPCHandlers() {
+    ipcRenderer.on(NewProjectMessage.type, (_: any, __: NewProjectMessage) => {
+      this.props.onNewProjectIPCMessage()
+    })
+
+    ipcRenderer.on(OpenProjectMessage.type, (_: any, message: OpenProjectMessage) => {
+      this.props.onOpenProjectIPCMessage(message.filePath)
+    })
+
+    ipcRenderer.on(SaveProjectMessage.type, (_: any, __: SaveProjectMessage) => {
+      console.log(JSON.stringify(this.props.uiState))
+      if (this.props.uiState.projectFilePath) {
+        this.props.onSaveProjectAsIPCMessage(this.props.uiState.projectFilePath)
+      } else {
+        ipcRenderer.send(SpecifyProjectPathMessage.type, new SpecifyProjectPathMessage())
+      }
+    })
+
+    ipcRenderer.on(SaveProjectAsMessage.type, (_: any, message: SaveProjectAsMessage) => {
+      this.props.onSaveProjectAsIPCMessage(message.filePath)
+    })
+
+    ipcRenderer.on(OpenImageMessage.type, (_: any, message: OpenImageMessage) => {
+      this.props.onOpenImageIPCMessage(message.filePath)
+    })
+
+    ipcRenderer.on(OpenExampleProjectMessage.type, (_: any, __: OpenExampleProjectMessage) => {
+      this.props.onOpenExampleProjectIPCMessage()
+    })
+  }
 }
 
 export function mapStateToProps(state: StoreState) {
@@ -96,7 +106,7 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     onExportDialogVisiblityChange: (isVisible: boolean) => {
       dispatch(setExportDialogVisibility(isVisible))
     },
-    onNewProject: () => {
+    onNewProjectIPCMessage: () => {
       /*let choice = remote.dialog.showMessageBox(
         remote.getCurrentWindow(),
         {
@@ -111,13 +121,13 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
       }*/
       dispatch(loadDefaultState())
     },
-    onOpenProject: (filePath: string) => {
+    onOpenProjectIPCMessage: (filePath: string) => {
       ProjectFile.load(filePath, dispatch)
     },
-    onSaveProjectAs: (filePath: string) => {
+    onSaveProjectAsIPCMessage: (filePath: string) => {
       ProjectFile.save(filePath, dispatch)
     },
-    onOpenImage: (imagePath: string) => {
+    onOpenImageIPCMessage: (imagePath: string) => {
       let imageBuffer = readFileSync(imagePath)
       loadImage(
         imageBuffer,
@@ -128,6 +138,9 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
           alert('Failed to load image')
         }
       )
+    },
+    onOpenExampleProjectIPCMessage: () => {
+      ProjectFile.loadExample(dispatch)
     }
   }
 }

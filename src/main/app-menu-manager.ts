@@ -1,5 +1,5 @@
 import { app, dialog, BrowserWindow, Menu, clipboard } from 'electron'
-import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAsMessage, NewProjectMessage } from './ipc-messages'
+import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAsMessage, NewProjectMessage, OpenExampleProjectMessage } from './ipc-messages'
 import ProjectFile from '../gui/io/project-file'
 
 export class AppMenuManager {
@@ -92,6 +92,16 @@ export class AppMenuManager {
       }
     }
 
+    let openExampleProjectItem = {
+      label: 'Open example project',
+      click: () => {
+        BrowserWindow.getFocusedWindow().webContents.send(
+          OpenExampleProjectMessage.type,
+          new OpenExampleProjectMessage()
+        )
+      }
+    }
+
     let quitMenuItem: Electron.MenuItemConstructorOptions = {
       label: 'Quit',
       accelerator: 'Command+Q',
@@ -104,7 +114,8 @@ export class AppMenuManager {
       saveItem,
       saveAsItem,
       { type: 'separator' },
-      openImageItem
+      openImageItem,
+      openExampleProjectItem
     ]
 
     if (process.platform !== 'darwin') {

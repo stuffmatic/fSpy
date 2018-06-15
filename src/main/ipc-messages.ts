@@ -35,3 +35,7 @@ export class OpenImageMessage {
     this.filePath = filePath
   }
 }
+
+export class OpenExampleProjectMessage {
+  static readonly type = 'openExampleProject'
+}

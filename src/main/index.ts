@@ -1,6 +1,6 @@
 import { app, BrowserWindow, Menu, ipcMain, dialog } from 'electron'
 import appMenuManager from './app-menu-manager'
-import { OpenImageMessage, SaveProjectAsMessage } from './ipc-messages'
+import { OpenImageMessage, SaveProjectAsMessage, OpenProjectMessage } from './ipc-messages'
 const path = require('path')
 const url = require('url')
 
@@ -28,6 +28,12 @@ function createWindow() {
   mainWindow = window
 
   window.on('ready-to-show', () => {
+    app.on('open-file', (_: Event, path: string) => {
+      window.webContents.send(
+        OpenImageMessage.type,
+        new OpenProjectMessage(path)
+      )
+    })
     window.show()
     window.focus()
 
@@ -35,10 +41,10 @@ function createWindow() {
       // show dev tools
       window.webContents.openDevTools({ mode: 'bottom' })
       // load a test image
-      window.webContents.send(
+      /*window.webContents.send(
         OpenImageMessage.type,
         new OpenImageMessage(path.join(__dirname, '../test_data/box.jpg'))
-      )
+      )*/
     }
   })
 
