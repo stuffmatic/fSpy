@@ -116,7 +116,7 @@ function createWindow() {
 
     if (message.isExampleProject !== undefined) {
       documentState.isExampleProject = message.isExampleProject
-
+      appMenuManager.setSaveItemEnabled(!message.isExampleProject)
     }
     refreshTitle()
   })

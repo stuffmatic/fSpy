@@ -26,6 +26,15 @@ export function uiState(state: UIState | undefined, action: AppAction): UIState 
         ...state,
         projectHasUnsavedChanges: true
       }
+    case ActionTypes.SET_PROJECT_FILE_PATH:
+      ipcRenderer.send(
+        SetDocumentStateMessage.type,
+        new SetDocumentStateMessage(false, action.projectFilePath, false)
+      )
+      return {
+        ...state,
+        projectFilePath: action.projectFilePath
+      }
     case ActionTypes.LOAD_DEFAULT_STATE:
       ipcRenderer.send(
         SetDocumentStateMessage.type,

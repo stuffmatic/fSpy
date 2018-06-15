@@ -2,7 +2,7 @@ import { openSync, writeSync, closeSync, readFileSync, readSync } from 'fs'
 import store from '../store/store'
 import { StoreState } from '../types/store-state'
 import SavedState from './saved-state'
-import { AppAction, loadState } from '../actions'
+import { AppAction, loadState, setProjectFilePath } from '../actions'
 import { Dispatch } from 'react-redux'
 import { loadImage } from './util'
 import { remote } from 'electron'
@@ -27,7 +27,7 @@ export default class ProjectFile {
     }
   }
 
-  static save(path: string, _: Dispatch<AppAction>) {
+  static save(path: string, dispatch: Dispatch<AppAction>) {
 
     if (!path.endsWith('.' + this.PROJECT_FILE_EXTENSION)) {
       path += '.' + this.PROJECT_FILE_EXTENSION
@@ -58,8 +58,7 @@ export default class ProjectFile {
       writeSync(file, imageData)
     }
     closeSync(file)
-    // dispatch(setProjectFilePath(path))
-    // dispatch(setProjectHasUnsavedChanges(false))
+    dispatch(setProjectFilePath(path))
   }
 
   static loadExample(dispatch: Dispatch<AppAction>) {

@@ -14,6 +14,7 @@ export enum ActionTypes {
   LOAD_DEFAULT_STATE = 'LOAD_DEFAULT_STATE',
   LOAD_STATE = 'LOAD_STATE',
   SET_PROJECT_HAS_UNSAVED_CHANGES = 'SET_PROJECT_HAS_UNSAVED_CHANGES',
+  SET_PROJECT_FILE_PATH = 'SET_PROJECT_FILE_PATH',
 
   // Global settings actions
   SET_CALIBRATION_MODE = 'SET_CALIBRATION_MODE',
@@ -119,7 +120,6 @@ export function loadState(
 }
 
 //
-
 export interface SetProjectHasUnsavedChanged {
   type: ActionTypes.SET_PROJECT_HAS_UNSAVED_CHANGES
 }
@@ -127,6 +127,19 @@ export interface SetProjectHasUnsavedChanged {
 export function setProjectHasUnsavedChanges(): SetProjectHasUnsavedChanged {
   return {
     type: ActionTypes.SET_PROJECT_HAS_UNSAVED_CHANGES
+  }
+}
+
+//
+export interface SetProjectFilePath {
+  type: ActionTypes.SET_PROJECT_FILE_PATH
+  projectFilePath: string
+}
+
+export function setProjectFilePath(projectFilePath: string): SetProjectFilePath {
+  return {
+    type: ActionTypes.SET_PROJECT_FILE_PATH,
+    projectFilePath: projectFilePath
   }
 }
 
@@ -515,6 +528,7 @@ export function setExportDialogVisibility(isVisible: boolean): SetExportDialogVi
 export type AppAction =
   LoadState |
   LoadDefaultState |
+  SetProjectFilePath |
   SetProjectHasUnsavedChanged |
   SetCalibrationMode |
   SetImageOpacity |
