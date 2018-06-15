@@ -70,7 +70,6 @@ class App extends React.PureComponent<AppProps> {
     })
 
     ipcRenderer.on(SaveProjectMessage.type, (_: any, __: SaveProjectMessage) => {
-      console.log(JSON.stringify(this.props.uiState))
       if (this.props.uiState.projectFilePath) {
         this.props.onSaveProjectAsIPCMessage(this.props.uiState.projectFilePath)
       } else {
@@ -107,22 +106,10 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
       dispatch(setExportDialogVisibility(isVisible))
     },
     onNewProjectIPCMessage: () => {
-      /*let choice = remote.dialog.showMessageBox(
-        remote.getCurrentWindow(),
-        {
-          type: 'question',
-          buttons: ['Yes', 'No'],
-          title: 'Confirm',
-          message: 'Are you sure you want to quit?'
-        }
-      )
-
-      if (choice == 0) {
-      }*/
       dispatch(loadDefaultState())
     },
     onOpenProjectIPCMessage: (filePath: string) => {
-      ProjectFile.load(filePath, dispatch)
+      ProjectFile.load(filePath, dispatch, false)
     },
     onSaveProjectAsIPCMessage: (filePath: string) => {
       ProjectFile.save(filePath, dispatch)

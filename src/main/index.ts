@@ -1,13 +1,28 @@
 import { app, BrowserWindow, Menu, ipcMain, dialog } from 'electron'
-import appMenuManager from './app-menu-manager'
-import { OpenImageMessage, SaveProjectAsMessage, OpenProjectMessage } from './ipc-messages'
+import { SaveProjectAsMessage } from './ipc-messages'
 const path = require('path')
 const url = require('url')
 
 import windowStateKeeper from 'electron-window-state'
-import { SpecifyProjectPathMessage, SetNeedsSaveFlagMessage } from '../gui/ipc-messages'
+import { SpecifyProjectPathMessage, SetDocumentStateMessage } from '../gui/ipc-messages'
+import { basename } from 'path'
+import AppMenuManager from './app-menu-manager'
 
 let mainWindow: Electron.BrowserWindow | null
+
+export interface DocumentState {
+  hasUnsavedChanges: boolean
+  filePath: string | null,
+  isExampleProject: boolean
+}
+
+let documentState: DocumentState = {
+  hasUnsavedChanges: false,
+  filePath: null,
+  isExampleProject: false
+}
+
+let appMenuManager = new AppMenuManager(documentState)
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -28,12 +43,7 @@ function createWindow() {
   mainWindow = window
 
   window.on('ready-to-show', () => {
-    app.on('open-file', (_: Event, path: string) => {
-      window.webContents.send(
-        OpenImageMessage.type,
-        new OpenProjectMessage(path)
-      )
-    })
+    refreshTitle()
     window.show()
     window.focus()
 
@@ -80,8 +90,35 @@ function createWindow() {
     )
   })
 
-  ipcMain.on(SetNeedsSaveFlagMessage.type, (_: any, __: SpecifyProjectPathMessage) => {
-    window.setTitle('needs saving')
+  function refreshTitle() {
+    let title = 'Untitled'
+
+    if (documentState.isExampleProject) {
+      title = 'Example project'
+    } else if (documentState.filePath !== null) {
+      title = basename(documentState.filePath)
+    }
+
+    if (documentState.hasUnsavedChanges) {
+      title += ' (edited)'
+    }
+
+    window.setTitle(title)
+  }
+
+  ipcMain.on(SetDocumentStateMessage.type, (_: any, message: SetDocumentStateMessage) => {
+    if (message.filePath !== undefined) {
+      documentState.filePath = message.filePath
+    }
+    if (message.hasUnsavedChanges !== undefined) {
+      documentState.hasUnsavedChanges = message.hasUnsavedChanges
+    }
+
+    if (message.isExampleProject !== undefined) {
+      documentState.isExampleProject = message.isExampleProject
+
+    }
+    refreshTitle()
   })
 }
 

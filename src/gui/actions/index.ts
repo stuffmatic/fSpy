@@ -7,12 +7,13 @@ import { ThunkAction, ThunkDispatch } from 'redux-thunk'
 import Solver from '../solver/solver'
 import { SolverResult } from '../solver/solver-result'
 import SavedState from '../io/saved-state'
+import { ImageState } from '../types/image-state'
 
 export enum ActionTypes {
   // IO actions
   LOAD_DEFAULT_STATE = 'LOAD_DEFAULT_STATE',
-  LOAD_SAVED_STATE = 'LOAD_SAVED_STATE',
-  SET_PROJECT_FILE_PATH = 'SET_PROJECT_FILE_PATH',
+  LOAD_STATE = 'LOAD_STATE',
+  SET_PROJECT_HAS_UNSAVED_CHANGES = 'SET_PROJECT_HAS_UNSAVED_CHANGES',
 
   // Global settings actions
   SET_CALIBRATION_MODE = 'SET_CALIBRATION_MODE',
@@ -94,28 +95,38 @@ export function loadDefaultState(): LoadDefaultState {
 }
 
 //
-export interface LoadSavedState {
-  type: ActionTypes.LOAD_SAVED_STATE,
-  savedState: SavedState
+export interface LoadState {
+  type: ActionTypes.LOAD_STATE,
+  savedState: SavedState,
+  imageState: ImageState,
+  projectFilePath: string,
+  isExampleProject: boolean
 }
 
-export function loadSavedState(savedState: SavedState): LoadSavedState {
+export function loadState(
+  savedState: SavedState,
+  imageState: ImageState,
+  projectFilePath: string,
+  isExampleProject: boolean
+): LoadState {
   return {
-    type: ActionTypes.LOAD_SAVED_STATE,
-    savedState: savedState
+    type: ActionTypes.LOAD_STATE,
+    savedState: savedState,
+    imageState: imageState,
+    projectFilePath: projectFilePath,
+    isExampleProject: isExampleProject
   }
 }
 
 //
-export interface SetProjectFilePath {
-  type: ActionTypes.SET_PROJECT_FILE_PATH,
-  filePath: string | null
+
+export interface SetProjectHasUnsavedChanged {
+  type: ActionTypes.SET_PROJECT_HAS_UNSAVED_CHANGES
 }
 
-export function setProjectFilePath(filePath: string | null): SetProjectFilePath {
+export function setProjectHasUnsavedChanges(): SetProjectHasUnsavedChanged {
   return {
-    type: ActionTypes.SET_PROJECT_FILE_PATH,
-    filePath: filePath
+    type: ActionTypes.SET_PROJECT_HAS_UNSAVED_CHANGES
   }
 }
 
@@ -502,9 +513,9 @@ export function setExportDialogVisibility(isVisible: boolean): SetExportDialogVi
 
 // Define a type covering all actions
 export type AppAction =
-  LoadSavedState |
+  LoadState |
   LoadDefaultState |
-  SetProjectFilePath |
+  SetProjectHasUnsavedChanged |
   SetCalibrationMode |
   SetImageOpacity |
   SetOverlay3DGuide |
@@ -535,8 +546,7 @@ export type AppAction =
 // A list of action types that trigger calibration result calculation
 export const actionTypesTriggeringRecalculation: ActionTypes[] = [
   ActionTypes.LOAD_DEFAULT_STATE,
-  ActionTypes.LOAD_SAVED_STATE,
-  ActionTypes.SET_PROJECT_FILE_PATH,
+  ActionTypes.LOAD_STATE,
 
   ActionTypes.SET_IMAGE,
   ActionTypes.SET_CALIBRATION_MODE,

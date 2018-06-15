@@ -51,7 +51,7 @@ export function calibrationSettingsBase(state: CalibrationSettingsBase | undefin
         ...state,
         secondVanishingPointAxis: action.axis
       }
-    case ActionTypes.LOAD_SAVED_STATE:
+    case ActionTypes.LOAD_STATE:
       return action.savedState.calibrationSettingsBase
     case ActionTypes.LOAD_DEFAULT_STATE:
       return defaultCalibrationSettingsBase

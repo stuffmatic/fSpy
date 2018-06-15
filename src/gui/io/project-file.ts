@@ -2,7 +2,7 @@ import { openSync, writeSync, closeSync, readFileSync, readSync } from 'fs'
 import store from '../store/store'
 import { StoreState } from '../types/store-state'
 import SavedState from './saved-state'
-import { AppAction, setProjectFilePath, loadSavedState, setImage } from '../actions'
+import { AppAction, loadState } from '../actions'
 import { Dispatch } from 'react-redux'
 import { loadImage } from './util'
 import { remote } from 'electron'
@@ -10,6 +10,7 @@ import { join } from 'path'
 
 export default class ProjectFile {
   static readonly EXAMPLE_PROJECT_FILENAME = 'example.fspy'
+  static readonly PROJECT_FILE_EXTENSION = 'fspy'
   static readonly PROJECT_FILE_ID = 'fspy'
   static readonly PROJECT_FILE_VERSION = 1
 
@@ -26,7 +27,11 @@ export default class ProjectFile {
     }
   }
 
-  static save(path: string, dispatch: Dispatch<AppAction>) {
+  static save(path: string, _: Dispatch<AppAction>) {
+
+    if (!path.endsWith('.' + this.PROJECT_FILE_EXTENSION)) {
+      path += '.' + this.PROJECT_FILE_EXTENSION
+    }
 
     let storeState: StoreState = store.getState()
 
@@ -53,17 +58,19 @@ export default class ProjectFile {
       writeSync(file, imageData)
     }
     closeSync(file)
-    dispatch(setProjectFilePath(path))
+    // dispatch(setProjectFilePath(path))
+    // dispatch(setProjectHasUnsavedChanges(false))
   }
 
   static loadExample(dispatch: Dispatch<AppAction>) {
     if (process.resourcesPath) {
       let examplePath = join(process.resourcesPath, this.EXAMPLE_PROJECT_FILENAME)
+      examplePath = '/Users/perarne/code/f-spy/app/assets/electron/example.fspy'
       this.load(examplePath, dispatch, true)
     }
   }
 
-  static load(path: string, dispatch: Dispatch<AppAction>, isExampleProject: boolean = false) {
+  static load(path: string, dispatch: Dispatch<AppAction>, isExampleProject: boolean) {
     if (!this.isProjectFile(path)) {
       remote.dialog.showErrorBox(
         'Failed to load project',
@@ -98,11 +105,26 @@ export default class ProjectFile {
           imageBuffer = buffer.slice(headerSize + stateStringSize)
         }
 
+        let loadedState: SavedState = JSON.parse(stateString)
         if (imageBuffer) {
+          // There is image data in the project file. Load the image and then load
+          // the state
           loadImage(
             imageBuffer,
             (width: number, height: number, url: string) => {
-              dispatch(setImage(url, imageBuffer!, width, height))
+              dispatch(
+                loadState(
+                  loadedState,
+                  {
+                    width: width,
+                    height: height,
+                    data: imageBuffer,
+                    url: url
+                  },
+                  path,
+                  isExampleProject
+                )
+              )
             },
             () => {
               remote.dialog.showErrorBox(
@@ -111,12 +133,22 @@ export default class ProjectFile {
               )
             }
           )
-        }
-        let loadedState: SavedState = JSON.parse(stateString)
-
-        dispatch(loadSavedState(loadedState))
-        if (!isExampleProject) {
-          dispatch(setProjectFilePath(path))
+        } else {
+          // There is no image data in the project file. Load the state
+          // and blank image data
+          dispatch(
+            loadState(
+              loadedState,
+              {
+                width: null,
+                height: null,
+                data: null,
+                url: null
+              },
+              path,
+              isExampleProject
+            )
+          )
         }
       }
     }

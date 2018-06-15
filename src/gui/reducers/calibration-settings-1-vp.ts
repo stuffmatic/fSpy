@@ -23,7 +23,7 @@ export function calibrationSettings1VP(state: CalibrationSettings1VP | undefined
         ...state,
         absoluteFocalLength: action.absoluteFocalLength
       }
-    case ActionTypes.LOAD_SAVED_STATE:
+    case ActionTypes.LOAD_STATE:
       return action.savedState.calibrationSettings1VP
     case ActionTypes.LOAD_DEFAULT_STATE:
       return defaultCalibrationSettings1VP

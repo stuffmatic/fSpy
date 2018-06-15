@@ -4,10 +4,18 @@ export class SpecifyProjectPathMessage {
   static readonly type = 'SpecifyProjectPathMessage'
 }
 
-export class SetNeedsSaveFlagMessage {
-  static readonly type = 'SetNeedsSaveFlagMessage'
-  readonly flag: boolean
-  constructor(flag: boolean) {
-    this.flag = flag
+export class SetDocumentStateMessage {
+  static readonly type = 'SetDocumentStateMessage'
+  readonly hasUnsavedChanges: boolean | undefined
+  readonly filePath: string | null | undefined
+  readonly isExampleProject: boolean | undefined
+  constructor(
+    hasUnsavedChanges: boolean | undefined,
+    filePath: string | null | undefined,
+    isExampleProject: boolean | undefined
+  ) {
+    this.hasUnsavedChanges = hasUnsavedChanges
+    this.filePath = filePath
+    this.isExampleProject = isExampleProject
   }
 }

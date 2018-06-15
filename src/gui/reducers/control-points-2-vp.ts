@@ -32,7 +32,7 @@ export function controlPointsState2VP(state: ControlPointsState2VP | undefined, 
         thirdVanishingPoint: thirdVanishingPoint
       }
     }
-    case ActionTypes.LOAD_SAVED_STATE:
+    case ActionTypes.LOAD_STATE:
       return action.savedState.controlPointsState2VP
     case ActionTypes.LOAD_DEFAULT_STATE:
       return defaultControlPointsState2VP

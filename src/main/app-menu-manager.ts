@@ -1,20 +1,25 @@
 import { app, dialog, BrowserWindow, Menu, clipboard } from 'electron'
 import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAsMessage, NewProjectMessage, OpenExampleProjectMessage } from './ipc-messages'
 import ProjectFile from '../gui/io/project-file'
+import { DocumentState } from '.'
 
-export class AppMenuManager {
+export default class AppMenuManager {
   readonly menu: Menu
+  readonly documentState: DocumentState
 
-  constructor() {
+  constructor(documentState: DocumentState) {
+    this.documentState = documentState
 
     let newItem = {
       label: 'New',
       accelerator: 'CommandOrControl+N',
       click: () => {
-        BrowserWindow.getFocusedWindow().webContents.send(
-          NewProjectMessage.type,
-          new NewProjectMessage()
-        )
+        if (this.showDiscardChangesDialogIfNeeded()) {
+          BrowserWindow.getFocusedWindow().webContents.send(
+            NewProjectMessage.type,
+            new NewProjectMessage()
+          )
+        }
       }
     }
 
@@ -22,22 +27,24 @@ export class AppMenuManager {
       label: 'Open',
       accelerator: 'CommandOrControl+O',
       click: () => {
-        dialog.showOpenDialog(
-          {
-            filters: [
-              { name: 'f-Spy project files', extensions: ['fspy'] }
-            ],
-            properties: ['openFile']
-          },
-          (filePaths: string[]) => {
-            if (filePaths !== undefined) {
-              BrowserWindow.getFocusedWindow().webContents.send(
-                OpenProjectMessage.type,
-                new OpenProjectMessage(filePaths[0])
-              )
+        if (this.showDiscardChangesDialogIfNeeded()) {
+          dialog.showOpenDialog(
+            {
+              filters: [
+                { name: 'f-Spy project files', extensions: ['fspy'] }
+              ],
+              properties: ['openFile']
+            },
+            (filePaths: string[]) => {
+              if (filePaths !== undefined) {
+                BrowserWindow.getFocusedWindow().webContents.send(
+                  OpenProjectMessage.type,
+                  new OpenProjectMessage(filePaths[0])
+                )
+              }
             }
-          }
-        )
+          )
+        }
       }
     }
 
@@ -74,6 +81,7 @@ export class AppMenuManager {
 
     let openImageItem = {
       label: 'Open image',
+      id: 'open-image',
       accelerator: 'CommandOrControl+Shift+O',
       click: () => {
         dialog.showOpenDialog(
@@ -94,18 +102,25 @@ export class AppMenuManager {
 
     let openExampleProjectItem = {
       label: 'Open example project',
+      id: 'open-example-project',
       click: () => {
-        BrowserWindow.getFocusedWindow().webContents.send(
-          OpenExampleProjectMessage.type,
-          new OpenExampleProjectMessage()
-        )
+        if (this.showDiscardChangesDialogIfNeeded()) {
+          BrowserWindow.getFocusedWindow().webContents.send(
+            OpenExampleProjectMessage.type,
+            new OpenExampleProjectMessage()
+          )
+        }
       }
     }
 
     let quitMenuItem: Electron.MenuItemConstructorOptions = {
       label: 'Quit',
       accelerator: 'Command+Q',
-      click: () => { app.quit() }
+      click: () => {
+        if (this.showDiscardChangesDialogIfNeeded()) {
+          app.quit()
+        }
+      }
     }
 
     let fileMenuItems: Electron.MenuItemConstructorOptions[] = [
@@ -162,6 +177,10 @@ export class AppMenuManager {
     this.menu = Menu.buildFromTemplate(menus)
   }
 
+  setOpenImageItemEnabled(enabled: boolean) {
+    this.menu.getMenuItemById('open-image').enabled = enabled
+  }
+
   setSaveItemEnabled(enabled: boolean) {
     this.menu.getMenuItemById('save').enabled = enabled
   }
@@ -169,7 +188,23 @@ export class AppMenuManager {
   setSaveAsItemEnabled(enabled: boolean) {
     this.menu.getMenuItemById('save-as').enabled = enabled
   }
-}
 
-const appMenuManager = new AppMenuManager()
-export default appMenuManager
+  private showDiscardChangesDialogIfNeeded() {
+    let shouldProceed = true
+    if (this.documentState.hasUnsavedChanges) {
+      let choice = dialog.showMessageBox(
+        BrowserWindow.getFocusedWindow(),
+        {
+          type: 'question',
+          buttons: ['Yes', 'No'],
+          title: 'Proceed',
+          message: 'There are unsaved changes'
+        }
+      )
+
+      shouldProceed = choice == 0
+    }
+
+    return shouldProceed
+  }
+}

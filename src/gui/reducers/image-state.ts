@@ -16,6 +16,8 @@ export function imageState(state: ImageState | undefined, action: AppAction): Im
         width: action.width,
         height: action.height
       }
+    case ActionTypes.LOAD_STATE:
+      return action.imageState
     case ActionTypes.LOAD_DEFAULT_STATE:
       return {
         ...state,
