@@ -6,6 +6,4 @@ tooltips
 recent documents https://github.com/electron/electron/blob/master/docs/tutorial/recent-documents.md
 
 #build
-* remove _old exclude from ts config
-* redux and react dev tools (dev only)
 * silence test warning
