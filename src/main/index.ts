@@ -1,5 +1,5 @@
 import { app, BrowserWindow, Menu, ipcMain, dialog } from 'electron'
-import { SaveProjectAsMessage } from './ipc-messages'
+import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAsMessage, NewProjectMessage, OpenExampleProjectMessage } from './ipc-messages'
 const path = require('path')
 const url = require('url')
 
@@ -22,8 +22,6 @@ let documentState: DocumentState = {
   isExampleProject: false
 }
 
-let appMenuManager = new AppMenuManager(documentState)
-
 function createWindow() {
   let mainWindowState = windowStateKeeper({
     defaultWidth: 800,
@@ -41,6 +39,86 @@ function createWindow() {
   })
   mainWindowState.manage(window)
   mainWindow = window
+
+  let appMenuManager = new AppMenuManager(
+    {
+      onNewProject: () => {
+        if (showDiscardChangesDialogIfNeeded()) {
+          window.webContents.send(
+            NewProjectMessage.type,
+            new NewProjectMessage()
+          )
+        }
+      },
+      onOpenProject: () => {
+        if (showDiscardChangesDialogIfNeeded()) {
+          dialog.showOpenDialog(
+            {
+              filters: [
+                { name: 'fSpy project files', extensions: ['fspy'] }
+              ],
+              properties: ['openFile']
+            },
+            (filePaths: string[]) => {
+              if (filePaths !== undefined) {
+                window.webContents.send(
+                  OpenProjectMessage.type,
+                  new OpenProjectMessage(filePaths[0])
+                )
+              }
+            }
+          )
+        }
+      },
+      onSaveProject: () => {
+        window.webContents.send(
+          SaveProjectMessage.type,
+          new SaveProjectMessage()
+        )
+      },
+      onSaveProjectAs: () => {
+        dialog.showSaveDialog(
+          {},
+          (filePath: string) => {
+            if (filePath !== undefined) {
+              window.webContents.send(
+                SaveProjectAsMessage.type,
+                new SaveProjectAsMessage(filePath)
+              )
+            }
+          }
+        )
+      },
+      onOpenImage: () => {
+        dialog.showOpenDialog(
+          {
+            properties: ['openFile']
+          },
+          (filePaths: string[]) => {
+            if (filePaths !== undefined) {
+              window.webContents.send(
+                OpenImageMessage.type,
+                new OpenImageMessage(filePaths[0])
+              )
+            }
+          }
+        )
+      },
+      onOpenExampleProject: () => {
+        if (showDiscardChangesDialogIfNeeded()) {
+          window.webContents.send(
+            OpenExampleProjectMessage.type,
+            new OpenExampleProjectMessage()
+          )
+        }
+      },
+      onQuit: () => {
+        if (showDiscardChangesDialogIfNeeded()) {
+          app.quit()
+        }
+      }
+    }
+  )
 
   window.on('ready-to-show', () => {
     refreshTitle()
@@ -81,7 +159,7 @@ function createWindow() {
       {},
       (filePath: string) => {
         if (filePath !== undefined) {
-          BrowserWindow.getFocusedWindow().webContents.send(
+          window.webContents.send(
             SaveProjectAsMessage.type,
             new SaveProjectAsMessage(filePath)
           )
@@ -89,6 +167,25 @@ function createWindow() {
       }
     )
   })
+
+  function showDiscardChangesDialogIfNeeded() {
+    let shouldProceed = true
+    if (documentState.hasUnsavedChanges) {
+      let choice = dialog.showMessageBox(
+        window,
+        {
+          type: 'question',
+          buttons: ['Yes', 'No'],
+          title: 'Proceed?',
+          message: 'Do you want to discard unsaved changes?'
+        }
+      )
+
+      shouldProceed = choice == 0
+    }
+
+    return shouldProceed
+  }
 
   function refreshTitle() {
     let title = 'Untitled'

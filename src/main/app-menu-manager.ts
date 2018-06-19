@@ -1,25 +1,28 @@
-import { app, dialog, BrowserWindow, Menu, clipboard } from 'electron'
-import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAsMessage, NewProjectMessage, OpenExampleProjectMessage } from './ipc-messages'
+import { app, Menu, clipboard } from 'electron'
 import ProjectFile from '../gui/io/project-file'
-import { DocumentState } from '.'
+
+export interface AppMenuCallbacks {
+  onNewProject(): void
+  onOpenProject(): void
+  onSaveProject(): void
+  onSaveProjectAs(): void
+  onOpenImage(): void
+  onOpenExampleProject(): void
+  onQuit(): void
+}
 
 export default class AppMenuManager {
   readonly menu: Menu
-  readonly documentState: DocumentState
+  readonly callbacks: AppMenuCallbacks
 
-  constructor(documentState: DocumentState) {
-    this.documentState = documentState
+  constructor(callbacks: AppMenuCallbacks) {
+    this.callbacks = callbacks
 
     let newItem = {
       label: 'New',
       accelerator: 'CommandOrControl+N',
       click: () => {
-        if (this.showDiscardChangesDialogIfNeeded()) {
-          BrowserWindow.getFocusedWindow().webContents.send(
-            NewProjectMessage.type,
-            new NewProjectMessage()
-          )
-        }
+        this.callbacks.onNewProject()
       }
     }
 
@@ -27,24 +30,7 @@ export default class AppMenuManager {
       label: 'Open',
       accelerator: 'CommandOrControl+O',
       click: () => {
-        if (this.showDiscardChangesDialogIfNeeded()) {
-          dialog.showOpenDialog(
-            {
-              filters: [
-                { name: 'fSpy project files', extensions: ['fspy'] }
-              ],
-              properties: ['openFile']
-            },
-            (filePaths: string[]) => {
-              if (filePaths !== undefined) {
-                BrowserWindow.getFocusedWindow().webContents.send(
-                  OpenProjectMessage.type,
-                  new OpenProjectMessage(filePaths[0])
-                )
-              }
-            }
-          )
-        }
+        this.callbacks.onOpenProject()
       }
     }
 
@@ -53,10 +39,7 @@ export default class AppMenuManager {
       id: 'save',
       accelerator: 'CommandOrControl+S',
       click: () => {
-        BrowserWindow.getFocusedWindow().webContents.send(
-          SaveProjectMessage.type,
-          new SaveProjectMessage()
-        )
+        this.callbacks.onSaveProject()
       }
     }
 
@@ -65,17 +48,7 @@ export default class AppMenuManager {
       id: 'save-as',
       accelerator: 'CommandOrControl+Shift+S',
       click: () => {
-        dialog.showSaveDialog(
-          {},
-          (filePath: string) => {
-            if (filePath !== undefined) {
-              BrowserWindow.getFocusedWindow().webContents.send(
-                SaveProjectAsMessage.type,
-                new SaveProjectAsMessage(filePath)
-              )
-            }
-          }
-        )
+        this.callbacks.onSaveProjectAs()
       }
     }
 
@@ -84,19 +57,7 @@ export default class AppMenuManager {
       id: 'open-image',
       accelerator: 'CommandOrControl+Shift+O',
       click: () => {
-        dialog.showOpenDialog(
-          {
-            properties: ['openFile']
-          },
-          (filePaths: string[]) => {
-            if (filePaths !== undefined) {
-              BrowserWindow.getFocusedWindow().webContents.send(
-                OpenImageMessage.type,
-                new OpenImageMessage(filePaths[0])
-              )
-            }
-          }
-        )
+        this.callbacks.onOpenImage()
       }
     }
 
@@ -104,12 +65,7 @@ export default class AppMenuManager {
       label: 'Open example project',
       id: 'open-example-project',
       click: () => {
-        if (this.showDiscardChangesDialogIfNeeded()) {
-          BrowserWindow.getFocusedWindow().webContents.send(
-            OpenExampleProjectMessage.type,
-            new OpenExampleProjectMessage()
-          )
-        }
+        this.callbacks.onOpenExampleProject()
       }
     }
 
@@ -117,9 +73,7 @@ export default class AppMenuManager {
       label: 'Quit',
       accelerator: 'Command+Q',
       click: () => {
-        if (this.showDiscardChangesDialogIfNeeded()) {
-          app.quit()
-        }
+        this.callbacks.onQuit()
       }
     }
 
@@ -187,24 +141,5 @@ export default class AppMenuManager {
 
   setSaveAsItemEnabled(enabled: boolean) {
     this.menu.getMenuItemById('save-as').enabled = enabled
-  }
-
-  private showDiscardChangesDialogIfNeeded() {
-    let shouldProceed = true
-    if (this.documentState.hasUnsavedChanges) {
-      let choice = dialog.showMessageBox(
-        BrowserWindow.getFocusedWindow(),
-        {
-          type: 'question',
-          buttons: ['Yes', 'No'],
-          title: 'Proceed',
-          message: 'There are unsaved changes'
-        }
-      )
-
-      shouldProceed = choice == 0
-    }
-
-    return shouldProceed
   }
 }
