@@ -5,6 +5,7 @@
   "homepage": "./",
   "repository": "git@bitbucket.org:stuffmatic/f-spy.git",
   "author": "per <per@stuffmatic.com>",
+  "description": "An open source, cross platform app for still image camera calibration",
   "license": "GPL-3.0",
   "devDependencies": {
     "@types/highlight.js": "^9.12.3",
