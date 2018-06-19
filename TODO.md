@@ -9,7 +9,6 @@
 * exporter copy to clipboard button + disable select
 * numrera vanishing points
 * 3d axis labels
-* rename to fSpy
 
 #example image
 
