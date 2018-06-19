@@ -8,7 +8,7 @@ import { SpecifyProjectPathMessage, SetDocumentStateMessage } from '../gui/ipc-m
 import { basename } from 'path'
 import AppMenuManager from './app-menu-manager'
 
-let mainWindow: Electron.BrowserWindow | null
+let mainWindow: Electron.BrowserWindow | null = null
 
 export interface DocumentState {
   hasUnsavedChanges: boolean
@@ -21,6 +21,25 @@ let documentState: DocumentState = {
   filePath: null,
   isExampleProject: false
 }
+
+let initialProjectPath: string | null = null
+
+// macOS only
+app.on('open-file', (event: Event, filePath: string) => {
+  if (mainWindow === null) {
+    initialProjectPath = filePath
+  } else {
+    showDiscardChangesDialogIfNeeded(mainWindow, (didCancel: boolean) => {
+      event.preventDefault()
+      if (!didCancel) {
+        mainWindow!.webContents.send(
+          OpenProjectMessage.type,
+          new OpenProjectMessage(filePath)
+        )
+      }
+    })
+  }
+})
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -37,38 +56,43 @@ function createWindow() {
     minHeight: 600,
     show: false
   })
+
   mainWindowState.manage(window)
   mainWindow = window
 
   let appMenuManager = new AppMenuManager(
     {
       onNewProject: () => {
-        showDiscardChangesDialogIfNeeded(() => {
-          window.webContents.send(
-            NewProjectMessage.type,
-            new NewProjectMessage()
-          )
+        showDiscardChangesDialogIfNeeded(window, (didCancel: boolean) => {
+          if (!didCancel) {
+            window.webContents.send(
+              NewProjectMessage.type,
+              new NewProjectMessage()
+            )
+          }
         })
       },
       onOpenProject: () => {
-        showDiscardChangesDialogIfNeeded(() => {
-          dialog.showOpenDialog(
-            window,
-            {
-              filters: [
-                { name: 'fSpy project files', extensions: ['fspy'] }
-              ],
-              properties: ['openFile']
-            },
-            (filePaths: string[]) => {
-              if (filePaths !== undefined) {
-                window.webContents.send(
-                  OpenProjectMessage.type,
-                  new OpenProjectMessage(filePaths[0])
-                )
+        showDiscardChangesDialogIfNeeded(window, (didCancel: boolean) => {
+          if (!didCancel) {
+            dialog.showOpenDialog(
+              window,
+              {
+                filters: [
+                  { name: 'fSpy project files', extensions: ['fspy'] }
+                ],
+                properties: ['openFile']
+              },
+              (filePaths: string[]) => {
+                if (filePaths !== undefined) {
+                  window.webContents.send(
+                    OpenProjectMessage.type,
+                    new OpenProjectMessage(filePaths[0])
+                  )
+                }
               }
-            }
-          )
+            )
+          }
         })
       },
       onSaveProject: () => {
@@ -108,16 +132,20 @@ function createWindow() {
         )
       },
       onOpenExampleProject: () => {
-        showDiscardChangesDialogIfNeeded(() => {
-          window.webContents.send(
-            OpenExampleProjectMessage.type,
-            new OpenExampleProjectMessage()
-          )
+        showDiscardChangesDialogIfNeeded(window, (didCancel: boolean) => {
+          if (!didCancel) {
+            window.webContents.send(
+              OpenExampleProjectMessage.type,
+              new OpenExampleProjectMessage()
+            )
+          }
         })
       },
       onQuit: () => {
-        showDiscardChangesDialogIfNeeded(() => {
-          app.quit()
+        showDiscardChangesDialogIfNeeded(window, (didCancel: boolean) => {
+          if (!didCancel) {
+            app.quit()
+          }
         })
       }
     }
@@ -127,6 +155,13 @@ function createWindow() {
     refreshTitle()
     window.show()
     window.focus()
+
+    if (initialProjectPath) {
+      mainWindow!.webContents.send(
+        OpenProjectMessage.type,
+        new OpenProjectMessage(initialProjectPath)
+      )
+    }
 
     if (process.env.DEV) {
       // show dev tools
@@ -151,9 +186,16 @@ function createWindow() {
 
   Menu.setApplicationMenu(appMenuManager.menu)
 
-  // Emitted when the window is closed.
-  window.on('closed', () => {
-    mainWindow = null
+  window.on('close', (event: Event) => {
+    if (process.platform === 'darwin') {
+      showDiscardChangesDialogIfNeeded(window, (didCancel: boolean) => {
+        if (didCancel) {
+          event.preventDefault()
+        } else {
+          mainWindow = null
+        }
+      })
+    }
   })
 
   ipcMain.on(SpecifyProjectPathMessage.type, (_: any, __: SpecifyProjectPathMessage) => {
@@ -170,25 +212,6 @@ function createWindow() {
       }
     )
   })
-
-  function showDiscardChangesDialogIfNeeded(callback: () => void) {
-    if (documentState.hasUnsavedChanges) {
-      let result = dialog.showMessageBox(
-        window,
-        {
-          type: 'question',
-          buttons: ['Yes', 'No'],
-          title: 'Proceed?',
-          message: 'Do you want to discard unsaved changes?'
-        }
-      )
-      if (result == 0) {
-        callback()
-      }
-    } else {
-      callback()
-    }
-  }
 
   function refreshTitle() {
     let title = 'Untitled'
@@ -220,6 +243,23 @@ function createWindow() {
     }
     refreshTitle()
   })
+}
+
+function showDiscardChangesDialogIfNeeded(window: BrowserWindow, callback: (didCancel: boolean) => void) {
+  if (documentState.hasUnsavedChanges) {
+    let result = dialog.showMessageBox(
+      window,
+      {
+        type: 'question',
+        buttons: ['Yes', 'No'],
+        title: 'Proceed?',
+        message: 'Do you want to discard unsaved changes?'
+      }
+    )
+    callback(result != 0)
+  } else {
+    callback(false)
+  }
 }
 
 app.on('ready', () => createWindow())
