@@ -11,7 +11,7 @@ export default class MatrixView extends React.PureComponent<RotationMatrixViewPr
     }
 
     return (
-      <div style={{ fontFamily: 'Roboto Mono', fontSize: '12px', color: 'gray' }}>
+      <div style={{ fontFamily: 'monospace', fontSize: '12px', color: 'gray' }}>
         {
           this.props.rows.map((row: number[], i: number) => {
             return this.renderRow(row, i)

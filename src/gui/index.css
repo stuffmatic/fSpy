@@ -6,7 +6,6 @@ body {
 
 textarea, body, button, input {
   font: caption;
-  /*font-family: 'Roboto', sans-serif;*/
   font-size: 12px;
   color: #303030;
 }
