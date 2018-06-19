@@ -53,6 +53,7 @@ function createWindow() {
       onOpenProject: () => {
         showDiscardChangesDialogIfNeeded(() => {
           dialog.showOpenDialog(
+            window,
             {
               filters: [
                 { name: 'fSpy project files', extensions: ['fspy'] }
@@ -78,6 +79,7 @@ function createWindow() {
       },
       onSaveProjectAs: () => {
         dialog.showSaveDialog(
+          window,
           {},
           (filePath: string) => {
             if (filePath !== undefined) {
@@ -91,6 +93,7 @@ function createWindow() {
       },
       onOpenImage: () => {
         dialog.showOpenDialog(
+          window,
           {
             properties: ['openFile']
           },
