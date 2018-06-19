@@ -5,7 +5,7 @@ const url = require('url')
 
 import windowStateKeeper from 'electron-window-state'
 import { SpecifyProjectPathMessage, SetDocumentStateMessage } from '../gui/ipc-messages'
-import { basename } from 'path'
+import { basename, join } from 'path'
 import AppMenuManager from './app-menu-manager'
 
 let mainWindow: Electron.BrowserWindow | null = null
@@ -44,6 +44,17 @@ function createWindow() {
     defaultHeight: 600
   })
 
+  let windowIconPath: string | undefined
+  if (process.resourcesPath) {
+    if (process.platform == 'darwin') {
+      //
+    } else if (process.platform == 'win32') {
+      windowIconPath = join(process.resourcesPath, 'icon.ico')
+    } else {
+      windowIconPath = join(process.resourcesPath, 'icon.png')
+    }
+  }
+
   let window = new BrowserWindow({
     x: mainWindowState.x,
     y: mainWindowState.y,
@@ -51,7 +62,8 @@ function createWindow() {
     height: mainWindowState.height,
     minWidth: 800,
     minHeight: 600,
-    show: false
+    show: false,
+    icon: windowIconPath
   })
 
   mainWindowState.manage(window)

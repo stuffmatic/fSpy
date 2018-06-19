@@ -76,6 +76,9 @@
     "mac": {
       "category": "public.app-category.utilities"
     },
+    "linux": {
+
+    },
     "files": [
       "build/**/*"
     ],
@@ -86,10 +89,24 @@
         "filter": [
           "example.fspy"
         ]
+      },
+      {
+        "from": "assets/build",
+        "to": "",
+        "filter": [
+          "icon.ico"
+        ]
+      },
+      {
+        "from": "assets/electron",
+        "to": "",
+        "filter": [
+          "icon.png"
+        ]
       }
     ],
     "directories": {
-      "buildResources": "assets/electron"
+      "buildResources": "assets/build"
     },
     "fileAssociations": [
       {
