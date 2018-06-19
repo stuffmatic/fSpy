@@ -8,6 +8,7 @@ import JSONExporter from '../../exporters/json-exporter'
 import hljs from 'highlight.js'
 import { SolverResult } from '../../solver/solver-result'
 import { ImageState } from '../../types/image-state'
+import { clipboard } from 'electron'
 
 interface ExportDialogProps {
   isVisible: boolean
@@ -135,6 +136,11 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
                   style={{ padding: '10px' }} />
 
               </div>
+              <Button title='Copy to clipboard' onClick={() => {
+                clipboard.writeText(
+                  this.state.exporters[this.state.selectedExporterIndex].code
+                )
+              }} />
             </div>
           </div>
           <div id='modal-bottom-button' style={{
