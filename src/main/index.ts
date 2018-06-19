@@ -43,15 +43,15 @@ function createWindow() {
   let appMenuManager = new AppMenuManager(
     {
       onNewProject: () => {
-        if (showDiscardChangesDialogIfNeeded()) {
+        showDiscardChangesDialogIfNeeded(() => {
           window.webContents.send(
             NewProjectMessage.type,
             new NewProjectMessage()
           )
-        }
+        })
       },
       onOpenProject: () => {
-        if (showDiscardChangesDialogIfNeeded()) {
+        showDiscardChangesDialogIfNeeded(() => {
           dialog.showOpenDialog(
             {
               filters: [
@@ -68,7 +68,7 @@ function createWindow() {
               }
             }
           )
-        }
+        })
       },
       onSaveProject: () => {
         window.webContents.send(
@@ -105,17 +105,17 @@ function createWindow() {
         )
       },
       onOpenExampleProject: () => {
-        if (showDiscardChangesDialogIfNeeded()) {
+        showDiscardChangesDialogIfNeeded(() => {
           window.webContents.send(
             OpenExampleProjectMessage.type,
             new OpenExampleProjectMessage()
           )
-        }
+        })
       },
       onQuit: () => {
-        if (showDiscardChangesDialogIfNeeded()) {
+        showDiscardChangesDialogIfNeeded(() => {
           app.quit()
-        }
+        })
       }
     }
   )
@@ -168,10 +168,9 @@ function createWindow() {
     )
   })
 
-  function showDiscardChangesDialogIfNeeded() {
-    let shouldProceed = true
+  function showDiscardChangesDialogIfNeeded(callback: () => void) {
     if (documentState.hasUnsavedChanges) {
-      let choice = dialog.showMessageBox(
+      let result = dialog.showMessageBox(
         window,
         {
           type: 'question',
@@ -180,11 +179,12 @@ function createWindow() {
           message: 'Do you want to discard unsaved changes?'
         }
       )
-
-      shouldProceed = choice == 0
+      if (result == 0) {
+        callback()
+      }
+    } else {
+      callback()
     }
-
-    return shouldProceed
   }
 
   function refreshTitle() {
