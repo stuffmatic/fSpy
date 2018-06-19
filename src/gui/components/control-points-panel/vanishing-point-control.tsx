@@ -11,6 +11,7 @@ interface VanishingPointControlProps {
   vanishingPointColor: string | null
   controlState: VanishingPointControlState
   vanishingPoint: Point2D | null
+  vanishingPointIndex: number
 
   onControlPointDrag(
     lineSegmentIndex: number,
@@ -38,6 +39,7 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
           color={this.props.color}
         />
         <ControlPoint
+          number={this.props.vanishingPointIndex + 1}
           absolutePosition={this.props.controlState.lineSegments[index][0]}
           onControlPointDrag={(position: Point2D) => {
             this.props.onControlPointDrag(index, 0, position)
@@ -45,6 +47,7 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
           fill={this.props.color}
         />
         <ControlPoint
+          number={this.props.vanishingPointIndex + 1}
           absolutePosition={this.props.controlState.lineSegments[index][1]}
           onControlPointDrag={(position: Point2D) => {
             this.props.onControlPointDrag(index, 1, position)

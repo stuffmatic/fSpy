@@ -176,6 +176,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     return (
       <Group>
         <VanishingPointControl
+          vanishingPointIndex={0}
           color={
             Palette.colorForAxis(this.props.calibrationSettingsBase.firstVanishingPointAxis)
           }
@@ -373,6 +374,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     return (
       <Group>
         <VanishingPointControl
+          vanishingPointIndex={1}
           color={
             Palette.colorForAxis(this.props.calibrationSettingsBase.secondVanishingPointAxis)
           }
@@ -408,6 +410,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
 
     return (
       <VanishingPointControl
+        vanishingPointIndex={2}
         color={Palette.orange}
         vanishingPointColor={this.vanishingPointColor(2)}
         controlState={
