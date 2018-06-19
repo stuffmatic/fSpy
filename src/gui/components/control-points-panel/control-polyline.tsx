@@ -17,6 +17,7 @@ export default function ControlPolyline(props: ControlPolylineProps) {
   }
   return (
     <Line points={coords}
+      listening={false}
       stroke={props.color}
       strokeWidth={1}
       opacity={props.dimmed ? 0.35 : 1}
