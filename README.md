@@ -2,7 +2,7 @@
 
 ## What is this?
 
-fSpy is an open source, cross platform app for still image camera calibration. The source code is available under the GPL license. See [fspy.io](https://fspy.io) for more info.
+fSpy is an open source, cross platform app for still image camera calibration. See [fspy.io](https://fspy.io) for more info. The source code is available under the GPL license. 
 
 ## Backstory
 
