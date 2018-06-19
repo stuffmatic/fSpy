@@ -31,7 +31,7 @@ export default class AppMenuManager {
           dialog.showOpenDialog(
             {
               filters: [
-                { name: 'f-Spy project files', extensions: ['fspy'] }
+                { name: 'fSpy project files', extensions: ['fspy'] }
               ],
               properties: ['openFile']
             },

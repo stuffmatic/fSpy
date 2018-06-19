@@ -1,5 +1,5 @@
 {
-  "name": "f-spy",
+  "name": "fspy",
   "version": "1.0.0",
   "main": "build/main.js",
   "homepage": "./",
@@ -70,7 +70,8 @@
     "redux-thunk": "^2.3.0"
   },
   "build": {
-    "appId": "com.stuffmatic.f-spy",
+    "artifactName": "fSpy",
+    "appId": "com.stuffmatic.fspy",
     "mac": {
       "category": "public.app-category.utilities"
     },
