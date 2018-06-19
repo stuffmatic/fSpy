@@ -8,6 +8,7 @@
   "description": "An open source, cross platform app for still image camera calibration",
   "license": "GPL-3.0",
   "devDependencies": {
+    "@types/electron-window-state": "^2.0.31",
     "@types/highlight.js": "^9.12.3",
     "@types/jest": "^23.0.0",
     "@types/react": "^16.3.16",
@@ -82,18 +83,22 @@
       {
         "from": "assets/electron",
         "to": "",
-        "filter": ["example.fspy"]
+        "filter": [
+          "example.fspy"
+        ]
       }
     ],
     "directories": {
       "buildResources": "assets/electron"
     },
-    "fileAssociations": [{
-      "ext": "fspy",
-      "name": "fSpy",
-      "description": "TODO",
-      "role": "Editor"
-    }]
+    "fileAssociations": [
+      {
+        "ext": "fspy",
+        "name": "fSpy",
+        "description": "TODO",
+        "role": "Editor"
+      }
+    ]
   },
   "jest": {
     "testRegex": "/__tests__/.*\\.jsx?",
