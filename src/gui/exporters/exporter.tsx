@@ -17,7 +17,6 @@ export default abstract class Exporter {
   }
 
   abstract get name(): string
-  // TODO: return react element
   abstract get instructions(): JSX.Element
   abstract get code(): string
 

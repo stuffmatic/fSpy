@@ -39,7 +39,6 @@ class App extends React.PureComponent<AppProps> {
   }
 
   componentWillMount() {
-    // TODO: Is this the right place to do this?
     this.registerIPCHandlers()
   }
 
