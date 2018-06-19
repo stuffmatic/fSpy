@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, ipcMain, dialog } from 'electron'
+import { app, BrowserWindow, ipcMain, dialog, Menu } from 'electron'
 import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAsMessage, NewProjectMessage, OpenExampleProjectMessage } from './ipc-messages'
 const path = require('path')
 const url = require('url')
@@ -16,11 +16,7 @@ export interface DocumentState {
   isExampleProject: boolean
 }
 
-let documentState: DocumentState = {
-  hasUnsavedChanges: false,
-  filePath: null,
-  isExampleProject: false
-}
+let documentState: DocumentState | null = null
 
 let initialProjectPath: string | null = null
 
@@ -29,6 +25,7 @@ app.on('open-file', (event: Event, filePath: string) => {
   if (mainWindow === null) {
     initialProjectPath = filePath
   } else {
+    // TODO: macos: create window if needed if window is null because it has been closed manually
     showDiscardChangesDialogIfNeeded(mainWindow, (didCancel: boolean) => {
       event.preventDefault()
       if (!didCancel) {
@@ -142,22 +139,24 @@ function createWindow() {
         })
       },
       onQuit: () => {
-        showDiscardChangesDialogIfNeeded(window, (didCancel: boolean) => {
-          if (!didCancel) {
-            app.quit()
-          }
-        })
+        app.quit()
       }
     }
   )
 
   window.on('ready-to-show', () => {
-    refreshTitle()
+    refreshTitle(window)
     window.show()
     window.focus()
 
+    documentState = {
+      hasUnsavedChanges: false,
+      filePath: null,
+      isExampleProject: false
+    }
+
     if (initialProjectPath) {
-      mainWindow!.webContents.send(
+      window.webContents.send(
         OpenProjectMessage.type,
         new OpenProjectMessage(initialProjectPath)
       )
@@ -165,12 +164,7 @@ function createWindow() {
 
     if (process.env.DEV) {
       // show dev tools
-      window.webContents.openDevTools({ mode: 'bottom' })
-      // load a test image
-      /*window.webContents.send(
-        OpenImageMessage.type,
-        new OpenImageMessage(path.join(__dirname, '../test_data/box.jpg'))
-      )*/
+      // window.webContents.openDevTools({ mode: 'bottom' })
     }
   })
 
@@ -187,15 +181,17 @@ function createWindow() {
   Menu.setApplicationMenu(appMenuManager.menu)
 
   window.on('close', (event: Event) => {
-    if (process.platform === 'darwin') {
-      showDiscardChangesDialogIfNeeded(window, (didCancel: boolean) => {
-        if (didCancel) {
-          event.preventDefault()
-        } else {
-          mainWindow = null
-        }
-      })
-    }
+    showDiscardChangesDialogIfNeeded(window, (didCancel: boolean) => {
+      if (didCancel) {
+        event.preventDefault()
+      } else {
+        ipcMain.removeAllListeners(SetDocumentStateMessage.type)
+        ipcMain.removeAllListeners(SpecifyProjectPathMessage.type)
+        mainWindow = null
+        documentState = null
+        initialProjectPath = null
+      }
+    })
   })
 
   ipcMain.on(SpecifyProjectPathMessage.type, (_: any, __: SpecifyProjectPathMessage) => {
@@ -213,40 +209,48 @@ function createWindow() {
     )
   })
 
-  function refreshTitle() {
+  function refreshTitle(window: BrowserWindow) {
     let title = 'Untitled'
 
-    if (documentState.isExampleProject) {
-      title = 'Example project'
-    } else if (documentState.filePath !== null) {
-      title = basename(documentState.filePath)
-    }
+    if (documentState !== null) {
+      if (documentState.isExampleProject) {
+        title = 'Example project'
+      } else if (documentState.filePath !== null) {
+        title = basename(documentState.filePath)
+      }
 
-    if (documentState.hasUnsavedChanges) {
-      title += ' (edited)'
+      if (documentState.hasUnsavedChanges) {
+        title += ' (edited)'
+      }
     }
 
     window.setTitle(title)
   }
 
   ipcMain.on(SetDocumentStateMessage.type, (_: any, message: SetDocumentStateMessage) => {
-    if (message.filePath !== undefined) {
-      documentState.filePath = message.filePath
-    }
-    if (message.hasUnsavedChanges !== undefined) {
-      documentState.hasUnsavedChanges = message.hasUnsavedChanges
-    }
+    if (documentState !== null) {
+      if (message.filePath !== undefined) {
+        documentState.filePath = message.filePath
+      }
+      if (message.hasUnsavedChanges !== undefined) {
+        documentState.hasUnsavedChanges = message.hasUnsavedChanges
+      }
 
-    if (message.isExampleProject !== undefined) {
-      documentState.isExampleProject = message.isExampleProject
-      appMenuManager.setSaveItemEnabled(!message.isExampleProject)
+      if (message.isExampleProject !== undefined) {
+        documentState.isExampleProject = message.isExampleProject
+        appMenuManager.setSaveItemEnabled(!message.isExampleProject)
+      }
     }
-    refreshTitle()
+    refreshTitle(window)
   })
 }
 
 function showDiscardChangesDialogIfNeeded(window: BrowserWindow, callback: (didCancel: boolean) => void) {
-  if (documentState.hasUnsavedChanges) {
+  if (documentState === null) {
+    callback(false)
+  }
+
+  if (documentState!.hasUnsavedChanges) {
     let result = dialog.showMessageBox(
       window,
       {
