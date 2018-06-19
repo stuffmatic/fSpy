@@ -26,6 +26,8 @@ To install necessary dependencies, run
 yarn
 ```
 
+TODO: yarn build-dev
+
 The dev server, which handles automatic rebuilding of the source for the Electron GUI process, is started like so:
 
 ```
