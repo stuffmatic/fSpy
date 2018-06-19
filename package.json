@@ -70,7 +70,7 @@
     "redux-thunk": "^2.3.0"
   },
   "build": {
-    "artifactName": "fSpy",
+    "productName": "fSpy",
     "appId": "com.stuffmatic.fspy",
     "mac": {
       "category": "public.app-category.utilities"
