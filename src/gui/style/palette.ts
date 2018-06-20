@@ -9,7 +9,7 @@ export class Palette {
   static readonly white = '#FFFFFF'
   static readonly lightGray = '#F5F5F5'
   static readonly gray = '#D1D3D5'
-  static readonly black = '#303030'
+  static readonly black = 'WindowText'
 
   static colorForAxis(axis: Axis): string {
     switch (axis) {
