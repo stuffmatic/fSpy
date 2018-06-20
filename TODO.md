@@ -8,7 +8,8 @@
 * exporter copy to clipboard button + disable select
 * numrera vanishing points
 * 3d axis labels
-* dragging fspy project on app causes save dialog
+* dragging fspy project on app causes save dialog (mac)
+* larger control point drag area
 
 #example image
 
@@ -20,5 +21,5 @@
 * silence test warning
 
 #linux
-* crisper icon
+* crisper icon (use nativeimage?)
 * name: fSpy instead of fspy 
