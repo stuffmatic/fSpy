@@ -54,7 +54,7 @@
     "pretest": "yarn run build-test",
     "dev-server": "webpack-dev-server --config webpack.config.js --content-base build/  --mode development",
     "electron-dev": "DEV=true electron ./build/main.js",
-    "dist": "electron-builder",
+    "dist": "electron-builder -mwl",
     "test": "jest"
   },
   "dependencies": {
@@ -74,10 +74,14 @@
     "productName": "fSpy",
     "appId": "com.stuffmatic.fspy",
     "mac": {
+      "target": "dmg",
       "category": "public.app-category.utilities"
     },
     "linux": {
-
+      "target": ["AppImage"]
+    },
+    "win": {
+      "target": ["nsis", "zip"]
     },
     "files": [
       "build/**/*"
