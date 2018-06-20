@@ -166,6 +166,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     return (
       <img
         style={{
+          opacity: this.props.globalSettings.imageOpacity,
           position: 'absolute',
           left: imageAABB.xMin,
           top: imageAABB.yMin
