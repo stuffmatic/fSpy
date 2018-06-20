@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Image as KonvaImage, Stage, Layer, Group } from 'react-konva'
+import { Stage, Layer, Group } from 'react-konva'
 import Measure, { ContentRect } from 'react-measure'
 import Point2D from '../../solver/point-2d'
 import AABB from '../../solver/aabb'
@@ -19,6 +19,7 @@ import Overlay3DPanel from './overlay-3d-panel'
 import ReferenceDistanceControl from './reference-distance-control'
 import Solver from '../../solver/solver'
 import MathUtil from '../../solver/math-util'
+import AABBOps from '../../solver/aabb-ops'
 
 interface ControlPointsPanelState {
   width: number | undefined
@@ -112,7 +113,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     return (
       <div>
         Drag an image or project onto this area.
-        <button onClick={(_: any) => { this.props.callbacks.onLoadExampleProject() } }>
+        <button onClick={(_: any) => { this.props.callbacks.onLoadExampleProject() }}>
           Load example project
         </button>
       </div>
@@ -125,14 +126,16 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     is1VPMode: boolean
   ) {
     return (
-      <Stage width={width} height={height}>
-        <Layer>
-          {this.renderImage()}
-          {this.render3DOverlay()}
-          {is1VPMode ? this.render1VPControlPoints() : this.render2VPControlPoints()}
-          {this.renderCommonControlPoints()}
-        </Layer>
-      </Stage>
+      <div>
+        {this.renderImage()}
+        <Stage width={width} height={height}>
+          <Layer>
+            {this.render3DOverlay()}
+            {is1VPMode ? this.render1VPControlPoints() : this.render2VPControlPoints()}
+            {this.renderCommonControlPoints()}
+          </Layer>
+        </Stage>
+      </div>
     )
   }
 
@@ -161,6 +164,19 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     }
 
     return (
+      <img
+        style={{
+          position: 'absolute',
+          left: imageAABB.xMin,
+          top: imageAABB.yMin
+        }}
+        src={this.props.imageState.url!}
+        width={AABBOps.width(imageAABB)}
+        height={AABBOps.height(imageAABB)}
+      />
+    )
+
+    /*return (
       <KonvaImage
         opacity={this.props.globalSettings.imageOpacity}
         image={this.imageElement}
@@ -169,7 +185,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
         width={imageAABB.xMax - imageAABB.xMin}
         height={imageAABB.yMax - imageAABB.yMin}
       />
-    )
+    )*/
   }
 
   private renderCommonControlPoints() {
