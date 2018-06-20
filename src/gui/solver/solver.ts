@@ -507,10 +507,15 @@ export default class Solver {
       return null
     }
 
-    let k = -(Fu.x * Fu.x + Fu.y * Fu.y + f * f) / (Fu.x * horizonDir.x + Fu.y * horizonDir.y)
+    let Fup = {
+      x: Fu.x - P.x,
+      y: Fu.y - P.y
+    }
+
+    let k = -(Fup.x * Fup.x + Fup.y * Fup.y + f * f) / (Fup.x * horizonDir.x + Fup.y * horizonDir.y)
     let Fv = {
-      x: Fu.x + k * horizonDir.x,
-      y: Fu.y + k * horizonDir.y
+      x: Fup.x + k * horizonDir.x + P.x,
+      y: Fup.y + k * horizonDir.y + P.y
     }
 
     return Fv
