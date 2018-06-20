@@ -19,13 +19,18 @@ export interface DocumentState {
 let documentState: DocumentState | null = null
 
 let initialProjectPath: string | null = null
+let windowHasAppeared = false
 
 // macOS only
 app.on('open-file', (event: Event, filePath: string) => {
   if (mainWindow === null) {
     initialProjectPath = filePath
+    if (windowHasAppeared) {
+      // The main window has appeared at least once but there is
+      // currently no window. Create one
+      createWindow()
+    }
   } else {
-    // TODO: macos: create window if needed if window is null because it has been closed manually
     showDiscardChangesDialogIfNeeded(mainWindow, (didCancel: boolean) => {
       event.preventDefault()
       if (!didCancel) {
@@ -161,6 +166,7 @@ function createWindow() {
     refreshTitle(window)
     window.show()
     window.focus()
+    windowHasAppeared = true
 
     documentState = {
       hasUnsavedChanges: false,
