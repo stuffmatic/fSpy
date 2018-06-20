@@ -209,6 +209,7 @@ function createWindow() {
   ipcMain.on(SpecifyProjectPathMessage.type, (_: any, __: SpecifyProjectPathMessage) => {
     // TODO: DRY
     dialog.showSaveDialog(
+      window,
       {},
       (filePath: string) => {
         if (filePath !== undefined) {
