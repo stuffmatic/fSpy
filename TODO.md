@@ -9,6 +9,8 @@
 * numrera vanishing points
 * 3d axis labels
 * larger control point drag area
+* disable menu entries when window is closed (osx)
+* create new window on new and open (osx)
 
 #example image
 
