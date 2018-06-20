@@ -4,7 +4,7 @@ const path = require('path')
 const url = require('url')
 
 import windowStateKeeper from 'electron-window-state'
-import { SpecifyProjectPathMessage, SetDocumentStateMessage } from '../gui/ipc-messages'
+import { SpecifyProjectPathMessage, SetDocumentStateMessage, OpenDroppedProjectMessage } from '../gui/ipc-messages'
 import { basename, join } from 'path'
 import AppMenuManager from './app-menu-manager'
 
@@ -111,6 +111,7 @@ function createWindow() {
         )
       },
       onSaveProjectAs: () => {
+        console.log('onSaveProjectAs, will show save dialog')
         dialog.showSaveDialog(
           window,
           {},
@@ -176,7 +177,7 @@ function createWindow() {
 
     if (process.env.DEV) {
       // show dev tools
-      // window.webContents.openDevTools({ mode: 'bottom' })
+      window.webContents.openDevTools({ mode: 'bottom' })
     }
   })
 
@@ -208,6 +209,7 @@ function createWindow() {
 
   ipcMain.on(SpecifyProjectPathMessage.type, (_: any, __: SpecifyProjectPathMessage) => {
     // TODO: DRY
+    console.log('got SpecifyProjectPathMessage, will show save dialog')
     dialog.showSaveDialog(
       window,
       {},
@@ -220,6 +222,17 @@ function createWindow() {
         }
       }
     )
+  })
+
+  ipcMain.on(OpenDroppedProjectMessage.type, (_: any, message: OpenDroppedProjectMessage) => {
+    showDiscardChangesDialogIfNeeded(window, (didCancel: boolean) => {
+      if (!didCancel) {
+        window.webContents.send(
+          OpenProjectMessage.type,
+          new OpenProjectMessage(message.filePath)
+        )
+      }
+    })
   })
 
   function refreshTitle(window: BrowserWindow) {

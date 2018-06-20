@@ -4,6 +4,14 @@ export class SpecifyProjectPathMessage {
   static readonly type = 'SpecifyProjectPathMessage'
 }
 
+export class OpenDroppedProjectMessage {
+  static readonly type = 'OpenDroppedProjectMessage'
+  readonly filePath: string
+  constructor(filePath: string) {
+    this.filePath = filePath
+  }
+}
+
 export class SetDocumentStateMessage {
   static readonly type = 'SetDocumentStateMessage'
   readonly hasUnsavedChanges: boolean | undefined

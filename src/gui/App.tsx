@@ -11,11 +11,11 @@ import { GlobalSettings } from './types/global-settings'
 import { UIState } from './types/ui-state'
 import { ImageState } from './types/image-state'
 import { SolverResult } from './solver/solver-result'
-import { ipcRenderer } from 'electron'
+import { ipcRenderer, remote } from 'electron'
 import { NewProjectMessage, OpenProjectMessage, SaveProjectMessage, SaveProjectAsMessage, OpenImageMessage, OpenExampleProjectMessage } from '../main/ipc-messages'
 import ProjectFile from './io/project-file'
 import { readFileSync } from 'fs'
-import { SpecifyProjectPathMessage } from './ipc-messages'
+import { SpecifyProjectPathMessage, OpenDroppedProjectMessage } from './ipc-messages'
 import { loadImage } from './io/util'
 
 interface AppProps {
@@ -24,6 +24,8 @@ interface AppProps {
   solverResult: SolverResult,
   image: ImageState,
   onExportDialogVisiblityChange(isVisible: boolean): void
+  onImageFileDropped(imagePath: string): void
+  onProjectFileDropped(imagePath: string): void
 
   onNewProjectIPCMessage(): void
   onOpenProjectIPCMessage(filePath: string): void
@@ -40,6 +42,31 @@ class App extends React.PureComponent<AppProps> {
 
   componentWillMount() {
     this.registerIPCHandlers()
+
+    document.ondragover = (ev) => {
+      console.log('drag over')
+      ev.preventDefault()
+    }
+
+    document.ondragenter = (_) => {
+      console.log('drag enter')
+    }
+
+    document.ondragleave = (_) => {
+      console.log('drag leave')
+    }
+
+    document.ondrop = (ev) => {
+      let filePath = ev.dataTransfer.files[0].path
+      let isProjectFile = ProjectFile.isProjectFile(filePath)
+      if (isProjectFile) {
+        this.props.onProjectFileDropped(filePath)
+      } else {
+        // try to open the file as an image
+        this.props.onImageFileDropped(filePath)
+      }
+      ev.preventDefault()
+    }
   }
 
   render() {
@@ -101,6 +128,28 @@ export function mapStateToProps(state: StoreState) {
 
 export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
   return {
+    onImageFileDropped: (imagePath: string) => {
+      let imageBuffer = readFileSync(imagePath)
+      // TODO: good to do async loading here?
+      loadImage(
+        imageBuffer,
+        (width: number, height: number, url: string) => {
+          dispatch(setImage(url, imageBuffer, width, height))
+        },
+        () => {
+          remote.dialog.showErrorBox(
+            'Failed to load image data',
+            'Could not load the image data. Is this a valid image file?'
+          )
+        }
+      )
+    },
+    onProjectFileDropped: (projectPath: string) => {
+      ipcRenderer.send(
+        OpenDroppedProjectMessage.type,
+        new OpenDroppedProjectMessage(projectPath)
+      )
+    },
     onExportDialogVisiblityChange: (isVisible: boolean) => {
       dispatch(setExportDialogVisibility(isVisible))
     },
