@@ -34,14 +34,19 @@ app.on('open-file', (event: Event, filePath: string) => {
     showDiscardChangesDialogIfNeeded(mainWindow, (didCancel: boolean) => {
       event.preventDefault()
       if (!didCancel) {
-        mainWindow!.webContents.send(
-          OpenProjectMessage.type,
-          new OpenProjectMessage(filePath)
-        )
+        openProject(filePath, mainWindow!)
       }
     })
   }
 })
+
+function openProject(path: string, window: BrowserWindow) {
+  app.addRecentDocument(path)
+  window.webContents.send(
+    OpenProjectMessage.type,
+    new OpenProjectMessage(path)
+  )
+}
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -99,10 +104,7 @@ function createWindow() {
               },
               (filePaths: string[]) => {
                 if (filePaths !== undefined) {
-                  window.webContents.send(
-                    OpenProjectMessage.type,
-                    new OpenProjectMessage(filePaths[0])
-                  )
+                  openProject(filePaths[0], window)
                 }
               }
             )
@@ -175,10 +177,7 @@ function createWindow() {
     }
 
     if (initialProjectPath) {
-      window.webContents.send(
-        OpenProjectMessage.type,
-        new OpenProjectMessage(initialProjectPath)
-      )
+      openProject(initialProjectPath, window)
     }
 
     if (process.env.DEV) {
@@ -233,10 +232,7 @@ function createWindow() {
   ipcMain.on(OpenDroppedProjectMessage.type, (_: any, message: OpenDroppedProjectMessage) => {
     showDiscardChangesDialogIfNeeded(window, (didCancel: boolean) => {
       if (!didCancel) {
-        window.webContents.send(
-          OpenProjectMessage.type,
-          new OpenProjectMessage(message.filePath)
-        )
+        openProject(message.filePath, window)
       }
     })
   })
