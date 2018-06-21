@@ -4,11 +4,9 @@
 * tooltips
 * recent documents https://github.com/electron/electron/blob/master/docs/tutorial/recent-documents.md
 * fyll i röd fönsterstängknapp på macos om det finns osparade ändringar
-* optimize image drawing (render to layer once?)
 * exporter copy to clipboard button + disable select
-* numrera vanishing points
-* 3d axis labels
-* larger control point drag area
+* disable text cursor in all the app (except input fields)
+* larger/tweakable control point drag area
 * disable menu entries when window is closed (osx)
 * create new window on new and open (osx)
 
@@ -23,4 +21,4 @@
 
 #linux
 * crisper icon (use nativeimage?)
-* name: fSpy instead of fspy 
+* name: fSpy instead of fspy
