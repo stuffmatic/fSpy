@@ -6,7 +6,6 @@
 * fyll i röd fönsterstängknapp på macos om det finns osparade ändringar
 * exporter copy to clipboard button + disable select
 * disable text cursor in all the app (except input fields)
-* larger/tweakable control point drag area
 * disable menu entries when window is closed (osx)
 * create new window on new and open (osx)
 

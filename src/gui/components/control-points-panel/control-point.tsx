@@ -12,6 +12,7 @@ interface ControlPointProps {
 
 export default class ControlPoint extends React.Component<ControlPointProps> {
 
+  readonly HIT_RADIUS = 15
   readonly RADIUS = 4
 
   constructor(props: ControlPointProps) {
@@ -23,15 +24,21 @@ export default class ControlPoint extends React.Component<ControlPointProps> {
       <Group>
         <Circle
           draggable={!this.props.isDragDisabled}
+          radius={this.HIT_RADIUS}
+          x={this.props.absolutePosition.x}
+          y={this.props.absolutePosition.y}
+          onDragStart={(event: any) => this.handleDrag(event)}
+          onDragMove={(event: any) => this.handleDrag(event)}
+          onDragEnd={(event: any) => this.handleDrag(event)}
+        />
+        <Circle
+          listening={false}
           radius={this.RADIUS}
           strokeWidth={1.5}
           fill={this.props.fill}
           stroke={this.props.stroke}
           x={this.props.absolutePosition.x}
           y={this.props.absolutePosition.y}
-          onDragStart={(event: any) => this.handleDrag(event)}
-          onDragMove={(event: any) => this.handleDrag(event)}
-          onDragEnd={(event: any) => this.handleDrag(event)}
         />
       </Group>
     )
