@@ -3,7 +3,7 @@ from xml.dom.minidom import parse, parseString
 
 dom = parse('assets/master/lettersandnumbers.svg')
 groups = dom.getElementsByTagName('g')
-group_ids = ['gx', 'gy', 'gz', 'g1', 'g2']
+group_ids = ['gx', 'gy', 'gz', 'g1', 'g2', 'g3']
 coord_lists_by_id = {}
 for group in groups:
     id = group.attributes['id'].value
@@ -16,9 +16,9 @@ for group in groups:
         coord_lists = []
         paths = group.getElementsByTagName('path')
         for path in paths:
-            print '  processing subpath'
             coords = []
             d = path.attributes['d'].value
+            print '  processing subpath', d
             parts = d.split(' ')
             for part in parts:
                 if len(part.split(',')) == 2:

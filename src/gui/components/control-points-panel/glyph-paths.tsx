@@ -8,15 +8,15 @@ const glyphPaths = {
   figure1: [
     [
       [
-        -0.14017857500000003,
-        -0.2017857499999991
+        -0.1709821374999999,
+        -0.17589274999999988
       ],
       [
-        0.14017857500000003,
+        0.17098213750000008,
         -0.5
       ],
       [
-        0.14017857500000003,
+        0.17098213750000008,
         0.5
       ]
     ]
@@ -36,8 +36,8 @@ const glyphPaths = {
         -0.5
       ],
       [
-        0.1616765309894487,
-        -0.44311359142521106
+        0.1743789460156247,
+        -0.42194266260127244
       ],
       [
         0.25449087314016877,
@@ -58,6 +58,46 @@ const glyphPaths = {
       [
         0.3413173844373297,
         0.49700596601639885
+      ]
+    ]
+  ],
+  figure3: [
+    [
+      [
+        -0.2996154278146203,
+        -0.5
+      ],
+      [
+        0.29947643427758486,
+        -0.5
+      ],
+      [
+        -0.0047942240463503425,
+        -0.1229716069431239
+      ],
+      [
+        0.23889560976979463,
+        -0.0032272708127613968
+      ],
+      [
+        0.3039342892843939,
+        0.23476335999326287
+      ],
+      [
+        0.19365929735725046,
+        0.4326920286972525
+      ],
+      [
+        -0.010173320728757339,
+        0.5
+      ],
+      [
+        -0.19275115944945523,
+        0.423699334047801
+      ],
+      [
+        -0.3039342892843946,
+        0.2220440473794813
       ]
     ]
   ],
@@ -150,8 +190,8 @@ function glyph(glyphPath: number[][][], position: Point2D, height: number, color
 
   return (
     <Group>
-      {scaled.map((path) => {
-        return (<Line points={path} strokeWidth={1} stroke={color} />)
+      {scaled.map((path, i) => {
+        return (<Line key={i} points={path} strokeWidth={1} stroke={color} />)
       })}
     </Group>
   )
@@ -177,6 +217,19 @@ export function axisGlyph(axis: Axis, position: Point2D, height: number) {
 }
 
 export function numberGlyph(num: number, color: string, position: Point2D, height: number) {
-  let glyphPath = num == 1 ? glyphPaths.figure1 : glyphPaths.figure2
+  let glyphPath: number[][][] = []
+  switch (num) {
+    case 1:
+      glyphPath = glyphPaths.figure1
+      break
+    case 2:
+      glyphPath = glyphPaths.figure2
+      break
+    case 3:
+      glyphPath = glyphPaths.figure3
+      break
+    default:
+      break
+  }
   return glyph(glyphPath, position, height, color)
 }
