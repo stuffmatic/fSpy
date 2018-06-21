@@ -270,7 +270,7 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
       return { x: 0, y: 0 }
     }
 
-    let relatiePosition = CoordinatesUtil.convert(
+    let relativePosition = CoordinatesUtil.convert(
       MathUtil.perspectiveProject(
         point,
         cameraTransform,
@@ -284,8 +284,8 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
     )
 
     return {
-      x: this.props.imageAABB.xMin + relatiePosition.x * AABBOps.width(this.props.imageAABB),
-      y: this.props.imageAABB.yMin + relatiePosition.y * AABBOps.height(this.props.imageAABB)
+      x: this.props.imageAABB.xMin + relativePosition.x * AABBOps.width(this.props.imageAABB),
+      y: this.props.imageAABB.yMin + relativePosition.y * AABBOps.height(this.props.imageAABB)
     }
   }
 }
