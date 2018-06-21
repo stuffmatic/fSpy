@@ -2,7 +2,7 @@
   "name": "fspy",
   "version": "1.0.0",
   "main": "build/main.js",
-  "homepage": "./",
+  "homepage": "https://fspy.io",
   "repository": {
     "type" : "git",
     "url" : "https://github.com/stuffmatic/fSpy.git"
