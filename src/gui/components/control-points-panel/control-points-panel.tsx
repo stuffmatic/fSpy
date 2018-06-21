@@ -176,17 +176,6 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
         height={AABBOps.height(imageAABB)}
       />
     )
-
-    /*return (
-      <KonvaImage
-        opacity={this.props.globalSettings.imageOpacity}
-        image={this.imageElement}
-        x={imageAABB.xMin}
-        y={imageAABB.yMin}
-        width={imageAABB.xMax - imageAABB.xMin}
-        height={imageAABB.yMax - imageAABB.yMin}
-      />
-    )*/
   }
 
   private renderCommonControlPoints() {
