@@ -3,8 +3,15 @@
   "version": "1.0.0",
   "main": "build/main.js",
   "homepage": "./",
-  "repository": "git@bitbucket.org:stuffmatic/f-spy.git",
-  "author": "per <per@stuffmatic.com>",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/stuffmatic/fSpy.git"
+  },
+  "author": {
+    "name": "Per Gantelius",
+    "email":  "per@stuffmatic.com",
+    "url": "https://stuffmatic.com"
+  },
   "description": "An open source, cross platform app for still image camera calibration",
   "license": "GPL-3.0",
   "devDependencies": {
