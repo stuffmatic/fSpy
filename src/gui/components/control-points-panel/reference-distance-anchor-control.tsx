@@ -54,10 +54,30 @@ export default class ReferenceDistanceAnchorControl extends React.PureComponent<
 
     return (
       <Group>
-        <ControlPolyline dimmed={true} dashed={true} color={Palette.lightGray} points={[this.props.origin, this.props.uIntersection]} />
-        <ControlPolyline dimmed={true} dashed={true} color={Palette.lightGray} points={[this.props.origin, this.props.vIntersection]} />
-        <ControlPolyline dimmed={true} dashed={true} color={Palette.lightGray} points={[this.props.absolutePosition, this.props.uIntersection]} />
-        <ControlPolyline dimmed={true} dashed={true} color={Palette.lightGray} points={[this.props.absolutePosition, this.props.vIntersection]} />
+        <ControlPolyline
+          dimmed={true}
+          dashed={true}
+          color={Palette.lightGray}
+          points={[this.props.origin, this.props.uIntersection]}
+        />
+        <ControlPolyline
+          dimmed={true}
+          dashed={true}
+          color={Palette.lightGray}
+          points={[this.props.origin, this.props.vIntersection]}
+        />
+        <ControlPolyline
+          dimmed={true}
+          dashed={true}
+          color={Palette.lightGray}
+          points={[this.props.absolutePosition, this.props.uIntersection]}
+        />
+        <ControlPolyline
+          dimmed={true}
+          dashed={true}
+          color={Palette.lightGray}
+          points={[this.props.absolutePosition, this.props.vIntersection]}
+        />
       </Group>
     )
   }
