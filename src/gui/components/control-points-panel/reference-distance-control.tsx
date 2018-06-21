@@ -19,6 +19,10 @@ interface ReferenceDistanceControlProps {
 }
 
 export default function ReferenceDistanceControl(props: ReferenceDistanceControlProps) {
+  let normal = {
+    x: props.anchorPosition.y - props.handlePositions[0].y,
+    y: -props.anchorPosition.x + props.handlePositions[0].x
+  }
   return (
     <Group>
       <ControlPolyline dimmed={true} dashed={true} color={Palette.gray} points={[props.anchorPosition, props.handlePositions[1]]} />
@@ -32,18 +36,20 @@ export default function ReferenceDistanceControl(props: ReferenceDistanceControl
         origin={props.origin}
       />
       <ControlPoint
+        lineNormal={normal}
         absolutePosition={props.handlePositions[0]}
         onControlPointDrag={(position: Point2D) => {
           props.handleDragCallback(0, position)
         }}
-        fill={Palette.gray}
+        stroke={Palette.gray}
       />
       <ControlPoint
+        lineNormal={normal}
         absolutePosition={props.handlePositions[1]}
         onControlPointDrag={(position: Point2D) => {
           props.handleDragCallback(1, position)
         }}
-        fill={Palette.gray}
+        stroke={Palette.gray}
       />
 
     </Group>

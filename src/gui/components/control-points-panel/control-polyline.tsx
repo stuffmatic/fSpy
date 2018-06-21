@@ -4,7 +4,7 @@ import Point2D from '../../solver/point-2d'
 
 interface ControlPolylineProps {
   points: Point2D[]
-  color: string
+  color?: string
   dimmed?: boolean
   dashed?: boolean
 }
