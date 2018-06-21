@@ -8,6 +8,7 @@
 * disable text cursor in all the app (except input fields)
 * disable menu entries when window is closed (osx)
 * create new window on new and open (osx)
+* revert to saved
 
 #example image
 
