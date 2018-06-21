@@ -248,8 +248,20 @@ function createWindow() {
       }
 
       if (documentState.hasUnsavedChanges) {
-        title += ' (edited)'
+        if (process.platform !== 'darwin') {
+          title += ' (edited)'
+        } else {
+          // using window.setDocumentEdited on mac
+        }
       }
+
+      if (documentState.filePath) {
+        window.setRepresentedFilename(documentState.filePath)
+      } else {
+        window.setRepresentedFilename('')
+      }
+
+      window.setDocumentEdited(documentState.hasUnsavedChanges)
     }
 
     window.setTitle(title)
