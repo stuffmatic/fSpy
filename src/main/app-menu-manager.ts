@@ -90,11 +90,12 @@ export default class AppMenuManager {
           }
         ]
       },
-      saveItem,
-      saveAsItem,
       { type: 'separator' },
       openImageItem,
-      openExampleProjectItem
+      openExampleProjectItem,
+      { type: 'separator' },
+      saveItem,
+      saveAsItem
     ]
 
     if (process.platform !== 'darwin') {
