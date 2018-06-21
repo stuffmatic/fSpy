@@ -2,13 +2,13 @@
 * full screen mode for projector use
 * sort out naming of camera transform (or its inverse)
 * tooltips
-* recent documents https://github.com/electron/electron/blob/master/docs/tutorial/recent-documents.md
-* fyll i röd fönsterstängknapp på macos om det finns osparade ändringar
 * exporter copy to clipboard button + disable select
 * disable text cursor in all the app (except input fields)
 * disable menu entries when window is closed (osx)
 * create new window on new and open (osx)
 * revert to saved
+* crash when 'new' and there's no window (osx)
+* close window -> activate -> crash when dragging onto window (osx)
 
 #example image
 
