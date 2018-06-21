@@ -58,7 +58,7 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
         <Circle
           x={labelPosition.x}
           y={labelPosition.y}
-          radius={6}
+          radius={7}
           fill={Palette.black}
           opacity={0.4}
         />
@@ -67,7 +67,7 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
             this.props.vanishingPointIndex + 1,
             Palette.white,
             labelPosition,
-            6
+            7
           )
         }
       </Group>
