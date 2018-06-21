@@ -189,7 +189,7 @@ function glyph(glyphPath: number[][][], position: Point2D, height: number, color
   let scaled = scaledGlyphPath(position, height, glyphPath)
 
   return (
-    <Group>
+    <Group listening={false}>
       {scaled.map((path, i) => {
         return (<Line key={i} points={path} strokeWidth={1} stroke={color} />)
       })}

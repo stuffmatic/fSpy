@@ -41,21 +41,8 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
           points={this.props.controlState.lineSegments[index]}
           color={this.props.color}
         />
-        <ControlPoint
-          absolutePosition={this.props.controlState.lineSegments[index][0]}
-          onControlPointDrag={(position: Point2D) => {
-            this.props.onControlPointDrag(index, 0, position)
-          }}
-          fill={this.props.color}
-        />
-        <ControlPoint
-          absolutePosition={this.props.controlState.lineSegments[index][1]}
-          onControlPointDrag={(position: Point2D) => {
-            this.props.onControlPointDrag(index, 1, position)
-          }}
-          fill={this.props.color}
-        />
         <Circle
+          listening={false}
           x={labelPosition.x}
           y={labelPosition.y}
           radius={7}
@@ -70,6 +57,20 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
             7
           )
         }
+        <ControlPoint
+          absolutePosition={this.props.controlState.lineSegments[index][0]}
+          onControlPointDrag={(position: Point2D) => {
+            this.props.onControlPointDrag(index, 0, position)
+          }}
+          fill={this.props.color}
+        />
+        <ControlPoint
+          absolutePosition={this.props.controlState.lineSegments[index][1]}
+          onControlPointDrag={(position: Point2D) => {
+            this.props.onControlPointDrag(index, 1, position)
+          }}
+          fill={this.props.color}
+        />
       </Group>
     )
   }
