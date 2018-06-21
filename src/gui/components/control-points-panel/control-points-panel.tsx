@@ -266,6 +266,13 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
       imageHeight
     )
 
+    let anchorPositionIsValid = MathUtil.pointsAreOnTheSameSideOfLine(
+      result.vanishingPoints[uIndex],
+      result.vanishingPoints[vIndex],
+      origin,
+      position
+    )
+
     let uIntersection = this.imagePlane2Abs(
       MathUtil.lineIntersection(
         [origin, result.vanishingPoints[uIndex]],
@@ -312,6 +319,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
         origin={originAbs}
         uIntersection={uIntersection}
         vIntersection={vIntersection}
+        anchorPositionIsValid={anchorPositionIsValid}
         anchorPosition={
           posAbs
         }

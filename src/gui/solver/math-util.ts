@@ -198,6 +198,33 @@ export default class MathUtil {
     return projected
   }
 
+  static pointsAreOnTheSameSideOfLine(l1: Point2D, l2: Point2D, p1: Point2D, p2: Point2D): boolean {
+    let lineDirection = {
+      x: l2.x - l1.x,
+      y: l2.y - l1.y
+    }
+
+    let lineNormal = {
+      x: lineDirection.y,
+      y: -lineDirection.x
+    }
+
+    let l1ToP1 = {
+      x: p1.x - l1.x,
+      y: p1.y - l1.y
+    }
+
+    let l1ToP2 = {
+      x: p2.x - l1.x,
+      y: p2.y - l1.y
+    }
+
+    let dot1 = l1ToP1.x * lineNormal.x + l1ToP1.y * lineNormal.y
+    let dot2 = l1ToP2.x * lineNormal.x + l1ToP2.y * lineNormal.y
+
+    return dot1 * dot2 > 0
+  }
+
   private static modelViewProjection(
     cameraTransform: Transform,
     principalPoint: Point2D,

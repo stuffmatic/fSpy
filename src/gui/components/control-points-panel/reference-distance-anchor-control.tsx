@@ -1,7 +1,7 @@
 import React from 'react'
 import ControlPoint from './control-point'
 import Point2D from '../../solver/point-2d'
-import { Group } from 'react-konva'
+import { Group, RegularPolygon } from 'react-konva'
 import { Palette } from '../../style/palette'
 import ControlPolyline from './control-polyline'
 
@@ -10,22 +10,55 @@ interface ReferenceDistanceAnchorControlProps {
   origin: Point2D
   uIntersection: Point2D
   vIntersection: Point2D
+  anchorPositionIsValid: boolean
   dragCallback(position: Point2D): void
 }
 
-export default function ReferenceDistanceAnchorControl(props: ReferenceDistanceAnchorControlProps) {
-  return (
-    <Group>
-      <ControlPolyline dimmed={true} dashed={true} color={Palette.lightGray} points={[props.origin, props.uIntersection]}/>
-      <ControlPolyline dimmed={true} dashed={true} color={Palette.lightGray} points={[props.origin, props.vIntersection]}/>
-      <ControlPolyline dimmed={true} dashed={true} color={Palette.lightGray} points={[props.absolutePosition, props.uIntersection]}/>
-      <ControlPolyline dimmed={true} dashed={true} color={Palette.lightGray} points={[props.absolutePosition, props.vIntersection]}/>
+export default class ReferenceDistanceAnchorControl extends React.PureComponent<ReferenceDistanceAnchorControlProps> {
 
-      <ControlPoint
-        absolutePosition={props.absolutePosition}
-        onControlPointDrag={props.dragCallback}
-        fill={Palette.gray}
+  render() {
+    return (
+      <Group>
+        {this.renderLines()}
+        {this.renderPositionWarning()}
+        <ControlPoint
+          absolutePosition={this.props.absolutePosition}
+          onControlPointDrag={this.props.dragCallback}
+          fill={Palette.gray}
+        />
+      </Group>
+    )
+  }
+
+  private renderPositionWarning() {
+    if (this.props.anchorPositionIsValid) {
+      return null
+    }
+
+    return (
+      <RegularPolygon
+        sides={3}
+        radius={20}
+        x={this.props.absolutePosition.x}
+        y={this.props.absolutePosition.y}
+        stroke={Palette.orange}
+        strokeWidth={1}
       />
-    </Group>
-  )
+    )
+  }
+
+  private renderLines() {
+    if (!this.props.anchorPositionIsValid) {
+      return null
+    }
+
+    return (
+      <Group>
+        <ControlPolyline dimmed={true} dashed={true} color={Palette.lightGray} points={[this.props.origin, this.props.uIntersection]} />
+        <ControlPolyline dimmed={true} dashed={true} color={Palette.lightGray} points={[this.props.origin, this.props.vIntersection]} />
+        <ControlPolyline dimmed={true} dashed={true} color={Palette.lightGray} points={[this.props.absolutePosition, this.props.uIntersection]} />
+        <ControlPolyline dimmed={true} dashed={true} color={Palette.lightGray} points={[this.props.absolutePosition, this.props.vIntersection]} />
+      </Group>
+    )
+  }
 }
