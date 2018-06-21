@@ -19,6 +19,8 @@ import { cameraPresets } from './camera-presets'
  */
 export default class Solver {
 
+  static readonly DEFAULT_CAMERA_DISTANCE_SCALE = 10
+
   /**
    * Estimates camera parameters given a single vanishing point, a
    * relative focal length and an optional horizon direction
@@ -619,7 +621,7 @@ export default class Solver {
       k * (origin.x - principalPoint.x),
       k * (origin.y - principalPoint.y),
       -1
-    ).multipliedByScalar(10) // TODO: make this distance a constant
+    ).multipliedByScalar(this.DEFAULT_CAMERA_DISTANCE_SCALE)
 
     // Set a default translation vector
     cameraTransform.matrix[0][3] = origin3D.x

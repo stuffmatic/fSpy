@@ -11,6 +11,7 @@ import { Group, Line } from 'react-konva'
 import AABB from '../../solver/aabb'
 import AABBOps from '../../solver/aabb-ops'
 import { Point } from 'electron'
+import { axisGlyph } from './glyph-paths'
 
 interface GridLineProps {
   points: Point2D[]
@@ -242,16 +243,20 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
     )
 
     let projectedEndpoint = this.project(endpoint)
+    let labelPosition = this.project(endpoint.multipliedByScalar(1.1))
     return (
       <Group>
         <Line
+          strokeWidth={1}
           points={[projectedOrigin.x, projectedOrigin.y, projectedEndpoint.x, projectedEndpoint.y]}
           stroke={color}
         />
         <Line
+          strokeWidth={1}
           points={[arrowWedgeStart.x, arrowWedgeStart.y, projectedEndpoint.x, projectedEndpoint.y, arrowWedgeEnd.x, arrowWedgeEnd.y]}
           stroke={color}
         />
+        {axisGlyph(axis, labelPosition, 8)}
       </Group>
     )
   }

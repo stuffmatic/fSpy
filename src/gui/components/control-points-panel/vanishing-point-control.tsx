@@ -1,10 +1,12 @@
 import * as React from 'react'
 import ControlPolyline from './control-polyline'
 import ControlPoint from './control-point'
-import { Group } from 'react-konva'
+import { Circle, Group } from 'react-konva'
 import { VanishingPointControlState } from '../../types/control-points-state'
 import Point2D from '../../solver/point-2d'
 import MathUtil from '../../solver/math-util'
+import { numberGlyph } from './glyph-paths'
+import { Palette } from '../../style/palette'
 
 interface VanishingPointControlProps {
   color: string
@@ -32,6 +34,7 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
   }
 
   private renderLineSegment(index: number) {
+    let labelPosition = MathUtil.lineSegmentMidpoint(this.props.controlState.lineSegments[index])
     return (
       <Group>
         <ControlPolyline
@@ -52,13 +55,23 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
           }}
           fill={this.props.color}
         />
-        { this.renderNumbers() }
+        <Circle
+          x={labelPosition.x}
+          y={labelPosition.y}
+          radius={6}
+          fill={Palette.black}
+          opacity={0.4}
+        />
+        {
+          numberGlyph(
+            this.props.vanishingPointIndex + 1,
+            Palette.white,
+            labelPosition,
+            6
+          )
+        }
       </Group>
     )
-  }
-
-  private renderNumbers() {
-    return null
   }
 
   private renderVanishingPoint() {
