@@ -80,6 +80,16 @@ export default class AppMenuManager {
     let fileMenuItems: Electron.MenuItemConstructorOptions[] = [
       newItem,
       openItem,
+      {
+        label: 'Open Recent',
+        role: 'recentdocuments',
+        submenu: [
+          {
+            label: 'Clear Recent',
+            role: 'clearrecentdocuments'
+          }
+        ]
+      },
       saveItem,
       saveAsItem,
       { type: 'separator' },
