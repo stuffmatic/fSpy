@@ -249,7 +249,7 @@ function createWindow() {
 
       if (documentState.hasUnsavedChanges) {
         if (process.platform !== 'darwin') {
-          title += ' (edited)'
+          title += ' (modified)'
         } else {
           // using window.setDocumentEdited on mac
         }
@@ -262,6 +262,10 @@ function createWindow() {
       }
 
       window.setDocumentEdited(documentState.hasUnsavedChanges)
+    }
+
+    if (process.platform !== 'darwin') {
+      title += ' - fSpy'
     }
 
     window.setTitle(title)
