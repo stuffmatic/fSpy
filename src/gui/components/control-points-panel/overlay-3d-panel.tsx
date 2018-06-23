@@ -264,6 +264,8 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   private project(point: Vector3D): Point2D {
     let cameraTransform = this.props.solverResult.cameraTransform
     let principalPoint = this.props.solverResult.principalPoint
+    let imageWidth = AABBOps.width(this.props.imageAABB)
+    let imageHeight = AABBOps.height(this.props.imageAABB)
     let horizontalFieldOfView = this.props.solverResult.horizontalFieldOfView
     if (cameraTransform === null || principalPoint === null || horizontalFieldOfView === null) {
       // TODO: return null instead?
@@ -279,8 +281,8 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
       ),
       ImageCoordinateFrame.ImagePlane,
       ImageCoordinateFrame.Relative,
-      AABBOps.width(this.props.imageAABB),
-      AABBOps.height(this.props.imageAABB)
+      imageWidth,
+      imageHeight
     )
 
     return {

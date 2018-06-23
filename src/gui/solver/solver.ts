@@ -676,20 +676,20 @@ export default class Solver {
     vertical: boolean
   ): number {
     let aspectRatio = imageWidth / imageHeight
-    let d = 2
+    let d = 1
     if (aspectRatio < 1) {
       // tall image
       if (!vertical) {
-        d = 2 * aspectRatio
+        d = 1
       }
     } else {
       // wide image
       if (vertical) {
-        d = 2 / aspectRatio
+        d = 1 / aspectRatio
       }
     }
 
-    return 2 * Math.atan(d / (2 * fRelative))
+    return 2 * Math.atan(d / fRelative)
   }
 
   private static computeCameraParameters(
