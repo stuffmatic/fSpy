@@ -9,6 +9,11 @@
 * revert to saved
 * crash when 'new' and there's no window (osx)
 * close window -> activate -> crash when dragging onto window (osx)
+* draw horizon in reference distance mode
+* numrera horizon control med 2
+* disable zoom
+* add appropriate entries to the macos fSpy menu
+* about window?
 
 #example image
 
