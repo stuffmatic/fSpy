@@ -324,7 +324,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
           )
         }}
         handleDragCallback={(handleIndex: number, dragPosition: Point2D) => {
-          let dragRel = this.abs2RelPoint(dragPosition)
+          let dragRel = this.abs2RelPoint(dragPosition, false)
           let a = { x: dragRel.x - positionRel.x, y: dragRel.y - positionRel.y }
           let offset = MathUtil.dot(anchorToVpRel, a)
           this.props.callbacks.onReferenceDistanceHandleDrag(
@@ -543,7 +543,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     }
   }
 
-  private abs2RelPoint(point: Point2D): Point2D {
+  private abs2RelPoint(point: Point2D, clamp: boolean = true): Point2D {
     let imageAABB = this.imageAbsoluteAABB()
     if (!imageAABB) {
       return { x: 0, y: 0 }
@@ -555,8 +555,10 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     }
 
     // clamp to [0,1] x [0,1]
-    relativePosition.x = Math.min(1, Math.max(0, relativePosition.x))
-    relativePosition.y = Math.min(1, Math.max(0, relativePosition.y))
+    if (clamp) {
+      relativePosition.x = Math.min(1, Math.max(0, relativePosition.x))
+      relativePosition.y = Math.min(1, Math.max(0, relativePosition.y))
+    }
 
     return relativePosition
   }

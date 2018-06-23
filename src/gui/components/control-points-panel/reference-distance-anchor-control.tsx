@@ -38,7 +38,7 @@ export default class ReferenceDistanceAnchorControl extends React.PureComponent<
     return (
       <RegularPolygon
         sides={3}
-        radius={20}
+        radius={15}
         x={this.props.absolutePosition.x}
         y={this.props.absolutePosition.y}
         stroke={Palette.orange}
