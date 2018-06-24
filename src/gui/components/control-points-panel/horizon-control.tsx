@@ -4,14 +4,14 @@ import ControlPoint from './control-point'
 import { Group } from 'react-konva'
 import { ControlPointPairState, ControlPointPairIndex } from '../../types/control-points-state'
 import Point2D from '../../solver/point-2d'
-import { Palette } from '../../style/palette'
 import MathUtil from '../../solver/math-util'
 
 interface HorizonControlProps {
   enabled: boolean
+  vanishingPointIndex: number
+  color: string
   pointPair: ControlPointPairState
   vanishingPoint: Point2D | null
-  vanishingPointColor: string | null
   dragCallback(controlPointIndex: ControlPointPairIndex, position: Point2D): void
 }
 
@@ -25,8 +25,9 @@ export default class HorizonControl extends React.PureComponent<HorizonControlPr
       <Group>
         {this.renderVanishingPoint()}
         <ControlPolyline
+          number={this.props.vanishingPointIndex + 1}
           points={this.props.pointPair}
-          color={Palette.yellow}
+          color={this.props.color}
         />
         <ControlPoint
           absolutePosition={this.props.pointPair[0]}
@@ -35,7 +36,7 @@ export default class HorizonControl extends React.PureComponent<HorizonControlPr
               this.props.dragCallback(ControlPointPairIndex.First, position)
             }
           }}
-          fill={Palette.yellow}
+          fill={this.props.color}
         />
         <ControlPoint
           absolutePosition={this.props.pointPair[1]}
@@ -44,21 +45,21 @@ export default class HorizonControl extends React.PureComponent<HorizonControlPr
               this.props.dragCallback(ControlPointPairIndex.Second, position)
             }
           }}
-          fill={Palette.yellow}
+          fill={this.props.color}
         />
       </Group>
     )
   }
 
   private renderVanishingPoint() {
-    if (!this.props.vanishingPoint || !this.props.vanishingPointColor) {
+    if (!this.props.vanishingPoint) {
       return null
     }
 
     return (
       <ControlPolyline
         dimmed={true}
-        color={this.props.vanishingPointColor}
+        color={this.props.color}
         points={[
           this.props.vanishingPoint,
           MathUtil.lineSegmentMidpoint(

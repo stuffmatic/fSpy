@@ -11,7 +11,7 @@ import { ImageState } from '../../types/image-state'
 import VanishingPointControl from './vanishing-point-control'
 import { Palette } from '../../style/palette'
 import HorizonControl from './horizon-control'
-import { CalibrationSettings1VP, CalibrationSettingsBase, CalibrationSettings2VP, HorizonMode, PrincipalPointMode2VP, PrincipalPointMode1VP } from '../../types/calibration-settings'
+import { CalibrationSettings1VP, CalibrationSettingsBase, CalibrationSettings2VP, HorizonMode, PrincipalPointMode2VP, PrincipalPointMode1VP, Axis } from '../../types/calibration-settings'
 import PrincipalPointControl from './principal-point-control'
 import { SolverResult } from '../../solver/solver-result'
 import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util'
@@ -183,10 +183,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
       <Group>
         <VanishingPointControl
           vanishingPointIndex={0}
-          color={
-            Palette.colorForAxis(this.props.calibrationSettingsBase.firstVanishingPointAxis)
-          }
-          vanishingPointColor={this.vanishingPointColor(0)}
+          color={this.vanishingPointColor(0)}
           controlState={
             this.rel2AbsVanishingPointControlState(
               this.props.controlPointsStateBase.firstVanishingPoint
@@ -340,8 +337,9 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     return (
       <Group>
         <HorizonControl
+          vanishingPointIndex={1}
           vanishingPoint={secondVanishingPoint ? this.imagePlane2Abs(secondVanishingPoint) : null}
-          vanishingPointColor={this.vanishingPointColor(1)}
+          color={this.vanishingPointColor(1)}
           enabled={this.props.calbrationSettings1VP.horizonMode == HorizonMode.Manual}
           pointPair={this.rel2AbsControlPointPairState(this.props.controlPointsState1VP.horizon)}
           dragCallback={(controlPointIndex: ControlPointPairIndex, position: Point2D) => {
@@ -389,10 +387,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
       <Group>
         <VanishingPointControl
           vanishingPointIndex={1}
-          color={
-            Palette.colorForAxis(this.props.calibrationSettingsBase.secondVanishingPointAxis)
-          }
-          vanishingPointColor={this.vanishingPointColor(1)}
+          color={this.vanishingPointColor(1)}
           controlState={
             this.rel2AbsVanishingPointControlState(
               secondVanishingPointControlState
@@ -425,8 +420,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     return (
       <VanishingPointControl
         vanishingPointIndex={2}
-        color={Palette.orange}
-        vanishingPointColor={this.vanishingPointColor(2)}
+        color={this.vanishingPointColor(2)}
         controlState={
           this.rel2AbsVanishingPointControlState(
             this.props.controlPointsState2VP.thirdVanishingPoint
@@ -589,13 +583,33 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     return null
   }
 
-  private vanishingPointColor(vanishingPointIndex: number): string | null {
-    if (!this.props.solverResult.vanishingPointAxes) {
-      return null
+  private vanishingPointColor(vanishingPointIndex: number): string {
+    let firstAxisColor = Palette.colorForAxis(
+      this.props.calibrationSettingsBase.firstVanishingPointAxis
+    )
+    let secondAxisColor = Palette.colorForAxis(
+      this.props.calibrationSettingsBase.secondVanishingPointAxis
+    )
+    switch (vanishingPointIndex) {
+      case 0:
+        return firstAxisColor
+      case 1:
+        return secondAxisColor
     }
 
-    return Palette.colorForAxis(
-      this.props.solverResult.vanishingPointAxes[vanishingPointIndex]
-    )
+    let axisColors = [
+      Palette.colorForAxis(Axis.PositiveX),
+      Palette.colorForAxis(Axis.PositiveY),
+      Palette.colorForAxis(Axis.PositiveZ)
+    ]
+
+    for (let axisColor of axisColors) {
+      if ([firstAxisColor, secondAxisColor].indexOf(axisColor) < 0) {
+        return axisColor
+      }
+    }
+
+    // should't end up here
+    return firstAxisColor
   }
 }

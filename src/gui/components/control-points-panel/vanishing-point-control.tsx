@@ -1,16 +1,13 @@
 import * as React from 'react'
 import ControlPolyline from './control-polyline'
 import ControlPoint from './control-point'
-import { Circle, Group } from 'react-konva'
+import { Group } from 'react-konva'
 import { VanishingPointControlState } from '../../types/control-points-state'
 import Point2D from '../../solver/point-2d'
 import MathUtil from '../../solver/math-util'
-import { numberGlyph } from './glyph-paths'
-import { Palette } from '../../style/palette'
 
 interface VanishingPointControlProps {
   color: string
-  vanishingPointColor: string | null
   controlState: VanishingPointControlState
   vanishingPoint: Point2D | null
   vanishingPointIndex: number
@@ -34,29 +31,13 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
   }
 
   private renderLineSegment(index: number) {
-    let labelPosition = MathUtil.lineSegmentMidpoint(this.props.controlState.lineSegments[index])
     return (
       <Group>
         <ControlPolyline
+          number={this.props.vanishingPointIndex + 1}
           points={this.props.controlState.lineSegments[index]}
           color={this.props.color}
         />
-        <Circle
-          listening={false}
-          x={labelPosition.x}
-          y={labelPosition.y}
-          radius={7}
-          fill={Palette.black}
-          opacity={0.4}
-        />
-        {
-          numberGlyph(
-            this.props.vanishingPointIndex + 1,
-            Palette.white,
-            labelPosition,
-            7
-          )
-        }
         <ControlPoint
           absolutePosition={this.props.controlState.lineSegments[index][0]}
           onControlPointDrag={(position: Point2D) => {
@@ -76,7 +57,7 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
   }
 
   private renderVanishingPoint() {
-    if (!this.props.vanishingPoint || !this.props.vanishingPointColor) {
+    if (!this.props.vanishingPoint) {
       return null
     }
 
@@ -89,7 +70,7 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
     )
     return (
       <ControlPolyline
-        color={this.props.vanishingPointColor}
+        color={this.props.color}
         dimmed={true}
         points={[p1, p2, p3]}
       />
