@@ -32,7 +32,7 @@ export default class ControlPolyline extends React.PureComponent<ControlPolyline
           stroke={this.props.color}
           strokeWidth={1}
           opacity={this.props.dimmed ? 0.35 : 1}
-          dash={this.props.dashed ? [3, 6] : undefined}
+          dash={this.props.dashed ? [2, 3] : undefined}
         />
         {this.renderNumberCircle(xMean, yMean)}
         {this.renderNumber(xMean, yMean)}
