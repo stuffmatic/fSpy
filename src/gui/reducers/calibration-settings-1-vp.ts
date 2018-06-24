@@ -13,11 +13,6 @@ export function calibrationSettings1VP(state: CalibrationSettings1VP | undefined
         ...state,
         principalPointMode: action.principalPointMode
       }
-    case ActionTypes.SET_HORIZON_MODE:
-      return {
-        ...state,
-        horizonMode: action.horizonMode
-      }
     case ActionTypes.SET_ABSOLUTE_FOCAL_LENGTH_1VP:
       return {
         ...state,

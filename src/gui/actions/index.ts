@@ -1,6 +1,6 @@
 import { CalibrationMode, Overlay3DGuide } from '../types/global-settings'
 import { ControlPointPairIndex } from '../types/control-points-state'
-import { PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode, Axis, ReferenceDistanceUnit } from '../types/calibration-settings'
+import { PrincipalPointMode1VP, PrincipalPointMode2VP, Axis, ReferenceDistanceUnit } from '../types/calibration-settings'
 import Point2D from '../solver/point-2d'
 import { StoreState } from '../types/store-state'
 import { ThunkAction, ThunkDispatch } from 'redux-thunk'
@@ -25,7 +25,6 @@ export enum ActionTypes {
   SET_IMAGE = 'SET_IMAGE',
 
   // Calibration settings actions
-  SET_HORIZON_MODE = 'SET_HORIZON_MODE',
   SET_QUAD_MODE_ENABLED = 'SET_QUAD_MODE_ENABLED',
   SET_REFERENCE_DISTANCE = 'SET_REFERENCE_DISTANCE',
   SET_REFERENCE_DISTANCE_UNIT = 'SET_REFERENCE_DISTANCE_UNIT',
@@ -197,19 +196,6 @@ export function setImage(url: string, data: Buffer, width: number, height: numbe
     data: data,
     width: width,
     height: height
-  }
-}
-
-//
-export interface SetHorizonMode {
-  type: ActionTypes.SET_HORIZON_MODE
-  horizonMode: HorizonMode
-}
-
-export function setHorizonMode(horizonMode: HorizonMode): SetHorizonMode {
-  return {
-    type: ActionTypes.SET_HORIZON_MODE,
-    horizonMode: horizonMode
   }
 }
 
@@ -534,7 +520,6 @@ export type AppAction =
   SetImageOpacity |
   SetOverlay3DGuide |
   SetImage |
-  SetHorizonMode |
   SetQuadModeEnabled |
   SetPrincipalPointMode1VP |
   SetPrincipalPointMode2VP |
@@ -565,7 +550,6 @@ export const actionTypesTriggeringRecalculation: ActionTypes[] = [
   ActionTypes.SET_IMAGE,
   ActionTypes.SET_CALIBRATION_MODE,
 
-  ActionTypes.SET_HORIZON_MODE,
   ActionTypes.SET_QUAD_MODE_ENABLED,
   ActionTypes.SET_REFERENCE_DISTANCE,
   ActionTypes.SET_REFERENCE_DISTANCE_UNIT,
@@ -596,7 +580,6 @@ export const actionTypesSettingNeedsSaveFlag: ActionTypes[] = [
 
   ActionTypes.SET_IMAGE,
 
-  ActionTypes.SET_HORIZON_MODE,
   ActionTypes.SET_QUAD_MODE_ENABLED,
   ActionTypes.SET_REFERENCE_DISTANCE,
   ActionTypes.SET_REFERENCE_DISTANCE_UNIT,

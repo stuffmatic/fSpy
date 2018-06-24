@@ -11,7 +11,7 @@ import { ImageState } from '../../types/image-state'
 import VanishingPointControl from './vanishing-point-control'
 import { Palette } from '../../style/palette'
 import HorizonControl from './horizon-control'
-import { CalibrationSettings1VP, CalibrationSettingsBase, CalibrationSettings2VP, HorizonMode, PrincipalPointMode2VP, PrincipalPointMode1VP, Axis } from '../../types/calibration-settings'
+import { CalibrationSettings1VP, CalibrationSettingsBase, CalibrationSettings2VP, PrincipalPointMode2VP, PrincipalPointMode1VP, Axis } from '../../types/calibration-settings'
 import PrincipalPointControl from './principal-point-control'
 import { SolverResult } from '../../solver/solver-result'
 import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util'
@@ -344,7 +344,6 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
           vanishingPointIndex={1}
           vanishingPoint={secondVanishingPoint ? this.imagePlane2Abs(secondVanishingPoint) : null}
           color={this.vanishingPointColor(1)}
-          enabled={this.props.calbrationSettings1VP.horizonMode == HorizonMode.Manual}
           pointPair={this.rel2AbsControlPointPairState(this.props.controlPointsState1VP.horizon)}
           dragCallback={(controlPointIndex: ControlPointPairIndex, position: Point2D) => {
             this.props.callbacks.onHorizonDrag(

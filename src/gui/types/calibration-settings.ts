@@ -9,11 +9,6 @@ export enum PrincipalPointMode2VP {
   FromThirdVanishingPoint = 'FromThirdVanishingPoint'
 }
 
-export enum HorizonMode {
-  Default = 'Default',
-  Manual = 'Manual'
-}
-
 export enum Axis {
   PositiveX = 'xPositive',
   NegativeX = 'xNegative',
@@ -46,8 +41,6 @@ export interface CalibrationSettingsBase {
 
 export interface CalibrationSettings1VP {
   principalPointMode: PrincipalPointMode1VP
-  upAxis: Axis
-  horizonMode: HorizonMode
   absoluteFocalLength: number
 }
 

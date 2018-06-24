@@ -13,6 +13,7 @@
 * add appropriate entries to the macos fSpy menu
 * about window?
 * different control point visualization when dragging
+* warn when reference distance handles go past the measuring axis vp
 
 #example image
 

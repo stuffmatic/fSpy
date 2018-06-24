@@ -2,7 +2,7 @@ import * as React from 'react'
 import { SettingsContainerProps } from '../../containers/settings-container'
 import { CalibrationMode, Overlay3DGuide } from '../../types/global-settings'
 import Overlay3DGuideDropdown from './overlay-3d-guide-dropdown'
-import { PrincipalPointMode1VP, HorizonMode, PrincipalPointMode2VP } from '../../types/calibration-settings'
+import { PrincipalPointMode1VP, PrincipalPointMode2VP } from '../../types/calibration-settings'
 import Checkbox from './checkbox'
 import Dropdown from './../common/dropdown'
 import PanelSpacer from './../common/panel-spacer'
@@ -150,33 +150,6 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
           onCameraPresetChange={this.props.onCameraPresetChange}
           onSensorSizeChange={this.props.onSensorSizeChange}
         />
-
-        <PanelSpacer />
-        <div className='panel-row'>
-          Horizon
-        </div>
-        <div className='panel-row'>
-          <Dropdown
-            options={
-              [
-                {
-                  value: HorizonMode.Default,
-                  id: HorizonMode.Default,
-                  label: 'Flat'
-                },
-                {
-                  value: HorizonMode.Manual,
-                  id: HorizonMode.Manual,
-                  label: HorizonMode.Manual
-                }
-              ]
-            }
-            selectedOptionId={this.props.calibrationSettings1VP.horizonMode}
-            onChange={(selectedValue: HorizonMode) => {
-              this.props.onHorizonModeChange(selectedValue)
-            }}
-          />
-        </div>
       </div>
     )
   }

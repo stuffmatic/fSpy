@@ -1,4 +1,4 @@
-import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode2VP, Axis, CalibrationSettingsBase, HorizonMode, PrincipalPointMode1VP } from '../types/calibration-settings'
+import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode2VP, Axis, CalibrationSettingsBase, PrincipalPointMode1VP } from '../types/calibration-settings'
 import { ControlPointsState1VP, ControlPointsState2VP, VanishingPointControlState, ControlPointsStateBase } from '../types/control-points-state'
 import { ImageState } from '../types/image-state'
 import MathUtil from './math-util'
@@ -97,29 +97,28 @@ export default class Solver {
 
     // Compute the horizon direction
     let horizonDirection: Point2D = { x: 1, y: 0 } // flat by default
-    if (settings1VP.horizonMode == HorizonMode.Manual) {
-      // Compute two points on the horizon line in image plane coordinates
-      let horizonStart = CoordinatesUtil.convert(
-        controlPoints1VP.horizon[0],
-        ImageCoordinateFrame.Relative,
-        ImageCoordinateFrame.ImagePlane,
-        imageWidth,
-        imageHeight
-      )
-      let horizonEnd = CoordinatesUtil.convert(
-        controlPoints1VP.horizon[1],
-        ImageCoordinateFrame.Relative,
-        ImageCoordinateFrame.ImagePlane,
-        imageWidth,
-        imageHeight
-      )
 
-      // Normalized horizon direction vector
-      horizonDirection = MathUtil.normalized({
-        x: horizonEnd.x - horizonStart.x,
-        y: horizonEnd.y - horizonStart.y
-      })
-    }
+    // Compute two points on the horizon line in image plane coordinates
+    let horizonStart = CoordinatesUtil.convert(
+      controlPoints1VP.horizon[0],
+      ImageCoordinateFrame.Relative,
+      ImageCoordinateFrame.ImagePlane,
+      imageWidth,
+      imageHeight
+    )
+    let horizonEnd = CoordinatesUtil.convert(
+      controlPoints1VP.horizon[1],
+      ImageCoordinateFrame.Relative,
+      ImageCoordinateFrame.ImagePlane,
+      imageWidth,
+      imageHeight
+    )
+
+    // Normalized horizon direction vector
+    horizonDirection = MathUtil.normalized({
+      x: horizonEnd.x - horizonStart.x,
+      y: horizonEnd.y - horizonStart.y
+    })
 
     let secondVanishingPoint = this.computeSecondVanishingPoint(
       inputVanishingPoints![0],

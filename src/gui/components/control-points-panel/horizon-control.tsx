@@ -7,7 +7,6 @@ import Point2D from '../../solver/point-2d'
 import MathUtil from '../../solver/math-util'
 
 interface HorizonControlProps {
-  enabled: boolean
   vanishingPointIndex: number
   color: string
   pointPair: ControlPointPairState
@@ -17,10 +16,6 @@ interface HorizonControlProps {
 
 export default class HorizonControl extends React.PureComponent<HorizonControlProps> {
   render() {
-    if (!this.props.enabled) {
-      return null
-    }
-
     return (
       <Group>
         {this.renderVanishingPoint()}
@@ -32,18 +27,14 @@ export default class HorizonControl extends React.PureComponent<HorizonControlPr
         <ControlPoint
           absolutePosition={this.props.pointPair[0]}
           onControlPointDrag={(position: Point2D) => {
-            if (this.props.enabled) {
-              this.props.dragCallback(ControlPointPairIndex.First, position)
-            }
+            this.props.dragCallback(ControlPointPairIndex.First, position)
           }}
           fill={this.props.color}
         />
         <ControlPoint
           absolutePosition={this.props.pointPair[1]}
           onControlPointDrag={(position: Point2D) => {
-            if (this.props.enabled) {
-              this.props.dragCallback(ControlPointPairIndex.Second, position)
-            }
+            this.props.dragCallback(ControlPointPairIndex.Second, position)
           }}
           fill={this.props.color}
         />

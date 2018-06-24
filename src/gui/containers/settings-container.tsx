@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setHorizonMode, setQuadModeEnabled, setReferenceDistanceUnit, setReferenceDistance, setReferenceDistanceAxis, setCameraPreset, setCameraSensorSize, setFirstVanishingPointAxis, setSecondVanishingPointAxis, setAbsoluteFocalLength1VP, setOverlay3DGuide } from '../actions'
+import { AppAction, setCalibrationMode, setImageOpacity, setPrincipalPointMode1VP, setPrincipalPointMode2VP, setQuadModeEnabled, setReferenceDistanceUnit, setReferenceDistance, setReferenceDistanceAxis, setCameraPreset, setCameraSensorSize, setFirstVanishingPointAxis, setSecondVanishingPointAxis, setAbsoluteFocalLength1VP, setOverlay3DGuide } from '../actions'
 import SettingsPanel from '../components/settings-panel/settings-panel'
 import { CalibrationMode, GlobalSettings, Overlay3DGuide } from '../types/global-settings'
 import { StoreState } from '../types/store-state'
-import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode1VP, PrincipalPointMode2VP, HorizonMode, Axis, ReferenceDistanceUnit, CalibrationSettingsBase } from '../types/calibration-settings'
+import { CalibrationSettings1VP, CalibrationSettings2VP, PrincipalPointMode1VP, PrincipalPointMode2VP, Axis, ReferenceDistanceUnit, CalibrationSettingsBase } from '../types/calibration-settings'
 
 export interface SettingsContainerProps {
   isVisible: boolean
@@ -16,7 +16,6 @@ export interface SettingsContainerProps {
   onCalibrationModeChange(calibrationMode: CalibrationMode): void
   onImageOpacityChange(opacity: number): void
   onOverlay3DGuideChange(overlay3DGuide: Overlay3DGuide): void
-  onHorizonModeChange(horizonMode: HorizonMode): void
   onPrincipalPointModeChange1VP(principalPointMode: PrincipalPointMode1VP): void
   onPrincipalPointModeChange2VP(principalPointMode: PrincipalPointMode2VP): void
   onQuadModeEnabledChange(quadModeEnabled: boolean): void
@@ -60,9 +59,6 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     },
     onOverlay3DGuideChange: (overlay3DGuide: Overlay3DGuide) => {
       dispatch(setOverlay3DGuide(overlay3DGuide))
-    },
-    onHorizonModeChange: (horizonMode: HorizonMode) => {
-      dispatch(setHorizonMode(horizonMode))
     },
     onPrincipalPointModeChange1VP: (principalPointMode: PrincipalPointMode1VP) => {
       dispatch(setPrincipalPointMode1VP(principalPointMode))

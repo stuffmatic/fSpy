@@ -1,4 +1,4 @@
-import { CalibrationSettingsBase, CalibrationSettings1VP, CalibrationSettings2VP, ReferenceDistanceUnit, PrincipalPointMode1VP, Axis, PrincipalPointMode2VP, HorizonMode } from '../types/calibration-settings'
+import { CalibrationSettingsBase, CalibrationSettings1VP, CalibrationSettings2VP, ReferenceDistanceUnit, PrincipalPointMode1VP, Axis, PrincipalPointMode2VP } from '../types/calibration-settings'
 
 export const defaultCalibrationSettingsBase: CalibrationSettingsBase = {
   referenceDistanceAxis: Axis.PositiveZ,
@@ -15,8 +15,6 @@ export const defaultCalibrationSettingsBase: CalibrationSettingsBase = {
 
 export const defaultCalibrationSettings1VP: CalibrationSettings1VP = {
   principalPointMode: PrincipalPointMode1VP.Default,
-  upAxis: Axis.PositiveY,
-  horizonMode: HorizonMode.Manual,
   absoluteFocalLength: 50
 }
 
