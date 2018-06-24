@@ -676,19 +676,7 @@ export default class Solver {
     vertical: boolean
   ): number {
     let aspectRatio = imageWidth / imageHeight
-    let d = 1
-    if (aspectRatio < 1) {
-      // tall image
-      if (!vertical) {
-        d = 1
-      }
-    } else {
-      // wide image
-      if (vertical) {
-        d = 1 / aspectRatio
-      }
-    }
-
+    let d = vertical ? 1 / aspectRatio : 1
     return 2 * Math.atan(d / fRelative)
   }
 
