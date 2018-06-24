@@ -59,12 +59,13 @@ export default class Solver {
     }
     let relativeFocalLength = 0
     let sensorAspectRatio = sensorWidth / sensorHeight
+    // TODO: verify factor 2
     if (sensorAspectRatio > 1) {
       // wide sensor.
-      relativeFocalLength = absoluteFocalLength / sensorWidth
+      relativeFocalLength = 2 * absoluteFocalLength / sensorWidth
     } else {
       // tall sensor
-      relativeFocalLength = absoluteFocalLength / sensorHeight
+      relativeFocalLength = 2 * absoluteFocalLength / sensorHeight
     }
 
     if (Math.abs(sensorAspectRatio - imageWidth / imageHeight) > 0.01) { // TODO: choose epsilon
