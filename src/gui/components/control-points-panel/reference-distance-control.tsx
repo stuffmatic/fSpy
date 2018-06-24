@@ -5,12 +5,14 @@ import Point2D from '../../solver/point-2d'
 import { Palette } from '../../style/palette'
 import { Group } from 'react-konva'
 import ControlPolyline from './control-polyline'
+import MathUtil from '../../solver/math-util'
 
 export const dashedRulerStyle = { stroke: Palette.gray, opacity: 0.5, strokeDasharray: '2,6' }
 
 interface ReferenceDistanceControlProps {
   anchorPosition: Point2D
   handlePositions: [Point2D, Point2D]
+  horizonVanishingPoints: [Point2D, Point2D]
   origin: Point2D
   uIntersection: Point2D
   vIntersection: Point2D
@@ -20,10 +22,35 @@ interface ReferenceDistanceControlProps {
 }
 
 export default class ReferenceDistanceControl extends React.PureComponent<ReferenceDistanceControlProps> {
+
   render() {
+    let horizonDir = MathUtil.normalized(
+      MathUtil.difference(
+        this.props.horizonVanishingPoints[0],
+        this.props.horizonVanishingPoints[1]
+      )
+    )
+
+    let l = 10000
+    let horizonLineStart = {
+      x: this.props.horizonVanishingPoints[0].x - l * horizonDir.x,
+      y: this.props.horizonVanishingPoints[0].y - l * horizonDir.y
+    }
+    let horizonLineEnd = {
+      x: this.props.horizonVanishingPoints[0].x + l * horizonDir.x,
+      y: this.props.horizonVanishingPoints[0].y + l * horizonDir.y
+    }
+
     return (
       <Group>
-
+        <ControlPolyline
+          points={[
+            horizonLineStart,
+            horizonLineEnd
+          ]}
+          color={Palette.lightGray}
+          dimmed={true}
+        />
         <ReferenceDistanceAnchorControl
           anchorPositionIsValid={this.props.anchorPositionIsValid}
           absolutePosition={this.props.anchorPosition}

@@ -303,6 +303,10 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     return (
       <ReferenceDistanceControl
         origin={originAbs}
+        horizonVanishingPoints={[
+          this.imagePlane2Abs(result.vanishingPoints[uIndex]),
+          this.imagePlane2Abs(result.vanishingPoints[vIndex])
+        ]}
         uIntersection={uIntersection}
         vIntersection={vIntersection}
         anchorPositionIsValid={anchorPositionIsValid}
