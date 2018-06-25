@@ -113,18 +113,6 @@ export default class AppMenuManager {
       let devMenu = {
         label: 'Dev',
         submenu: [
-          {
-            label: 'Copy state to clipboard',
-            click: () => {
-              clipboard.writeText(
-                JSON.stringify(ProjectFile.getStateToSave(),
-                  null,
-                  2
-                )
-              )
-              console.log('Copied state to clipboard')
-            }
-          }
         ]
       }
       menus.push(devMenu)
