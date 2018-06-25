@@ -1,13 +1,13 @@
 import { CalibrationSettingsBase, CalibrationSettings1VP, CalibrationSettings2VP, ReferenceDistanceUnit, PrincipalPointMode1VP, Axis, PrincipalPointMode2VP } from '../types/calibration-settings'
 
 export const defaultCalibrationSettingsBase: CalibrationSettingsBase = {
-  referenceDistanceAxis: Axis.PositiveZ,
+  referenceDistanceAxis: null,
   referenceDistance: 4,
   referenceDistanceUnit: ReferenceDistanceUnit.Meters,
   cameraData: {
     presetId: null,
-    customSensorWidth: 20,
-    customSensorHeight: 10
+    customSensorWidth: 36,
+    customSensorHeight: 24
   },
   firstVanishingPointAxis: Axis.PositiveX,
   secondVanishingPointAxis: Axis.PositiveY
@@ -15,7 +15,7 @@ export const defaultCalibrationSettingsBase: CalibrationSettingsBase = {
 
 export const defaultCalibrationSettings1VP: CalibrationSettings1VP = {
   principalPointMode: PrincipalPointMode1VP.Default,
-  absoluteFocalLength: 50
+  absoluteFocalLength: 24
 }
 
 export const defaultCalibrationSettings2VP: CalibrationSettings2VP = {
