@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain, dialog, Menu } from 'electron'
-import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAsMessage, NewProjectMessage, OpenExampleProjectMessage } from './ipc-messages'
+import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAsMessage, NewProjectMessage } from './ipc-messages'
 const path = require('path')
 const url = require('url')
 
@@ -7,6 +7,7 @@ import windowStateKeeper from 'electron-window-state'
 import { SpecifyProjectPathMessage, SetDocumentStateMessage, OpenDroppedProjectMessage } from '../gui/ipc-messages'
 import { basename, join } from 'path'
 import AppMenuManager from './app-menu-manager'
+import ProjectFile from '../gui/io/project-file'
 
 let mainWindow: Electron.BrowserWindow | null = null
 
@@ -18,13 +19,13 @@ export interface DocumentState {
 
 let documentState: DocumentState | null = null
 
-let initialProjectPath: string | null = null
+let initialOpenMessage: OpenProjectMessage | null = null
 let windowHasAppeared = false
 
 // macOS only
 app.on('open-file', (event: Event, filePath: string) => {
   if (mainWindow === null) {
-    initialProjectPath = filePath
+    initialOpenMessage = new OpenProjectMessage(filePath, false)
     if (windowHasAppeared) {
       // The main window has appeared at least once but there is
       // currently no window. Create one
@@ -44,7 +45,7 @@ function openProject(path: string, window: BrowserWindow) {
   app.addRecentDocument(path)
   window.webContents.send(
     OpenProjectMessage.type,
-    new OpenProjectMessage(path)
+    new OpenProjectMessage(path, false)
   )
 }
 
@@ -82,32 +83,53 @@ function createWindow() {
   let appMenuManager = new AppMenuManager(
     {
       onNewProject: () => {
-        showDiscardChangesDialogIfNeeded(window, (didCancel: boolean) => {
-          if (!didCancel) {
-            window.webContents.send(
-              NewProjectMessage.type,
-              new NewProjectMessage()
-            )
-          }
-        })
+        if (mainWindow) {
+          showDiscardChangesDialogIfNeeded(mainWindow, (didCancel: boolean) => {
+            if (!didCancel) {
+              window.webContents.send(
+                NewProjectMessage.type,
+                new NewProjectMessage()
+              )
+            }
+          })
+        } else {
+          createWindow()
+        }
       },
       onOpenProject: () => {
-        showDiscardChangesDialogIfNeeded(window, (didCancel: boolean) => {
+        showDiscardChangesDialogIfNeeded(mainWindow, (didCancel: boolean) => {
           if (!didCancel) {
-            dialog.showOpenDialog(
-              window,
-              {
-                filters: [
-                  { name: 'fSpy project files', extensions: ['fspy'] }
-                ],
-                properties: ['openFile']
-              },
-              (filePaths: string[]) => {
-                if (filePaths !== undefined) {
-                  openProject(filePaths[0], window)
+            if (mainWindow) {
+              dialog.showOpenDialog(
+                mainWindow,
+                {
+                  filters: [
+                    { name: 'fSpy project files', extensions: ['fspy'] }
+                  ],
+                  properties: ['openFile']
+                },
+                (filePaths: string[]) => {
+                  if (filePaths !== undefined) {
+                    openProject(filePaths[0], window)
+                  }
                 }
-              }
-            )
+              )
+            } else {
+              dialog.showOpenDialog(
+                {
+                  filters: [
+                    { name: 'fSpy project files', extensions: ['fspy'] }
+                  ],
+                  properties: ['openFile']
+                },
+                (filePaths: string[]) => {
+                  if (filePaths !== undefined) {
+                    initialOpenMessage = new OpenProjectMessage(filePaths[0], false)
+                    createWindow()
+                  }
+                }
+              )
+            }
           }
         })
       },
@@ -149,12 +171,18 @@ function createWindow() {
         )
       },
       onOpenExampleProject: () => {
-        showDiscardChangesDialogIfNeeded(window, (didCancel: boolean) => {
+        showDiscardChangesDialogIfNeeded(mainWindow, (didCancel: boolean) => {
           if (!didCancel) {
-            window.webContents.send(
-              OpenExampleProjectMessage.type,
-              new OpenExampleProjectMessage()
-            )
+            let projectPath = ProjectFile.exampleProjectPath
+            if (mainWindow) {
+              window.webContents.send(
+                OpenProjectMessage.type,
+                new OpenProjectMessage(projectPath, true)
+              )
+            } else {
+              initialOpenMessage = new OpenProjectMessage(projectPath, true)
+              createWindow()
+            }
           }
         })
       },
@@ -176,8 +204,11 @@ function createWindow() {
       isExampleProject: false
     }
 
-    if (initialProjectPath) {
-      openProject(initialProjectPath, window)
+    if (initialOpenMessage) {
+      window.webContents.send(
+        OpenProjectMessage.type,
+        new OpenProjectMessage(initialOpenMessage.filePath, true)
+      )
     }
 
     if (process.env.DEV) {
@@ -205,9 +236,13 @@ function createWindow() {
       } else {
         ipcMain.removeAllListeners(SetDocumentStateMessage.type)
         ipcMain.removeAllListeners(SpecifyProjectPathMessage.type)
+        ipcMain.removeAllListeners(OpenDroppedProjectMessage.type)
+        appMenuManager.setOpenImageItemEnabled(false)
+        appMenuManager.setSaveAsItemEnabled(false)
+        appMenuManager.setSaveItemEnabled(false)
         mainWindow = null
         documentState = null
-        initialProjectPath = null
+        initialOpenMessage = null
       }
     })
   })
@@ -289,14 +324,23 @@ function createWindow() {
   })
 }
 
-function showDiscardChangesDialogIfNeeded(window: BrowserWindow, callback: (didCancel: boolean) => void) {
+function showDiscardChangesDialogIfNeeded(
+  window: BrowserWindow | null,
+  callback: (didCancel: boolean) => void
+) {
   if (documentState === null) {
     callback(false)
+    return
   }
 
-  if (documentState!.hasUnsavedChanges) {
+  if (window === null) {
+    callback(false)
+    return
+  }
+
+  if (documentState.hasUnsavedChanges) {
     let result = dialog.showMessageBox(
-      window,
+      window!,
       {
         type: 'question',
         buttons: ['Yes', 'No'],

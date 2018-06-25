@@ -12,7 +12,7 @@ import { UIState } from './types/ui-state'
 import { ImageState } from './types/image-state'
 import { SolverResult } from './solver/solver-result'
 import { ipcRenderer, remote } from 'electron'
-import { NewProjectMessage, OpenProjectMessage, SaveProjectMessage, SaveProjectAsMessage, OpenImageMessage, OpenExampleProjectMessage } from '../main/ipc-messages'
+import { NewProjectMessage, OpenProjectMessage, SaveProjectMessage, SaveProjectAsMessage, OpenImageMessage } from '../main/ipc-messages'
 import ProjectFile from './io/project-file'
 import { readFileSync } from 'fs'
 import { SpecifyProjectPathMessage, OpenDroppedProjectMessage } from './ipc-messages'
@@ -28,10 +28,9 @@ interface AppProps {
   onProjectFileDropped(imagePath: string): void
 
   onNewProjectIPCMessage(): void
-  onOpenProjectIPCMessage(filePath: string): void
+  onOpenProjectIPCMessage(filePath: string, isExampleProject: boolean): void
   onSaveProjectAsIPCMessage(filePath: string): void
   onOpenImageIPCMessage(imagePath: string): void
-  onOpenExampleProjectIPCMessage(): void
 }
 
 class App extends React.PureComponent<AppProps> {
@@ -91,7 +90,7 @@ class App extends React.PureComponent<AppProps> {
     })
 
     ipcRenderer.on(OpenProjectMessage.type, (_: any, message: OpenProjectMessage) => {
-      this.props.onOpenProjectIPCMessage(message.filePath)
+      this.props.onOpenProjectIPCMessage(message.filePath, message.isExampleProject)
     })
 
     ipcRenderer.on(SaveProjectMessage.type, (_: any, __: SaveProjectMessage) => {
@@ -108,10 +107,6 @@ class App extends React.PureComponent<AppProps> {
 
     ipcRenderer.on(OpenImageMessage.type, (_: any, message: OpenImageMessage) => {
       this.props.onOpenImageIPCMessage(message.filePath)
-    })
-
-    ipcRenderer.on(OpenExampleProjectMessage.type, (_: any, __: OpenExampleProjectMessage) => {
-      this.props.onOpenExampleProjectIPCMessage()
     })
   }
 }
@@ -155,8 +150,8 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     onNewProjectIPCMessage: () => {
       dispatch(loadDefaultState())
     },
-    onOpenProjectIPCMessage: (filePath: string) => {
-      ProjectFile.load(filePath, dispatch, false)
+    onOpenProjectIPCMessage: (filePath: string, isExampleProject: boolean) => {
+      ProjectFile.load(filePath, dispatch, isExampleProject)
     },
     onSaveProjectAsIPCMessage: (filePath: string) => {
       ProjectFile.save(filePath, dispatch)

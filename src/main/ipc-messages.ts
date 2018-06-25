@@ -8,9 +8,11 @@ export class NewProjectMessage {
 export class OpenProjectMessage {
   static readonly type = 'openProject'
   readonly filePath: string
+  readonly isExampleProject: boolean
 
-  constructor(filePath: string) {
+  constructor(filePath: string, isExampleProject: boolean) {
     this.filePath = filePath
+    this.isExampleProject = isExampleProject
   }
 }
 
@@ -34,8 +36,4 @@ export class OpenImageMessage {
   constructor(filePath: string) {
     this.filePath = filePath
   }
-}
-
-export class OpenExampleProjectMessage {
-  static readonly type = 'openExampleProject'
 }

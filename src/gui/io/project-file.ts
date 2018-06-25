@@ -14,6 +14,14 @@ export default class ProjectFile {
   static readonly PROJECT_FILE_ID = 'fspy'
   static readonly PROJECT_FILE_VERSION = 1
 
+  static get exampleProjectPath() {
+    if (process.resourcesPath) {
+      return join(process.resourcesPath, this.EXAMPLE_PROJECT_FILENAME)
+    }
+
+    return ''
+  }
+
   static getStateToSave(): SavedState {
     let storeState: StoreState = store.getState()
     return {
@@ -62,10 +70,7 @@ export default class ProjectFile {
   }
 
   static loadExample(dispatch: Dispatch<AppAction>) {
-    if (process.resourcesPath) {
-      let examplePath = join(process.resourcesPath, this.EXAMPLE_PROJECT_FILENAME)
-      this.load(examplePath, dispatch, true)
-    }
+    this.load(this.exampleProjectPath, dispatch, true)
   }
 
   static load(path: string, dispatch: Dispatch<AppAction>, isExampleProject: boolean) {

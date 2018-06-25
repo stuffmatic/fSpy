@@ -51,20 +51,20 @@ export default class AppMenuManager {
       }
     }
 
+    let openExampleProjectItem = {
+      label: 'Open example project',
+      id: 'open-example-project',
+      click: () => {
+        this.callbacks.onOpenExampleProject()
+      }
+    }
+
     let openImageItem = {
       label: 'Open image',
       id: 'open-image',
       accelerator: 'CommandOrControl+Shift+O',
       click: () => {
         this.callbacks.onOpenImage()
-      }
-    }
-
-    let openExampleProjectItem = {
-      label: 'Open example project',
-      id: 'open-example-project',
-      click: () => {
-        this.callbacks.onOpenExampleProject()
       }
     }
 
@@ -90,8 +90,8 @@ export default class AppMenuManager {
         ]
       },
       { type: 'separator' },
-      openImageItem,
       openExampleProjectItem,
+      openImageItem,
       { type: 'separator' },
       saveItem,
       saveAsItem
