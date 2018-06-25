@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ReferenceDistanceUnit } from '../../types/calibration-settings'
-import Dropdown from './../common/dropdown'
+import Dropdown from '../common/dropdown'
 
 interface ReferenceDistanceUnitDropdownProps {
   selectedUnit: ReferenceDistanceUnit
@@ -11,17 +11,17 @@ const options = [
   {
     value: ReferenceDistanceUnit.None,
     id: ReferenceDistanceUnit.None,
-    label: ReferenceDistanceUnit.None
+    title: ReferenceDistanceUnit.None
   },
   {
     value: ReferenceDistanceUnit.Meters,
     id: ReferenceDistanceUnit.Meters,
-    label: ReferenceDistanceUnit.Meters
+    title: ReferenceDistanceUnit.Meters
   },
   {
     value: ReferenceDistanceUnit.Yards,
     id: ReferenceDistanceUnit.Yards,
-    label: ReferenceDistanceUnit.Yards
+    title: ReferenceDistanceUnit.Yards
   }
 ]
 
@@ -34,7 +34,7 @@ export default function ReferenceDistanceUnitDropdown(props: ReferenceDistanceUn
       selectedOptionId={
         props.selectedUnit
       }
-      onChange={(unit: ReferenceDistanceUnit) => {
+      onOptionSelected={(unit: ReferenceDistanceUnit) => {
         props.onChange(unit)
       }}
     />

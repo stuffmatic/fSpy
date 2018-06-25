@@ -1,6 +1,6 @@
 import React from 'react'
 import { Axis } from '../../types/calibration-settings'
-import Dropdown from './../common/dropdown'
+import Dropdown from '../common/dropdown'
 
 interface ReferenceDistanceAxisDropdownProps {
   selectedAxis: Axis | null
@@ -11,22 +11,22 @@ const options = [
   {
     value: null,
     id: 'null',
-    label: 'Default'
+    title: 'Default'
   },
   {
     value: Axis.PositiveX,
     id: Axis.PositiveX,
-    label: 'In the x direction'
+    title: 'In the x direction'
   },
   {
     value: Axis.PositiveY,
     id: Axis.PositiveY,
-    label: 'In the y direction'
+    title: 'In the y direction'
   },
   {
     value: Axis.PositiveZ,
     id: Axis.PositiveZ,
-    label: 'In the z direction'
+    title: 'In the z direction'
   }
 ]
 
@@ -39,7 +39,7 @@ export default function ReferenceDistanceAxisDropdown(props: ReferenceDistanceAx
       selectedOptionId={
         props.selectedAxis ? props.selectedAxis : 'null'
       }
-      onChange={(selectedValue: Axis | null) => {
+      onOptionSelected={(selectedValue: Axis | null) => {
         props.onChange(selectedValue)
       }}
     />

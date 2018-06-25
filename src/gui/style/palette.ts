@@ -18,6 +18,7 @@ export class Palette {
   static readonly zAxisColor = Palette.blue
   static readonly originColor = Palette.white
   static readonly referenceDistanceControlColor = Palette.yellow
+  static readonly principalPointColor = Palette.orange
 
   static colorForAxis(axis: Axis): string {
     switch (axis) {

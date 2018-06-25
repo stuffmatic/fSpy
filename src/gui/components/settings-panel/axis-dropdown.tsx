@@ -1,6 +1,7 @@
 import React from 'react'
 import { Axis } from '../../types/calibration-settings'
-import Dropdown from './../common/dropdown'
+import Dropdown from '../common/dropdown'
+import { Palette } from '../../style/palette'
 
 interface AxisDropdownProps {
   selectedAxis: Axis
@@ -11,32 +12,38 @@ const options = [
   {
     value: Axis.NegativeX,
     id: Axis.NegativeX,
-    label: '-x'
+    title: '-x',
+    circleColor: Palette.red
   },
   {
     value: Axis.PositiveX,
     id: Axis.PositiveX,
-    label: 'x'
+    title: 'x',
+    circleColor: Palette.red
   },
   {
     value: Axis.NegativeY,
     id: Axis.NegativeY,
-    label: '-y'
+    title: '-y',
+    circleColor: Palette.green
   },
   {
     value: Axis.PositiveY,
     id: Axis.PositiveY,
-    label: 'y'
+    title: 'y',
+    circleColor: Palette.green
   },
   {
     value: Axis.NegativeZ,
     id: Axis.NegativeZ,
-    label: '-z'
+    title: '-z',
+    circleColor: Palette.blue
   },
   {
     value: Axis.PositiveZ,
     id: Axis.PositiveZ,
-    label: 'z'
+    title: 'z',
+    circleColor: Palette.blue
   }
 ]
 
@@ -47,7 +54,7 @@ export default function AxisDropdown(props: AxisDropdownProps) {
         options
       }
       selectedOptionId={props.selectedAxis}
-      onChange={(selectedValue: Axis) => {
+      onOptionSelected={(selectedValue: Axis) => {
         props.onChange(selectedValue)
       }}
     />

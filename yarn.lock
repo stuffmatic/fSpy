@@ -72,12 +72,6 @@
     "@types/react" "*"
     redux "^4.0.0"
 
-"@types/react-select@^1.2.6":
-  version "1.2.6"
-  resolved "https://registry.yarnpkg.com/@types/react-select/-/react-select-1.2.6.tgz#8a9579705e04b2c15ce529379402980d80e9d243"
-  dependencies:
-    "@types/react" "*"
-
 "@types/react@*", "@types/react@^16.3.16":
   version "16.3.16"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.3.16.tgz#78fc44a90b45701f50c8a7008f733680ba51fc86"
@@ -1690,10 +1684,6 @@ class-utils@^0.3.5:
     define-property "^0.2.5"
     isobject "^3.0.0"
     static-extend "^0.1.1"
-
-classnames@^2.2.4:
-  version "2.2.5"
-  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
 
 clean-css@4.1.x:
   version "4.1.11"
@@ -6206,7 +6196,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.8, prop-types@^15.6.0:
+prop-types@^15.5.10, prop-types@^15.6.0:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.1.tgz#36644453564255ddda391191fb3a125cbdf654ca"
   dependencies:
@@ -6349,12 +6339,6 @@ react-dom@^16.4.0:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
-react-input-autosize@^2.1.2:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-2.2.1.tgz#ec428fa15b1592994fb5f9aa15bb1eb6baf420f8"
-  dependencies:
-    prop-types "^15.5.8"
-
 react-konva@^1.7.4:
   version "1.7.4"
   resolved "https://registry.yarnpkg.com/react-konva/-/react-konva-1.7.4.tgz#b1449ec36647f8c0296a4e246a56d4d946ea6c1e"
@@ -6389,14 +6373,6 @@ react-redux@^5.0.7:
     lodash-es "^4.17.5"
     loose-envify "^1.1.0"
     prop-types "^15.6.0"
-
-react-select@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/react-select/-/react-select-1.2.1.tgz#a2fe58a569eb14dcaa6543816260b97e538120d1"
-  dependencies:
-    classnames "^2.2.4"
-    prop-types "^15.5.8"
-    react-input-autosize "^2.1.2"
 
 react@^16.4.0:
   version "16.4.0"
