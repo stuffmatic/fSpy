@@ -1,5 +1,4 @@
-import { app, Menu, clipboard } from 'electron'
-import ProjectFile from '../gui/io/project-file'
+import { app, Menu } from 'electron'
 
 export interface AppMenuCallbacks {
   onNewProject(): void
