@@ -44,16 +44,15 @@ class App extends React.PureComponent<AppProps> {
     this.registerIPCHandlers()
 
     document.ondragover = (ev) => {
-      console.log('drag over')
       ev.preventDefault()
     }
 
     document.ondragenter = (_) => {
-      console.log('drag enter')
+      //
     }
 
     document.ondragleave = (_) => {
-      console.log('drag leave')
+      //
     }
 
     document.ondrop = (ev) => {

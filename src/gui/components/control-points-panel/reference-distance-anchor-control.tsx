@@ -24,7 +24,7 @@ export default class ReferenceDistanceAnchorControl extends React.PureComponent<
         <ControlPoint
           absolutePosition={this.props.absolutePosition}
           onControlPointDrag={this.props.dragCallback}
-          fill={Palette.gray}
+          fill={Palette.referenceDistanceControlColor}
         />
       </Group>
     )
@@ -57,25 +57,25 @@ export default class ReferenceDistanceAnchorControl extends React.PureComponent<
         <ControlPolyline
           dimmed={true}
           dashed={true}
-          color={Palette.lightGray}
+          color={Palette.referenceDistanceControlColor}
           points={[this.props.origin, this.props.uIntersection]}
         />
         <ControlPolyline
           dimmed={true}
           dashed={true}
-          color={Palette.lightGray}
+          color={Palette.referenceDistanceControlColor}
           points={[this.props.origin, this.props.vIntersection]}
         />
         <ControlPolyline
           dimmed={true}
           dashed={true}
-          color={Palette.lightGray}
+          color={Palette.referenceDistanceControlColor}
           points={[this.props.absolutePosition, this.props.uIntersection]}
         />
         <ControlPolyline
           dimmed={true}
           dashed={true}
-          color={Palette.lightGray}
+          color={Palette.referenceDistanceControlColor}
           points={[this.props.absolutePosition, this.props.vIntersection]}
         />
       </Group>

@@ -1,6 +1,7 @@
 import { Axis } from '../types/calibration-settings'
 
 export class Palette {
+  // Color constants
   static readonly red = '#EC4E37'
   static readonly green = '#70BF41'
   static readonly blue = '#359DF9'
@@ -10,6 +11,13 @@ export class Palette {
   static readonly lightGray = '#F5F5F5'
   static readonly gray = '#D1D3D5'
   static readonly black = 'WindowText'
+
+  // Color aliases
+  static readonly xAxisColor = Palette.red
+  static readonly yAxisColor = Palette.green
+  static readonly zAxisColor = Palette.blue
+  static readonly originColor = Palette.white
+  static readonly referenceDistanceControlColor = Palette.yellow
 
   static colorForAxis(axis: Axis): string {
     switch (axis) {

@@ -48,7 +48,7 @@ export default class ReferenceDistanceControl extends React.PureComponent<Refere
             horizonLineStart,
             horizonLineEnd
           ]}
-          color={Palette.lightGray}
+          color={Palette.referenceDistanceControlColor}
           dimmed={true}
         />
         <ReferenceDistanceAnchorControl
@@ -76,15 +76,23 @@ export default class ReferenceDistanceControl extends React.PureComponent<Refere
     }
     return (
       <Group>
-        <ControlPolyline dimmed={true} dashed={true} color={Palette.gray} points={[this.props.anchorPosition, this.props.handlePositions[1]]} />
-        <ControlPolyline color={Palette.gray} points={[this.props.handlePositions[0], this.props.handlePositions[1]]} />
+        <ControlPolyline
+          dimmed={true}
+          dashed={true}
+          color={Palette.referenceDistanceControlColor}
+          points={[this.props.anchorPosition, this.props.handlePositions[1]]}
+        />
+        <ControlPolyline
+          color={Palette.referenceDistanceControlColor}
+          points={[this.props.handlePositions[0], this.props.handlePositions[1]]}
+        />
         <ControlPoint
           lineNormal={normal}
           absolutePosition={this.props.handlePositions[0]}
           onControlPointDrag={(position: Point2D) => {
             this.props.handleDragCallback(0, position)
           }}
-          stroke={Palette.gray}
+          stroke={Palette.referenceDistanceControlColor}
         />
         <ControlPoint
           lineNormal={normal}
@@ -92,7 +100,7 @@ export default class ReferenceDistanceControl extends React.PureComponent<Refere
           onControlPointDrag={(position: Point2D) => {
             this.props.handleDragCallback(1, position)
           }}
-          stroke={Palette.gray}
+          stroke={Palette.referenceDistanceControlColor}
         />
       </Group>
     )
