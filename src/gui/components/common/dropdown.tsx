@@ -2,6 +2,7 @@ import React from 'react'
 import Select, { Option } from 'react-select'
 
 interface DropdownProps<T> {
+  disabled?: boolean
   options: DropdownOption<T>[]
   selectedOptionId: string
   onChange(selectedOption: T): void
@@ -21,6 +22,7 @@ export default class Dropdown<T> extends React.Component<DropdownProps<T>> {
   render() {
     return (
       <Select
+        disabled={this.props.disabled}
         clearable={false}
         name=''
         value={this.props.selectedOptionId}

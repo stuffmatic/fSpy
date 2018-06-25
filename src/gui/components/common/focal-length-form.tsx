@@ -7,6 +7,8 @@ import { cameraPresets } from '../../solver/camera-presets'
 import strings from '../../strings/strings'
 
 export interface FocalLengthFormProps {
+  presetSelectionDisabled?: boolean
+  focalLengthInputDisabled?: boolean
   absoluteFocalLength: number
   cameraData: CameraData
   onAbsoluteFocalLengthChange(absoluteFocalLength: number): void
@@ -19,16 +21,25 @@ export default class FocalLengthForm extends React.PureComponent<FocalLengthForm
     let sensorWidth = this.props.cameraData.customSensorWidth
     let sensorHeight = this.props.cameraData.customSensorHeight
     let presetId = this.props.cameraData.presetId
+    let presetFocalLength: number | undefined
     if (presetId !== null) {
       let preset = cameraPresets[presetId]
       sensorWidth = preset.sensorWidth
       sensorHeight = preset.sensorHeight
+      presetFocalLength = preset.focalLength
     }
 
+    let focalLengthInputDisabled = this.props.focalLengthInputDisabled === true
+    if (presetFocalLength) {
+      focalLengthInputDisabled = true
+    }
+
+    // TODO: check presetSelectionDisabled
     return (
       <div>
         <div className='panel-row'>
           <CameraPresetsDropdown
+            disabled={this.props.presetSelectionDisabled === true}
             cameraData={this.props.cameraData}
             onPresetChanged={this.props.onCameraPresetChange}
           />
@@ -36,18 +47,19 @@ export default class FocalLengthForm extends React.PureComponent<FocalLengthForm
         <PanelSpacer />
         <div className='panel-row'>
           <NumericInputField
-            isDisabled={presetId !== null}
+            isDisabled={presetId !== null || this.props.presetSelectionDisabled}
             value={sensorWidth}
             onSubmit={(value: number) => { this.props.onSensorSizeChange(value, undefined) }} /> x
           <NumericInputField
-            isDisabled={presetId !== null}
+            isDisabled={presetId !== null || this.props.presetSelectionDisabled}
             value={sensorHeight}
             onSubmit={(value: number) => { this.props.onSensorSizeChange(undefined, value) }} /> {strings.unitMm}
         </div>
         <PanelSpacer />
         <div className='panel-row'>
           Focal length <NumericInputField
-            value={this.props.absoluteFocalLength}
+            isDisabled={focalLengthInputDisabled}
+            value={(presetFocalLength !== undefined && !focalLengthInputDisabled) ? presetFocalLength : this.props.absoluteFocalLength}
             onSubmit={this.props.onAbsoluteFocalLengthChange}
           /> mm
         </div>
