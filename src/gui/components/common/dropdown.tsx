@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { createRef } from 'react'
 import { Palette } from '../../style/palette'
 
 export interface DropdownProps<T> {
@@ -54,11 +54,36 @@ const menuTitleStyle = {
 // https://stackoverflow.com/questions/7855590/preventing-scroll-bars-from-being-hidden-for-macos-trackpad-users-in-webkit-blin
 export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, DropdownState> {
 
+  private scrollContainerRef: React.RefObject<HTMLDivElement>
+
   constructor(props: DropdownProps<T>) {
     super(props)
 
     this.state = {
       menuIsVisible: false
+    }
+
+    this.scrollContainerRef = createRef()
+  }
+
+  componentDidMount() {
+    document.addEventListener('mousedown', (event) => {
+      this.handleClickOutside(event)
+    })
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', (event) => {
+      this.handleClickOutside(event)
+    })
+  }
+
+  handleClickOutside(event: any) {
+    if (this.scrollContainerRef.current && event.target) {
+      if (!this.scrollContainerRef.current.contains(event.target)) {
+        console.log('handleClickOutside')
+        this.hideMenu()
+      }
     }
   }
 
@@ -79,13 +104,25 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
   }
 
   private renderMenu() {
+    let scrollContainerStyle: any = {
+      border: '1px solid ' + Palette.gray,
+      maxHeight: '100px',
+      overflow: 'scroll',
+      position: 'absolute',
+      width: '100%',
+      left: -1,
+      top: 0
+    }
     if (!this.state.menuIsVisible) {
-      return null
+      scrollContainerStyle = {
+        ...scrollContainerStyle,
+        display: 'none'
+      }
     }
 
     return (
       <div style={{ position: 'relative', width: '100%' }}>
-        <div style={{ border: '1px solid ' + Palette.gray, maxHeight: '100px', overflow: 'scroll', position: 'absolute', width: '100%', left: -1, top: 0 }}>
+        <div ref={this.scrollContainerRef} style={scrollContainerStyle}>
           {this.props.options.map((option: DropdownOption<T>, index: number) => {
             return this.renderOption(option, index, () => { this.onOptionSelected(option.value) })
           })}
@@ -123,7 +160,6 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
   }
 
   private onOptionSelected(value: T) {
-    console.log('selected ' + value)
     this.props.onOptionSelected(value)
     this.hideMenu()
   }
@@ -135,6 +171,10 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
         menuIsVisible: false
       }
     )
+
+    if (this.scrollContainerRef.current) {
+      this.scrollContainerRef.current.scrollTop = 0
+    }
   }
 
   private showMenu() {
@@ -144,5 +184,14 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
         menuIsVisible: true
       }
     )
+
+    // flash scrollers (macos)
+    setTimeout(() => {
+      if (this.scrollContainerRef.current) {
+        this.scrollContainerRef.current.scrollTop = 1
+        this.scrollContainerRef.current.scrollTop = 0
+      }
+    },
+      200)
   }
 }
