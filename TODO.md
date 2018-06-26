@@ -6,13 +6,16 @@
 #UI
 * exporter copy to clipboard button + disable select
 * disable text cursor in all the app (except input fields)
-* disable zoom
-* add appropriate entries to the macos fSpy menu
-* about window?
 * different control point visualization when dragging
-* fix missing horizon in "missing horizon.fspy"
-* dragging image from browser into app opens image in entire window
+* fix in "missing horizon.fspy"
+  * missing horizon
+  * missing second vp
 * put custom camera preset at the top
+* only measure distances along coordinate axes? or make it togglable?
+* disallow parallel vp axes
+* panel polish
+  * dropdown
+  * general
 
 #build
 
@@ -25,6 +28,8 @@
 
 #future
 
+* add appropriate entries to the macos fSpy menu
+* about window?
 * revert to saved
 * full screen mode for projector use
 * tooltips
