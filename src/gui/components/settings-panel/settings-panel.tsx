@@ -37,29 +37,29 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
                   this.props.onCalibrationModeChange(selectedValue)
                 }}
               />
-              <PanelSpacer />
+            </div>
+            <div className='panel-section'>
               <div className='panel-row'>
                 Vanishing point axes
               </div>
 
-              <div className='panel-row'>
-                1 <AxisDropdown
+              <div className='panel-row' style={{ display: 'flex' }}>
+                <span style={{ paddingRight: 8, paddingLeft: 6 }}>1</span><AxisDropdown
                   selectedAxis={this.props.calibrationSettingsBase.firstVanishingPointAxis}
                   onChange={this.props.onFirstVanishingPointAxisChange}
                 />
               </div>
               <PanelSpacer />
-              <div className='panel-row'>
-                2 <AxisDropdown
+              <div className='panel-row' style={{ display: 'flex' }}>
+                <span style={{ paddingRight: 8, paddingLeft: 6 }}>2</span><AxisDropdown
                   selectedAxis={this.props.calibrationSettingsBase.secondVanishingPointAxis}
                   onChange={this.props.onSecondVanishingPointAxisChange}
                 />
               </div>
               <PanelSpacer />
-
               <div className='panel-row'>
                 Reference distance
-            </div>
+              </div>
 
               <ReferenceDistanceForm // TODO: DRY
                 referenceAxis={this.props.calibrationSettingsBase.referenceDistanceAxis}
@@ -122,14 +122,14 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
                   value: PrincipalPointMode1VP.Default,
                   id: PrincipalPointMode1VP.Default,
                   title: 'Image midpoint',
-                  circleColor: Palette.principalPointColor
+                  circleColor: Palette.principalPointColor,
+                  strokeCircle: true
                 },
                 {
                   value: PrincipalPointMode1VP.Manual,
                   id: PrincipalPointMode1VP.Manual,
                   title: PrincipalPointMode1VP.Manual,
-                  circleColor: Palette.principalPointColor,
-                  strokeCircle: true
+                  circleColor: Palette.principalPointColor
                 }
               ]
             }

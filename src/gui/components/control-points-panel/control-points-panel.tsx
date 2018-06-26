@@ -302,6 +302,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
 
     return (
       <ReferenceDistanceControl
+        referenceAxis={referenceAxis}
         origin={originAbs}
         horizonVanishingPoints={[
           this.imagePlane2Abs(result.vanishingPoints[uIndex]),

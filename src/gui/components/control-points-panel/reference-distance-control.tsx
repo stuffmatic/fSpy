@@ -6,10 +6,12 @@ import { Palette } from '../../style/palette'
 import { Group } from 'react-konva'
 import ControlPolyline from './control-polyline'
 import MathUtil from '../../solver/math-util'
+import { Axis } from '../../types/calibration-settings'
 
 export const dashedRulerStyle = { stroke: Palette.gray, opacity: 0.5, strokeDasharray: '2,6' }
 
 interface ReferenceDistanceControlProps {
+  referenceAxis: Axis
   anchorPosition: Point2D
   handlePositions: [Point2D, Point2D]
   horizonVanishingPoints: [Point2D, Point2D]
@@ -74,6 +76,9 @@ export default class ReferenceDistanceControl extends React.PureComponent<Refere
       x: this.props.anchorPosition.y - this.props.handlePositions[0].y,
       y: -this.props.anchorPosition.x + this.props.handlePositions[0].x
     }
+
+    let axisColor = Palette.colorForAxis(this.props.referenceAxis)
+
     return (
       <Group>
         <ControlPolyline
@@ -83,7 +88,7 @@ export default class ReferenceDistanceControl extends React.PureComponent<Refere
           points={[this.props.anchorPosition, this.props.handlePositions[1]]}
         />
         <ControlPolyline
-          color={Palette.referenceDistanceControlColor}
+          color={axisColor}
           points={[this.props.handlePositions[0], this.props.handlePositions[1]]}
         />
         <ControlPoint
@@ -92,7 +97,7 @@ export default class ReferenceDistanceControl extends React.PureComponent<Refere
           onControlPointDrag={(position: Point2D) => {
             this.props.handleDragCallback(0, position)
           }}
-          stroke={Palette.referenceDistanceControlColor}
+          stroke={axisColor}
         />
         <ControlPoint
           lineNormal={normal}
@@ -100,7 +105,7 @@ export default class ReferenceDistanceControl extends React.PureComponent<Refere
           onControlPointDrag={(position: Point2D) => {
             this.props.handleDragCallback(1, position)
           }}
-          stroke={Palette.referenceDistanceControlColor}
+          stroke={axisColor}
         />
       </Group>
     )

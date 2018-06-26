@@ -31,8 +31,7 @@ const circleStyle = {
 }
 
 const menuContainerStyle = {
-  width: '100%',
-  display: 'inline-block'
+  width: '100%'
 }
 
 const menuCellStyle: any = {
@@ -86,7 +85,7 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
 
     return (
       <div style={{ position: 'relative', width: '100%' }}>
-        <div style={{ maxHeight: '100px', overflow: 'scroll', position: 'absolute', width: '100%', left: 0, top: 0 }}>
+        <div style={{ border: '1px solid ' + Palette.gray, maxHeight: '100px', overflow: 'scroll', position: 'absolute', width: '100%', left: -1, top: 0 }}>
           {this.props.options.map((option: DropdownOption<T>, index: number) => {
             return this.renderOption(option, index, () => { this.onOptionSelected(option.value) })
           })}

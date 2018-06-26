@@ -18,15 +18,6 @@ export default function ReferenceDistanceForm(props: ReferenceDistanceFormProps)
   return (
     <div className='panelSection'>
       <div className='panel-row'>
-        <NumericInputField
-          value={props.referenceDistance}
-          onSubmit={props.onReferenceDistanceChange}
-        />
-      </div>
-
-      <PanelSpacer />
-
-      <div className='panel-row'>
         <ReferenceDistanceAxisDropdown
           selectedAxis={props.referenceAxis}
           onChange={(axis: Axis | null) => {
@@ -34,10 +25,13 @@ export default function ReferenceDistanceForm(props: ReferenceDistanceFormProps)
           }}
         />
       </div>
-
       <PanelSpacer />
 
-      <div className='panel-row'>
+      <div className='panel-row' style={{ display: 'flex' }}>
+        <NumericInputField
+          value={props.referenceDistance}
+          onSubmit={props.onReferenceDistanceChange}
+        />
         <ReferenceDistanceUnitDropdown
           selectedUnit={props.referenceDistanceUnit}
           onChange={(unit: ReferenceDistanceUnit) => {
