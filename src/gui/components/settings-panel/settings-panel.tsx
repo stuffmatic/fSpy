@@ -43,15 +43,15 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
                 Vanishing point axes
               </div>
 
-              <div className='panel-row' style={{ display: 'flex' }}>
-                <span style={{ paddingRight: 8, paddingLeft: 6 }}>1</span><AxisDropdown
+              <div style={{ display: 'flex' }}>
+                <span style={{ alignSelf: 'center', paddingRight: 6, paddingLeft: 4 }}>1</span><AxisDropdown
                   selectedAxis={this.props.calibrationSettingsBase.firstVanishingPointAxis}
                   onChange={this.props.onFirstVanishingPointAxisChange}
                 />
               </div>
               <PanelSpacer />
-              <div className='panel-row' style={{ display: 'flex' }}>
-                <span style={{ paddingRight: 8, paddingLeft: 6 }}>2</span><AxisDropdown
+              <div style={{ display: 'flex' }}>
+                <span style={{ alignSelf: 'center', paddingRight: 6, paddingLeft: 4 }}>2</span><AxisDropdown
                   selectedAxis={this.props.calibrationSettingsBase.secondVanishingPointAxis}
                   onChange={this.props.onSecondVanishingPointAxisChange}
                 />
@@ -76,17 +76,6 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
 
           <div className='panel-section top-border'>
             <div className='panel-row'>
-              <input
-                name='imageIsDimmed'
-                type='checkbox'
-                checked={this.props.globalSettings.imageOpacity < 1}
-                onChange={(event: any) => {
-                  this.props.onImageOpacityChange(event.target.checked ? 0.2 : 1)
-                }}
-              /> Dimmed
-            </div>
-
-            <div className='panel-row'>
               3D guide
             </div>
             <div className='panel-row'>
@@ -96,6 +85,17 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
                   this.props.onOverlay3DGuideChange(overlay3DGuide)
                 }}
               />
+            </div>
+            <PanelSpacer />
+            <div className='panel-row'>
+              <input
+                name='imageIsDimmed'
+                type='checkbox'
+                checked={this.props.globalSettings.imageOpacity < 1}
+                onChange={(event: any) => {
+                  this.props.onImageOpacityChange(event.target.checked ? 0.2 : 1)
+                }}
+              /> Dim image
             </div>
           </div>
         </div>

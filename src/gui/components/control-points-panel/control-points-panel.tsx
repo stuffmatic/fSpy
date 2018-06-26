@@ -20,6 +20,7 @@ import ReferenceDistanceControl from './reference-distance-control'
 import Solver from '../../solver/solver'
 import MathUtil from '../../solver/math-util'
 import AABBOps from '../../solver/aabb-ops'
+import Button from '../common/button'
 
 interface ControlPointsPanelState {
   width: number | undefined
@@ -111,11 +112,16 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
 
   private renderPlaceholder() {
     return (
-      <div>
-        Drag an image or project onto this area.
-        <button onClick={(_: any) => { this.props.callbacks.onLoadExampleProject() }}>
-          Load example project
-        </button>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', justifyContent: 'center' }}>
+        <div style={{ alignSelf: 'center', paddingBottom: '20px' }}>
+          Drop an image or project here
+        </div>
+        <div style={{ alignSelf: 'center' }}>
+          <Button
+            title={'Load example project'}
+            onClick={this.props.callbacks.onLoadExampleProject}>
+          </Button>
+        </div>
       </div>
     )
   }
