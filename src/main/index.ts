@@ -192,6 +192,19 @@ function createWindow() {
     }
   )
 
+  // Prevent (macos) zooming
+  let webContents = window.webContents
+  webContents.on('did-finish-load', () => {
+    webContents.setZoomFactor(1)
+    webContents.setVisualZoomLevelLimits(1, 1)
+    webContents.setLayoutZoomLevelLimits(0, 0)
+  })
+
+  // Prevent opening links
+  window.webContents.on('will-navigate', ev => {
+    ev.preventDefault()
+  })
+
   window.on('ready-to-show', () => {
     refreshTitle(window)
     window.show()
