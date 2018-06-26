@@ -44,26 +44,33 @@ class App extends React.PureComponent<AppProps> {
 
     document.ondragover = (ev) => {
       ev.preventDefault()
+      return false
     }
 
-    document.ondragenter = (_) => {
-      //
+    document.ondragenter = (ev) => {
+      ev.preventDefault()
+      return false
     }
 
-    document.ondragleave = (_) => {
-      //
+    document.ondragleave = (ev) => {
+      ev.preventDefault()
+      return false
     }
 
     document.ondrop = (ev) => {
-      let filePath = ev.dataTransfer.files[0].path
-      let isProjectFile = ProjectFile.isProjectFile(filePath)
-      if (isProjectFile) {
-        this.props.onProjectFileDropped(filePath)
-      } else {
-        // try to open the file as an image
-        this.props.onImageFileDropped(filePath)
+      let firstFile = ev.dataTransfer.files[0]
+      if (firstFile) {
+        let filePath = firstFile.path
+        let isProjectFile = ProjectFile.isProjectFile(filePath)
+        if (isProjectFile) {
+          this.props.onProjectFileDropped(filePath)
+        } else {
+          // try to open the file as an image
+          this.props.onImageFileDropped(filePath)
+        }
       }
       ev.preventDefault()
+      return false
     }
   }
 
