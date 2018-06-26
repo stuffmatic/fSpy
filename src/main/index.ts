@@ -200,9 +200,15 @@ function createWindow() {
     webContents.setLayoutZoomLevelLimits(0, 0)
   })
 
-  // Prevent opening links
+  // Prevent following links, e.g when they are dropped
+  // on the app window
   window.webContents.on('will-navigate', ev => {
-    ev.preventDefault()
+    if (process.env.DEV) {
+      // Allow this event in dev builds, since auto reload
+      // relies on it
+    } else {
+      ev.preventDefault()
+    }
   })
 
   window.on('ready-to-show', () => {
