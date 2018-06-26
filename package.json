@@ -1,18 +1,18 @@
 {
   "name": "fspy",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-alpha.1",
   "main": "build/main.js",
   "homepage": "https://fspy.io",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/stuffmatic/fSpy.git"
+    "type": "git",
+    "url": "https://github.com/stuffmatic/fSpy.git"
   },
   "author": {
     "name": "Per Gantelius",
-    "email":  "per@stuffmatic.com",
+    "email": "per@stuffmatic.com",
     "url": "https://stuffmatic.com"
   },
-  "description": "An open source, cross platform app for still image camera calibration",
+  "description": "An open source, cross platform app for still image camera matching",
   "license": "GPL-3.0",
   "devDependencies": {
     "@types/electron-window-state": "^2.0.31",
