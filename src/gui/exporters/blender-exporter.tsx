@@ -7,6 +7,7 @@ export default class BlenderExporter extends Exporter {
   get name(): string {
     return 'Blender'
   }
+
   get instructions(): JSX.Element {
     return (
       <ul>
@@ -48,7 +49,7 @@ camera.matrix_world = mathutils.Matrix(` + JSON.stringify(matrix, null, 2) + `)
 
 #Set the principal point
 camera.data.shift_x = ` + (0.5 - principalPointRelative.x) + `
-camera.data.shift_y = ` + (-0.5 + principalPointRelative.y) + `
+camera.data.shift_y = ` + cameraParameters.imageHeight / cameraParameters.imageWidth * (-0.5 + principalPointRelative.y) + `
 
 #Set the rendered image size
 #to match the calibration image

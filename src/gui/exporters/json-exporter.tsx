@@ -16,6 +16,7 @@ export default class JSONExporter extends Exporter {
       </div>
     )
   }
+
   generateCode(cameraParameters: CameraParameters): string {
     return JSON.stringify(
       cameraParameters,
