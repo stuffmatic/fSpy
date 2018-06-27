@@ -4,24 +4,17 @@
 * måste funka att ta bort kamera-preset mitt mellan save och open
 
 #UI
-* exporter copy to clipboard button + disable select
-* disable text cursor in all the app (except input fields)
-* different control point visualization when dragging
+
+* only measure distances along coordinate axes? or make it togglable?
+* disallow parallel vp axes
+
+## Alpha 1
 * fix in "missing horizon.fspy"
   * missing horizon
   * missing second vp
 * put custom camera preset at the top
-* only measure distances along coordinate axes? or make it togglable?
-* disallow parallel vp axes
-* dropdown
-  * fix bug pressing the header with the dropdown open
-  * bring back scroll indicator flashing
-* edit menu
-  * toggle dimmed
-  * reset reference distance
 
 #build
-
 * silence test warning
 
 #linux
@@ -30,7 +23,9 @@
 * name: fSpy instead of fspy
 
 #future
-
+* edit menu
+  * toggle dimmed
+  * reset reference distance
 * add appropriate entries to the macos fSpy menu
 * about window?
 * revert to saved
