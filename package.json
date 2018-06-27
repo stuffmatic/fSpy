@@ -62,6 +62,7 @@
     "electron-dev": "DEV=true electron ./build/main.js",
     "dist": "electron-builder -mwl",
     "test": "jest",
+    "prepublish-release": "yarn build-dist",
     "publish-release": "electron-builder -mwl --publish always"
   },
   "dependencies": {
