@@ -28,8 +28,8 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
     super(props)
     this.state = {
       exporters: [
-        new JSONExporter(),
-        new BlenderExporter()
+        new BlenderExporter(),
+        new JSONExporter()
       ],
       selectedExporterIndex: 0
     }

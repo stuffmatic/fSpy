@@ -8,12 +8,9 @@ export default class JSONExporter extends Exporter {
   get instructions(): JSX.Element {
     return (
       <div>
-        Here's JSON!
         <ul>
           <li> Field of view values are given in radians </li>
           <li> Principal point and vanishing point are given in image plane coordinates </li>
-          <li> The focal length is relative to TODO </li>
-          <li> The camera transform is a 4x4 matrix </li>
         </ul>
       </div>
     )
