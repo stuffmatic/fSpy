@@ -7,6 +7,7 @@ import Point2D from '../../solver/point-2d'
 import MathUtil from '../../solver/math-util'
 
 interface VanishingPointControlProps {
+  hideControlPoints?: boolean
   color: string
   controlState: VanishingPointControlState
   vanishingPoint: Point2D | null
@@ -39,6 +40,7 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
           color={this.props.color}
         />
         <ControlPoint
+          hidden={this.props.hideControlPoints}
           absolutePosition={this.props.controlState.lineSegments[index][0]}
           onControlPointDrag={(position: Point2D) => {
             this.props.onControlPointDrag(index, 0, position)
@@ -46,6 +48,7 @@ export default class VanishingPointControl extends React.PureComponent<Vanishing
           fill={this.props.color}
         />
         <ControlPoint
+          hidden={this.props.hideControlPoints}
           absolutePosition={this.props.controlState.lineSegments[index][1]}
           onControlPointDrag={(position: Point2D) => {
             this.props.onControlPointDrag(index, 1, position)

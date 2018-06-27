@@ -396,6 +396,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     return (
       <Group>
         <VanishingPointControl
+          hideControlPoints={this.props.calbrationSettings2VP.quadModeEnabled}
           vanishingPointIndex={1}
           color={this.vanishingPointColor(1)}
           controlState={

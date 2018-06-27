@@ -5,6 +5,7 @@ import ControlPolyline from './control-polyline'
 import MathUtil from '../../solver/math-util'
 
 interface ControlPointProps {
+  hidden?: boolean
   absolutePosition: Point2D
   fill?: string | undefined
   stroke?: string | undefined
@@ -31,6 +32,10 @@ export default class ControlPoint extends React.Component<ControlPointProps, Con
   }
 
   render() {
+    if (this.props.hidden) {
+      return null
+    }
+
     return (
       <Group>
         <Circle
