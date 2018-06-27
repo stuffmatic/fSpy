@@ -183,8 +183,8 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
       <button style={ { ...menuCellStyle, display: 'flex', alignItems: 'center' }} key={index} onClick={(_) => clickHandler()}>
         <div style={{ ...circleStyle, ...markerStyle }} />
         <div style={{ ...titleStyle, flexGrow: '100' }}>{option.title}</div>
-        <svg style={{ display: 'inline-block', width: 15, height: 6 }}>
-          <polyline points={'0,0,4,5,8,0'} stroke={ index < 0 ? Palette.black : 'none' } fill={ 'none' } />
+        <svg style={{ display: 'inline-block', width: 12, height: 5 }}>
+          <polyline points={'0,0,3,4,6,0'} stroke={ index < 0 ? Palette.black : 'none' } fill={ 'none' } />
         </svg>
       </button>
     )
