@@ -46,7 +46,7 @@ export default class FocalLengthForm extends React.PureComponent<FocalLengthForm
         </div>
         <PanelSpacer />
         <div className='panel-row'>
-          <NumericInputField
+        Sensor <NumericInputField
             isDisabled={presetId !== null || this.props.presetSelectionDisabled}
             value={sensorWidth}
             onSubmit={(value: number) => { this.props.onSensorSizeChange(value, undefined) }} /> x
