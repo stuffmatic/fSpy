@@ -13,13 +13,21 @@ interface ControlPointProps {
   onControlPointDrag(absolutePosition: Point2D): void
 }
 
-export default class ControlPoint extends React.Component<ControlPointProps> {
+interface ControlPointState {
+  isDragging: boolean
+}
+
+export default class ControlPoint extends React.Component<ControlPointProps, ControlPointState> {
 
   readonly HIT_RADIUS = 8
   readonly RADIUS = 4
 
   constructor(props: ControlPointProps) {
     super(props)
+
+    this.state = {
+      isDragging: false
+    }
   }
 
   render() {
@@ -30,9 +38,21 @@ export default class ControlPoint extends React.Component<ControlPointProps> {
           radius={this.HIT_RADIUS}
           x={this.props.absolutePosition.x}
           y={this.props.absolutePosition.y}
-          onDragStart={(event: any) => this.handleDrag(event)}
+          onDragStart={(event: any) => {
+            this.setState({
+              ...this.state,
+              isDragging: true
+            })
+            this.handleDrag(event)
+          }}
           onDragMove={(event: any) => this.handleDrag(event)}
-          onDragEnd={(event: any) => this.handleDrag(event)}
+          onDragEnd={(event: any) => {
+            this.setState({
+              ...this.state,
+              isDragging: false
+            })
+            this.handleDrag(event)
+          }}
         />
         {this.renderVisualRepresentation()}
       </Group>
@@ -63,7 +83,7 @@ export default class ControlPoint extends React.Component<ControlPointProps> {
       return (
         <Circle
           listening={false}
-          radius={this.RADIUS}
+          radius={this.state.isDragging ? 2 : this.RADIUS}
           strokeWidth={1.5}
           fill={this.props.fill}
           stroke={this.props.stroke}
