@@ -58,6 +58,7 @@ export default class FocalLengthForm extends React.PureComponent<FocalLengthForm
         <PanelSpacer />
         <div className='panel-row'>
           Focal length <NumericInputField
+            precision={2}
             isDisabled={focalLengthInputDisabled}
             value={(presetFocalLength !== undefined && !focalLengthInputDisabled) ? presetFocalLength : this.props.absoluteFocalLength}
             onSubmit={this.props.onAbsoluteFocalLengthChange}

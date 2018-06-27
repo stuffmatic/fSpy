@@ -2,7 +2,9 @@ import * as React from 'react'
 import { Palette } from '../../style/palette'
 
 interface NumericInputFieldProps {
-  isDisabled?: Boolean
+  precision?: number
+  isDisabled?: boolean
+  valueNotAvailable?: boolean
   value: number
   onSubmit(value: number): void
 }
@@ -48,15 +50,18 @@ export default class NumericInputField extends React.Component<NumericInputField
 
   render() {
     let inputStyle: any = {
-      border: 'none',
       outline: 'none',
-      width: '60px'
+      width: '60px',
+      paddingLeft: '5px',
+      border: '1px solid ' + Palette.gray
     }
 
     if (this.props.isDisabled) {
       inputStyle = {
         ...inputStyle,
-        backgroundColor: Palette.lightGray
+        userSelect: 'none',
+        cursor: 'default',
+        color: Palette.disabledTextColor
       }
     }
 
@@ -74,11 +79,16 @@ export default class NumericInputField extends React.Component<NumericInputField
       }
     }
 
+    let displayValue = this.props.precision ? this.props.value.toFixed(this.props.precision) : this.props.value
+    if (this.props.valueNotAvailable) {
+      displayValue = 'n/a'
+    }
+
     return (
       <input
         style={inputStyle}
         type='text'
-        value={this.state.isEditing ? this.state.editedValue : this.props.value}
+        value={this.state.isEditing ? this.state.editedValue : displayValue}
         onChange={(event: any) => {
           if (!this.props.isDisabled) {
             this.handleChange(event)

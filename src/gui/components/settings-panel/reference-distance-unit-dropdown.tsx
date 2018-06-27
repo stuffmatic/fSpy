@@ -3,6 +3,7 @@ import { ReferenceDistanceUnit } from '../../types/calibration-settings'
 import Dropdown from '../common/dropdown'
 
 interface ReferenceDistanceUnitDropdownProps {
+  disabled?: boolean
   selectedUnit: ReferenceDistanceUnit
   onChange(unit: ReferenceDistanceUnit): void
 }
@@ -28,6 +29,7 @@ const options = [
 export default function ReferenceDistanceUnitDropdown(props: ReferenceDistanceUnitDropdownProps) {
   return (
     <Dropdown
+      disabled={props.disabled}
       options={
         options
       }

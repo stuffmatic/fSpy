@@ -15,6 +15,7 @@ interface ReferenceDistanceFormProps {
 }
 
 export default function ReferenceDistanceForm(props: ReferenceDistanceFormProps) {
+
   return (
     <div className='panelSection'>
         <ReferenceDistanceAxisDropdown
@@ -27,11 +28,14 @@ export default function ReferenceDistanceForm(props: ReferenceDistanceFormProps)
 
       <div style={{ display: 'flex' }}>
         <NumericInputField
+          isDisabled={props.referenceAxis == null}
+          valueNotAvailable={props.referenceAxis == null}
           value={props.referenceDistance}
           onSubmit={props.onReferenceDistanceChange}
-        />
+        />&nbsp;
         <ReferenceDistanceUnitDropdown
-          selectedUnit={props.referenceDistanceUnit}
+          disabled={props.referenceAxis == null}
+          selectedUnit={props.referenceAxis == null ? ReferenceDistanceUnit.None : props.referenceDistanceUnit}
           onChange={(unit: ReferenceDistanceUnit) => {
             props.onReferenceDistanceUnitChange(unit)
           }}

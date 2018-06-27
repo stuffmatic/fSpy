@@ -12,6 +12,8 @@ export class Palette {
   static readonly gray = '#D1D3D5'
   static readonly black = 'WindowText'
 
+  static readonly disabledTextColor = '#909090'
+
   // Color aliases
   static readonly xAxisColor = Palette.red
   static readonly yAxisColor = Palette.green

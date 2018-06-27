@@ -23,11 +23,22 @@ interface DropdownOption<T> {
 const menuHeight = 24
 
 const circleStyle = {
-  width: '10px',
-  height: '10px',
-  borderRadius: '5px',
   display: 'inline-block',
   marginRight: '5px'
+}
+
+const filledCircleStyle = {
+  ...circleStyle,
+  width: '10px',
+  height: '10px',
+  borderRadius: '5px'
+}
+
+const strokedCircleStyle = {
+  ...circleStyle,
+  width: '8px',
+  height: '8px',
+  borderRadius: '5px'
 }
 
 const menuContainerStyle = {
@@ -141,11 +152,13 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
       if (option.strokeCircle) {
         markerStyle = {
           ...markerStyle,
+          ...strokedCircleStyle,
           border: '1px solid ' + option.circleColor
         }
       } else {
         markerStyle = {
           ...markerStyle,
+          ...filledCircleStyle,
           backgroundColor: option.circleColor
         }
       }
@@ -154,9 +167,21 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
         display: 'none'
       }
     }
+
+    let titleStyle: any = {
+      display: 'inline-block'
+    }
+
+    if (this.props.disabled) {
+      titleStyle = {
+        ...titleStyle,
+        color: Palette.disabledTextColor
+      }
+    }
+
     return (
       <button style={menuCellStyle} key={index} onClick={(_) => clickHandler()}>
-        <div style={{ ...circleStyle, ...markerStyle }} />{option.title}
+        <div style={{ ...circleStyle, ...markerStyle }} /><div style={ titleStyle }>{option.title}</div>
       </button>
     )
   }
@@ -180,6 +205,10 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
   }
 
   private showMenu() {
+    if (this.props.disabled) {
+      return
+    }
+
     this.setState(
       {
         ...this.state,
