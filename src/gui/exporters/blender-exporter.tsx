@@ -1,6 +1,7 @@
 import Exporter from './exporter'
 import * as React from 'react'
 import CoordinatesUtil, { ImageCoordinateFrame } from '../solver/coordinates-util'
+import { CameraParameters } from '../solver/solver-result'
 
 export default class BlenderExporter extends Exporter {
   get name(): string {
@@ -19,24 +20,15 @@ export default class BlenderExporter extends Exporter {
     )
   }
 
-  get code(): string {
-    if (!this.solverResult ||
-        !this.solverResult.horizontalFieldOfView ||
-        !this.solverResult.cameraTransform ||
-        !this.solverResult.principalPoint ||
-        !this.image
-    ) {
-      return ''
-    }
-
-    let fov = this.solverResult.horizontalFieldOfView
-    let matrix = this.solverResult.cameraTransform.inverted().matrix
+  generateCode(cameraParameters: CameraParameters): string {
+    let fov = cameraParameters.horizontalFieldOfView
+    let matrix = cameraParameters.cameraTransform.inverted().matrix
     let principalPointRelative = CoordinatesUtil.convert(
-      this.solverResult.principalPoint,
+      cameraParameters.principalPoint,
       ImageCoordinateFrame.ImagePlane,
       ImageCoordinateFrame.Relative,
-      this.image.width!, // TODO: null checks
-      this.image.height!
+      cameraParameters.imageWidth,
+      cameraParameters.imageHeight
     )
 
     return `import bpy
@@ -61,8 +53,8 @@ camera.data.shift_y = ` + (-0.5 + principalPointRelative.y) + `
 #Set the rendered image size
 #to match the calibration image
 render_settings = bpy.context.scene.render
-render_settings.resolution_x = ` + this.image.width + `
-render_settings.resolution_y = ` + this.image.height + `
+render_settings.resolution_x = ` + cameraParameters.imageWidth + `
+render_settings.resolution_y = ` + cameraParameters.imageHeight + `
 `
   }
   get codeLanguage(): string {

@@ -79,7 +79,7 @@ class App extends React.PureComponent<AppProps> {
       <div id='app-container'>
         <ExportDialog
           isVisible={this.props.uiState.isExportDialogOpen}
-          solverResult={this.props.solverResult}
+          cameraParameters={this.props.solverResult.cameraParameters}
           image={this.props.image}
           onOpen={() => this.props.onExportDialogVisiblityChange(true)}
           onClose={() => this.props.onExportDialogVisiblityChange(false)}

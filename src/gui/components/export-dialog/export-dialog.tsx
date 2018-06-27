@@ -6,13 +6,13 @@ import Exporter from '../../exporters/exporter'
 import BlenderExporter from '../../exporters/blender-exporter'
 import JSONExporter from '../../exporters/json-exporter'
 import hljs from 'highlight.js'
-import { SolverResult } from '../../solver/solver-result'
+import { CameraParameters } from '../../solver/solver-result'
 import { ImageState } from '../../types/image-state'
 import { clipboard } from 'electron'
 
 interface ExportDialogProps {
   isVisible: boolean
-  solverResult: SolverResult
+  cameraParameters: CameraParameters | null
   image: ImageState
   onOpen(): void
   onClose(): void
@@ -44,6 +44,10 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
   }
 
   render() {
+    if (!this.props.cameraParameters) {
+      return null
+    }
+
     let modalColumnStyle: React.CSSProperties = {
       flexBasis: '50%',
       padding: '25px'
@@ -65,8 +69,7 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
     }
 
     this.state.exporters[this.state.selectedExporterIndex].refresh(
-      this.props.solverResult,
-      this.props.image
+      this.props.cameraParameters
     )
 
     return (
@@ -128,7 +131,7 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
                     {
                       __html: hljs.highlight(
                         this.state.exporters[this.state.selectedExporterIndex].codeLanguage,
-                        this.state.exporters[this.state.selectedExporterIndex].code
+                        this.state.exporters[this.state.selectedExporterIndex].generateCode(this.props.cameraParameters)
                       ).value
                     }
                   }
@@ -138,7 +141,7 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
               </div>
               <Button title='Copy to clipboard' onClick={() => {
                 clipboard.writeText(
-                  this.state.exporters[this.state.selectedExporterIndex].code
+                  this.state.exporters[this.state.selectedExporterIndex].generateCode(this.props.cameraParameters!)
                 )
               }} />
             </div>

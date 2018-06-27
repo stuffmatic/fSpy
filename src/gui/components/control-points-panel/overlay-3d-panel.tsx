@@ -5,7 +5,7 @@ import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-
 import { Palette } from '../../style/palette'
 import { Axis } from '../../types/calibration-settings'
 import { GlobalSettings, Overlay3DGuide } from '../../types/global-settings'
-import { SolverResult } from '../../solver/solver-result'
+import { CameraParameters } from '../../solver/solver-result'
 import MathUtil from '../../solver/math-util'
 import { Group, Line } from 'react-konva'
 import AABB from '../../solver/aabb'
@@ -40,7 +40,7 @@ interface Overlay3DPanelProps {
   width: number
   height: number
   imageAABB: AABB
-  solverResult: SolverResult
+  cameraParameters: CameraParameters
   globalSettings: GlobalSettings
 }
 
@@ -177,11 +177,8 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   }
 
   private get normalizationFactor(): number {
-    let cameraTransform = this.props.solverResult.cameraTransform
-    let fov = this.props.solverResult.horizontalFieldOfView
-    if (cameraTransform === null || fov === null) {
-      return 0
-    }
+    let cameraTransform = this.props.cameraParameters.cameraTransform
+    let fov = this.props.cameraParameters.horizontalFieldOfView
     let translation = new Vector3D(cameraTransform.matrix[0][3], cameraTransform.matrix[1][3], cameraTransform.matrix[2][3])
     let l = translation.length
     let s = Math.atan(0.5 * fov)
@@ -262,15 +259,11 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   }
 
   private project(point: Vector3D): Point2D {
-    let cameraTransform = this.props.solverResult.cameraTransform
-    let principalPoint = this.props.solverResult.principalPoint
+    let cameraTransform = this.props.cameraParameters.cameraTransform
+    let principalPoint = this.props.cameraParameters.principalPoint
     let imageWidth = AABBOps.width(this.props.imageAABB)
     let imageHeight = AABBOps.height(this.props.imageAABB)
-    let horizontalFieldOfView = this.props.solverResult.horizontalFieldOfView
-    if (cameraTransform === null || principalPoint === null || horizontalFieldOfView === null) {
-      // TODO: return null instead?
-      return { x: 0, y: 0 }
-    }
+    let horizontalFieldOfView = this.props.cameraParameters.horizontalFieldOfView
 
     let relativePosition = CoordinatesUtil.convert(
       MathUtil.perspectiveProject(

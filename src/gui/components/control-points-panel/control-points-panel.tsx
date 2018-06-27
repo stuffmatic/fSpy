@@ -147,8 +147,8 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
 
   private render3DOverlay() {
     let imageAABB = this.imageAbsoluteAABB()
-
-    if (!imageAABB || !this.state.width || !this.state.height) {
+    let cameraParameters = this.props.solverResult.cameraParameters
+    if (!cameraParameters || !imageAABB || !this.state.width || !this.state.height) {
       return null
     }
     return (
@@ -156,7 +156,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
         imageAABB={imageAABB}
         width={this.state.width}
         height={this.state.height}
-        solverResult={this.props.solverResult}
+        cameraParameters={cameraParameters}
         globalSettings={this.props.globalSettings}
       />
     )
@@ -223,8 +223,8 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
       return null
     }
 
-    let result = this.props.solverResult
-    if (!result.vanishingPoints || !result.vanishingPointAxes) {
+    let cameraParameters = this.props.solverResult.cameraParameters
+    if (!cameraParameters) {
       return null
     }
 
@@ -236,7 +236,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
 
     let referenceAxisVpIndex = Solver.vanishingPointIndexForAxis(
       referenceAxis,
-      result.vanishingPointAxes
+      cameraParameters.vanishingPointAxes
     )
     let uIndex = (referenceAxisVpIndex + 1) % 3
     let vIndex = (referenceAxisVpIndex + 2) % 3
@@ -259,23 +259,23 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     )
 
     let anchorPositionIsValid = MathUtil.pointsAreOnTheSameSideOfLine(
-      result.vanishingPoints[uIndex],
-      result.vanishingPoints[vIndex],
+      cameraParameters.vanishingPoints[uIndex],
+      cameraParameters.vanishingPoints[vIndex],
       origin,
       position
     )
 
     let uIntersection = this.imagePlane2Abs(
       MathUtil.lineIntersection(
-        [origin, result.vanishingPoints[uIndex]],
-        [position, result.vanishingPoints[vIndex]]
+        [origin, cameraParameters.vanishingPoints[uIndex]],
+        [position, cameraParameters.vanishingPoints[vIndex]]
       )!
     )
 
     let vIntersection = this.imagePlane2Abs(
       MathUtil.lineIntersection(
-        [origin, result.vanishingPoints[vIndex]],
-        [position, result.vanishingPoints[uIndex]]
+        [origin, cameraParameters.vanishingPoints[vIndex]],
+        [position, cameraParameters.vanishingPoints[uIndex]]
       )!
     )
 
@@ -285,7 +285,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
 
     // anchor point + length
     let referenceAxisVpRel = CoordinatesUtil.convert(
-      result.vanishingPoints[referenceAxisVpIndex],
+      cameraParameters.vanishingPoints[referenceAxisVpIndex],
       ImageCoordinateFrame.ImagePlane,
       ImageCoordinateFrame.Relative,
       imageWidth,
@@ -300,8 +300,8 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     let handlePositions = Solver.referenceDistanceHandlesRelativePositions(
       this.props.controlPointsStateBase,
       referenceAxis,
-      result.vanishingPoints,
-      result.vanishingPointAxes,
+      cameraParameters.vanishingPoints,
+      cameraParameters.vanishingPointAxes,
       imageWidth,
       imageHeight
     )
@@ -311,8 +311,8 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
         referenceAxis={referenceAxis}
         origin={originAbs}
         horizonVanishingPoints={[
-          this.imagePlane2Abs(result.vanishingPoints[uIndex]),
-          this.imagePlane2Abs(result.vanishingPoints[vIndex])
+          this.imagePlane2Abs(cameraParameters.vanishingPoints[uIndex]),
+          this.imagePlane2Abs(cameraParameters.vanishingPoints[vIndex])
         ]}
         uIntersection={uIntersection}
         vIntersection={vIntersection}
@@ -344,7 +344,8 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
   }
 
   private render1VPControlPoints() {
-    let secondVanishingPoint = this.props.solverResult.vanishingPoints ? this.props.solverResult.vanishingPoints[1] : null
+    let cameraParameters = this.props.solverResult.cameraParameters
+    let secondVanishingPoint = cameraParameters ? cameraParameters.vanishingPoints[1] : null
     return (
       <Group>
         <HorizonControl
@@ -450,11 +451,15 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
   }
 
   private renderPrincipalPoint2VP() {
+    let cameraParameters = this.props.solverResult.cameraParameters
+    if (!cameraParameters) {
+      return null
+    }
     let absolutePosition: Point2D | null = null
     switch (this.props.calbrationSettings2VP.principalPointMode) {
       case PrincipalPointMode2VP.FromThirdVanishingPoint:
-        if (this.props.solverResult.principalPoint) {
-          absolutePosition = this.imagePlane2Abs(this.props.solverResult.principalPoint)
+        if (cameraParameters.principalPoint) {
+          absolutePosition = this.imagePlane2Abs(cameraParameters.principalPoint)
         }
         break
       case PrincipalPointMode2VP.Manual:
@@ -585,10 +590,11 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
   }
 
   private vanishingPointAbs(vanishingPointIndex: number): Point2D | null {
+    let cameraParameters = this.props.solverResult.cameraParameters
     let imageWidth = this.props.imageState.width
     let imageHeight = this.props.imageState.height
-    if (this.props.solverResult.vanishingPoints && imageWidth && imageHeight) {
-      let imagePlanePos = this.props.solverResult.vanishingPoints[vanishingPointIndex]
+    if (cameraParameters && imageWidth && imageHeight) {
+      let imagePlanePos = cameraParameters.vanishingPoints[vanishingPointIndex]
       return this.imagePlane2Abs(imagePlanePos)
     }
     return null

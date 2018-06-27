@@ -6,7 +6,7 @@ import Point2D from './point-2d'
 import Transform from './transform'
 import Vector3D from './vector-3d'
 import CoordinatesUtil, { ImageCoordinateFrame } from './coordinates-util'
-import { SolverResult } from './solver-result'
+import { SolverResult, CameraParameters } from './solver-result'
 import { defaultSolverResult } from './../defaults/solver-result'
 import { cameraPresets } from './camera-presets'
 
@@ -133,7 +133,7 @@ export default class Solver {
       return result
     }
 
-    this.computeCameraParameters(
+    result.cameraParameters = this.computeCameraParameters(
       result,
       controlPointsBase,
       settingsBase,
@@ -231,7 +231,7 @@ export default class Solver {
     }
 
     // compute camera parameters
-    this.computeCameraParameters(
+    result.cameraParameters = this.computeCameraParameters(
       result,
       controlPointsBase,
       settingsBase,
@@ -337,19 +337,15 @@ export default class Solver {
   static referenceDistanceHandlesWorldPositions(
     controlPoints: ControlPointsStateBase,
     referenceAxis: Axis,
-    vanishingPoints: [Point2D, Point2D, Point2D],
-    vanishingPointAxes: [Axis, Axis, Axis],
     imageWidth: number,
     imageHeight: number,
-    cameraTransform: Transform,
-    principalPoint: Point2D,
-    horizontalFieldOfView: number
+    cameraParameters: CameraParameters
   ): [Vector3D, Vector3D] {
     let handlePositionsRelative = this.referenceDistanceHandlesRelativePositions(
       controlPoints,
       referenceAxis,
-      vanishingPoints,
-      vanishingPointAxes,
+      cameraParameters.vanishingPoints,
+      cameraParameters.vanishingPointAxes,
       imageWidth,
       imageHeight
     )
@@ -410,15 +406,15 @@ export default class Solver {
     // The intersection of p and rayAnchor give us two coordinate values u0 and v0.
     let rayAnchorStart = MathUtil.perspectiveUnproject(
       new Vector3D(anchorPosition.x, anchorPosition.y, 1),
-      cameraTransform,
-      principalPoint,
-      horizontalFieldOfView
+      cameraParameters.cameraTransform,
+      cameraParameters.principalPoint,
+      cameraParameters.horizontalFieldOfView
     )
     let rayAnchorEnd = MathUtil.perspectiveUnproject(
       new Vector3D(anchorPosition.x, anchorPosition.y, 2),
-      cameraTransform,
-      principalPoint,
-      horizontalFieldOfView
+      cameraParameters.cameraTransform,
+      cameraParameters.principalPoint,
+      cameraParameters.horizontalFieldOfView
     )
     let referencePlaneIntersection = MathUtil.linePlaneIntersection(
       origin, u, v,
@@ -431,15 +427,15 @@ export default class Solver {
     for (let handlePosition of handlePositions) {
       let handleRayStart = MathUtil.perspectiveUnproject(
         new Vector3D(handlePosition.x, handlePosition.y, 1),
-        cameraTransform,
-        principalPoint,
-        horizontalFieldOfView
+        cameraParameters.cameraTransform,
+        cameraParameters.principalPoint,
+        cameraParameters.horizontalFieldOfView
       )
       let handleRayEnd = MathUtil.perspectiveUnproject(
         new Vector3D(handlePosition.x, handlePosition.y, 2),
-        cameraTransform,
-        principalPoint,
-        horizontalFieldOfView
+        cameraParameters.cameraTransform,
+        cameraParameters.principalPoint,
+        cameraParameters.horizontalFieldOfView
       )
 
       let handlePosition3D = MathUtil.shortestLineSegmentBetweenLines(
@@ -601,11 +597,7 @@ export default class Solver {
     settings: CalibrationSettingsBase,
     imageWidth: number,
     imageHeight: number,
-    cameraTransform: Transform,
-    horizontalFieldOfView: number,
-    principalPoint: Point2D,
-    vanishingPoints: [Point2D, Point2D, Point2D],
-    vanishingPointAxes: [Axis, Axis, Axis]
+    cameraParameters: CameraParameters
   ): void {
     // The 3D origin in image plane coordinates
     let origin = CoordinatesUtil.convert(
@@ -616,17 +608,17 @@ export default class Solver {
       imageHeight
     )
 
-    let k = Math.tan(0.5 * horizontalFieldOfView)
+    let k = Math.tan(0.5 * cameraParameters.horizontalFieldOfView)
     let origin3D = new Vector3D(
-      k * (origin.x - principalPoint.x),
-      k * (origin.y - principalPoint.y),
+      k * (origin.x - cameraParameters.principalPoint.x),
+      k * (origin.y - cameraParameters.principalPoint.y),
       -1
     ).multipliedByScalar(this.DEFAULT_CAMERA_DISTANCE_SCALE)
 
     // Set a default translation vector
-    cameraTransform.matrix[0][3] = origin3D.x
-    cameraTransform.matrix[1][3] = origin3D.y
-    cameraTransform.matrix[2][3] = origin3D.z
+    cameraParameters.cameraTransform.matrix[0][3] = origin3D.x
+    cameraParameters.cameraTransform.matrix[1][3] = origin3D.y
+    cameraParameters.cameraTransform.matrix[2][3] = origin3D.z
 
     if (settings.referenceDistanceAxis) {
       // If requested, scale the translation vector so that
@@ -638,13 +630,9 @@ export default class Solver {
       let referenceDistanceHandles3D = this.referenceDistanceHandlesWorldPositions(
         controlPoints,
         settings.referenceDistanceAxis,
-        vanishingPoints,
-        vanishingPointAxes,
         imageWidth,
         imageHeight,
-        cameraTransform,
-        principalPoint,
-        horizontalFieldOfView
+        cameraParameters
       )
       let defaultHandleDistance = referenceDistanceHandles3D[0].subtracted(referenceDistanceHandles3D[1]).length
 
@@ -654,9 +642,9 @@ export default class Solver {
       origin3D.multiplyByScalar(scale)
     }
 
-    cameraTransform.matrix[0][3] = origin3D.x
-    cameraTransform.matrix[1][3] = origin3D.y
-    cameraTransform.matrix[2][3] = origin3D.z
+    cameraParameters.cameraTransform.matrix[0][3] = origin3D.x
+    cameraParameters.cameraTransform.matrix[1][3] = origin3D.y
+    cameraParameters.cameraTransform.matrix[2][3] = origin3D.z
   }
 
   /**
@@ -690,7 +678,19 @@ export default class Solver {
     relativeFocalLength: number,
     imageWidth: number,
     imageHeight: number
-  ) {
+  ): CameraParameters {
+
+    let cameraParameters: CameraParameters = {
+      principalPoint: { x: 0, y: 0 },
+      cameraTransform: new Transform(),
+      horizontalFieldOfView: 0,
+      verticalFieldOfView: 0,
+      vanishingPoints: [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }],
+      vanishingPointAxes: [Axis.NegativeX, Axis.NegativeX, Axis.NegativeX],
+      relativeFocalLength: 0,
+      imageWidth: imageWidth,
+      imageHeight: imageHeight
+    }
 
     // Assing vanishing point axes
     let axisAssignmentMatrix = new Transform()
@@ -707,18 +707,18 @@ export default class Solver {
     axisAssignmentMatrix.matrix[2][1] = row3.y
     axisAssignmentMatrix.matrix[2][2] = row3.z
 
-    result.vanishingPointAxes = [
+    cameraParameters.vanishingPointAxes = [
       settings.firstVanishingPointAxis,
       settings.secondVanishingPointAxis,
       this.vectorAxis(row3)
     ]
 
     // principal point
-    result.principalPoint = principalPoint
+    cameraParameters.principalPoint = principalPoint
     // focal length
-    result.relativeFocalLength = relativeFocalLength
+    cameraParameters.relativeFocalLength = relativeFocalLength
     // vanishing points
-    result.vanishingPoints = [
+    cameraParameters.vanishingPoints = [
       vp1,
       vp2,
       MathUtil.thirdTriangleVertex(
@@ -728,14 +728,14 @@ export default class Solver {
       )
     ]
     // horizontal field of view
-    result.horizontalFieldOfView = this.computeFieldOfView(
+    cameraParameters.horizontalFieldOfView = this.computeFieldOfView(
       imageWidth,
       imageHeight,
       relativeFocalLength,
       false
     )
     // vertical field of view
-    result.verticalFieldOfView = this.computeFieldOfView(
+    cameraParameters.verticalFieldOfView = this.computeFieldOfView(
       imageWidth,
       imageHeight,
       relativeFocalLength,
@@ -750,18 +750,16 @@ export default class Solver {
       result.warnings.push('Camera rotation matrix has non-unit determinant ' + cameraRotationMatrix.determinant.toFixed(5))
     }
 
-    result.cameraTransform = axisAssignmentMatrix.leftMultiplied(cameraRotationMatrix)
+    cameraParameters.cameraTransform = axisAssignmentMatrix.leftMultiplied(cameraRotationMatrix)
 
     this.computeTranslationVector(
       controlPoints,
       settings,
       imageWidth,
       imageHeight,
-      result.cameraTransform,
-      result.horizontalFieldOfView,
-      principalPoint,
-      result.vanishingPoints,
-      result.vanishingPointAxes!
+      cameraParameters
     )
+
+    return cameraParameters
   }
 }

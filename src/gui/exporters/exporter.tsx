@@ -1,24 +1,20 @@
-import { SolverResult } from '../solver/solver-result'
-import { ImageState } from '../types/image-state'
+import { CameraParameters } from '../solver/solver-result'
 
 export default abstract class Exporter {
 
-  protected solverResult: SolverResult | null
-  protected image: ImageState | null
+  protected cameraParameters: CameraParameters | null
 
   constructor() {
-    this.solverResult = null
-    this.image = null
+    this.cameraParameters = null
   }
 
-  refresh(solverResult: SolverResult, image: ImageState): void {
-    this.solverResult = solverResult
-    this.image = image
+  refresh(cameraParameters: CameraParameters): void {
+    this.cameraParameters = cameraParameters
   }
 
   abstract get name(): string
   abstract get instructions(): JSX.Element
-  abstract get code(): string
+  abstract generateCode(cameraParameters: CameraParameters): string
 
   // must be a language name recognized by highlight.js
   abstract get codeLanguage(): string

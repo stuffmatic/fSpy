@@ -30,8 +30,9 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
   }
 
   private renderPanelContents() {
-    let relativeFocalLength = this.props.solverResult.relativeFocalLength
-    if (!relativeFocalLength) {
+
+    let cameraParameters = this.props.solverResult.cameraParameters
+    if (!cameraParameters) {
       return null
     }
 
@@ -47,10 +48,10 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
     let absoluteFocalLength = 0
     if (sensorAspectRatio > 1) {
       // wide sensor.
-      absoluteFocalLength = 0.5 * sensorWidth * relativeFocalLength
+      absoluteFocalLength = 0.5 * sensorWidth * cameraParameters.relativeFocalLength
     } else {
       // tall sensor
-      absoluteFocalLength = 0.5 * sensorHeight * relativeFocalLength
+      absoluteFocalLength = 0.5 * sensorHeight * cameraParameters.relativeFocalLength
     }
 
     return (
@@ -65,12 +66,12 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
           <div className='panel-section bottom-border'>
             <TableRow
               title={'Horizontal field of view'}
-              value={this.props.solverResult.horizontalFieldOfView ? (180 * this.props.solverResult.horizontalFieldOfView / Math.PI) : null}
+              value={cameraParameters.horizontalFieldOfView ? (180 * cameraParameters.horizontalFieldOfView / Math.PI) : null}
               unit={'°'}
             />
             <TableRow
               title={'Vertical field of view'}
-              value={this.props.solverResult.verticalFieldOfView ? (180 * this.props.solverResult.verticalFieldOfView / Math.PI) : null}
+              value={cameraParameters.verticalFieldOfView ? (180 * cameraParameters.verticalFieldOfView / Math.PI) : null}
               unit={'°'}
             />
           </div>
@@ -90,14 +91,14 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
           <div className='panel-section bottom-border'>
             <div className='panel-row' >Camera rotation matrix</div>
             <MatrixView
-              rows={this.props.solverResult.cameraTransform ? this.props.solverResult.cameraTransform.matrix : null}
+              rows={cameraParameters.cameraTransform ? cameraParameters.cameraTransform.matrix : null}
             />
           </div>
           <div className='panel-section bottom-border'>
             <div className='panel-row' >Camera translation</div>
             <MatrixView
               rows={
-                this.props.solverResult.cameraTransform ? [[this.props.solverResult.cameraTransform.matrix[0][3], this.props.solverResult.cameraTransform.matrix[1][3], this.props.solverResult.cameraTransform.matrix[2][3]]] : null
+                cameraParameters.cameraTransform ? [[cameraParameters.cameraTransform.matrix[0][3], cameraParameters.cameraTransform.matrix[1][3], cameraParameters.cameraTransform.matrix[2][3]]] : null
               }
             />
           </div>

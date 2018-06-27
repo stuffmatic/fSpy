@@ -1,5 +1,6 @@
 import * as React from 'react'
 import Exporter from './exporter'
+import { CameraParameters } from '../solver/solver-result'
 
 export default class JSONExporter extends Exporter {
   get name(): string {
@@ -15,17 +16,14 @@ export default class JSONExporter extends Exporter {
       </div>
     )
   }
-  get code(): string {
+  generateCode(cameraParameters: CameraParameters): string {
     return JSON.stringify(
-      {
-        ...this.solverResult,
-        imageWidth: this.image!.width, // TODO: null check
-        imageHeight: this.image!.height
-      },
+      cameraParameters,
       null,
       2
     )
   }
+
   get codeLanguage(): string {
     return 'json'
   }
