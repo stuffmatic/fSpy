@@ -32,6 +32,14 @@ export default class BlenderExporter extends Exporter {
       cameraParameters.imageHeight
     )
 
+    let xShiftScale = 1
+    let yShiftScale = 1
+    if (cameraParameters.imageHeight > cameraParameters.imageWidth) {
+      xShiftScale = cameraParameters.imageWidth / cameraParameters.imageHeight
+    } else {
+      yShiftScale = cameraParameters.imageHeight / cameraParameters.imageWidth
+    }
+
     return `import bpy
 import mathutils
 
@@ -48,8 +56,8 @@ camera.data.angle = ` + fov + `
 camera.matrix_world = mathutils.Matrix(` + JSON.stringify(matrix, null, 2) + `)
 
 #Set the principal point
-camera.data.shift_x = ` + (0.5 - principalPointRelative.x) + `
-camera.data.shift_y = ` + cameraParameters.imageHeight / cameraParameters.imageWidth * (-0.5 + principalPointRelative.y) + `
+camera.data.shift_x = ` + xShiftScale * (0.5 - principalPointRelative.x) + `
+camera.data.shift_y = ` + yShiftScale * (-0.5 + principalPointRelative.y) + `
 
 #Set the rendered image size
 #to match the calibration image
