@@ -11,6 +11,8 @@
 # production
 /build
 
+ghtoken
+
 # misc
 .DS_Store
 .env.local
