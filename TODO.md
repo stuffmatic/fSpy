@@ -12,13 +12,11 @@
 * fix in "missing horizon.fspy"
   * missing horizon
   * missing second vp
-* put custom camera preset at the top
 
 #build
 * silence test warning
 
 #linux
-
 * crisper icon (use nativeimage?)
 * name: fSpy instead of fspy
 

@@ -12,11 +12,12 @@ export interface CameraPresetsDropdownProps {
 
 export default function CameraPresetsDropdown(props: CameraPresetsDropdownProps) {
 
-  let ids: (string | null)[] = [null]
+  let ids: (string | null)[] = []
   for (let id in cameraPresets) {
     ids.push(id)
   }
   ids.sort()
+  ids.unshift(null)
 
   return (
     <div>
