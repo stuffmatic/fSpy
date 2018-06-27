@@ -54,6 +54,7 @@ const menuTitleStyle = {
 // https://stackoverflow.com/questions/7855590/preventing-scroll-bars-from-being-hidden-for-macos-trackpad-users-in-webkit-blin
 export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, DropdownState> {
 
+  private topContainerRef: React.RefObject<HTMLDivElement>
   private scrollContainerRef: React.RefObject<HTMLDivElement>
 
   constructor(props: DropdownProps<T>) {
@@ -63,6 +64,7 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
       menuIsVisible: false
     }
 
+    this.topContainerRef = createRef()
     this.scrollContainerRef = createRef()
   }
 
@@ -79,9 +81,8 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
   }
 
   handleClickOutside(event: any) {
-    if (this.scrollContainerRef.current && event.target) {
-      if (!this.scrollContainerRef.current.contains(event.target)) {
-        console.log('handleClickOutside')
+    if (this.topContainerRef.current && event.target) {
+      if (!this.topContainerRef.current.contains(event.target)) {
         this.hideMenu()
       }
     }
@@ -96,8 +97,8 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
       }
     }
     return (
-      <div style={{ ...menuContainerStyle, ...menuTitleStyle }}>
-        {selectedOption !== undefined ? this.renderOption(selectedOption, -1, () => { this.showMenu() }) : null}
+      <div ref={this.topContainerRef} style={{ ...menuContainerStyle, ...menuTitleStyle }}>
+        {selectedOption !== undefined ? this.renderOption(selectedOption, -1, () => { this.toggleMenu() }) : null}
         {this.renderMenu()}
       </div>
     )
@@ -107,7 +108,8 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
     let scrollContainerStyle: any = {
       border: '1px solid ' + Palette.gray,
       maxHeight: '100px',
-      overflow: 'scroll',
+      overflowX: 'hidden',
+      overflowY: 'scroll',
       position: 'absolute',
       width: '100%',
       left: -1,
@@ -185,7 +187,7 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
       }
     )
 
-    // flash scrollers (macos)
+    // flash scrollers (for macos with touchpad)
     setTimeout(() => {
       if (this.scrollContainerRef.current) {
         this.scrollContainerRef.current.scrollTop = 1
@@ -193,5 +195,13 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
       }
     },
       200)
+  }
+
+  private toggleMenu() {
+    if (this.state.menuIsVisible) {
+      this.hideMenu()
+    } else {
+      this.showMenu()
+    }
   }
 }
