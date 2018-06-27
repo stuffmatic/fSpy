@@ -13,9 +13,12 @@
 * put custom camera preset at the top
 * only measure distances along coordinate axes? or make it togglable?
 * disallow parallel vp axes
-* panel polish
-  * dropdown
-  * general
+* dropdown
+  * fix bug pressing the header with the dropdown open
+  * bring back scroll indicator flashing
+* edit menu
+  * toggle dimmed
+  * reset reference distance
 
 #build
 
