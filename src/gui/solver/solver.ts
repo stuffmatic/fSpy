@@ -226,7 +226,7 @@ export default class Solver {
     )
 
     if (fRelative === null) {
-      result.errors.push('Failed to compute focal length')
+      result.errors.push('Invalid vanishing point configuration (failed to compute focal length)')
       return result
     }
 
@@ -747,7 +747,7 @@ export default class Solver {
       vp1, vp2, relativeFocalLength, principalPoint
     )
     if (Math.abs(cameraRotationMatrix.determinant - 1) > 1e-7) {
-      result.warnings.push('Camera rotation matrix has non-unit determinant ' + cameraRotationMatrix.determinant.toFixed(5))
+      result.errors.push('Invalid vanishing point configuration (rotation determinant ' + cameraRotationMatrix.determinant.toFixed(5) + ')')
     }
 
     cameraParameters.cameraTransform = axisAssignmentMatrix.leftMultiplied(cameraRotationMatrix)
