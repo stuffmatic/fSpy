@@ -61,7 +61,8 @@
     "dev-server": "webpack-dev-server --config webpack.config.js --content-base build/  --mode development",
     "electron-dev": "DEV=true electron ./build/main.js",
     "dist": "electron-builder -mwl",
-    "test": "jest"
+    "test": "jest",
+    "publish-release": "electron-builder -mwl --publish always"
   },
   "dependencies": {
     "electron-window-state": "^4.1.1",
@@ -76,6 +77,11 @@
     "redux-thunk": "^2.3.0"
   },
   "build": {
+    "publish": {
+      "provider": "github",
+      "repo": "fSpy",
+      "publishAutoUpdate": false
+    },
     "productName": "fSpy",
     "appId": "com.stuffmatic.fspy",
     "mac": {
