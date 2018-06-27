@@ -88,3 +88,11 @@ textarea {
 .top-border {
   border-top: 1px solid #e0e0e0;
 }
+
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: default;
+}

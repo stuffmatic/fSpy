@@ -61,8 +61,7 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
       backgroundColor: Palette.black,
       color: Palette.white,
       fontFamily: 'monospace',
-      fontSize: '12px',
-      userSelect: 'text'
+      fontSize: '12px'
     }
 
     this.state.exporters[this.state.selectedExporterIndex].refresh(
