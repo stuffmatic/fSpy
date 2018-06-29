@@ -226,7 +226,7 @@ export default class Solver {
     )
 
     if (fRelative === null) {
-      result.errors.push('Invalid vanishing point configuration (failed to compute focal length)')
+      result.errors.push('Invalid vanishing point configuration. Failed to compute focal length.')
       return result
     }
 
@@ -678,7 +678,7 @@ export default class Solver {
     relativeFocalLength: number,
     imageWidth: number,
     imageHeight: number
-  ): CameraParameters {
+  ): CameraParameters | null {
 
     let cameraParameters: CameraParameters = {
       principalPoint: { x: 0, y: 0 },
@@ -707,6 +707,10 @@ export default class Solver {
     axisAssignmentMatrix.matrix[2][1] = row3.y
     axisAssignmentMatrix.matrix[2][2] = row3.z
 
+    if (Math.abs(1 - axisAssignmentMatrix.determinant) > 1e-7) { // TODO: eps
+      result.errors.push('Invalid axis assignment')
+      return null
+    }
     cameraParameters.vanishingPointAxes = [
       settings.firstVanishingPointAxis,
       settings.secondVanishingPointAxis,
@@ -746,8 +750,9 @@ export default class Solver {
     let cameraRotationMatrix = this.computeCameraRotationMatrix(
       vp1, vp2, relativeFocalLength, principalPoint
     )
-    if (Math.abs(cameraRotationMatrix.determinant - 1) > 1e-7) {
-      result.errors.push('Invalid vanishing point configuration (rotation determinant ' + cameraRotationMatrix.determinant.toFixed(5) + ')')
+    if (Math.abs(cameraRotationMatrix.determinant - 1) > 1e-7) { // TODO: eps
+      result.errors.push('Invalid vanishing point configuration. Rotation determinant ' + cameraRotationMatrix.determinant.toFixed(5))
+      return null
     }
 
     cameraParameters.cameraTransform = axisAssignmentMatrix.leftMultiplied(cameraRotationMatrix)
