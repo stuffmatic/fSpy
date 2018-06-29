@@ -184,7 +184,7 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
         <div style={{ ...circleStyle, ...markerStyle }} />
         <div style={{ ...titleStyle, flexGrow: '100' }}>{option.title}</div>
         <svg style={{ display: 'inline-block', width: 12, height: 5 }}>
-          <polyline points={'0,0,3,4,6,0'} stroke={ index < 0 ? Palette.black : 'none' } fill={ 'none' } />
+          <polyline points={'0,0,3,4,6,0'} stroke={ index < 0 ? (this.props.disabled ? Palette.disabledTextColor : Palette.black) : 'none' } fill={ 'none' } />
         </svg>
       </button>
     )
