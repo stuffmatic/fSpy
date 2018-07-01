@@ -4,9 +4,7 @@
 * måste funka att ta bort kamera-preset mitt mellan save och open
 
 #UI
-
 * only measure distances along coordinate axes? or make it togglable?
-* disallow parallel vp axes
 
 ## Alpha 1
 * fix in "missing horizon.fspy"
@@ -30,3 +28,4 @@
 * full screen mode for projector use
 * tooltips
 * warn when reference distance handles go past the measuring axis vp
+* disallow selecting parallel vp axes?
