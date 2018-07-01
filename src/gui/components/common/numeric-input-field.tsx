@@ -50,9 +50,10 @@ export default class NumericInputField extends React.Component<NumericInputField
 
   render() {
     let inputStyle: any = {
+      height: '22px',
       outline: 'none',
       width: '60px',
-      paddingLeft: '5px',
+      paddingLeft: '6px',
       border: '1px solid ' + Palette.gray
     }
 
@@ -86,6 +87,7 @@ export default class NumericInputField extends React.Component<NumericInputField
 
     return (
       <input
+        disabled={this.props.isDisabled}
         style={inputStyle}
         type='text'
         value={this.state.isEditing ? this.state.editedValue : displayValue}

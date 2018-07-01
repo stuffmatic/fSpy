@@ -108,94 +108,97 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
   private render1VPSettings() {
     return (
       <div>
-      <div className='panel-section'>
-        <div className='panel-group-title'>
-          Principal point
+        <div className='panel-section'>
+          <div className='panel-group-title'>
+            Principal point
         </div>
 
-        <Dropdown
-          options={
-            [
-              {
-                value: PrincipalPointMode1VP.Default,
-                id: PrincipalPointMode1VP.Default,
-                title: 'Image midpoint',
-                circleColor: Palette.principalPointColor,
-                strokeCircle: true
-              },
-              {
-                value: PrincipalPointMode1VP.Manual,
-                id: PrincipalPointMode1VP.Manual,
-                title: PrincipalPointMode1VP.Manual,
-                circleColor: Palette.principalPointColor
-              }
-            ]
-          }
-          selectedOptionId={this.props.calibrationSettings1VP.principalPointMode}
-          onOptionSelected={(selectedValue: PrincipalPointMode1VP) => {
-            this.props.onPrincipalPointModeChange1VP(selectedValue)
-          }}
-        />
-      </div>
-      <div className='panel-section'>
-        <div className='panel-group-title'>
-          Camera data
+          <Dropdown
+            options={
+              [
+                {
+                  value: PrincipalPointMode1VP.Default,
+                  id: PrincipalPointMode1VP.Default,
+                  title: 'Image midpoint',
+                  circleColor: Palette.principalPointColor,
+                  strokeCircle: true
+                },
+                {
+                  value: PrincipalPointMode1VP.Manual,
+                  id: PrincipalPointMode1VP.Manual,
+                  title: PrincipalPointMode1VP.Manual,
+                  circleColor: Palette.principalPointColor
+                }
+              ]
+            }
+            selectedOptionId={this.props.calibrationSettings1VP.principalPointMode}
+            onOptionSelected={(selectedValue: PrincipalPointMode1VP) => {
+              this.props.onPrincipalPointModeChange1VP(selectedValue)
+            }}
+          />
+        </div>
+        <div className='panel-section'>
+          <div className='panel-group-title'>
+            Camera data
         </div>
 
-        <FocalLengthForm
-          cameraData={this.props.calibrationSettingsBase.cameraData}
-          absoluteFocalLength={this.props.calibrationSettings1VP.absoluteFocalLength}
-          onAbsoluteFocalLengthChange={this.props.onAbsoluteFocalLengthChange1VP}
-          onCameraPresetChange={this.props.onCameraPresetChange}
-          onSensorSizeChange={this.props.onSensorSizeChange}
-        />
-      </div>
+          <FocalLengthForm
+            cameraData={this.props.calibrationSettingsBase.cameraData}
+            absoluteFocalLength={this.props.calibrationSettings1VP.absoluteFocalLength}
+            onAbsoluteFocalLengthChange={this.props.onAbsoluteFocalLengthChange1VP}
+            onCameraPresetChange={this.props.onCameraPresetChange}
+            onSensorSizeChange={this.props.onSensorSizeChange}
+          />
+        </div>
       </div>
     )
   }
 
   private render2VPSettings() {
     return (
-      <div className='panel-section'>
-        <div className='panel-group-title'>
-          Principal point
+      <div>
+        <div className='panel-section'>
+          <div className='panel-group-title'>
+            Principal point
         </div>
-        <Dropdown
-          options={
-            [
-              {
-                value: PrincipalPointMode2VP.Default,
-                id: PrincipalPointMode2VP.Default,
-                title: 'Image midpoint',
-                circleColor: Palette.principalPointColor,
-                strokeCircle: true
-              },
-              {
-                value: PrincipalPointMode2VP.Manual,
-                id: PrincipalPointMode2VP.Manual,
-                title: PrincipalPointMode2VP.Manual,
-                circleColor: Palette.principalPointColor
-              },
-              {
-                value: PrincipalPointMode2VP.FromThirdVanishingPoint,
-                id: PrincipalPointMode2VP.FromThirdVanishingPoint,
-                title: 'From 3rd vanishing point',
-                circleColor: Palette.principalPointColor,
-                strokeCircle: true
-              }
-            ]
-          }
-          selectedOptionId={this.props.calibrationSettings2VP.principalPointMode}
-          onOptionSelected={(selectedValue: PrincipalPointMode2VP) => {
-            this.props.onPrincipalPointModeChange2VP(selectedValue)
-          }}
-        />
-        <PanelSpacer />
-        <Checkbox
-          title='Rectangle mode'
-          isSelected={this.props.calibrationSettings2VP.quadModeEnabled}
-          onChange={(isSelected: boolean) => this.props.onQuadModeEnabledChange(isSelected)}
-        />
+          <Dropdown
+            options={
+              [
+                {
+                  value: PrincipalPointMode2VP.Default,
+                  id: PrincipalPointMode2VP.Default,
+                  title: 'Image midpoint',
+                  circleColor: Palette.principalPointColor,
+                  strokeCircle: true
+                },
+                {
+                  value: PrincipalPointMode2VP.Manual,
+                  id: PrincipalPointMode2VP.Manual,
+                  title: PrincipalPointMode2VP.Manual,
+                  circleColor: Palette.principalPointColor
+                },
+                {
+                  value: PrincipalPointMode2VP.FromThirdVanishingPoint,
+                  id: PrincipalPointMode2VP.FromThirdVanishingPoint,
+                  title: 'From 3rd vanishing point',
+                  circleColor: Palette.principalPointColor,
+                  strokeCircle: true
+                }
+              ]
+            }
+            selectedOptionId={this.props.calibrationSettings2VP.principalPointMode}
+            onOptionSelected={(selectedValue: PrincipalPointMode2VP) => {
+              this.props.onPrincipalPointModeChange2VP(selectedValue)
+            }}
+          />
+        </div>
+        <div className='panel-section'>
+          <Checkbox
+            title='Rectangle mode'
+            isSelected={this.props.calibrationSettings2VP.quadModeEnabled}
+            onChange={(isSelected: boolean) => this.props.onQuadModeEnabledChange(isSelected)}
+          />
+        </div>
       </div>
     )
   }
