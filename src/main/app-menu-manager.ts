@@ -79,16 +79,6 @@ export default class AppMenuManager {
     let fileMenuItems: Electron.MenuItemConstructorOptions[] = [
       newItem,
       openItem,
-      {
-        label: 'Open Recent',
-        role: 'recentdocuments',
-        submenu: [
-          {
-            label: 'Clear Recent',
-            role: 'clearrecentdocuments'
-          }
-        ]
-      },
       { type: 'separator' },
       openExampleProjectItem,
       openImageItem,
@@ -100,6 +90,18 @@ export default class AppMenuManager {
     if (process.platform !== 'darwin') {
       fileMenuItems.push({ type: 'separator' })
       fileMenuItems.push(quitMenuItem)
+    } else {
+      let recentDocumentsSubmenu = {
+        label: 'Open Recent',
+        role: 'recentdocuments',
+        submenu: [
+          {
+            label: 'Clear Recent',
+            role: 'clearrecentdocuments'
+          }
+        ]
+      }
+      fileMenuItems.splice(2, 0, recentDocumentsSubmenu)
     }
 
     let fileMenu = {

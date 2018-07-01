@@ -7,7 +7,6 @@
 
 * only measure distances along coordinate axes? or make it togglable?
 * disallow parallel vp axes
-* recent document menu only on supported platforms (macos)
 
 ## Alpha 1
 * fix in "missing horizon.fspy"
