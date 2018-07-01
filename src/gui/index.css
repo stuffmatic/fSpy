@@ -72,13 +72,12 @@ textarea {
   background-color: Menu;
 }
 
-.panel-section {
-  padding: 5px 10px 10px 10px;
+.panel-group-title {
+  margin-bottom: 5px;
 }
 
-.panel-row {
-  height: 24px;
-  line-height: 24px;
+.panel-section {
+  padding: 10px 10px 10px 10px;
 }
 
 .bottom-border {

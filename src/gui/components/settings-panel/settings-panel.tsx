@@ -18,7 +18,7 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
         <div id='panel-container'>
           <div>
             <div className='panel-section bottom-border'>
-              <div className='panel-row'>Number of vanishing points</div>
+              <div className='panel-group-title'>Number of vanishing points</div>
               <Dropdown
                 options={[
                   {
@@ -39,7 +39,7 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
               />
             </div>
             <div className='panel-section'>
-              <div className='panel-row'>
+              <div className='panel-group-title'>
                 Vanishing point axes
               </div>
 
@@ -56,8 +56,9 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
                   onChange={this.props.onSecondVanishingPointAxisChange}
                 />
               </div>
-              <PanelSpacer />
-              <div className='panel-row'>
+            </div>
+            <div className='panel-section'>
+              <div className='panel-group-title'>
                 Reference distance
               </div>
 
@@ -75,28 +76,24 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
           {this.renderModeSpecificSettings()}
 
           <div className='panel-section top-border'>
-            <div className='panel-row'>
+            <div className='panel-group-title'>
               3D guide
             </div>
-            <div className='panel-row'>
-              <Overlay3DGuideDropdown
-                overlay3DGuide={this.props.globalSettings.overlay3DGuide}
-                onChange={(overlay3DGuide: Overlay3DGuide) => {
-                  this.props.onOverlay3DGuideChange(overlay3DGuide)
-                }}
-              />
-            </div>
+            <Overlay3DGuideDropdown
+              overlay3DGuide={this.props.globalSettings.overlay3DGuide}
+              onChange={(overlay3DGuide: Overlay3DGuide) => {
+                this.props.onOverlay3DGuideChange(overlay3DGuide)
+              }}
+            />
             <PanelSpacer />
-            <div className='panel-row'>
-              <input
-                name='imageIsDimmed'
-                type='checkbox'
-                checked={this.props.globalSettings.imageOpacity < 1}
-                onChange={(event: any) => {
-                  this.props.onImageOpacityChange(event.target.checked ? 0.2 : 1)
-                }}
-              /> Dim image
-            </div>
+            <input
+              name='imageIsDimmed'
+              type='checkbox'
+              checked={this.props.globalSettings.imageOpacity < 1}
+              onChange={(event: any) => {
+                this.props.onImageOpacityChange(event.target.checked ? 0.2 : 1)
+              }}
+            /> Dim image
           </div>
         </div>
       </div>
@@ -110,38 +107,38 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
 
   private render1VPSettings() {
     return (
+      <div>
       <div className='panel-section'>
-        <div className='panel-row'>
+        <div className='panel-group-title'>
           Principal point
         </div>
-        <div className='panel-row'>
-          <Dropdown
-            options={
-              [
-                {
-                  value: PrincipalPointMode1VP.Default,
-                  id: PrincipalPointMode1VP.Default,
-                  title: 'Image midpoint',
-                  circleColor: Palette.principalPointColor,
-                  strokeCircle: true
-                },
-                {
-                  value: PrincipalPointMode1VP.Manual,
-                  id: PrincipalPointMode1VP.Manual,
-                  title: PrincipalPointMode1VP.Manual,
-                  circleColor: Palette.principalPointColor
-                }
-              ]
-            }
-            selectedOptionId={this.props.calibrationSettings1VP.principalPointMode}
-            onOptionSelected={(selectedValue: PrincipalPointMode1VP) => {
-              this.props.onPrincipalPointModeChange1VP(selectedValue)
-            }}
-          />
-        </div>
 
-        <PanelSpacer />
-        <div className='panel-row'>
+        <Dropdown
+          options={
+            [
+              {
+                value: PrincipalPointMode1VP.Default,
+                id: PrincipalPointMode1VP.Default,
+                title: 'Image midpoint',
+                circleColor: Palette.principalPointColor,
+                strokeCircle: true
+              },
+              {
+                value: PrincipalPointMode1VP.Manual,
+                id: PrincipalPointMode1VP.Manual,
+                title: PrincipalPointMode1VP.Manual,
+                circleColor: Palette.principalPointColor
+              }
+            ]
+          }
+          selectedOptionId={this.props.calibrationSettings1VP.principalPointMode}
+          onOptionSelected={(selectedValue: PrincipalPointMode1VP) => {
+            this.props.onPrincipalPointModeChange1VP(selectedValue)
+          }}
+        />
+      </div>
+      <div className='panel-section'>
+        <div className='panel-group-title'>
           Camera data
         </div>
 
@@ -153,55 +150,52 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
           onSensorSizeChange={this.props.onSensorSizeChange}
         />
       </div>
+      </div>
     )
   }
 
   private render2VPSettings() {
     return (
       <div className='panel-section'>
-        <div className='panel-row'>
+        <div className='panel-group-title'>
           Principal point
         </div>
-        <div className='panel-row'>
-          <Dropdown
-            options={
-              [
-                {
-                  value: PrincipalPointMode2VP.Default,
-                  id: PrincipalPointMode2VP.Default,
-                  title: 'Image midpoint',
-                  circleColor: Palette.principalPointColor,
-                  strokeCircle: true
-                },
-                {
-                  value: PrincipalPointMode2VP.Manual,
-                  id: PrincipalPointMode2VP.Manual,
-                  title: PrincipalPointMode2VP.Manual,
-                  circleColor: Palette.principalPointColor
-                },
-                {
-                  value: PrincipalPointMode2VP.FromThirdVanishingPoint,
-                  id: PrincipalPointMode2VP.FromThirdVanishingPoint,
-                  title: 'From 3rd vanishing point',
-                  circleColor: Palette.principalPointColor,
-                  strokeCircle: true
-                }
-              ]
-            }
-            selectedOptionId={this.props.calibrationSettings2VP.principalPointMode}
-            onOptionSelected={(selectedValue: PrincipalPointMode2VP) => {
-              this.props.onPrincipalPointModeChange2VP(selectedValue)
-            }}
-          />
-        </div>
+        <Dropdown
+          options={
+            [
+              {
+                value: PrincipalPointMode2VP.Default,
+                id: PrincipalPointMode2VP.Default,
+                title: 'Image midpoint',
+                circleColor: Palette.principalPointColor,
+                strokeCircle: true
+              },
+              {
+                value: PrincipalPointMode2VP.Manual,
+                id: PrincipalPointMode2VP.Manual,
+                title: PrincipalPointMode2VP.Manual,
+                circleColor: Palette.principalPointColor
+              },
+              {
+                value: PrincipalPointMode2VP.FromThirdVanishingPoint,
+                id: PrincipalPointMode2VP.FromThirdVanishingPoint,
+                title: 'From 3rd vanishing point',
+                circleColor: Palette.principalPointColor,
+                strokeCircle: true
+              }
+            ]
+          }
+          selectedOptionId={this.props.calibrationSettings2VP.principalPointMode}
+          onOptionSelected={(selectedValue: PrincipalPointMode2VP) => {
+            this.props.onPrincipalPointModeChange2VP(selectedValue)
+          }}
+        />
         <PanelSpacer />
-        <div className='panel-row'>
-          <Checkbox
-            title='Rectangle mode'
-            isSelected={this.props.calibrationSettings2VP.quadModeEnabled}
-            onChange={(isSelected: boolean) => this.props.onQuadModeEnabledChange(isSelected)}
-          />
-        </div>
+        <Checkbox
+          title='Rectangle mode'
+          isSelected={this.props.calibrationSettings2VP.quadModeEnabled}
+          onChange={(isSelected: boolean) => this.props.onQuadModeEnabledChange(isSelected)}
+        />
       </div>
     )
   }

@@ -9,6 +9,7 @@ import FocalLengthForm from '../common/focal-length-form'
 import { CalibrationSettingsBase } from '../../types/calibration-settings'
 import { cameraPresets } from '../../solver/camera-presets'
 import { GlobalSettings, CalibrationMode } from '../../types/global-settings'
+import PanelSpacer from '../common/panel-spacer'
 
 interface ResultPanelProps {
   globalSettings: GlobalSettings
@@ -102,6 +103,7 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
             value={cameraParameters.horizontalFieldOfView ? (180 * cameraParameters.horizontalFieldOfView / Math.PI).toFixed(2) : null}
             unit={'°'}
           />
+          <PanelSpacer />
           <TableRow
             title={'Vertical field of view'}
             value={cameraParameters.verticalFieldOfView ? (180 * cameraParameters.verticalFieldOfView / Math.PI).toFixed(2) : null}
@@ -122,13 +124,13 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
           />
         </div>
         <div className='panel-section bottom-border'>
-          <div className='panel-row' >Camera rotation matrix</div>
+          <div className='panel-group-title' >Camera rotation matrix</div>
           <MatrixView
-            rows={cameraParameters.cameraTransform ? cameraParameters.cameraTransform.matrix : null}
+            rows={cameraParameters.cameraTransform ? cameraParameters.cameraTransform.matrix.slice(0, 3) : null}
           />
         </div>
         <div className='panel-section bottom-border'>
-          <div className='panel-row' >Camera translation</div>
+          <div className='panel-group-title' >Camera translation</div>
           <MatrixView
             rows={
               cameraParameters.cameraTransform ? [[cameraParameters.cameraTransform.matrix[0][3], cameraParameters.cameraTransform.matrix[1][3], cameraParameters.cameraTransform.matrix[2][3]]] : null

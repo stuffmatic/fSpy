@@ -8,7 +8,7 @@ interface CheckboxProps {
 
 export default function Checkbox(props: CheckboxProps) {
   return (
-    <div className='panel-row' >
+    <div>
       <input
         name={props.title}
         type='checkbox'

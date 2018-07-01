@@ -9,11 +9,9 @@ interface TableRowProps {
 export default class TableRow extends React.PureComponent<TableRowProps> {
   render() {
     return (
-      <div className='panel-row' >
-        <div style={{ display: 'flex' }}>
-          <span style={{ flexGrow: 1 }}>{this.props.title}</span>
-          <span style={{ textAlign: 'right' }}> {this.valueString}</span>
-        </div>
+      <div style={{ display: 'flex' }}>
+        <span style={{ flexGrow: 1 }}>{this.props.title}</span>
+        <span style={{ textAlign: 'right' }}> {this.valueString}</span>
       </div>
     )
   }
