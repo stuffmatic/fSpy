@@ -1,10 +1,10 @@
 import React from 'react'
 
-interface RotationMatrixViewProps {
+interface MatrixViewProps {
   rows: number[][] | null
 }
 
-export default class MatrixView extends React.PureComponent<RotationMatrixViewProps> {
+export default class MatrixView extends React.PureComponent<MatrixViewProps> {
   render() {
     if (!this.props.rows) {
       return null
