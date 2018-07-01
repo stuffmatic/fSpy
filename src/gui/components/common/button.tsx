@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Palette } from '../../style/palette'
 
 interface ButtonProps {
   title: string
@@ -10,17 +9,17 @@ interface ButtonProps {
 
 export default function Button(props: ButtonProps) {
 
-  let style = {
-    minWidth: '90px',
-    height: '25px',
-    backgroundColor: props.isSelected ? Palette.white : Palette.gray,
+  let style: any = {
+    width: '135px',
+    height: '21px'
+    /* backgroundColor: props.isSelected ? Palette.white : Palette.gray,
     outline: 'none',
     border: 'none',
-    boxShadow: 'none'
+    boxShadow: 'none'*/
   }
 
-  if (props.fillWidth === true) {
-    (style as any).width = '100%'
+  if (props.fillWidth) {
+    style.width = '100%'
   }
 
   return (

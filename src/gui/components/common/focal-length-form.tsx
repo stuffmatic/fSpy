@@ -43,14 +43,17 @@ export default class FocalLengthForm extends React.PureComponent<FocalLengthForm
           onPresetChanged={this.props.onCameraPresetChange}
         />
         <PanelSpacer />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         Sensor <NumericInputField
           isDisabled={presetId !== null || this.props.presetSelectionDisabled}
           value={sensorWidth}
-          onSubmit={(value: number) => { this.props.onSensorSizeChange(value, undefined) }} /> x
-          <NumericInputField
+          onSubmit={(value: number) => { this.props.onSensorSizeChange(value, undefined) }} />
+        x
+        <NumericInputField
           isDisabled={presetId !== null || this.props.presetSelectionDisabled}
           value={sensorHeight}
           onSubmit={(value: number) => { this.props.onSensorSizeChange(undefined, value) }} /> {strings.unitMm}
+        </div>
         <PanelSpacer />
         Focal length <NumericInputField
           precision={2}

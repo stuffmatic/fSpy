@@ -8,6 +8,7 @@ import { SpecifyProjectPathMessage, SetDocumentStateMessage, OpenDroppedProjectM
 import { basename, join } from 'path'
 import AppMenuManager from './app-menu-manager'
 import ProjectFile from '../gui/io/project-file'
+import { Palette } from '../gui/style/palette'
 
 let mainWindow: Electron.BrowserWindow | null = null
 
@@ -74,7 +75,8 @@ function createWindow() {
     minWidth: 800,
     minHeight: 600,
     show: false,
-    icon: windowIconPath
+    icon: windowIconPath,
+    backgroundColor: Palette.lightGray
   })
 
   mainWindowState.manage(window)

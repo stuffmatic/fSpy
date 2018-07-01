@@ -138,7 +138,7 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
           />
         </div>
         <div className='panel-section'>
-          <Button title={'Export'} onClick={() => { this.props.onExportClicked() }} />
+          <Button fillWidth={true} title={'Export'} onClick={() => { this.props.onExportClicked() }} />
         </div>
         {this.renderWarnings()}
       </div>

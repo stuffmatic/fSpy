@@ -91,21 +91,29 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
         <div id='modal-top-buttons' style={{ display: 'flex' }}>
           {this.state.exporters.map((exporter: Exporter, index: number) => {
             return (
-              <Button
+              <button
+                style={ {
+                  width: '100px',
+                  height: '24px',
+                  border: 'none',
+                  boxShadow: 'none',
+                  outline: 'none',
+                  backgroundColor: index == this.state.selectedExporterIndex ? Palette.lightGray : Palette.gray
+                }}
                 key={index}
-                isSelected={index == this.state.selectedExporterIndex}
-                title={exporter.name}
                 onClick={() => {
                   this.setState(
                     { ...this.state, selectedExporterIndex: index }
                   )
                 }}
-              />
+              >
+              {exporter.name}
+              </button>
             )
           })}
         </div>
         <div id='modal-content' style={{
-          backgroundColor: '#fefefe',
+          backgroundColor: Palette.lightGray,
           width: '700px',
           height: '500px',
           display: 'flex',
