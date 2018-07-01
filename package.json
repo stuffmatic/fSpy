@@ -1,6 +1,6 @@
 {
   "name": "fspy",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "main": "build/main.js",
   "homepage": "https://fspy.io",
   "repository": {
