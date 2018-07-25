@@ -36,11 +36,11 @@ The `src` folder contains two subfolders `main` and `gui`, containing code for t
 
 Here's how to run the app in development mode
 
-1. Run `yarn build-dev` to build both the main and GUI code. This build step is needed to generate main process code used to start up the app.
-2. Run `yarn dev-server` to start the dev server
+1. Run `yarn dev-server` to start the dev server
+2. Run `yarn build-dev` to build both the main and GUI code. This build step is needed to generate main process code used to start up the app.
 3. Run `yarn electron-dev` to start an Electron instance which uses the dev server to provide automatic reloading on GUI code changes.
 
-⚠️ Currently, changes to main process code requires a manual rebuild, i.e steps 1-3, in order to show up in the app.
+⚠️ Currently, changes to main process code requires a manual rebuild, i.e steps 2-3, in order to show up in the app.
 
 ## Creating binaries for distribution 
 
