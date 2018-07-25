@@ -1,4 +1,5 @@
-# fSpy
+<p align="center"><img src="logo.png"></p>
+
 
 ## What is this?
 
@@ -6,17 +7,20 @@ fSpy is an open source, cross platform app for still image camera matching. See 
 
 ## Backstory
 
-Once upon a time, I wrote BLAM, a still image camera calibration add-on for [Blender](https://blender.org), that has gained some popularity in the Blender community. Apart from the obvious shortcoming of being Blender specific, the add-on's UI is pretty clunky, requires some manual steps to show the effect of a user's changes etc etc. fSpy is meant to replace BLAM by providing the same core functionality in a stand alone app with a much improved UI.
+Once upon a time I wrote BLAM, a [Blender](https://blender.org) add-on for still image camera calibration that, despite its clunky UI, has gained some popularity in the Blender community. fSpy is an attempt to bring BLAM's functionality to a wider audience in the form of a stand alone app.
 
 ## Writing an exporter
 
-Currently, fSpy only supports exporting camera parameters to [Blender](https://blender.org), but the code is structured so that adding new exporters should be fairly easy. If you are interested in working on a new exporter, [get in touch](https://github.com/stuffmatic/fSpy/issues)!
 
-In theory, camera parameters computed by fSpy could be exported to any application that has a notion of a 3D camera and provides some kind of scripting interface. The current Blender exporter, for example, generates a python script that when run in Blender configures the selected camera.
+Currently, fSpy only supports exporting camera parameters to [Blender](https://blender.org), but the code is structured so that adding new exporters should be fairly easy. The Blender exporter generates a python script that when run in Blender configures the selected camera. 
 
-fSpy supports exporting camera parameters as plain JSON data, which might be a good starting point for writing a new exporter, since you initially don't have to care about the fSpy code.
+In theory, camera parameters computed by fSpy could be exported to any application that has a notion of a 3D camera and provides some way to programatically set the camera parameters.
 
-## Building and running
+fSpy supports exporting camera parameters as plain JSON data, which might be a good starting point for writing a new exporter, since you initially don't have to care about the fSpy code. 
+
+If you are interested in working on a new exporter, [get in touch](https://github.com/stuffmatic/fSpy/issues)! 
+
+## Running the app in development mode
 
 fSpy is written in [Typescript](https://www.typescriptlang.org) using [Electron](https://electronjs.org), [React](https://reactjs.org) and [Redux](https://redux.js.org).
 
@@ -26,23 +30,19 @@ To install necessary dependencies, run
 yarn
 ```
 
-TODO: yarn build-dev
+The `src` folder contains two subfolders `main` and `gui`, containing code for the [Electron main and renderer processes](https://electronjs.org/docs/tutorial/application-architecture) respectively. 
 
-The dev server, which handles automatic rebuilding of the source for the Electron GUI process, is started like so:
+⚠️ The current build process is not ideal. For example, it lacks support for live reloading on main process code changes.
 
-```
-yarn run dev-server
-```
+Here's how to run the app in development mode
 
-Once the dev server is up an running, open a new terminal tab and run
+1. Run `yarn build-dev` to build both the main and GUI code. This build step is needed to generate main process code used to start up the app.
+2. Run `yarn dev-server` to start the dev server
+3. Run `yarn electron-dev` to start an Electron instance which uses the dev server to provide automatic reloading on GUI code changes.
 
-```
-yarn run electron-dev
-```
+⚠️ Currently, changes to main process code requires a manual rebuild, i.e steps 1-3, in order to show up in the app.
 
-which should open the app in development mode. Any changes to GUI process code will trigger a rebuild followed by an app reload.
-
-Note that the dev server currently does not RELOAD [TODO] the source for the electron main process. This means that any changes to main process code have to be manually rebuilt using `yarn run build-dev`.
+## Creating binaries for distribution 
 
 To create executables for distribution, run
 
