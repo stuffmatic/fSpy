@@ -123,13 +123,14 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
         <div style={{ alignSelf: 'center' }}>
           <button
             style={{
+              color: '#a0a0a0',
               marginTop: '100px',
               height: '25px',
               width: '150px',
               border: 'none',
               boxShadow: 'none',
               outline: 'none',
-              backgroundColor: Palette.disabledTextColor }}
+              backgroundColor: '#374146' }}
             onClick={this.props.callbacks.onLoadExampleProject}>
             Load example project
           </button>

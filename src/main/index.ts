@@ -79,7 +79,7 @@ function createWindow() {
     backgroundColor: Palette.lightGray,
     webPreferences: {
       // Allow loading local files in dev mode
-      webSecurity: process.env.DEV !== undefined
+      webSecurity: process.env.DEV === undefined
     }
   })
 
