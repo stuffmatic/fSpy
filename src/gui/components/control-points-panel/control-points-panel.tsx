@@ -465,14 +465,13 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
 
   private renderPrincipalPoint2VP() {
     let cameraParameters = this.props.solverResult.cameraParameters
-    if (!cameraParameters) {
-      return null
-    }
     let absolutePosition: Point2D | null = null
     switch (this.props.calbrationSettings2VP.principalPointMode) {
       case PrincipalPointMode2VP.FromThirdVanishingPoint:
-        if (cameraParameters.principalPoint) {
-          absolutePosition = this.imagePlane2Abs(cameraParameters.principalPoint)
+        if (cameraParameters) {
+          if (cameraParameters.principalPoint) {
+            absolutePosition = this.imagePlane2Abs(cameraParameters.principalPoint)
+          }
         }
         break
       case PrincipalPointMode2VP.Manual:
