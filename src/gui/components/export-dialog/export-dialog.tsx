@@ -145,13 +145,14 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
                   }
                   id='code'
                   style={{ padding: '10px' }} />
-
               </div>
-              <Button title='Copy to clipboard' onClick={() => {
-                clipboard.writeText(
-                  this.state.exporters[this.state.selectedExporterIndex].generateCode(this.props.cameraParameters!)
-                )
-              }} />
+              <div style={{ padding: '5px', textAlign: 'center' }}>
+                <Button title='Copy to clipboard' onClick={() => {
+                  clipboard.writeText(
+                    this.state.exporters[this.state.selectedExporterIndex].generateCode(this.props.cameraParameters!)
+                  )
+                }} />
+              </div>
             </div>
           </div>
           <div id='modal-bottom-button' style={{

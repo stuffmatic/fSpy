@@ -9,6 +9,7 @@ export default class JSONExporter extends Exporter {
   get instructions(): JSX.Element {
     return (
       <div>
+        <p></p>
         <ul>
           <li> Field of view values are given in radians </li>
           <li> Principal point and vanishing point are given in image plane coordinates </li>

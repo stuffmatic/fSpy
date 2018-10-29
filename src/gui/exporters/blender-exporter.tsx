@@ -10,14 +10,19 @@ export default class BlenderExporter extends Exporter {
 
   get instructions(): JSX.Element {
     return (
-      <ul>
-        <li>Select the camera you want to calibrate</li>
-        <li>Open a text editor area</li>
-        <li>Press new to create a new text block</li>
-        <li>Paste the script to the left into the text editor (edit -> paste)</li>
-        <li>Run the script (text -> run script></li>
-        <li>Set background image</li>
-      </ul>
+      <div>
+        <p>Exporting camera parameters to Blender</p>
+        <ol>
+          <li>Copy the script on the left by pressing copy to clipboard</li>
+          <li>Open Blender</li>
+          <li>Select the camera you want to calibrate</li>
+          <li>Open a text editor area</li>
+          <li>Press new to create a new text block</li>
+          <li>Paste the script into the text editor (edit -> paste)</li>
+          <li>Run the script (text -> run script></li>
+          <li>Set the background image to the one used for calibration</li>
+        </ol>
+      </div>
     )
   }
 
