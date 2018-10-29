@@ -11,7 +11,7 @@ Once upon a time I wrote BLAM, a [Blender](https://blender.org) add-on for still
 ## Writing an exporter
 
 
-Currently, fSpy only supports exporting camera parameters to [Blender](https://blender.org), but the code is structured so that adding new exporters should be fairly easy. 
+Currently, fSpy only supports exporting camera parameters to [Blender](https://blender.org), but the code is structured so that adding new exporters should be fairly easy.
 
 In theory, camera parameters computed by fSpy could be exported to any application that has a notion of a 3D camera and provides some way to programatically set the camera parameters. The Blender exporter, for example, generates a python script that when run in Blender configures the selected camera.
 
