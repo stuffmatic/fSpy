@@ -1,6 +1,7 @@
 import { ControlPointsStateBase } from '../types/control-points-state'
 import { defaultControlPointsStateBase } from '../defaults/control-points-state'
 import { ActionTypes, AppAction } from '../actions'
+import Constants from '../constants'
 
 export function controlPointsStateBase(state: ControlPointsStateBase | undefined, action: AppAction): ControlPointsStateBase {
   if (state === undefined) {
@@ -11,9 +12,17 @@ export function controlPointsStateBase(state: ControlPointsStateBase | undefined
 
   switch (action.type) {
     case ActionTypes.SET_ORIGIN:
-      return {
-        ...state,
-        origin: action.position
+      if (Constants.referenceDistanceAnchorEnabled) {
+        return {
+          ...state,
+          origin: action.position
+        }
+      } else {
+        return {
+          ...state,
+          origin: action.position,
+          referenceDistanceAnchor: action.position
+        }
       }
 
     case ActionTypes.SET_PRINCIPAL_POINT:

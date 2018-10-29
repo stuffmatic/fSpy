@@ -1,18 +1,23 @@
 import { ControlPointsStateBase, ControlPointsState1VP, ControlPointsState2VP } from '../types/control-points-state'
+import Constants from '../constants'
+
+const defaultOrigin = {
+  x: 0.602536594761171,
+  y: 0.36081762673040585
+}
+
+const defaultReferenceDistanceAnchor = {
+  x: 0.5080116846430406,
+  y: 0.6779647921622778
+}
 
 export const defaultControlPointsStateBase: ControlPointsStateBase = {
   principalPoint: {
     x: 0.5,
     y: 0.5
   },
-  origin: {
-    x: 0.602536594761171,
-    y: 0.36081762673040585
-  },
-  referenceDistanceAnchor: {
-    x: 0.5080116846430406,
-    y: 0.6779647921622778
-  },
+  origin: defaultOrigin,
+  referenceDistanceAnchor: Constants.referenceDistanceAnchorEnabled ? defaultReferenceDistanceAnchor : defaultOrigin,
   referenceDistanceHandleOffsets: [
     0.13108430697783005,
     0.065990108556575

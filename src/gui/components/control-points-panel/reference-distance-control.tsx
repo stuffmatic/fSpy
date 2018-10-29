@@ -7,6 +7,7 @@ import { Group } from 'react-konva'
 import ControlPolyline from './control-polyline'
 import MathUtil from '../../solver/math-util'
 import { Axis } from '../../types/calibration-settings'
+import Constants from '../../constants'
 
 export const dashedRulerStyle = { stroke: Palette.gray, opacity: 0.5, strokeDasharray: '2,6' }
 
@@ -26,45 +27,53 @@ interface ReferenceDistanceControlProps {
 export default class ReferenceDistanceControl extends React.PureComponent<ReferenceDistanceControlProps> {
 
   render() {
-    let horizonDir = MathUtil.normalized(
-      MathUtil.difference(
-        this.props.horizonVanishingPoints[0],
-        this.props.horizonVanishingPoints[1]
+    if (Constants.referenceDistanceAnchorEnabled) {
+      let horizonDir = MathUtil.normalized(
+        MathUtil.difference(
+          this.props.horizonVanishingPoints[0],
+          this.props.horizonVanishingPoints[1]
+        )
       )
-    )
 
-    let l = 10000
-    let horizonLineStart = {
-      x: this.props.horizonVanishingPoints[0].x - l * horizonDir.x,
-      y: this.props.horizonVanishingPoints[0].y - l * horizonDir.y
+      let l = 10000
+      let horizonLineStart = {
+        x: this.props.horizonVanishingPoints[0].x - l * horizonDir.x,
+        y: this.props.horizonVanishingPoints[0].y - l * horizonDir.y
+      }
+      let horizonLineEnd = {
+        x: this.props.horizonVanishingPoints[0].x + l * horizonDir.x,
+        y: this.props.horizonVanishingPoints[0].y + l * horizonDir.y
+      }
+
+      return (
+        <Group>
+          <ControlPolyline
+            points={[
+              horizonLineStart,
+              horizonLineEnd
+            ]}
+            color={Palette.referenceDistanceControlColor}
+            dimmed={true}
+          />
+          <ReferenceDistanceAnchorControl
+            anchorPositionIsValid={this.props.anchorPositionIsValid}
+            absolutePosition={this.props.anchorPosition}
+            dragCallback={this.props.anchorDragCallback}
+            uIntersection={this.props.uIntersection}
+            vIntersection={this.props.vIntersection}
+            origin={this.props.origin}
+          />
+          {this.renderDistanceHandles()}
+
+        </Group>
+      )
+    } else {
+      return (
+        <Group>
+          {this.renderDistanceHandles()}
+        </Group>
+      )
     }
-    let horizonLineEnd = {
-      x: this.props.horizonVanishingPoints[0].x + l * horizonDir.x,
-      y: this.props.horizonVanishingPoints[0].y + l * horizonDir.y
-    }
-
-    return (
-      <Group>
-        <ControlPolyline
-          points={[
-            horizonLineStart,
-            horizonLineEnd
-          ]}
-          color={Palette.referenceDistanceControlColor}
-          dimmed={true}
-        />
-        <ReferenceDistanceAnchorControl
-          anchorPositionIsValid={this.props.anchorPositionIsValid}
-          absolutePosition={this.props.anchorPosition}
-          dragCallback={this.props.anchorDragCallback}
-          uIntersection={this.props.uIntersection}
-          vIntersection={this.props.vIntersection}
-          origin={this.props.origin}
-        />
-        {this.renderDistanceHandles()}
-
-      </Group>
-    )
   }
 
   private renderDistanceHandles() {
