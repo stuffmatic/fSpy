@@ -13,7 +13,7 @@ export default class BlenderExporter extends Exporter {
       <div>
         <p>Exporting camera parameters to Blender</p>
         <ol>
-          <li>Copy the script on the left by pressing copy to clipboard</li>
+          <li>Copy the script on the right by pressing copy to clipboard</li>
           <li>Open Blender</li>
           <li>Select the camera you want to calibrate</li>
           <li>Open a text editor area</li>
