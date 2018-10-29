@@ -20,6 +20,7 @@ import ReferenceDistanceControl from './reference-distance-control'
 import Solver from '../../solver/solver'
 import MathUtil from '../../solver/math-util'
 import AABBOps from '../../solver/aabb-ops'
+import { resourceURL } from '../../io/util'
 
 interface ControlPointsPanelState {
   width: number | undefined
@@ -111,13 +112,18 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
 
   private renderPlaceholder() {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', justifyContent: 'center' }}>
-        <div style={{ alignSelf: 'center', paddingBottom: '30px' }}>
-          Drop an image or project here
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', marginTop: '50px', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center', alignSelf: 'center' }}>
+          <img
+            style={{ width: '100px', height: '100px', paddingBottom: '20px' }}
+            src={ resourceURL('icon.svg') }
+          />
+          <div>Drop an image or project here</div>
         </div>
         <div style={{ alignSelf: 'center' }}>
           <button
             style={{
+              marginTop: '100px',
               height: '25px',
               width: '150px',
               border: 'none',
@@ -128,6 +134,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
             Load example project
           </button>
         </div>
+
       </div>
     )
   }

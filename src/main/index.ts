@@ -76,7 +76,11 @@ function createWindow() {
     minHeight: 600,
     show: false,
     icon: windowIconPath,
-    backgroundColor: Palette.lightGray
+    backgroundColor: Palette.lightGray,
+    webPreferences: {
+      // Allow loading local files in dev mode
+      webSecurity: process.env.DEV !== undefined
+    }
   })
 
   mainWindowState.manage(window)

@@ -58,23 +58,27 @@ class App extends React.PureComponent<AppProps> {
     }
 
     document.ondrop = (ev) => {
-      let firstFile = ev.dataTransfer.files[0]
-      if (firstFile) {
-        let filePath = firstFile.path
-        let isProjectFile = ProjectFile.isProjectFile(filePath)
-        if (isProjectFile) {
-          this.props.onProjectFileDropped(filePath)
-        } else {
-          // try to open the file as an image
-          this.props.onImageFileDropped(filePath)
+      if (ev.dataTransfer != null) {
+        let firstFile = ev.dataTransfer.files[0]
+        if (firstFile) {
+          let filePath = firstFile.path
+          let isProjectFile = ProjectFile.isProjectFile(filePath)
+          if (isProjectFile) {
+            this.props.onProjectFileDropped(filePath)
+          } else {
+            // try to open the file as an image
+            this.props.onImageFileDropped(filePath)
+          }
         }
+        ev.preventDefault()
+        return false
       }
-      ev.preventDefault()
-      return false
+      return true
     }
   }
 
   render() {
+    const hasImage = this.props.image.data != null
     return (
       <div id='app-container'>
         <ExportDialog
@@ -84,9 +88,9 @@ class App extends React.PureComponent<AppProps> {
           onOpen={() => this.props.onExportDialogVisiblityChange(true)}
           onClose={() => this.props.onExportDialogVisiblityChange(false)}
         />
-        <SettingsContainer isVisible={this.props.uiState.sidePanelsAreVisible} />
+        <SettingsContainer isVisible={hasImage && this.props.uiState.sidePanelsAreVisible} />
         <ControlPointsContainer />
-        <ResultContainer isVisible={this.props.uiState.sidePanelsAreVisible} />
+        <ResultContainer isVisible={hasImage && this.props.uiState.sidePanelsAreVisible} />
       </div>
     )
   }

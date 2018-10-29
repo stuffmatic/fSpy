@@ -124,6 +124,13 @@
         "filter": [
           "icon.png"
         ]
+      },
+      {
+        "from": "assets/electron",
+        "to": "",
+        "filter": [
+          "icon.svg"
+        ]
       }
     ],
     "directories": {

@@ -4,9 +4,8 @@ import { StoreState } from '../types/store-state'
 import SavedState from './saved-state'
 import { AppAction, loadState, setProjectFilePath } from '../actions'
 import { Dispatch } from 'react-redux'
-import { loadImage } from './util'
+import { loadImage, resourcePath } from './util'
 import { remote } from 'electron'
-import { join } from 'path'
 
 export default class ProjectFile {
   static readonly EXAMPLE_PROJECT_FILENAME = 'example.fspy'
@@ -15,11 +14,7 @@ export default class ProjectFile {
   static readonly PROJECT_FILE_VERSION = 1
 
   static get exampleProjectPath() {
-    if (process.resourcesPath) {
-      return join(process.resourcesPath, this.EXAMPLE_PROJECT_FILENAME)
-    }
-
-    return ''
+    return resourcePath(this.EXAMPLE_PROJECT_FILENAME)
   }
 
   static getStateToSave(): SavedState {
