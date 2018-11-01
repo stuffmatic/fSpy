@@ -1,6 +1,7 @@
 import * as React from 'react'
 
 import Button from './../common/button'
+import Dropdown from './../common/dropdown'
 import { Palette } from '../../style/palette'
 import Exporter from '../../exporters/exporter'
 import BlenderExporter from '../../exporters/blender-exporter'
@@ -48,24 +49,83 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
       return null
     }
 
-    let modalColumnStyle: React.CSSProperties = {
-      flexBasis: '50%',
-      padding: '25px'
-    }
+    return (
+      <div id='modal-container' style={{
+        position: 'fixed',
+        zIndex: 1,
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        display: this.props.isVisible ? 'flex' : 'none',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }
+      }>
+        <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'row', justifyContent: 'center', backgroundColor: 'magenta' }} >
+          <div style={{ flexBasis: '50%', padding: '25px', backgroundColor: Palette.lightGray }} >
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }} >
+              <div>
+                Export to
+              <Dropdown
+                options={
+                  []
+                }
+                selectedOptionId={ '' }
+                onOptionSelected={(_) => {
+                  // props.onChange(selectedValue)
+                }}
+              />
+              </div>
+              <div style={{ flex: 1, alignContent: 'center' }} >
+                {this.state.exporters[this.state.selectedExporterIndex].instructions}
+              </div>
+              <div>
+                <Button title='Copy to clipboard' onClick={() => {
+                  clipboard.writeText(
+                      this.state.exporters[this.state.selectedExporterIndex].generateCode(this.props.cameraParameters!)
+                    )
+                }} />
+                <Button title='Close' onClick={() => { this.props.onClose() }} />
+              </div>
+            </div>
+          </div>
+          <div style={{ flexBasis: '50%', overflow: 'auto', backgroundColor: '#252b2e' /* TODO: make color constant */ }} >
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }} >
+              <div
+                style={{ position: 'relative', flex: 1, color: Palette.white, whiteSpace: 'pre', fontFamily: 'monospace', fontSize: '13px', padding: '25px' }}
+                dangerouslySetInnerHTML={
+                  {
+                    __html: hljs.highlight(
+                      this.state.exporters[this.state.selectedExporterIndex].codeLanguage,
+                      this.state.exporters[this.state.selectedExporterIndex].generateCode(this.props.cameraParameters)
+                    ).value
+                  }
+                }
+                id='code'
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
-    let modalColumnContentStyle: React.CSSProperties = {
-      overflow: 'auto',
-      height: '100%'
+  renderOld() {
+    if (!this.props.cameraParameters) {
+      return null
     }
 
     let modalColumnCodeContentStyle: React.CSSProperties = {
-      overflow: 'auto',
+      overflow: 'scroll',
       height: '100%',
-      whiteSpace: 'pre',
       backgroundColor: Palette.black,
       color: Palette.white,
+      whiteSpace: 'pre',
       fontFamily: 'monospace',
-      fontSize: '12px'
+      fontSize: '14px'
     }
 
     this.state.exporters[this.state.selectedExporterIndex].refresh(
@@ -81,87 +141,51 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
         display: this.props.isVisible ? 'flex' : 'none',
-        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center'
       }
       }>
-        <div id='modal-top-buttons' style={{ display: 'flex' }}>
-          {this.state.exporters.map((exporter: Exporter, index: number) => {
-            return (
-              <button
-                style={ {
-                  width: '100px',
-                  height: '24px',
-                  border: 'none',
-                  boxShadow: 'none',
-                  outline: 'none',
-                  backgroundColor: index == this.state.selectedExporterIndex ? Palette.lightGray : Palette.gray
-                }}
-                key={index}
-                onClick={() => {
-                  this.setState(
-                    { ...this.state, selectedExporterIndex: index }
-                  )
-                }}
-              >
-              {exporter.name}
-              </button>
-            )
-          })}
-        </div>
         <div id='modal-content' style={{
+          width: '100%',
           backgroundColor: Palette.lightGray,
-          width: '700px',
-          height: '500px',
           display: 'flex',
           flexDirection: 'column'
         }}>
           <div id='modal-columns' style={{
-            height: '450px',
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'center'
           }}>
-            <div style={modalColumnStyle}>
-              <div style={modalColumnContentStyle} >
+            <div style={{ flexBasis: '50%', padding: '25px' }}>
 
-                {this.state.exporters[this.state.selectedExporterIndex].instructions}
-              </div>
+              {this.state.exporters[this.state.selectedExporterIndex].instructions}
+              <Button title='Close' onClick={() => { this.props.onClose() }} />
+
             </div>
 
-            <div style={modalColumnStyle}>
-              <div style={modalColumnCodeContentStyle}>
-                <div
-                  dangerouslySetInnerHTML={
-                    {
-                      __html: hljs.highlight(
-                        this.state.exporters[this.state.selectedExporterIndex].codeLanguage,
-                        this.state.exporters[this.state.selectedExporterIndex].generateCode(this.props.cameraParameters)
-                      ).value
-                    }
+            <div style={{ flexBasis: '50%', padding: '25px', ...modalColumnCodeContentStyle }}>
+
+              <div
+                dangerouslySetInnerHTML={
+                  {
+                    __html: hljs.highlight(
+                      this.state.exporters[this.state.selectedExporterIndex].codeLanguage,
+                      this.state.exporters[this.state.selectedExporterIndex].generateCode(this.props.cameraParameters)
+                    ).value
                   }
-                  id='code'
-                  style={{ padding: '10px' }} />
-              </div>
-              <div style={{ padding: '5px', textAlign: 'center' }}>
-                <Button title='Copy to clipboard' onClick={() => {
-                  clipboard.writeText(
-                    this.state.exporters[this.state.selectedExporterIndex].generateCode(this.props.cameraParameters!)
-                  )
-                }} />
-              </div>
+                }
+                id='code'
+                style={{ padding: '10px' }} />
             </div>
-          </div>
-          <div id='modal-bottom-button' style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexGrow: 1
-          }}>
-            <Button title='Close' onClick={() => { this.props.onClose() }} />
+            <div style={{ padding: '5px', textAlign: 'center' }}>
+              <Button title='Copy to clipboard' onClick={() => {
+                clipboard.writeText(
+                  this.state.exporters[this.state.selectedExporterIndex].generateCode(this.props.cameraParameters!)
+                )
+              }} />
+
+            </div>
           </div>
         </div>
       </div>

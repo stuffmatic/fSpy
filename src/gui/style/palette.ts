@@ -9,7 +9,7 @@ export class Palette {
   static readonly yellow = '#F3CA05'
   static readonly white = '#FFFFFF'
   static readonly lightGray = 'Menu'
-  static readonly gray = '#D1D3D5'
+  static readonly gray = '#e1e1e1'
   static readonly black = 'WindowText'
 
   static readonly disabledTextColor = '#909090'
