@@ -93,7 +93,7 @@ export default class ReferenceDistanceControl extends React.PureComponent<Refere
         <ControlPolyline
           dimmed={true}
           dashed={true}
-          color={Palette.referenceDistanceControlColor}
+          color={Palette.colorForAxis(this.props.referenceAxis)}
           points={[this.props.anchorPosition, this.props.handlePositions[1]]}
         />
         <ControlPolyline
