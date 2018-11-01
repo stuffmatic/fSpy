@@ -65,30 +65,36 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
       }
       }>
         <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'row', justifyContent: 'center', backgroundColor: 'magenta' }} >
-          <div style={{ flexBasis: '50%', padding: '25px', backgroundColor: Palette.lightGray }} >
+          <div style={{ flexBasis: '50%', backgroundColor: Palette.lightGray }} >
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }} >
-              <div>
+              <div style={{ textAlign: 'center', paddingTop: '75px', paddingBottom: '7px' }}>
                 Export to
+              </div>
+              <div style={{ margin: 'auto', width: '200px', textAlign: 'center' }} >
               <Dropdown
                 options={
-                  []
+                  this.state.exporters.map((exporter: Exporter, index: number) => {
+                    return { value: index, id: index.toString(), title: exporter.name }
+                  })
                 }
-                selectedOptionId={ '' }
-                onOptionSelected={(_) => {
-                  // props.onChange(selectedValue)
+                selectedOptionId={this.state.selectedExporterIndex.toString()}
+                onOptionSelected={(selectedValue: number) => {
+                  this.setState({
+                    selectedExporterIndex: selectedValue
+                  })
                 }}
               />
               </div>
-              <div style={{ flex: 1, alignContent: 'center' }} >
+              <div style={{ flex: 1, maxWidth: '500px', width: '70%', margin: 'auto', padding: '25px' }} >
                 {this.state.exporters[this.state.selectedExporterIndex].instructions}
               </div>
-              <div>
-                <Button title='Copy to clipboard' onClick={() => {
+              <div style={{ textAlign: 'center', padding: '75px' }}>
+                <Button title='Close' onClick={() => { this.props.onClose() }} />
+                <Button title='Copy code' onClick={() => {
                   clipboard.writeText(
                       this.state.exporters[this.state.selectedExporterIndex].generateCode(this.props.cameraParameters!)
                     )
                 }} />
-                <Button title='Close' onClick={() => { this.props.onClose() }} />
               </div>
             </div>
           </div>

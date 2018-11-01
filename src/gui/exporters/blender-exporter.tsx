@@ -11,7 +11,6 @@ export default class BlenderExporter extends Exporter {
   get instructions(): JSX.Element {
     return (
       <div>
-        <p>Exporting camera parameters to Blender</p>
         <ol>
           <li>Copy the script on the right by pressing copy to clipboard</li>
           <li>Open Blender</li>
