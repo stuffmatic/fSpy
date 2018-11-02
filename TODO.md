@@ -5,7 +5,7 @@
 * camera sensor dimensios vs portrait images
 
 #UI
-* only measure distances along coordinate axes? or make it togglable?
+* ~~only measure distances along coordinate axes? or make it togglable?~~
 
 ## Alpha 1
 * fix in "missing horizon.fspy"
