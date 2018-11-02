@@ -95,3 +95,7 @@ textarea {
     user-select: none;
     cursor: default;
 }
+
+.exporter-instructions-container li {
+  padding-bottom: 10px;
+}

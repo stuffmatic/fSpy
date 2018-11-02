@@ -21,6 +21,7 @@ interface ExportDialogProps {
 
 interface ExportDialogState {
   selectedExporterIndex: number
+  showClipboardMessage: boolean
   exporters: Exporter[]
 }
 
@@ -28,6 +29,7 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
   constructor(props: ExportDialogProps) {
     super(props)
     this.state = {
+      showClipboardMessage: false,
       exporters: [
         new BlenderExporter(),
         new JSONExporter()
@@ -85,15 +87,24 @@ export default class ExportDialog extends React.Component<ExportDialogProps, Exp
                 }}
               />
               </div>
-              <div style={{ flex: 1, maxWidth: '500px', width: '70%', margin: 'auto', padding: '25px' }} >
+              <div className={'exporter-instructions-container'} style={{ flex: 1, maxWidth: '400px', width: '70%', margin: 'auto', padding: '25px' }} >
                 {this.state.exporters[this.state.selectedExporterIndex].instructions}
               </div>
-              <div style={{ textAlign: 'center', padding: '75px' }}>
-                <Button title='Close' onClick={() => { this.props.onClose() }} />
+              <div style={{ textAlign: 'center', paddingBottom: '75px', paddingLeft: 0, paddingRight: 0 }}>
+                <div style={{ padding: '15px', color: '#c0c0c0' }} > { this.state.showClipboardMessage ? 'Copied code to clipboard' : '' }</div>
+                <Button title='Close' onClick={() => {
+                  this.props.onClose()
+                  this.setState({
+                    showClipboardMessage: false
+                  })
+                }} /> &nbsp; &nbsp;
                 <Button title='Copy code' onClick={() => {
                   clipboard.writeText(
                       this.state.exporters[this.state.selectedExporterIndex].generateCode(this.props.cameraParameters!)
-                    )
+                  )
+                  this.setState({
+                    showClipboardMessage: true
+                  })
                 }} />
               </div>
             </div>
