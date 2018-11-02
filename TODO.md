@@ -2,6 +2,7 @@
 * actions name space
 * sort out naming of camera transform (or its inverse)
 * måste funka att ta bort kamera-preset mitt mellan save och open
+* camera sensor dimensios vs portrait images
 
 #UI
 * only measure distances along coordinate axes? or make it togglable?
@@ -19,6 +20,7 @@
 * name: fSpy instead of fspy
 
 #future
+* export project image
 * edit menu
   * toggle dimmed
   * reset reference distance
