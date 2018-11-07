@@ -61,7 +61,19 @@ export default class FocalLengthForm extends React.PureComponent<FocalLengthForm
           value={(presetFocalLength !== undefined && !focalLengthInputDisabled) ? presetFocalLength : this.props.absoluteFocalLength}
           onSubmit={this.props.onAbsoluteFocalLengthChange}
         /> mm
+        { this.renderFocalLengthSlider() }
       </div>
+    )
+  }
+
+  private renderFocalLengthSlider() {
+    if (this.props.focalLengthInputDisabled === true) {
+      return null
+    }
+    return (
+      <input style={{ width: '100%' }} type='range' min='10' max='200' value={this.props.absoluteFocalLength} id='myRange' onChange={ (event) => {
+        this.props.onAbsoluteFocalLengthChange(parseFloat(event.target.value))
+      }} />
     )
   }
 }
