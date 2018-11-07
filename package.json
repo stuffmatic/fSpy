@@ -96,8 +96,22 @@
     },
     "win": {
       "target": [
-        "nsis",
-        "zip"
+        {
+          "target": "nsis",
+          "arch": "x64"
+        },
+        {
+          "target": "nsis",
+          "arch": "ia32"
+        },
+        {
+          "target": "zip",
+          "arch": "x64"
+        },
+        {
+          "target": "zip",
+          "arch": "ia32"
+        }
       ]
     },
     "files": [
