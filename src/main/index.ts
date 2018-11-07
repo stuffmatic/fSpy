@@ -51,9 +51,11 @@ function openProject(path: string, window: BrowserWindow) {
 }
 
 function createWindow() {
+  const minWidth = 800
+  const minHeight = 768
   let mainWindowState = windowStateKeeper({
-    defaultWidth: 800,
-    defaultHeight: 600
+    defaultWidth: minWidth,
+    defaultHeight: minHeight
   })
 
   let windowIconPath: string | undefined
@@ -72,8 +74,8 @@ function createWindow() {
     y: mainWindowState.y,
     width: mainWindowState.width,
     height: mainWindowState.height,
-    minWidth: 800,
-    minHeight: 600,
+    minWidth: minWidth,
+    minHeight: minHeight,
     show: false,
     icon: windowIconPath,
     backgroundColor: Palette.lightGray,
