@@ -26,7 +26,8 @@ export default class ProjectFile {
       calibrationSettings2VP: storeState.calibrationSettings2VP,
       controlPointsStateBase: storeState.controlPointsStateBase,
       controlPointsState1VP: storeState.controlPointsState1VP,
-      controlPointsState2VP: storeState.controlPointsState2VP
+      controlPointsState2VP: storeState.controlPointsState2VP,
+      cameraParameters: storeState.solverResult.cameraParameters
     }
   }
 
@@ -104,6 +105,9 @@ export default class ProjectFile {
         }
 
         let loadedState: SavedState = JSON.parse(stateString)
+        if (loadedState.cameraParameters === undefined) {
+          loadedState.cameraParameters = null
+        }
         if (imageBuffer) {
           // There is image data in the project file. Load the image and then load
           // the state

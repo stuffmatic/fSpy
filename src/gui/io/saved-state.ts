@@ -1,6 +1,7 @@
 import { GlobalSettings } from '../types/global-settings'
 import { CalibrationSettingsBase, CalibrationSettings1VP, CalibrationSettings2VP } from '../types/calibration-settings'
 import { ControlPointsStateBase, ControlPointsState1VP, ControlPointsState2VP } from '../types/control-points-state'
+import { CameraParameters } from '../solver/solver-result'
 
 export default interface SavedState {
   globalSettings: GlobalSettings
@@ -12,4 +13,6 @@ export default interface SavedState {
   controlPointsStateBase: ControlPointsStateBase
   controlPointsState1VP: ControlPointsState1VP
   controlPointsState2VP: ControlPointsState2VP
+
+  cameraParameters: CameraParameters | null
 }
