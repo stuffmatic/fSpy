@@ -56,6 +56,11 @@ export const cameraPresets: { [id: string]: CameraPreset } = {
     sensorWidth: 22.2,
     sensorHeight: 14.7
   },
+  'canon_g7x_mk2': {
+    displayName: 'Canon G7X Mark II',
+    sensorWidth: 13.2,
+    sensorHeight: 8.8
+  },
   '35_mm_film': {
     displayName: '35 mm film',
     sensorWidth: 36,
