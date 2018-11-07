@@ -225,6 +225,45 @@ export default class MathUtil {
     return dot1 * dot2 > 0
   }
 
+  static matrixToAxisAngle(transform: Transform): [number, number, number, number] {
+    // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToAngle/
+    const m00 = transform.matrix[0][0]
+    const m01 = transform.matrix[0][1]
+    const m02 = transform.matrix[0][2]
+    const m10 = transform.matrix[1][0]
+    const m11 = transform.matrix[1][1]
+    const m12 = transform.matrix[1][2]
+    const m20 = transform.matrix[2][0]
+    const m21 = transform.matrix[2][1]
+    const m22 = transform.matrix[2][2]
+
+    const x = (m21 - m12) / Math.sqrt((m21 - m12) * (m21 - m12) + (m02 - m20) * (m02 - m20) + (m10 - m01) * (m10 - m01))
+    const y = (m02 - m20) / Math.sqrt((m21 - m12) * (m21 - m12) + (m02 - m20) * (m02 - m20) + (m10 - m01) * (m10 - m01))
+    const z = (m10 - m01) / Math.sqrt((m21 - m12) * (m21 - m12) + (m02 - m20) * (m02 - m20) + (m10 - m01) * (m10 - m01))
+    const angle = Math.acos((m00 + m11 + m22 - 1) / 2)
+
+    return [x, y, z, angle]
+  }
+
+  static matrixToQuaternion(transform: Transform): [number, number, number, number] {
+    // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
+    const m00 = transform.matrix[0][0]
+    const m01 = transform.matrix[0][1]
+    const m02 = transform.matrix[0][2]
+    const m10 = transform.matrix[1][0]
+    const m11 = transform.matrix[1][1]
+    const m12 = transform.matrix[1][2]
+    const m20 = transform.matrix[2][0]
+    const m21 = transform.matrix[2][1]
+    const m22 = transform.matrix[2][2]
+
+    const qw = Math.sqrt(1 + m00 + m11 + m22) / 2
+    const qx = (m21 - m12) / (4 * qw)
+    const qy = (m02 - m20) / (4 * qw)
+    const qz = (m10 - m01) / (4 * qw)
+    return [qx, qy, qz, qw]
+  }
+
   private static modelViewProjection(
     cameraTransform: Transform,
     principalPoint: Point2D,

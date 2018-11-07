@@ -8,6 +8,7 @@ import Solver from '../solver/solver'
 import { SolverResult } from '../solver/solver-result'
 import SavedState from '../io/saved-state'
 import { ImageState } from '../types/image-state'
+import { OrientationFormat, PrincipalPointFormat, FieldOfViewFormat } from '../types/result-display-settings'
 
 export enum ActionTypes {
   // IO actions
@@ -51,6 +52,11 @@ export enum ActionTypes {
 
   //
   SET_SOLVER_RESULT = 'SET_SOLVER_RESULT',
+
+  // Result display settings
+  SET_ORIENTATION_DISPLAY_FORMAT = 'SET_ORIENTATION_DISPLAY_FORMAT',
+  SET_PRINCIPAL_POINT_DISPLAY_FORMAT = 'SET_PRINCIPAL_POINT_DISPLAY_FORMAT',
+  SET_FOV_DISPLAY_FORMAT = 'SET_FOV_DISPLAY_FORMAT',
 
   //
   SET_EXPORT_DIALOG_VISIBILITY = 'SET_EXPORT_DIALOG_VISIBILITY'
@@ -497,6 +503,43 @@ export function setSolverResult(result: SolverResult): SetSolverResult {
   }
 }
 
+// Result display settings
+export interface SetOrientationDisplayFormat {
+  type: ActionTypes.SET_ORIENTATION_DISPLAY_FORMAT,
+  displayFormat: OrientationFormat
+}
+
+export function setOrientationDisplayFormat(displayFormat: OrientationFormat): SetOrientationDisplayFormat {
+  return {
+    type: ActionTypes.SET_ORIENTATION_DISPLAY_FORMAT,
+    displayFormat: displayFormat
+  }
+}
+
+export interface SetPrincipalPointDisplayFormat {
+  type: ActionTypes.SET_PRINCIPAL_POINT_DISPLAY_FORMAT,
+  displayFormat: PrincipalPointFormat
+}
+
+export function setPrincipalPointDisplayFormat(displayFormat: PrincipalPointFormat): SetPrincipalPointDisplayFormat {
+  return {
+    type: ActionTypes.SET_PRINCIPAL_POINT_DISPLAY_FORMAT,
+    displayFormat: displayFormat
+  }
+}
+
+export interface SetFieldOfViewDisplayFormat {
+  type: ActionTypes.SET_FOV_DISPLAY_FORMAT,
+  displayFormat: FieldOfViewFormat
+}
+
+export function setFieldOfViewDisplayFormat(displayFormat: FieldOfViewFormat): SetFieldOfViewDisplayFormat {
+  return {
+    type: ActionTypes.SET_FOV_DISPLAY_FORMAT,
+    displayFormat: displayFormat
+  }
+}
+
 //
 export interface SetExportDialogVisibility {
   type: ActionTypes.SET_EXPORT_DIALOG_VISIBILITY,
@@ -540,6 +583,9 @@ export type AppAction =
   AdjustSecondVanishingPoint |
   AdjustThirdVanishingPoint |
   SetSolverResult |
+  SetOrientationDisplayFormat |
+  SetFieldOfViewDisplayFormat |
+  SetPrincipalPointDisplayFormat |
   SetExportDialogVisibility
 
 // A list of action types that trigger calibration result calculation
@@ -601,5 +647,9 @@ export const actionTypesSettingNeedsSaveFlag: ActionTypes[] = [
   ActionTypes.ADJUST_FIRST_VANISHING_POINT,
   ActionTypes.ADJUST_SECOND_VANISHING_POINT,
   ActionTypes.ADJUST_THIRD_VANISHING_POINT,
-  ActionTypes.ADJUST_REFERENCE_DISTANCE_HANDLE
+  ActionTypes.ADJUST_REFERENCE_DISTANCE_HANDLE,
+
+  ActionTypes.SET_PRINCIPAL_POINT_DISPLAY_FORMAT,
+  ActionTypes.SET_FOV_DISPLAY_FORMAT,
+  ActionTypes.SET_ORIENTATION_DISPLAY_FORMAT
 ]

@@ -2,7 +2,8 @@ import * as React from 'react'
 
 interface ButtonProps {
   title: string
-  fillWidth?: boolean
+  width?: string
+  height?: string
   isSelected?: boolean
   onClick(): void
 }
@@ -10,16 +11,19 @@ interface ButtonProps {
 export default function Button(props: ButtonProps) {
 
   let style: any = {
-    width: '135px',
-    height: '21px'
+    width: '135px'
     /* backgroundColor: props.isSelected ? Palette.white : Palette.gray,
     outline: 'none',
     border: 'none',
     boxShadow: 'none'*/
   }
 
-  if (props.fillWidth) {
-    style.width = '100%'
+  if (props.width) {
+    style.width = props.width
+  }
+
+  if (props.height) {
+    style.height = props.height
   }
 
   return (

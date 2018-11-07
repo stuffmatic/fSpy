@@ -4,6 +4,7 @@ import { CalibrationSettings2VP, CalibrationSettings1VP, CalibrationSettingsBase
 import { ImageState } from './image-state'
 import { UIState } from './ui-state'
 import { SolverResult } from '../solver/solver-result'
+import { ResultDisplaySettings } from './result-display-settings'
 
 export interface StoreState {
   globalSettings: GlobalSettings
@@ -19,5 +20,6 @@ export interface StoreState {
   image: ImageState
 
   solverResult: SolverResult
+  resultDisplaySettings: ResultDisplaySettings
   uiState: UIState
 }

@@ -6,6 +6,7 @@ import { AppAction, loadState, setProjectFilePath } from '../actions'
 import { Dispatch } from 'react-redux'
 import { loadImage, resourcePath } from './util'
 import { remote } from 'electron'
+import { defaultResultDisplaySettings } from '../defaults/result-display-settings'
 
 export default class ProjectFile {
   static readonly EXAMPLE_PROJECT_FILENAME = 'example.fspy'
@@ -27,7 +28,8 @@ export default class ProjectFile {
       controlPointsStateBase: storeState.controlPointsStateBase,
       controlPointsState1VP: storeState.controlPointsState1VP,
       controlPointsState2VP: storeState.controlPointsState2VP,
-      cameraParameters: storeState.solverResult.cameraParameters
+      cameraParameters: storeState.solverResult.cameraParameters,
+      resultDisplaySettings: storeState.resultDisplaySettings
     }
   }
 
@@ -71,7 +73,7 @@ export default class ProjectFile {
 
   static load(path: string, dispatch: Dispatch<AppAction>, isExampleProject: boolean) {
     if (!this.isProjectFile(path)) {
-      remote.dialog.showErrorBox(
+      remote.dialog.showErrorBox(// TODO: proper modal
         'Failed to load project',
         'This does not appear to be a valid project file'
       )
@@ -80,7 +82,7 @@ export default class ProjectFile {
       try {
         buffer = readFileSync(path)
       } catch {
-        remote.dialog.showErrorBox(
+        remote.dialog.showErrorBox(// TODO: proper modal
           'Failed to load image data',
           'Could not load the image data contained in the project file'
         )
@@ -90,9 +92,9 @@ export default class ProjectFile {
       let headerSize = 16
       let projectFileVersion = buffer.readUInt32LE(4)
       if (projectFileVersion != this.PROJECT_FILE_VERSION) {
-        remote.dialog.showErrorBox(
+        remote.dialog.showErrorBox(// TODO: proper modal
           'Failed to load project',
-          'Cannot load project file with version ' + projectFileVersion
+          'Version ' + projectFileVersion + ' project files are not compatible with this version of fSpy.'
         )
       } else {
         let stateStringSize = buffer.readUInt32LE(8)
@@ -107,6 +109,9 @@ export default class ProjectFile {
         let loadedState: SavedState = JSON.parse(stateString)
         if (loadedState.cameraParameters === undefined) {
           loadedState.cameraParameters = null
+        }
+        if (loadedState.resultDisplaySettings === undefined) {
+          loadedState.resultDisplaySettings = defaultResultDisplaySettings
         }
         if (imageBuffer) {
           // There is image data in the project file. Load the image and then load
