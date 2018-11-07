@@ -69,24 +69,6 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
       return null
     }
 
-    let cameraData = this.props.calibrationSettings.cameraData
-    let sensorWidth = cameraData.customSensorWidth
-    let sensorHeight = cameraData.customSensorHeight
-    if (cameraData.presetId) {
-      let preset = cameraPresets[cameraData.presetId]
-      sensorWidth = preset.sensorWidth
-      sensorHeight = preset.sensorHeight
-    }
-    let sensorAspectRatio = sensorHeight > 0 ? sensorWidth / sensorHeight : 1
-    let absoluteFocalLength = 0
-    if (sensorAspectRatio > 1) {
-      // wide sensor.
-      absoluteFocalLength = 0.5 * sensorWidth * cameraParameters.relativeFocalLength
-    } else {
-      // tall sensor
-      absoluteFocalLength = 0.5 * sensorHeight * cameraParameters.relativeFocalLength
-    }
-
     return (
       <div>
         <div className='panel-section bottom-border'>
@@ -118,20 +100,7 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
         </div>
         { this.renderOrientationSection() }
         { this.renderPrincipalPointSection() }
-        <div className='panel-section bottom-border'>
-          <div className='panel-group-title'>Camera data</div>
-          <FocalLengthForm
-            presetSelectionDisabled={this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint}
-            focalLengthInputDisabled={true}
-            absoluteFocalLength={absoluteFocalLength}
-            cameraData={cameraData}
-            onAbsoluteFocalLengthChange={(_: number) => {
-              // setting focal length not allowed in result panel
-            }}
-            onCameraPresetChange={this.props.onCameraPresetChange}
-            onSensorSizeChange={this.props.onSensorSizeChange}
-          />
-        </div>
+        { this.renderFocalLengthSection() }
         {this.renderWarnings()}
       </div>
     )
@@ -255,6 +224,52 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
           <TableRow
             title={'y'}
             value={displayPosition.y}
+          />
+        </div>
+    )
+  }
+
+  private renderFocalLengthSection() {
+    let cameraParameters = this.props.solverResult.cameraParameters
+    if (!cameraParameters) {
+      return null
+    }
+
+    if (this.props.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint) {
+      return null
+    }
+
+    let cameraData = this.props.calibrationSettings.cameraData
+    let sensorWidth = cameraData.customSensorWidth
+    let sensorHeight = cameraData.customSensorHeight
+    if (cameraData.presetId) {
+      let preset = cameraPresets[cameraData.presetId]
+      sensorWidth = preset.sensorWidth
+      sensorHeight = preset.sensorHeight
+    }
+    let sensorAspectRatio = sensorHeight > 0 ? sensorWidth / sensorHeight : 1
+    let absoluteFocalLength = 0
+    if (sensorAspectRatio > 1) {
+      // wide sensor.
+      absoluteFocalLength = 0.5 * sensorWidth * cameraParameters.relativeFocalLength
+    } else {
+      // tall sensor
+      absoluteFocalLength = 0.5 * sensorHeight * cameraParameters.relativeFocalLength
+    }
+
+    return (
+      <div className='panel-section bottom-border'>
+          <div className='panel-group-title'>Focal length</div>
+          <FocalLengthForm
+            presetSelectionDisabled={false}
+            focalLengthInputDisabled={true}
+            absoluteFocalLength={absoluteFocalLength}
+            cameraData={cameraData}
+            onAbsoluteFocalLengthChange={(_: number) => {
+              // setting focal length not allowed in result panel
+            }}
+            onCameraPresetChange={this.props.onCameraPresetChange}
+            onSensorSizeChange={this.props.onSensorSizeChange}
           />
         </div>
     )
