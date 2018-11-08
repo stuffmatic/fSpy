@@ -1,14 +1,15 @@
 import { app, BrowserWindow, ipcMain, dialog, Menu } from 'electron'
-import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAsMessage, NewProjectMessage } from './ipc-messages'
+import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAsMessage, NewProjectMessage, ExportMessage, ExportType } from './ipc-messages'
 const path = require('path')
 const url = require('url')
 
 import windowStateKeeper from 'electron-window-state'
-import { SpecifyProjectPathMessage, SetDocumentStateMessage, OpenDroppedProjectMessage } from '../gui/ipc-messages'
+import { SpecifyProjectPathMessage, SpecifyExportPathMessage, SetDocumentStateMessage, OpenDroppedProjectMessage } from '../gui/ipc-messages'
 import { basename, join } from 'path'
 import AppMenuManager from './app-menu-manager'
 import ProjectFile from '../gui/io/project-file'
 import { Palette } from '../gui/style/palette'
+import { openSync, writeSync, closeSync } from 'fs'
 
 let mainWindow: Electron.BrowserWindow | null = null
 
@@ -194,6 +195,18 @@ function createWindow() {
           }
         })
       },
+      onExportJSON: () => {
+        window.webContents.send(
+          ExportMessage.type,
+          new ExportMessage(ExportType.CameraParametersJSON)
+        )
+      },
+      onExportProjectImage: () => {
+        window.webContents.send(
+          ExportMessage.type,
+          new ExportMessage(ExportType.ProjectImage)
+        )
+      },
       onQuit: () => {
         app.quit()
       }
@@ -263,6 +276,7 @@ function createWindow() {
       } else {
         ipcMain.removeAllListeners(SetDocumentStateMessage.type)
         ipcMain.removeAllListeners(SpecifyProjectPathMessage.type)
+        ipcMain.removeAllListeners(SpecifyExportPathMessage.type)
         ipcMain.removeAllListeners(OpenDroppedProjectMessage.type)
         appMenuManager.setOpenImageItemEnabled(false)
         appMenuManager.setSaveAsItemEnabled(false)
@@ -276,7 +290,6 @@ function createWindow() {
 
   ipcMain.on(SpecifyProjectPathMessage.type, (_: any, __: SpecifyProjectPathMessage) => {
     // TODO: DRY
-    console.log('got SpecifyProjectPathMessage, will show save dialog')
     dialog.showSaveDialog(
       window,
       {},
@@ -286,6 +299,21 @@ function createWindow() {
             SaveProjectAsMessage.type,
             new SaveProjectAsMessage(filePath)
           )
+        }
+      }
+    )
+  })
+
+  ipcMain.on(SpecifyExportPathMessage.type, (_: any, message: SpecifyExportPathMessage) => {
+    // TODO: DRY
+    dialog.showSaveDialog(
+      window,
+      {},
+      (filePath: string) => {
+        if (filePath !== undefined) {
+          let file = openSync(filePath, 'w')
+          writeSync(file, message.data)
+          closeSync(file)
         }
       }
     )

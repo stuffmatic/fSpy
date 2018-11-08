@@ -3,7 +3,6 @@
 * camera sensor dimensios vs portrait images
 * hide axis when reference distance is enabled
 * flickering when opening project
-* export menu -> JSON, project image
 * view menu -> view tool panels
 * help menu with link to site
 * add appropriate entries to the macos fSpy menu

@@ -12,11 +12,12 @@ import { UIState } from './types/ui-state'
 import { ImageState } from './types/image-state'
 import { SolverResult } from './solver/solver-result'
 import { ipcRenderer, remote } from 'electron'
-import { NewProjectMessage, OpenProjectMessage, SaveProjectMessage, SaveProjectAsMessage, OpenImageMessage } from '../main/ipc-messages'
+import { NewProjectMessage, OpenProjectMessage, SaveProjectMessage, SaveProjectAsMessage, OpenImageMessage, ExportMessage, ExportType } from '../main/ipc-messages'
 import ProjectFile from './io/project-file'
 import { readFileSync } from 'fs'
-import { SpecifyProjectPathMessage, OpenDroppedProjectMessage } from './ipc-messages'
+import { SpecifyProjectPathMessage, OpenDroppedProjectMessage, SpecifyExportPathMessage } from './ipc-messages'
 import { loadImage } from './io/util'
+import store from './store/store'
 
 interface AppProps {
   uiState: UIState,
@@ -31,6 +32,7 @@ interface AppProps {
   onOpenProjectIPCMessage(filePath: string, isExampleProject: boolean): void
   onSaveProjectAsIPCMessage(filePath: string): void
   onOpenImageIPCMessage(imagePath: string): void
+  onExportIPCMessage(exportType: ExportType): void
 }
 
 class App extends React.PureComponent<AppProps> {
@@ -119,6 +121,11 @@ class App extends React.PureComponent<AppProps> {
     ipcRenderer.on(OpenImageMessage.type, (_: any, message: OpenImageMessage) => {
       this.props.onOpenImageIPCMessage(message.filePath)
     })
+
+    ipcRenderer.on(ExportMessage.type, (_: any, message: ExportMessage) => {
+      this.props.onExportIPCMessage(message.exportType)
+    })
+
   }
 }
 
@@ -181,6 +188,28 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     },
     onOpenExampleProjectIPCMessage: () => {
       ProjectFile.loadExample(dispatch)
+    },
+    onExportIPCMessage: (exportType: ExportType) => {
+      let dataToExport: any | null = null
+      const storeState: StoreState = store.getState()
+      switch (exportType) {
+        case ExportType.CameraParametersJSON:
+          const cameraParameters = storeState.solverResult.cameraParameters
+          if (cameraParameters) {
+            dataToExport = JSON.stringify(cameraParameters, null, 2)
+          }
+          break
+        case ExportType.ProjectImage:
+          dataToExport = storeState.image.data
+          break
+      }
+
+      if (dataToExport) {
+        ipcRenderer.send(
+          SpecifyExportPathMessage.type,
+          new SpecifyExportPathMessage(exportType, dataToExport)
+        )
+      }
     }
   }
 }

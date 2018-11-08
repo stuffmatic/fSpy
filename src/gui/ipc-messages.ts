@@ -1,7 +1,19 @@
+import { ExportType } from '../main/ipc-messages'
+
 // Messages sent from the renderer process to the main process
 
 export class SpecifyProjectPathMessage {
   static readonly type = 'SpecifyProjectPathMessage'
+}
+
+export class SpecifyExportPathMessage {
+  static readonly type = 'SpecifyExportPathMessage'
+  readonly data: any
+  readonly exportType: ExportType
+  constructor(exportType: ExportType, data: any) {
+    this.exportType = exportType
+    this.data = data
+  }
 }
 
 export class OpenDroppedProjectMessage {

@@ -8,6 +8,8 @@ export interface AppMenuCallbacks {
   onOpenImage(): void
   onOpenExampleProject(): void
   onQuit(): void
+  onExportJSON(): void
+  onExportProjectImage(): void
 }
 
 export default class AppMenuManager {
@@ -84,7 +86,25 @@ export default class AppMenuManager {
       openImageItem,
       { type: 'separator' },
       saveItem,
-      saveAsItem
+      saveAsItem,
+      { type: 'separator' },
+      {
+        label: 'Export',
+        submenu: [
+          {
+            label: 'JSON',
+            click: () => {
+              this.callbacks.onExportJSON()
+            }
+          },
+          {
+            label: 'Project image',
+            click: () => {
+              this.callbacks.onExportProjectImage()
+            }
+          }
+        ]
+      }
     ]
 
     if (process.platform !== 'darwin') {

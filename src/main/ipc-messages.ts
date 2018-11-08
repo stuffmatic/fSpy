@@ -37,3 +37,17 @@ export class OpenImageMessage {
     this.filePath = filePath
   }
 }
+
+export enum ExportType {
+  CameraParametersJSON,
+  ProjectImage
+}
+
+export class ExportMessage {
+  static readonly type = 'export'
+  readonly exportType: ExportType
+
+  constructor(exportType: ExportType) {
+    this.exportType = exportType
+  }
+}
