@@ -1,13 +1,15 @@
 # Fix
 
-* camera sensor dimensios vs portrait images
+* camera sensor dimensions vs portrait images
+* warn about sensor-image aspect mismatch also in 2 vp mode
+* opt-in focal length display in 2 vp mode
+* fix copy button pressed state
+
 * hide axis when reference distance is enabled
 * flickering when opening project
 * view menu -> view tool panels
 * help menu with link to site
 * add appropriate entries to the macos fSpy menu
-
-# Fix
 
 * Den kraschar när jag vill starta nytt projekt - Linux
 
