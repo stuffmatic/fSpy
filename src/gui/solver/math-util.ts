@@ -169,12 +169,12 @@ export default class MathUtil {
 
   static perspectiveUnproject(
     point: Vector3D,
-    cameraTransform: Transform,
+    viewTransform: Transform,
     principalPoint: Point2D,
     horizontalFieldOfView: number
   ): Vector3D {
     let transform = this.modelViewProjection(
-      cameraTransform,
+      viewTransform,
       principalPoint,
       horizontalFieldOfView
     ).inverted()
@@ -183,12 +183,12 @@ export default class MathUtil {
 
   static perspectiveProject(
     point: Vector3D,
-    cameraTransform: Transform,
+    viewTransform: Transform,
     principalPoint: Point2D,
     horizontalFieldOfView: number
   ): Point2D {
     let projected = this.modelViewProjection(
-      cameraTransform,
+      viewTransform,
       principalPoint,
       horizontalFieldOfView
     ).transformedVector(
@@ -265,7 +265,7 @@ export default class MathUtil {
   }
 
   private static modelViewProjection(
-    cameraTransform: Transform,
+    viewTransform: Transform,
     principalPoint: Point2D,
     horizontalFieldOfView: number
   ): Transform {
@@ -278,6 +278,6 @@ export default class MathUtil {
       [0, 0, -(f + n) / (f - n), -2 * f * n / (f - n)],
       [0, 0, -1, 0]
     ])
-    return cameraTransform.leftMultiplied(projectionTransform)
+    return viewTransform.leftMultiplied(projectionTransform)
   }
 }

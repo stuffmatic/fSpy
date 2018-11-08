@@ -406,13 +406,13 @@ export default class Solver {
     // The intersection of p and rayAnchor give us two coordinate values u0 and v0.
     let rayAnchorStart = MathUtil.perspectiveUnproject(
       new Vector3D(anchorPosition.x, anchorPosition.y, 1),
-      cameraParameters.cameraTransform,
+      cameraParameters.viewTransform,
       cameraParameters.principalPoint,
       cameraParameters.horizontalFieldOfView
     )
     let rayAnchorEnd = MathUtil.perspectiveUnproject(
       new Vector3D(anchorPosition.x, anchorPosition.y, 2),
-      cameraParameters.cameraTransform,
+      cameraParameters.viewTransform,
       cameraParameters.principalPoint,
       cameraParameters.horizontalFieldOfView
     )
@@ -427,13 +427,13 @@ export default class Solver {
     for (let handlePosition of handlePositions) {
       let handleRayStart = MathUtil.perspectiveUnproject(
         new Vector3D(handlePosition.x, handlePosition.y, 1),
-        cameraParameters.cameraTransform,
+        cameraParameters.viewTransform,
         cameraParameters.principalPoint,
         cameraParameters.horizontalFieldOfView
       )
       let handleRayEnd = MathUtil.perspectiveUnproject(
         new Vector3D(handlePosition.x, handlePosition.y, 2),
-        cameraParameters.cameraTransform,
+        cameraParameters.viewTransform,
         cameraParameters.principalPoint,
         cameraParameters.horizontalFieldOfView
       )
@@ -616,9 +616,9 @@ export default class Solver {
     ).multipliedByScalar(this.DEFAULT_CAMERA_DISTANCE_SCALE)
 
     // Set a default translation vector
-    cameraParameters.cameraTransform.matrix[0][3] = origin3D.x
-    cameraParameters.cameraTransform.matrix[1][3] = origin3D.y
-    cameraParameters.cameraTransform.matrix[2][3] = origin3D.z
+    cameraParameters.viewTransform.matrix[0][3] = origin3D.x
+    cameraParameters.viewTransform.matrix[1][3] = origin3D.y
+    cameraParameters.viewTransform.matrix[2][3] = origin3D.z
 
     if (settings.referenceDistanceAxis) {
       // If requested, scale the translation vector so that
@@ -642,9 +642,9 @@ export default class Solver {
       origin3D.multiplyByScalar(scale)
     }
 
-    cameraParameters.cameraTransform.matrix[0][3] = origin3D.x
-    cameraParameters.cameraTransform.matrix[1][3] = origin3D.y
-    cameraParameters.cameraTransform.matrix[2][3] = origin3D.z
+    cameraParameters.viewTransform.matrix[0][3] = origin3D.x
+    cameraParameters.viewTransform.matrix[1][3] = origin3D.y
+    cameraParameters.viewTransform.matrix[2][3] = origin3D.z
   }
 
   /**
@@ -682,6 +682,7 @@ export default class Solver {
 
     let cameraParameters: CameraParameters = {
       principalPoint: { x: 0, y: 0 },
+      viewTransform: new Transform(),
       cameraTransform: new Transform(),
       horizontalFieldOfView: 0,
       verticalFieldOfView: 0,
@@ -755,7 +756,7 @@ export default class Solver {
       return null
     }
 
-    cameraParameters.cameraTransform = axisAssignmentMatrix.leftMultiplied(cameraRotationMatrix)
+    cameraParameters.viewTransform = axisAssignmentMatrix.leftMultiplied(cameraRotationMatrix)
 
     this.computeTranslationVector(
       controlPoints,
@@ -764,6 +765,8 @@ export default class Solver {
       imageHeight,
       cameraParameters
     )
+
+    cameraParameters.cameraTransform = cameraParameters.viewTransform.inverted()
 
     return cameraParameters
   }

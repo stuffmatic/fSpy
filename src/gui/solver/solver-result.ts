@@ -4,7 +4,8 @@ import { Axis } from '../types/calibration-settings'
 
 export interface CameraParameters {
   principalPoint: Point2D
-  cameraTransform: Transform
+  viewTransform: Transform
+  cameraTransform: Transform // the inverse of the view transform
   horizontalFieldOfView: number
   verticalFieldOfView: number
   vanishingPoints: [Point2D, Point2D, Point2D]

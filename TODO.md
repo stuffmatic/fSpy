@@ -1,6 +1,5 @@
 # Fix
 
-* sort out naming of camera transform (or its inverse)
 * camera sensor dimensios vs portrait images
 * hide axis when reference distance is enabled
 * flickering when opening project

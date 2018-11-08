@@ -27,7 +27,7 @@ export default class BlenderExporter extends Exporter {
 
   generateCode(cameraParameters: CameraParameters): string {
     let fov = cameraParameters.horizontalFieldOfView
-    let matrix = cameraParameters.cameraTransform.inverted().matrix
+    let matrix = cameraParameters.viewTransform.inverted().matrix
     let principalPointRelative = CoordinatesUtil.convert(
       cameraParameters.principalPoint,
       ImageCoordinateFrame.ImagePlane,

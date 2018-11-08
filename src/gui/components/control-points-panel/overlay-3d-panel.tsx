@@ -177,9 +177,9 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   }
 
   private get normalizationFactor(): number {
-    let cameraTransform = this.props.cameraParameters.cameraTransform
+    const viewTransform = this.props.cameraParameters.viewTransform
     let fov = this.props.cameraParameters.horizontalFieldOfView
-    let translation = new Vector3D(cameraTransform.matrix[0][3], cameraTransform.matrix[1][3], cameraTransform.matrix[2][3])
+    let translation = new Vector3D(viewTransform.matrix[0][3], viewTransform.matrix[1][3], viewTransform.matrix[2][3])
     let l = translation.length
     let s = Math.atan(0.5 * fov)
     return l * s
@@ -259,7 +259,7 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
   }
 
   private project(point: Vector3D): Point2D {
-    let cameraTransform = this.props.cameraParameters.cameraTransform
+    let viewTransform = this.props.cameraParameters.viewTransform
     let principalPoint = this.props.cameraParameters.principalPoint
     let imageWidth = AABBOps.width(this.props.imageAABB)
     let imageHeight = AABBOps.height(this.props.imageAABB)
@@ -268,7 +268,7 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
     let relativePosition = CoordinatesUtil.convert(
       MathUtil.perspectiveProject(
         point,
-        cameraTransform,
+        viewTransform,
         principalPoint,
         horizontalFieldOfView
       ),
