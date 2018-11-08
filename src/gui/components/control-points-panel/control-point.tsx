@@ -21,7 +21,7 @@ interface ControlPointState {
 export default class ControlPoint extends React.Component<ControlPointProps, ControlPointState> {
 
   readonly HIT_RADIUS = 8
-  readonly RADIUS = 4
+  readonly RADIUS = 3
 
   constructor(props: ControlPointProps) {
     super(props)
