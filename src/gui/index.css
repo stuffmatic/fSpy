@@ -100,3 +100,15 @@ textarea {
 .exporter-instructions-container li {
   padding-bottom: 10px;
 }
+
+.copy-button {
+  background-color: #e8e8e8;
+  color: #909090;
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.copy-button:active {
+  background-color: #c0c0c0;
+}

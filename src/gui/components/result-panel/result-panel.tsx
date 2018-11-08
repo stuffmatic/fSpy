@@ -11,6 +11,7 @@ import Dropdown from '../common/dropdown'
 import { FieldOfViewFormat, OrientationFormat, PrincipalPointFormat, ResultDisplaySettings } from '../../types/result-display-settings'
 import MathUtil from '../../solver/math-util'
 import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util'
+import Button from '../common/button'
 
 interface ResultPanelProps {
   globalSettings: GlobalSettings
@@ -31,6 +32,7 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
     return (
       <div id='right-panel' className='side-panel'>
         {this.renderPanelContents()}
+
       </div>
     )
   }
@@ -41,6 +43,9 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
         <div id='panel-container'>
           {this.renderErrors()}
           {this.renderCameraParameters()}
+          <div className='panel-section'>
+            <Button width='100%' title='Export' onClick={ this.props.onExportClicked } ></Button>
+          </div>
         </div>
       </div>
     )
