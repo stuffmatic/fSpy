@@ -78,6 +78,7 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
             value={this.props.image.width}
           />
           <TableRow
+            isLastRow={true}
             title={'Height'}
             value={this.props.image.height}
           />
@@ -94,6 +95,7 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
             value={cameraParameters.cameraTransform.matrix[1][3]}
           />
           <TableRow
+            isLastRow={true}
             title={'z'}
             value={cameraParameters.cameraTransform.matrix[2][3]}
           />
@@ -124,10 +126,12 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
           onOptionSelected={this.props.onFieldOfViewDisplayFormatChanged}
         />
         <TableRow
+          isFirstRow={true}
           title={'Horiz.'}
           value={fovFactor * this.props.solverResult.cameraParameters.horizontalFieldOfView}
         />
         <TableRow
+          isLastRow={true}
           title={'Vertical'}
           value={fovFactor * this.props.solverResult.cameraParameters.verticalFieldOfView }
         />
@@ -160,6 +164,7 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
             onOptionSelected={this.props.onOrientationDisplayFormatChanged}
           />
           <TableRow
+            isFirstRow={true}
             title={'x'}
             value={components[0]}
           />
@@ -172,6 +177,7 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
             value={components[2]}
           />
           <TableRow
+            isLastRow={true}
             title={displayAxisAngle ? 'Angle' : 'w'}
             value={components[3]}
           />
@@ -218,10 +224,12 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
             onOptionSelected={this.props.onPrincipalPointDisplayFormatChanged}
           />
           <TableRow
+            isFirstRow={true}
             title={'x'}
             value={displayPosition.x}
           />
           <TableRow
+            isLastRow={true}
             title={'y'}
             value={displayPosition.y}
           />

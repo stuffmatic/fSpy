@@ -11,11 +11,12 @@ interface ButtonProps {
 export default function Button(props: ButtonProps) {
 
   let style: any = {
-    width: '135px'
-    /* backgroundColor: props.isSelected ? Palette.white : Palette.gray,
+    width: '135px',
+    backgroundColor: '#e8e8e8',
+    color: '#909090',
     outline: 'none',
     border: 'none',
-    boxShadow: 'none'*/
+    boxShadow: 'none'
   }
 
   if (props.width) {

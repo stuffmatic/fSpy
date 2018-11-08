@@ -141,7 +141,6 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
           <div className='panel-group-title'>
             Camera data
         </div>
-
           <FocalLengthForm
             cameraData={this.props.calibrationSettingsBase.cameraData}
             absoluteFocalLength={this.props.calibrationSettings1VP.absoluteFocalLength}

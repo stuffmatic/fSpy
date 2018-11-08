@@ -71,7 +71,7 @@ export default class FocalLengthForm extends React.PureComponent<FocalLengthForm
       return null
     }
     return (
-      <input style={{ width: '100%' }} type='range' min='10' max='200' value={this.props.absoluteFocalLength} id='myRange' onChange={ (event) => {
+      <input style={{ width: '100%', marginTop: '7px' }} type='range' min='10' max='200' value={this.props.absoluteFocalLength} id='myRange' onChange={ (event) => {
         this.props.onAbsoluteFocalLengthChange(parseFloat(event.target.value))
       }} />
     )

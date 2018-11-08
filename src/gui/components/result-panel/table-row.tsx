@@ -5,13 +5,23 @@ import { clipboard } from 'electron'
 interface TableRowProps {
   title: string
   value: number | null
+  isFirstRow?: boolean
+  isLastRow?: boolean
 }
 
 export default class TableRow extends React.PureComponent<TableRowProps> {
   render() {
+
+    const style: any = { display: 'flex', lineHeight: '24px' }
+    if (this.props.isFirstRow == true) {
+      style.marginTop = '5px'
+    } else if (this.props.isLastRow == true) {
+      style.marginBottom = '-5px'
+    }
+
     return (
-      <div style={{ display: 'flex', lineHeight: '24px' }}>
-        <span style={{ width: '50px' }}>{this.props.title}</span>
+      <div style={ style }>
+        <span style={{ paddingLeft: '2px', width: '46px' }}>{this.props.title}</span>
         <span style={{ fontFamily: 'monospace' }}> {this.valueDisplayString}</span>
         <span style={{ flexGrow: 1, textAlign: 'right' }}>
           <Button width='50px' title='Copy' onClick={ () => {
