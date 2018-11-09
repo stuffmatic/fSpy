@@ -16,18 +16,53 @@ interface ControlPointProps {
 
 interface ControlPointState {
   isDragging: boolean
+  dragPosition: Point2D
+  previousDragPosition: Point2D
+  dragDamping: number
 }
 
 export default class ControlPoint extends React.Component<ControlPointProps, ControlPointState> {
 
   readonly HIT_RADIUS = 8
   readonly RADIUS = 3
+  readonly SHIFT_DRAG_DAMING = 0.1
 
   constructor(props: ControlPointProps) {
     super(props)
 
     this.state = {
-      isDragging: false
+      isDragging: false,
+      dragPosition: { x: 0, y: 0 },
+      previousDragPosition: { x: 0, y: 0 },
+      dragDamping: 1
+    }
+  }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown.bind(this))
+    document.addEventListener('keyup', this.handleKeyUp.bind(this))
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown.bind(this))
+    document.removeEventListener('keyup', this.handleKeyUp.bind(this))
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    if (event.key == 'Shift') {
+      this.setState({
+        ...this.state,
+        dragDamping: this.SHIFT_DRAG_DAMING
+      })
+    }
+  }
+
+  handleKeyUp(event: KeyboardEvent) {
+    if (event.key == 'Shift') {
+      this.setState({
+        ...this.state,
+        dragDamping: 1
+      })
     }
   }
 
@@ -46,17 +81,36 @@ export default class ControlPoint extends React.Component<ControlPointProps, Con
           onDragStart={(event: any) => {
             this.setState({
               ...this.state,
-              isDragging: true
+              isDragging: true,
+              dragPosition: { x: event.target.x(), y: event.target.y() },
+              previousDragPosition: { x: event.target.x(), y: event.target.y() }
             })
-            this.handleDrag(event)
+            this.onDragPositionChanged()
           }}
-          onDragMove={(event: any) => this.handleDrag(event)}
+          onDragMove={(event: any) => {
+            // Compute the drag delta
+            const dx = event.target.x() - this.state.previousDragPosition.x
+            const dy = event.target.y() - this.state.previousDragPosition.y
+            // Compute the new drag position by adding the delta multiplied
+            // by the damping factor
+            const newDragPosition = {
+              x: this.state.dragPosition.x + this.state.dragDamping * dx,
+              y: this.state.dragPosition.y + this.state.dragDamping * dy
+            }
+            this.setState({
+              ...this.state,
+              dragPosition: newDragPosition,
+              previousDragPosition: { x: event.target.x(), y: event.target.y() }
+            })
+            this.onDragPositionChanged()
+          }}
           onDragEnd={(event: any) => {
             this.setState({
               ...this.state,
+              previousDragPosition: { x: event.target.x(), y: event.target.y() },
               isDragging: false
             })
-            this.handleDrag(event)
+            this.onDragPositionChanged()
           }}
         />
         {this.renderVisualRepresentation()}
@@ -99,12 +153,7 @@ export default class ControlPoint extends React.Component<ControlPointProps, Con
     }
   }
 
-  private handleDrag(event: any) {
-    this.props.onControlPointDrag(
-      {
-        x: event.target.x(),
-        y: event.target.y()
-      }
-    )
+  private onDragPositionChanged() {
+    this.props.onControlPointDrag(this.state.dragPosition)
   }
 }
