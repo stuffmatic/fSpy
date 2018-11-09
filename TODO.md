@@ -3,8 +3,9 @@
 * camera sensor dimensions vs portrait images
 * warn about sensor-image aspect mismatch also in 2 vp mode
 * opt-in focal length display in 2 vp mode
-* fix copy button pressed state
 
+* dedicated control point for 3d guide
+* add license info
 * hide axis when reference distance is enabled
 * flickering when opening project
 * view menu -> view tool panels
