@@ -278,7 +278,9 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
             cameraData={cameraData}
             onCameraPresetChange={this.props.onCameraPresetChange}
             onSensorSizeChange={this.props.onSensorSizeChange}
-          />
+          >
+          <TableRow value={absoluteFocalLength} title='Value (mm)' />
+          </CameraPresetForm>
         </div>
     )
   }

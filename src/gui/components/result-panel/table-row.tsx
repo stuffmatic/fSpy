@@ -21,7 +21,7 @@ export default class TableRow extends React.PureComponent<TableRowProps> {
 
     return (
       <div style={ style }>
-        <span style={{ paddingLeft: '2px', width: '46px' }}>{this.props.title}</span>
+        <span style={{ paddingLeft: '2px', width: '80px' }}>{this.props.title}</span>
         <span style={{ fontFamily: 'monospace' }}> {this.valueDisplayString}</span>
         <span style={{ flexGrow: 1, textAlign: 'right' }}>
           <Button width='50px' title='Copy' onClick={ () => {
