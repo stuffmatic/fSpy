@@ -132,7 +132,7 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
         />
         <TableRow
           isFirstRow={true}
-          title={'Horiz.'}
+          title={'Horizontal'}
           value={fovFactor * this.props.solverResult.cameraParameters.horizontalFieldOfView}
         />
         <TableRow
