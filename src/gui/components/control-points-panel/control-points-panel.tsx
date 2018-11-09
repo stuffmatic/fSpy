@@ -21,11 +21,14 @@ import Solver from '../../solver/solver'
 import MathUtil from '../../solver/math-util'
 import AABBOps from '../../solver/aabb-ops'
 import { resourceURL } from '../../io/util'
+import MagnifyingGlass from './magnifying-glass'
 
 interface ControlPointsPanelState {
   width: number | undefined
   height: number | undefined
-  relativePositionTest: Point2D
+  magnifyingGlassPosition: Point2D
+  isDraggingControlPoint: boolean
+  shiftIsDown: boolean
 }
 
 export interface ControlPointsPanelProps {
@@ -59,10 +62,41 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     this.state = {
       width: undefined,
       height: undefined,
-      relativePositionTest: {
-        x: 0.5, y: 0.5
-      }
+      magnifyingGlassPosition: {
+        x: 0, y: 0
+      },
+      isDraggingControlPoint: false,
+      shiftIsDown: false
     }
+  }
+
+  componentDidMount() {
+    document.addEventListener('mouseup', (_) => {
+      this.setState({
+        ...this.state,
+        isDraggingControlPoint: false
+      })
+    })
+    document.addEventListener('keydown', (event) => {
+      if (event.key == 'Shift') {
+        this.setState({
+          ...this.state,
+          shiftIsDown: true
+        })
+      }
+    })
+    document.addEventListener('keyup', (event) => {
+      if (event.key == 'Shift') {
+        this.setState({
+          ...this.state,
+          shiftIsDown: false
+        })
+      }
+    })
+  }
+
+  componentWillUnmount() {
+    //
   }
 
   render() {
@@ -110,13 +144,44 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     )
   }
 
+  // TODO: make private
+  didDragControlPoint(absolutePosition: Point2D, referenceDistanceHandleIndex: number | undefined = undefined) {
+    if (this.state.height) {
+
+      let magnifyingGlassPosition = this.clampedAbsPoint(absolutePosition)
+      if (referenceDistanceHandleIndex !== undefined && this.props.solverResult.cameraParameters) {
+        const cameraParameters = this.props.solverResult.cameraParameters
+        const referenceAxis = this.props.calibrationSettingsBase.referenceDistanceAxis
+        const imageWidth = this.props.imageState.width
+        const imageHeight = this.props.imageState.height
+        if (imageWidth && imageHeight && referenceAxis) {
+          let handlePositions = Solver.referenceDistanceHandlesRelativePositions(
+            this.props.controlPointsStateBase,
+            referenceAxis,
+            cameraParameters.vanishingPoints,
+            cameraParameters.vanishingPointAxes,
+            imageWidth,
+            imageHeight
+          )
+          magnifyingGlassPosition = this.rel2AbsPoint(handlePositions[referenceDistanceHandleIndex])
+        }
+      }
+
+      this.setState({
+        ...this.state,
+        isDraggingControlPoint: true,
+        magnifyingGlassPosition: magnifyingGlassPosition
+      })
+    }
+  }
+
   private renderPlaceholder() {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', marginTop: '50px', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center', alignSelf: 'center' }}>
           <img
             style={{ width: '100px', height: '100px', paddingBottom: '20px' }}
-            src={ resourceURL('icon.svg') }
+            src={resourceURL('icon.svg')}
           />
           <div>Drop an image or project here</div>
         </div>
@@ -130,7 +195,8 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
               border: 'none',
               boxShadow: 'none',
               outline: 'none',
-              backgroundColor: '#374146' }}
+              backgroundColor: '#374146'
+            }}
             onClick={this.props.callbacks.onLoadExampleProject}>
             Load example project
           </button>
@@ -155,7 +221,29 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
             {this.renderCommonControlPoints()}
           </Layer>
         </Stage>
+        {this.renderMagnifyingGlass()}
       </div>
+    )
+  }
+
+  private renderMagnifyingGlass() {
+    if (!this.state.isDraggingControlPoint || !this.state.shiftIsDown) {
+      return null
+    }
+    if (this.props.imageState.width == null || this.props.imageState.height == null) {
+      return null
+    }
+    return (
+      <MagnifyingGlass
+        imageWith={this.props.imageState.width}
+        imageHeight={this.props.imageState.height}
+        imageSrc={this.props.imageState.url}
+        position={ {
+          x: this.state.magnifyingGlassPosition.x,
+          y: this.state.magnifyingGlassPosition.y - this.state.height!
+        }}
+        relativeImagePosition={ this.abs2RelPoint(this.state.magnifyingGlassPosition) }
+      />
     )
   }
 
@@ -211,6 +299,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
           }
           vanishingPoint={this.vanishingPointAbs(0)}
           onControlPointDrag={(lineSegmentIndex: number, pointPairIndex: number, position: Point2D) => {
+            this.didDragControlPoint(position)
             this.props.callbacks.onFirstVanishingPointControlPointDrag(
               lineSegmentIndex,
               pointPairIndex,
@@ -221,6 +310,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
         <OriginControl
           absolutePosition={this.rel2AbsPoint(this.props.controlPointsStateBase.origin)}
           dragCallback={(absolutePosition: Point2D) => {
+            this.didDragControlPoint(absolutePosition)
             this.props.callbacks.onOriginDrag(
               this.abs2RelPoint(absolutePosition)
             )
@@ -341,6 +431,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
           ]
         }
         anchorDragCallback={(position: Point2D) => {
+          this.didDragControlPoint(position)
           this.props.callbacks.onReferenceDistanceAnchorDrag(
             this.abs2RelPoint(position)
           )
@@ -349,6 +440,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
           let dragRel = this.abs2RelPoint(dragPosition, false)
           let a = { x: dragRel.x - positionRel.x, y: dragRel.y - positionRel.y }
           let offset = MathUtil.dot(anchorToVpRel, a)
+          this.didDragControlPoint(dragPosition, handleIndex)
           this.props.callbacks.onReferenceDistanceHandleDrag(
             handleIndex, offset
           )
@@ -368,6 +460,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
           color={this.vanishingPointColor(1)}
           pointPair={this.rel2AbsControlPointPairState(this.props.controlPointsState1VP.horizon)}
           dragCallback={(controlPointIndex: ControlPointPairIndex, position: Point2D) => {
+            this.didDragControlPoint(position)
             this.props.callbacks.onHorizonDrag(
               controlPointIndex,
               this.abs2RelPoint(position)
@@ -379,6 +472,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
           enabled={this.props.calbrationSettings1VP.principalPointMode == PrincipalPointMode1VP.Manual}
           visible={this.props.calbrationSettings1VP.principalPointMode == PrincipalPointMode1VP.Manual}
           dragCallback={(absolutePosition: Point2D) => {
+            this.didDragControlPoint(absolutePosition)
             this.props.callbacks.onPrincipalPointDrag(
               this.abs2RelPoint(absolutePosition)
             )
@@ -424,6 +518,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
             if (this.props.calbrationSettings2VP.quadModeEnabled) {
               // quad mode is enabled. don't allow dragging
             } else {
+              this.didDragControlPoint(position)
               this.props.callbacks.onSecondVanishingPointControlPointDrag(
                 lineSegmentIndex,
                 pointPairIndex,
@@ -454,6 +549,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
         }
         vanishingPoint={this.vanishingPointAbs(2)}
         onControlPointDrag={(lineSegmentIndex: number, pointPairIndex: number, position: Point2D) => {
+          this.didDragControlPoint(position)
           this.props.callbacks.onThirdVanishingPointControlPointDrag(
             lineSegmentIndex,
             pointPairIndex,
@@ -492,6 +588,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
         enabled={this.props.calbrationSettings2VP.principalPointMode == PrincipalPointMode2VP.Manual}
         visible={this.props.calbrationSettings2VP.principalPointMode != PrincipalPointMode2VP.Default}
         dragCallback={(absolutePosition: Point2D) => {
+          this.didDragControlPoint(absolutePosition)
           this.props.callbacks.onPrincipalPointDrag(
             this.abs2RelPoint(absolutePosition)
           )
@@ -563,6 +660,18 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     return {
       x: imageAABB.xMin + point.x * (imageAABB.xMax - imageAABB.xMin),
       y: imageAABB.yMin + point.y * (imageAABB.yMax - imageAABB.yMin)
+    }
+  }
+
+  private clampedAbsPoint(point: Point2D): Point2D {
+    let imageAABB = this.imageAbsoluteAABB()
+    if (!imageAABB) {
+      return { x: 0, y: 0 }
+    }
+
+    return {
+      x: Math.min(Math.max(imageAABB.xMin, point.x), imageAABB.xMax),
+      y: Math.min(Math.max(imageAABB.yMin, point.y), imageAABB.yMax)
     }
   }
 
