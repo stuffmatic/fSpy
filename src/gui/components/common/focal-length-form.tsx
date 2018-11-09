@@ -34,6 +34,11 @@ export default class FocalLengthForm extends React.PureComponent<FocalLengthForm
       focalLengthInputDisabled = true
     }
 
+    let focalLengthValue = this.props.absoluteFocalLength
+    if (presetFocalLength !== undefined) {
+      focalLengthValue = presetFocalLength
+    }
+
     // TODO: check presetSelectionDisabled
     return (
       <div>
@@ -58,20 +63,20 @@ export default class FocalLengthForm extends React.PureComponent<FocalLengthForm
         Focal length <NumericInputField
           precision={2}
           isDisabled={focalLengthInputDisabled}
-          value={(presetFocalLength !== undefined && !focalLengthInputDisabled) ? presetFocalLength : this.props.absoluteFocalLength}
+          value={ focalLengthValue }
           onSubmit={this.props.onAbsoluteFocalLengthChange}
         /> mm
-        { this.renderFocalLengthSlider() }
+        { this.renderFocalLengthSlider(focalLengthValue, presetFocalLength === undefined) }
       </div>
     )
   }
 
-  private renderFocalLengthSlider() {
+  private renderFocalLengthSlider(focalLength: number, sliderIsEnabled: boolean) {
     if (this.props.focalLengthInputDisabled === true) {
       return null
     }
     return (
-      <input style={{ width: '100%', marginTop: '7px' }} type='range' min='10' max='200' value={this.props.absoluteFocalLength} id='myRange' onChange={ (event) => {
+      <input disabled={ !sliderIsEnabled } style={{ width: '100%', marginTop: '7px' }} type='range' min='10' max='200' value={focalLength} id='myRange' onChange={ (event) => {
         this.props.onAbsoluteFocalLengthChange(parseFloat(event.target.value))
       }} />
     )
