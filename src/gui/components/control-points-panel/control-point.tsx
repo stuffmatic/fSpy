@@ -39,16 +39,16 @@ export default class ControlPoint extends React.Component<ControlPointProps, Con
   }
 
   componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown.bind(this))
-    document.addEventListener('keyup', this.handleKeyUp.bind(this))
+    document.addEventListener('keydown', this.handleKeyDown)
+    document.addEventListener('keyup', this.handleKeyUp)
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown.bind(this))
-    document.removeEventListener('keyup', this.handleKeyUp.bind(this))
+    document.removeEventListener('keydown', this.handleKeyDown)
+    document.removeEventListener('keyup', this.handleKeyUp)
   }
 
-  handleKeyDown(event: KeyboardEvent) {
+  handleKeyDown = (event: KeyboardEvent) => {
     if (event.key == 'Shift') {
       this.setState({
         ...this.state,
@@ -57,7 +57,7 @@ export default class ControlPoint extends React.Component<ControlPointProps, Con
     }
   }
 
-  handleKeyUp(event: KeyboardEvent) {
+  handleKeyUp = (event: KeyboardEvent) => {
     if (event.key == 'Shift') {
       this.setState({
         ...this.state,
