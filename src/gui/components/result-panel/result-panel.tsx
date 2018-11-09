@@ -3,7 +3,7 @@ import TableRow from './table-row'
 import BulletList, { BulletListType } from './bullet-list'
 import { ImageState } from '../../types/image-state'
 import { SolverResult } from '../../solver/solver-result'
-import FocalLengthForm from '../common/focal-length-form'
+import CameraPresetForm from '../common/camera-preset-form'
 import { CalibrationSettingsBase } from '../../types/calibration-settings'
 import { cameraPresets } from '../../solver/camera-presets'
 import { GlobalSettings, CalibrationMode } from '../../types/global-settings'
@@ -273,13 +273,9 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
     return (
       <div className='panel-section bottom-border'>
           <div className='panel-group-title'>Focal length</div>
-          <FocalLengthForm
-            focalLengthInputDisabled={true}
+          <CameraPresetForm
             absoluteFocalLength={absoluteFocalLength}
             cameraData={cameraData}
-            onAbsoluteFocalLengthChange={(_: number) => {
-              // setting focal length not allowed in result panel
-            }}
             onCameraPresetChange={this.props.onCameraPresetChange}
             onSensorSizeChange={this.props.onSensorSizeChange}
           />

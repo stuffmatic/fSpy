@@ -7,9 +7,11 @@ import Checkbox from './checkbox'
 import PanelSpacer from './../common/panel-spacer'
 import ReferenceDistanceForm from './reference-distance-form'
 import AxisDropdown from './axis-dropdown'
-import FocalLengthForm from './../common/focal-length-form'
+import CameraPresetForm from './../common/camera-preset-form'
 import Dropdown from '../common/dropdown'
 import { Palette } from '../../style/palette'
+import NumericInputField from '../common/numeric-input-field'
+import { cameraPresets } from '../../solver/camera-presets'
 
 export default class SettingsPanel extends React.PureComponent<SettingsContainerProps> {
   render() {
@@ -106,6 +108,18 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
   }
 
   private render1VPSettings() {
+    const presetId = this.props.calibrationSettingsBase.cameraData.presetId
+    let presetFocalLength: number | undefined
+    if (presetId !== null) {
+      let preset = cameraPresets[presetId]
+      presetFocalLength = preset.focalLength
+    }
+
+    let focalLengthValue = this.props.calibrationSettings1VP.absoluteFocalLength
+    if (presetFocalLength !== undefined) {
+      focalLengthValue = presetFocalLength
+    }
+
     return (
       <div>
         <div className='panel-section'>
@@ -141,13 +155,24 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
           <div className='panel-group-title'>
             Camera data
         </div>
-          <FocalLengthForm
+          <CameraPresetForm
             cameraData={this.props.calibrationSettingsBase.cameraData}
             absoluteFocalLength={this.props.calibrationSettings1VP.absoluteFocalLength}
-            onAbsoluteFocalLengthChange={this.props.onAbsoluteFocalLengthChange1VP}
             onCameraPresetChange={this.props.onCameraPresetChange}
             onSensorSizeChange={this.props.onSensorSizeChange}
-          />
+          >
+            <div>
+            Focal length <NumericInputField
+              precision={2}
+              isDisabled={presetFocalLength !== undefined}
+              value={ focalLengthValue }
+              onSubmit={this.props.onAbsoluteFocalLengthChange1VP}
+            /> mm
+            <input disabled={ presetFocalLength !== undefined } style={{ width: '100%', marginTop: '7px' }} type='range' min='10' max='200' value={focalLengthValue} id='myRange' onChange={ (event) => {
+              this.props.onAbsoluteFocalLengthChange1VP(parseFloat(event.target.value))
+            }} />
+          </div>
+          </CameraPresetForm>
         </div>
       </div>
     )
