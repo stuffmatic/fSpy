@@ -274,7 +274,6 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
       <div className='panel-section bottom-border'>
           <div className='panel-group-title'>Focal length</div>
           <FocalLengthForm
-            presetSelectionDisabled={false}
             focalLengthInputDisabled={true}
             absoluteFocalLength={absoluteFocalLength}
             cameraData={cameraData}

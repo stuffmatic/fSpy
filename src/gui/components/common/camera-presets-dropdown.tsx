@@ -5,7 +5,6 @@ import strings from '../../strings/strings'
 import Dropdown from './dropdown'
 
 export interface CameraPresetsDropdownProps {
-  disabled: boolean
   cameraData: CameraData
   onPresetChanged(presetId: string | null): void
 }
@@ -22,7 +21,6 @@ export default function CameraPresetsDropdown(props: CameraPresetsDropdownProps)
   return (
     <div>
       <Dropdown
-        disabled={props.disabled}
         options={
           ids.map(
             (id: string | null) => {

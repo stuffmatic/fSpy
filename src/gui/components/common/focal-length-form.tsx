@@ -7,7 +7,6 @@ import { cameraPresets } from '../../solver/camera-presets'
 import strings from '../../strings/strings'
 
 export interface FocalLengthFormProps {
-  presetSelectionDisabled?: boolean
   focalLengthInputDisabled?: boolean
   absoluteFocalLength: number
   cameraData: CameraData
@@ -39,23 +38,21 @@ export default class FocalLengthForm extends React.PureComponent<FocalLengthForm
       focalLengthValue = presetFocalLength
     }
 
-    // TODO: check presetSelectionDisabled
     return (
       <div>
         <CameraPresetsDropdown
-          disabled={this.props.presetSelectionDisabled === true}
           cameraData={this.props.cameraData}
           onPresetChanged={this.props.onCameraPresetChange}
         />
         <PanelSpacer />
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         Sensor <NumericInputField
-          isDisabled={presetId !== null || this.props.presetSelectionDisabled}
+          isDisabled={presetId !== null}
           value={sensorWidth}
           onSubmit={(value: number) => { this.props.onSensorSizeChange(value, undefined) }} />
         x
         <NumericInputField
-          isDisabled={presetId !== null || this.props.presetSelectionDisabled}
+          isDisabled={presetId !== null}
           value={sensorHeight}
           onSubmit={(value: number) => { this.props.onSensorSizeChange(undefined, value) }} /> {strings.unitMm}
         </div>
