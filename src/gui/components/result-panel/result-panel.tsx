@@ -290,7 +290,7 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
           onChange={ (enabled: boolean) => { this.props.onDisplayAbsoluteFocalLengthChanged(enabled) } }
         />
         { displayFocalLength ? this.renderCameraPresetForm(absoluteFocalLength, cameraData) : null }
-        { !proportionsMatch ? (<BulletList
+        { !proportionsMatch && displayFocalLength ? (<BulletList
           messages={
             [ strings.imageSensorProportionsMismatch ]
           }
