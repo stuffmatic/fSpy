@@ -4,7 +4,7 @@ import BulletList, { BulletListType } from './bullet-list'
 import { ImageState } from '../../types/image-state'
 import { SolverResult } from '../../solver/solver-result'
 import CameraPresetForm from '../common/camera-preset-form'
-import { CalibrationSettingsBase } from '../../types/calibration-settings'
+import { CalibrationSettingsBase, CameraData } from '../../types/calibration-settings'
 import { cameraPresets } from '../../solver/camera-presets'
 import { GlobalSettings, CalibrationMode } from '../../types/global-settings'
 import Dropdown from '../common/dropdown'
@@ -12,6 +12,7 @@ import { FieldOfViewFormat, OrientationFormat, PrincipalPointFormat, ResultDispl
 import MathUtil from '../../solver/math-util'
 import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util'
 import Button from '../common/button'
+import Checkbox from '../settings-panel/checkbox'
 
 interface ResultPanelProps {
   globalSettings: GlobalSettings
@@ -24,6 +25,7 @@ interface ResultPanelProps {
   onSensorSizeChange(width: number | undefined, height: number | undefined): void
   onFieldOfViewDisplayFormatChanged(displayFormat: FieldOfViewFormat): void
   onOrientationDisplayFormatChanged(displayFormat: OrientationFormat): void
+  onDisplayAbsoluteFocalLengthChanged(enabled: boolean): void
   onPrincipalPointDisplayFormatChanged(displayFormat: PrincipalPointFormat): void
 }
 
@@ -270,10 +272,23 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
       absoluteFocalLength = 0.5 * sensorHeight * cameraParameters.relativeFocalLength
     }
 
+    const displayFocalLength = this.props.resultDisplaySettings.displayAbsoluteFocalLength
+
     return (
       <div className='panel-section bottom-border'>
-          <div className='panel-group-title'>Focal length</div>
-          <CameraPresetForm
+        <Checkbox
+          title='Focal length'
+          isSelected={displayFocalLength}
+          onChange={ (enabled: boolean) => { this.props.onDisplayAbsoluteFocalLengthChanged(enabled) } }
+        />
+        { displayFocalLength ? this.renderCameraPresetForm(absoluteFocalLength, cameraData) : null }
+      </div>
+    )
+  }
+
+  private renderCameraPresetForm(absoluteFocalLength: number, cameraData: CameraData) {
+    return (
+      <CameraPresetForm
             absoluteFocalLength={absoluteFocalLength}
             cameraData={cameraData}
             onCameraPresetChange={this.props.onCameraPresetChange}
@@ -281,7 +296,6 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
           >
           <TableRow value={absoluteFocalLength} title='Value (mm)' />
           </CameraPresetForm>
-        </div>
     )
   }
 

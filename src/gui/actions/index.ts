@@ -57,6 +57,7 @@ export enum ActionTypes {
   SET_ORIENTATION_DISPLAY_FORMAT = 'SET_ORIENTATION_DISPLAY_FORMAT',
   SET_PRINCIPAL_POINT_DISPLAY_FORMAT = 'SET_PRINCIPAL_POINT_DISPLAY_FORMAT',
   SET_FOV_DISPLAY_FORMAT = 'SET_FOV_DISPLAY_FORMAT',
+  SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH = 'SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH',
 
   //
   SET_EXPORT_DIALOG_VISIBILITY = 'SET_EXPORT_DIALOG_VISIBILITY'
@@ -540,6 +541,18 @@ export function setFieldOfViewDisplayFormat(displayFormat: FieldOfViewFormat): S
   }
 }
 
+export interface SetDisplayAbsoluteFocalLength {
+  type: ActionTypes.SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH,
+  displayAbsoluteFocalLength: boolean
+}
+
+export function SetDisplayAbsoluteFocalLength(displayAbsoluteFocalLength: boolean): SetDisplayAbsoluteFocalLength {
+  return {
+    type: ActionTypes.SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH,
+    displayAbsoluteFocalLength: displayAbsoluteFocalLength
+  }
+}
+
 //
 export interface SetExportDialogVisibility {
   type: ActionTypes.SET_EXPORT_DIALOG_VISIBILITY,
@@ -586,6 +599,7 @@ export type AppAction =
   SetOrientationDisplayFormat |
   SetFieldOfViewDisplayFormat |
   SetPrincipalPointDisplayFormat |
+  SetDisplayAbsoluteFocalLength |
   SetExportDialogVisibility
 
 // A list of action types that trigger calibration result calculation
@@ -651,5 +665,6 @@ export const actionTypesSettingNeedsSaveFlag: ActionTypes[] = [
 
   ActionTypes.SET_PRINCIPAL_POINT_DISPLAY_FORMAT,
   ActionTypes.SET_FOV_DISPLAY_FORMAT,
-  ActionTypes.SET_ORIENTATION_DISPLAY_FORMAT
+  ActionTypes.SET_ORIENTATION_DISPLAY_FORMAT,
+  ActionTypes.SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH
 ]

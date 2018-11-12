@@ -23,6 +23,11 @@ export function resultDisplaySettings(state: ResultDisplaySettings | undefined, 
         ...state,
         principalPointFormat: action.displayFormat
       }
+    case ActionTypes.SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH:
+      return {
+        ...state,
+        displayAbsoluteFocalLength: action.displayAbsoluteFocalLength
+      }
   }
 
   return state

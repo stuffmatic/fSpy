@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 
-import { AppAction, setExportDialogVisibility, setCameraPreset, setCameraSensorSize, setFieldOfViewDisplayFormat, setOrientationDisplayFormat, setPrincipalPointDisplayFormat } from '../actions'
+import { AppAction, setExportDialogVisibility, setCameraPreset, setCameraSensorSize, setFieldOfViewDisplayFormat, setOrientationDisplayFormat, setPrincipalPointDisplayFormat, SetDisplayAbsoluteFocalLength } from '../actions'
 
 import { ImageState } from '../types/image-state'
 import { StoreState } from '../types/store-state'
@@ -25,6 +25,7 @@ interface ResultContainerProps {
   onFieldOfViewDisplayFormatChanged(displayFormat: FieldOfViewFormat): void
   onOrientationDisplayFormatChanged(displayFormat: OrientationFormat): void
   onPrincipalPointDisplayFormatChanged(displayFormat: PrincipalPointFormat): void
+  onDisplayAbsoluteFocalLengthChanged(enabled: boolean): void
 }
 
 class ResultContainer extends React.PureComponent<ResultContainerProps> {
@@ -46,6 +47,7 @@ class ResultContainer extends React.PureComponent<ResultContainerProps> {
         onFieldOfViewDisplayFormatChanged={this.props.onFieldOfViewDisplayFormatChanged}
         onOrientationDisplayFormatChanged={this.props.onOrientationDisplayFormatChanged}
         onPrincipalPointDisplayFormatChanged={this.props.onPrincipalPointDisplayFormatChanged}
+        onDisplayAbsoluteFocalLengthChanged={this.props.onDisplayAbsoluteFocalLengthChanged}
       />
     )
   }
@@ -81,6 +83,9 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     },
     onPrincipalPointDisplayFormatChanged: (displayFormat: PrincipalPointFormat) => {
       dispatch(setPrincipalPointDisplayFormat(displayFormat))
+    },
+    onDisplayAbsoluteFocalLengthChanged: (enabled: boolean) => {
+      dispatch(SetDisplayAbsoluteFocalLength(enabled))
     }
   }
 }

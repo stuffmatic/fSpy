@@ -18,4 +18,5 @@ export interface ResultDisplaySettings {
   fieldOfViewFormat: FieldOfViewFormat
   orientationFormat: OrientationFormat
   principalPointFormat: PrincipalPointFormat
+  displayAbsoluteFocalLength: boolean // 2 vp only
 }

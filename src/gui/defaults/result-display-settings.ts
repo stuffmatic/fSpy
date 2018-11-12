@@ -3,5 +3,6 @@ import { ResultDisplaySettings, OrientationFormat, PrincipalPointFormat, FieldOf
 export const defaultResultDisplaySettings: ResultDisplaySettings = {
   orientationFormat: OrientationFormat.AxisAngleDegrees,
   principalPointFormat: PrincipalPointFormat.Absolute,
-  fieldOfViewFormat: FieldOfViewFormat.Degrees
+  fieldOfViewFormat: FieldOfViewFormat.Degrees,
+  displayAbsoluteFocalLength: false
 }
