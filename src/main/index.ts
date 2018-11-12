@@ -149,7 +149,6 @@ function createWindow() {
         )
       },
       onSaveProjectAs: () => {
-        console.log('onSaveProjectAs, will show save dialog')
         dialog.showSaveDialog(
           window,
           {},
