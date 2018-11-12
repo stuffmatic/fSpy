@@ -7,6 +7,7 @@ import { Dispatch } from 'react-redux'
 import { loadImage, resourcePath } from './util'
 import { remote } from 'electron'
 import { defaultResultDisplaySettings } from '../defaults/result-display-settings'
+import { cameraPresets } from '../solver/camera-presets'
 
 export default class ProjectFile {
   static readonly EXAMPLE_PROJECT_FILENAME = 'example.fspy'
@@ -113,6 +114,16 @@ export default class ProjectFile {
         if (loadedState.resultDisplaySettings === undefined) {
           loadedState.resultDisplaySettings = defaultResultDisplaySettings
         }
+
+        // Make sure the stored camera preset still exists. If not, fall back to
+        // custom camera preset
+        const cameraPresetId = loadedState.calibrationSettingsBase.cameraData.presetId
+        if (cameraPresetId) {
+          if (cameraPresets[cameraPresetId] === undefined) {
+            loadedState.calibrationSettingsBase.cameraData.presetId = null
+          }
+        }
+
         if (imageBuffer) {
           // There is image data in the project file. Load the image and then load
           // the state
