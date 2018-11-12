@@ -9,6 +9,7 @@ import CoordinatesUtil, { ImageCoordinateFrame } from './coordinates-util'
 import { SolverResult, CameraParameters } from './solver-result'
 import { defaultSolverResult } from './../defaults/solver-result'
 import { cameraPresets } from './camera-presets'
+import strings from '../strings/strings'
 
 /**
  * The solver handles estimation of focal length and camera orientation
@@ -68,8 +69,8 @@ export default class Solver {
       relativeFocalLength = 2 * absoluteFocalLength / sensorHeight
     }
 
-    if (Math.abs(sensorAspectRatio - imageWidth / imageHeight) > 0.01) { // TODO: choose epsilon
-      result.warnings.push('Image/sensor aspect ratio mismatch')
+    if (!this.imageProportionsMatchSensor(sensorWidth, sensorHeight, imageWidth, imageHeight)) {
+      result.warnings.push(strings.imageSensorProportionsMismatch)
     }
 
     // Compute the input vanishing point in image plane coordinates
@@ -244,6 +245,23 @@ export default class Solver {
     )
 
     return result
+  }
+
+  static imageProportionsMatchSensor(imageWidth: number, imageHeight: number, sensorWidth: number, sensorHeight: number): boolean {
+    if (sensorHeight == 0 || sensorWidth == 0 || imageWidth == 0 || imageHeight == 0) {
+      return false
+    }
+    const epsilon = 0.01
+    const imageAspectRatio = imageWidth / imageHeight
+    const sensorAspectRatio = sensorWidth / sensorHeight
+
+    const imageFitsSensor = Math.abs(sensorAspectRatio - imageAspectRatio) < epsilon
+    const rotated90DegImageFitsSensor = Math.abs(sensorAspectRatio - 1 / imageAspectRatio) < epsilon
+    if (!imageFitsSensor && !rotated90DegImageFitsSensor) {
+      return false
+    }
+
+    return true
   }
 
   /**

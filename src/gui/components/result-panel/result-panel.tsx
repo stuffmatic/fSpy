@@ -13,6 +13,8 @@ import MathUtil from '../../solver/math-util'
 import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util'
 import Button from '../common/button'
 import Checkbox from '../settings-panel/checkbox'
+import Solver from '../../solver/solver'
+import strings from '../../strings/strings'
 
 interface ResultPanelProps {
   globalSettings: GlobalSettings
@@ -273,6 +275,12 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
     }
 
     const displayFocalLength = this.props.resultDisplaySettings.displayAbsoluteFocalLength
+    const proportionsMatch = Solver.imageProportionsMatchSensor(
+      cameraParameters.imageWidth,
+      cameraParameters.imageHeight,
+      sensorWidth,
+      sensorHeight
+    )
 
     return (
       <div className='panel-section bottom-border'>
@@ -282,6 +290,12 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
           onChange={ (enabled: boolean) => { this.props.onDisplayAbsoluteFocalLengthChanged(enabled) } }
         />
         { displayFocalLength ? this.renderCameraPresetForm(absoluteFocalLength, cameraData) : null }
+        { !proportionsMatch ? (<BulletList
+          messages={
+            [ strings.imageSensorProportionsMismatch ]
+          }
+          type={BulletListType.Warnings}
+        />) : null }
       </div>
     )
   }
