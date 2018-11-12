@@ -64,7 +64,7 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
                 Reference distance
               </div>
 
-              <ReferenceDistanceForm // TODO: DRY
+              <ReferenceDistanceForm
                 referenceAxis={this.props.calibrationSettingsBase.referenceDistanceAxis}
                 referenceDistance={this.props.calibrationSettingsBase.referenceDistance}
                 referenceDistanceUnit={this.props.calibrationSettingsBase.referenceDistanceUnit}
@@ -88,14 +88,13 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
               }}
             />
             <PanelSpacer />
-            <input
-              name='imageIsDimmed'
-              type='checkbox'
-              checked={this.props.globalSettings.imageOpacity < 1}
-              onChange={(event: any) => {
-                this.props.onImageOpacityChange(event.target.checked ? 0.2 : 1)
+            <Checkbox
+              title={'Dim image'}
+              isSelected={ this.props.globalSettings.imageOpacity < 1}
+              onChange={(checked: boolean) => {
+                this.props.onImageOpacityChange(checked ? 0.2 : 1)
               }}
-            /> Dim image
+            />
           </div>
         </div>
       </div>

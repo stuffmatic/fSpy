@@ -8,15 +8,18 @@ interface CheckboxProps {
 
 export default function Checkbox(props: CheckboxProps) {
   return (
-    <div>
-      <input
+    <div style={{ display: 'flex' }} >
+      <div>{props.title}</div>
+      <div style={{ flexGrow: 1, textAlign: 'right' }}>
+        <input
         name={props.title}
         type='checkbox'
         checked={props.isSelected}
         onChange={(event: any) => {
           props.onChange(event.target.checked)
         }}
-      /> {props.title}
+      />
+      </div>
     </div>
   )
 }
