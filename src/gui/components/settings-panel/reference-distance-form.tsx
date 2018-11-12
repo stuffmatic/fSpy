@@ -14,33 +14,47 @@ interface ReferenceDistanceFormProps {
   onReferenceDistanceUnitChange(unit: ReferenceDistanceUnit): void
 }
 
-export default function ReferenceDistanceForm(props: ReferenceDistanceFormProps) {
+export default class ReferenceDistanceForm extends React.PureComponent<ReferenceDistanceFormProps> {
 
-  return (
-    <div className='panelSection'>
-        <ReferenceDistanceAxisDropdown
-          selectedAxis={props.referenceAxis}
-          onChange={(axis: Axis | null) => {
-            props.onReferenceAxisChange(axis)
-          }}
-        />
-      <PanelSpacer />
-
-      <div style={{ display: 'flex' }}>
-        <NumericInputField
-          isDisabled={props.referenceAxis == null}
-          valueNotAvailable={props.referenceAxis == null}
-          value={props.referenceDistance}
-          onSubmit={props.onReferenceDistanceChange}
-        />&nbsp;
-        <ReferenceDistanceUnitDropdown
-          disabled={props.referenceAxis == null}
-          selectedUnit={props.referenceAxis == null ? ReferenceDistanceUnit.None : props.referenceDistanceUnit}
-          onChange={(unit: ReferenceDistanceUnit) => {
-            props.onReferenceDistanceUnitChange(unit)
-          }}
-        />
+  render() {
+    return (
+      <div className='panelSection'>
+          <ReferenceDistanceAxisDropdown
+            selectedAxis={this.props.referenceAxis}
+            onChange={(axis: Axis | null) => {
+              this.props.onReferenceAxisChange(axis)
+            }}
+          />
+          { this.renderDistanceInputField() }
       </div>
-    </div>
-  )
+    )
+  }
+
+  private renderDistanceInputField() {
+    if (this.props.referenceAxis == null) {
+      return null
+    }
+
+    return (
+      <div>
+      <PanelSpacer />
+        <div style={{ display: 'flex' }}>
+          <NumericInputField
+            isDisabled={this.props.referenceAxis == null}
+            valueNotAvailable={this.props.referenceAxis == null}
+            value={this.props.referenceDistance}
+            onSubmit={this.props.onReferenceDistanceChange}
+          />&nbsp;
+          <ReferenceDistanceUnitDropdown
+            disabled={this.props.referenceAxis == null}
+            selectedUnit={this.props.referenceAxis == null ? ReferenceDistanceUnit.None : this.props.referenceDistanceUnit}
+            onChange={(unit: ReferenceDistanceUnit) => {
+              this.props.onReferenceDistanceUnitChange(unit)
+            }}
+          />
+        </div>
+      </div>
+    )
+  }
+
 }
