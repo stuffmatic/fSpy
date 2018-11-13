@@ -227,7 +227,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
           x: this.state.magnifyingGlassPosition.x,
           y: this.state.magnifyingGlassPosition.y - this.state.height!
         }}
-        relativeImagePosition={this.abs2RelPoint(this.state.magnifyingGlassPosition)}
+        relativeImagePosition={this.abs2RelPoint(this.state.magnifyingGlassPosition, false)}
       />
     )
   }
