@@ -92,7 +92,7 @@ export default class AppMenuManager {
         label: 'Export',
         submenu: [
           {
-            label: 'JSON',
+            label: 'Camera parameters as JSON',
             click: () => {
               this.callbacks.onExportJSON()
             }
