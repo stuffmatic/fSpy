@@ -20,7 +20,6 @@ import ReferenceDistanceControl from './reference-distance-control'
 import Solver from '../../solver/solver'
 import MathUtil from '../../solver/math-util'
 import AABBOps from '../../solver/aabb-ops'
-import { resourceURL } from '../../io/util'
 import MagnifyingGlass from './magnifying-glass'
 
 interface ControlPointsPanelState {
@@ -119,7 +118,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
         >
           {({ measureRef }) => {
             return (<div id='image-panel' ref={measureRef} >
-              {hasImage ? this.renderImageAndControlPoints(width, height, is1VPMode) : this.renderPlaceholder()}
+              {hasImage ? this.renderImageAndControlPoints(width, height, is1VPMode) : null }
             </div>
             )
           }
@@ -158,37 +157,6 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
         magnifyingGlassPosition: magnifyingGlassPosition
       })
     }
-  }
-
-  private renderPlaceholder() {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', marginTop: '50px', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center', alignSelf: 'center' }}>
-          <img
-            style={{ width: '100px', height: '100px', paddingBottom: '20px' }}
-            src={resourceURL('icon.svg')}
-          />
-          <div>Drop an image or project here</div>
-        </div>
-        <div style={{ alignSelf: 'center' }}>
-          <button
-            style={{
-              color: '#a0a0a0',
-              marginTop: '100px',
-              height: '25px',
-              width: '150px',
-              border: 'none',
-              boxShadow: 'none',
-              outline: 'none',
-              backgroundColor: '#374146'
-            }}
-            onClick={this.props.callbacks.onLoadExampleProject}>
-            Load example project
-          </button>
-        </div>
-
-      </div>
-    )
   }
 
   private renderImageAndControlPoints(

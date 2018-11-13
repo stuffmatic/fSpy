@@ -9,10 +9,8 @@ import Point2D from '../solver/point-2d'
 import { AppAction, setPrincipalPoint, setOrigin, setReferenceDistanceAnchor, adjustHorizon, adjustReferenceDistanceHandle, adjustFirstVanishingPoint, adjustSecondVanishingPoint, adjustThirdVanishingPoint } from '../actions'
 import { CalibrationSettingsBase, CalibrationSettings1VP, CalibrationSettings2VP } from '../types/calibration-settings'
 import { SolverResult } from '../solver/solver-result'
-import ProjectFile from '../io/project-file'
 
 export interface ControlPointsContainerCallbacks {
-  onLoadExampleProject(): void
   onPrincipalPointDrag(position: Point2D): void
   onOriginDrag(position: Point2D): void
   onReferenceDistanceHandleDrag(handleIndex: number, position: number): void
@@ -87,9 +85,6 @@ export function mapStateToProps(state: StoreState) {
 
 export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
   return {
-    onLoadExampleProject: () => {
-      ProjectFile.loadExample(dispatch)
-    },
     onPrincipalPointDrag: (position: Point2D) => {
       dispatch(setPrincipalPoint(position))
     },

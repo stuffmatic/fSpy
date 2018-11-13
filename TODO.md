@@ -1,4 +1,5 @@
 # Fix
+* ~~flickering when opening project (from intro screen)~~
 * bump project file version and clean up load checks
 * use transform() to scale bg image?
 * add license info

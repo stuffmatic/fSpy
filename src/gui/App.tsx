@@ -17,6 +17,7 @@ import { readFileSync } from 'fs'
 import { SpecifyProjectPathMessage, OpenDroppedProjectMessage, SpecifyExportPathMessage } from './ipc-messages'
 import { loadImage } from './io/util'
 import store from './store/store'
+import SplashScreen from './components/splash-screen'
 
 interface AppProps {
   uiState: UIState,
@@ -25,6 +26,7 @@ interface AppProps {
   image: ImageState,
   onImageFileDropped(imagePath: string): void
   onProjectFileDropped(imagePath: string): void
+  onOpenExampleProjectPressed(): void
 
   onNewProjectIPCMessage(): void
   onOpenProjectIPCMessage(filePath: string, isExampleProject: boolean): void
@@ -81,9 +83,10 @@ class App extends React.PureComponent<AppProps> {
     const hasImage = this.props.image.data != null
     return (
       <div id='app-container'>
-        <SettingsContainer isVisible={hasImage && this.props.uiState.sidePanelsAreVisible} />
+        <SettingsContainer isVisible={this.props.uiState.sidePanelsAreVisible} />
         <ControlPointsContainer />
-        <ResultContainer isVisible={hasImage && this.props.uiState.sidePanelsAreVisible} />
+        <ResultContainer isVisible={this.props.uiState.sidePanelsAreVisible} />
+        { !hasImage ? (<SplashScreen onClickedLoadExampleProject={this.props.onOpenExampleProjectPressed} />) : null }
       </div>
     )
   }
@@ -152,6 +155,9 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
         OpenDroppedProjectMessage.type,
         new OpenDroppedProjectMessage(projectPath)
       )
+    },
+    onOpenExampleProjectPressed: () => {
+      ProjectFile.loadExample(dispatch)
     },
     onNewProjectIPCMessage: () => {
       dispatch(loadDefaultState())
