@@ -2,7 +2,6 @@
 
 * don't clamp zoom circle when dragging reference distance handle
 * include camera preset in solver result?
-* align move vp digits
 * bump project file version and clean up load checks
 
 * use transform() to scale bg image?

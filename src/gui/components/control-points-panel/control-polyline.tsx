@@ -62,10 +62,13 @@ export default class ControlPolyline extends React.PureComponent<ControlPolyline
       return null
     }
 
+    // Hacky offset for the 1 digit
+    const xOffset = this.props.number == 1 ? -1 : 0
+
     return numberGlyph(
       this.props.number,
       Palette.white,
-      { x: x, y: y },
+      { x: x + xOffset, y: y },
       7
     )
   }
