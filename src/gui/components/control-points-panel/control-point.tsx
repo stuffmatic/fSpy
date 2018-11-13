@@ -142,7 +142,7 @@ export default class ControlPoint extends React.Component<ControlPointProps, Con
       return (
         <Circle
           listening={false}
-          radius={this.state.isDragging ? 2 : this.RADIUS}
+          radius={this.RADIUS}
           strokeWidth={1.5}
           fill={this.props.fill}
           stroke={this.props.stroke}
