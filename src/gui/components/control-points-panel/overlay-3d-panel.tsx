@@ -41,7 +41,8 @@ interface Overlay3DPanelProps {
   height: number
   imageAABB: AABB
   cameraParameters: CameraParameters
-  globalSettings: GlobalSettings
+  globalSettings: GlobalSettings,
+  referenceDistanceAxis: Axis | null
 }
 
 export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelProps> {
@@ -192,14 +193,29 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
 
     return (
       <Group>
-        {this.renderAxis(Axis.PositiveX, axisLength, Palette.red)}
-        {this.renderAxis(Axis.PositiveY, axisLength, Palette.green)}
-        {this.renderAxis(Axis.PositiveZ, axisLength, Palette.blue)}
+        {this.renderAxis(
+          Axis.PositiveX,
+          axisLength,
+          Palette.red,
+          this.props.referenceDistanceAxis == Axis.PositiveX || this.props.referenceDistanceAxis == Axis.NegativeX
+        )}
+        {this.renderAxis(
+          Axis.PositiveY,
+          axisLength,
+          Palette.green,
+          this.props.referenceDistanceAxis == Axis.PositiveY || this.props.referenceDistanceAxis == Axis.NegativeY
+        )}
+        {this.renderAxis(
+          Axis.PositiveZ,
+          axisLength,
+          Palette.blue,
+          this.props.referenceDistanceAxis == Axis.PositiveZ || this.props.referenceDistanceAxis == Axis.NegativeZ
+        )}
       </Group>
     )
   }
 
-  private renderAxis(axis: Axis, axisLength: number, color: string) {
+  private renderAxis(axis: Axis, axisLength: number, color: string, arrowAndLabelOnly: boolean) {
     let arrowSize = 0.12 * axisLength
     let projectedOrigin = this.project(new Vector3D())
     let endpoint = new Vector3D()
@@ -243,11 +259,11 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
     let labelPosition = this.project(endpoint.multipliedByScalar(1.1))
     return (
       <Group>
-        <Line
+        {arrowAndLabelOnly ? null : (<Line
           strokeWidth={1}
           points={[projectedOrigin.x, projectedOrigin.y, projectedEndpoint.x, projectedEndpoint.y]}
           stroke={color}
-        />
+        />)}
         <Line
           strokeWidth={1}
           points={[arrowWedgeStart.x, arrowWedgeStart.y, projectedEndpoint.x, projectedEndpoint.y, arrowWedgeEnd.x, arrowWedgeEnd.y]}

@@ -240,6 +240,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     }
     return (
       <Overlay3DPanel
+        referenceDistanceAxis={this.props.calibrationSettingsBase.referenceDistanceAxis}
         imageAABB={imageAABB}
         width={this.state.width}
         height={this.state.height}
