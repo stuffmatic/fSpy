@@ -11,8 +11,8 @@ interface MagnifyingGlassProps {
 
 export default class MagnifyingGlass extends React.PureComponent<MagnifyingGlassProps> {
   render() {
-    const zoom = 1
     const diameter = 180
+    const zoom = 20 * diameter / this.props.imageWith
     if (!this.props.imageSrc) {
       return null
     }
@@ -38,6 +38,7 @@ export default class MagnifyingGlass extends React.PureComponent<MagnifyingGlass
           backgroundColor: '#ff0000',
           backgroundRepeat: 'no-repeat',
           backgroundImage: 'url(' + this.props.imageSrc + ')',
+          backgroundSize: 'cover',
           width: zoom * this.props.imageWith + 'px',
           height: zoom * this.props.imageHeight + 'px',
           transform: 'translate(' + xBg + 'px, ' + yBg + 'px)'
