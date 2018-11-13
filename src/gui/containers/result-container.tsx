@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { connect, Dispatch } from 'react-redux'
 
-import { AppAction, setExportDialogVisibility, setCameraPreset, setCameraSensorSize, setFieldOfViewDisplayFormat, setOrientationDisplayFormat, setPrincipalPointDisplayFormat, SetDisplayAbsoluteFocalLength } from '../actions'
+import { AppAction, setCameraPreset, setCameraSensorSize, setFieldOfViewDisplayFormat, setOrientationDisplayFormat, setPrincipalPointDisplayFormat, SetDisplayAbsoluteFocalLength } from '../actions'
 
 import { ImageState } from '../types/image-state'
 import { StoreState } from '../types/store-state'
@@ -19,7 +19,6 @@ interface ResultContainerProps {
   resultDisplaySettings: ResultDisplaySettings
   image: ImageState
 
-  onExportClicked(): void
   onCameraPresetChange(cameraPreset: string | null): void
   onSensorSizeChange(width: number | undefined, height: number | undefined): void
   onFieldOfViewDisplayFormatChanged(displayFormat: FieldOfViewFormat): void
@@ -41,7 +40,6 @@ class ResultContainer extends React.PureComponent<ResultContainerProps> {
         solverResult={this.props.solverResult}
         resultDisplaySettings={this.props.resultDisplaySettings}
         image={this.props.image}
-        onExportClicked={this.props.onExportClicked}
         onCameraPresetChange={this.props.onCameraPresetChange}
         onSensorSizeChange={this.props.onSensorSizeChange}
         onFieldOfViewDisplayFormatChanged={this.props.onFieldOfViewDisplayFormatChanged}
@@ -66,9 +64,6 @@ export function mapStateToProps(state: StoreState) {
 
 export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
   return {
-    onExportClicked: () => {
-      dispatch(setExportDialogVisibility(true))
-    },
     onCameraPresetChange: (cameraPreset: string | null) => {
       dispatch(setCameraPreset(cameraPreset))
     },

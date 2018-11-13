@@ -2,11 +2,10 @@ import * as React from 'react'
 import ControlPointsContainer from './containers/control-points-container'
 import ResultContainer from './containers/result-container'
 import SettingsContainer from './containers/settings-container'
-import ExportDialog from './components/export-dialog/export-dialog'
 
 import { StoreState } from './types/store-state'
 import { Dispatch, connect } from 'react-redux'
-import { AppAction, setExportDialogVisibility, setImage, loadDefaultState } from './actions'
+import { AppAction, setImage, loadDefaultState } from './actions'
 import { GlobalSettings } from './types/global-settings'
 import { UIState } from './types/ui-state'
 import { ImageState } from './types/image-state'
@@ -24,7 +23,6 @@ interface AppProps {
   globalSettings: GlobalSettings,
   solverResult: SolverResult,
   image: ImageState,
-  onExportDialogVisiblityChange(isVisible: boolean): void
   onImageFileDropped(imagePath: string): void
   onProjectFileDropped(imagePath: string): void
 
@@ -83,13 +81,6 @@ class App extends React.PureComponent<AppProps> {
     const hasImage = this.props.image.data != null
     return (
       <div id='app-container'>
-        <ExportDialog
-          isVisible={this.props.uiState.isExportDialogOpen}
-          cameraParameters={this.props.solverResult.cameraParameters}
-          image={this.props.image}
-          onOpen={() => this.props.onExportDialogVisiblityChange(true)}
-          onClose={() => this.props.onExportDialogVisiblityChange(false)}
-        />
         <SettingsContainer isVisible={hasImage && this.props.uiState.sidePanelsAreVisible} />
         <ControlPointsContainer />
         <ResultContainer isVisible={hasImage && this.props.uiState.sidePanelsAreVisible} />
@@ -161,9 +152,6 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
         OpenDroppedProjectMessage.type,
         new OpenDroppedProjectMessage(projectPath)
       )
-    },
-    onExportDialogVisiblityChange: (isVisible: boolean) => {
-      dispatch(setExportDialogVisibility(isVisible))
     },
     onNewProjectIPCMessage: () => {
       dispatch(loadDefaultState())

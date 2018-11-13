@@ -12,11 +12,6 @@ export function uiState(state: UIState | undefined, action: AppAction): UIState 
   // TODO: move these ipc calls somewhere else?
 
   switch (action.type) {
-    case ActionTypes.SET_EXPORT_DIALOG_VISIBILITY:
-      return {
-        ...state,
-        isExportDialogOpen: action.isVisible
-      }
     case ActionTypes.SET_PROJECT_HAS_UNSAVED_CHANGES:
       ipcRenderer.send(
         SetDocumentStateMessage.type,

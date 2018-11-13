@@ -11,7 +11,6 @@ import Dropdown from '../common/dropdown'
 import { FieldOfViewFormat, OrientationFormat, PrincipalPointFormat, ResultDisplaySettings } from '../../types/result-display-settings'
 import MathUtil from '../../solver/math-util'
 import CoordinatesUtil, { ImageCoordinateFrame } from '../../solver/coordinates-util'
-import Button from '../common/button'
 import Checkbox from '../settings-panel/checkbox'
 import Solver from '../../solver/solver'
 import strings from '../../strings/strings'
@@ -22,7 +21,6 @@ interface ResultPanelProps {
   solverResult: SolverResult
   resultDisplaySettings: ResultDisplaySettings
   image: ImageState
-  onExportClicked(): void
   onCameraPresetChange(cameraPreset: string | null): void
   onSensorSizeChange(width: number | undefined, height: number | undefined): void
   onFieldOfViewDisplayFormatChanged(displayFormat: FieldOfViewFormat): void
@@ -47,9 +45,6 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
         <div id='panel-container'>
           {this.renderErrors()}
           {this.renderCameraParameters()}
-          <div className='panel-section'>
-            <Button width='100%' title='Export' onClick={ this.props.onExportClicked } ></Button>
-          </div>
         </div>
       </div>
     )

@@ -57,10 +57,7 @@ export enum ActionTypes {
   SET_ORIENTATION_DISPLAY_FORMAT = 'SET_ORIENTATION_DISPLAY_FORMAT',
   SET_PRINCIPAL_POINT_DISPLAY_FORMAT = 'SET_PRINCIPAL_POINT_DISPLAY_FORMAT',
   SET_FOV_DISPLAY_FORMAT = 'SET_FOV_DISPLAY_FORMAT',
-  SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH = 'SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH',
-
-  //
-  SET_EXPORT_DIALOG_VISIBILITY = 'SET_EXPORT_DIALOG_VISIBILITY'
+  SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH = 'SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH'
 }
 
 export function recalculateCalibrationResult(): ThunkAction<void, StoreState, void, AppAction> {
@@ -553,19 +550,6 @@ export function SetDisplayAbsoluteFocalLength(displayAbsoluteFocalLength: boolea
   }
 }
 
-//
-export interface SetExportDialogVisibility {
-  type: ActionTypes.SET_EXPORT_DIALOG_VISIBILITY,
-  isVisible: boolean
-}
-
-export function setExportDialogVisibility(isVisible: boolean): SetExportDialogVisibility {
-  return {
-    type: ActionTypes.SET_EXPORT_DIALOG_VISIBILITY,
-    isVisible: isVisible
-  }
-}
-
 // Define a type covering all actions
 export type AppAction =
   LoadState |
@@ -599,8 +583,7 @@ export type AppAction =
   SetOrientationDisplayFormat |
   SetFieldOfViewDisplayFormat |
   SetPrincipalPointDisplayFormat |
-  SetDisplayAbsoluteFocalLength |
-  SetExportDialogVisibility
+  SetDisplayAbsoluteFocalLength
 
 // A list of action types that trigger calibration result calculation
 export const actionTypesTriggeringRecalculation: ActionTypes[] = [
