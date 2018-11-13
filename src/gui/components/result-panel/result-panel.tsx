@@ -279,32 +279,34 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
 
     return (
       <div className='panel-section bottom-border'>
-        <Checkbox
+        <div style={{ marginTop: '-2px' }}><Checkbox
           title='Focal length'
           isSelected={displayFocalLength}
           onChange={ (enabled: boolean) => { this.props.onDisplayAbsoluteFocalLengthChanged(enabled) } }
-        />
+        /></div>
         { displayFocalLength ? this.renderCameraPresetForm(absoluteFocalLength, cameraData) : null }
-        { !proportionsMatch && displayFocalLength ? (<BulletList
+        { !proportionsMatch && displayFocalLength ? (<div style={{ marginTop: '5px' }}><BulletList
           messages={
             [ strings.imageSensorProportionsMismatch ]
           }
           type={BulletListType.Warnings}
-        />) : null }
+        /></div>) : null }
       </div>
     )
   }
 
   private renderCameraPresetForm(absoluteFocalLength: number, cameraData: CameraData) {
     return (
+      <div style={{ marginTop: '5px' }}>
       <CameraPresetForm
             absoluteFocalLength={absoluteFocalLength}
             cameraData={cameraData}
             onCameraPresetChange={this.props.onCameraPresetChange}
             onSensorSizeChange={this.props.onSensorSizeChange}
           >
-          <TableRow value={absoluteFocalLength} title='Value (mm)' />
-          </CameraPresetForm>
+        <TableRow value={absoluteFocalLength} title='Value (mm)' />
+      </CameraPresetForm>
+      </div>
     )
   }
 
@@ -313,7 +315,7 @@ export default class ResultPanel extends React.PureComponent<ResultPanelProps> {
       return null
     }
     return (
-      <div className='panel-section top-border'>
+      <div className='panel-section'>
         <BulletList
           messages={
             this.props.solverResult.warnings

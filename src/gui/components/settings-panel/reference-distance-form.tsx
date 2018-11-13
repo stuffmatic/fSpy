@@ -44,14 +44,14 @@ export default class ReferenceDistanceForm extends React.PureComponent<Reference
             valueNotAvailable={this.props.referenceAxis == null}
             value={this.props.referenceDistance}
             onSubmit={this.props.onReferenceDistanceChange}
-          />&nbsp;
-          <ReferenceDistanceUnitDropdown
+          />
+          <span style={{ marginLeft: '8px', width: '100%' }}><ReferenceDistanceUnitDropdown
             disabled={this.props.referenceAxis == null}
             selectedUnit={this.props.referenceAxis == null ? ReferenceDistanceUnit.None : this.props.referenceDistanceUnit}
             onChange={(unit: ReferenceDistanceUnit) => {
               this.props.onReferenceDistanceUnitChange(unit)
             }}
-          />
+          /></span>
         </div>
       </div>
     )

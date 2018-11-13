@@ -1,9 +1,7 @@
 # Fix
-* ~~flickering when opening project (from intro screen)~~
+* add license info
 * bump project file version and clean up load checks
 * use transform() to scale bg image?
-* add license info
-* flickering when opening project
 * view menu -> view tool panels
 * help menu with link to site
 * add appropriate entries to the macos fSpy menu
