@@ -49,15 +49,10 @@ export interface ControlPointsPanelProps {
 
 export default class ControlPointsPanel extends React.Component<ControlPointsPanelProps, ControlPointsPanelState> {
 
-  private previousImageUrl: string | null
-  private imageElement: HTMLImageElement | null
   private readonly pad = 20
 
   constructor(props: ControlPointsPanelProps) {
     super(props)
-
-    this.previousImageUrl = null
-    this.imageElement = null
 
     this.state = {
       width: undefined,
@@ -102,16 +97,6 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
   render() {
     let width = this.state.width
     let height = this.state.height
-
-    if (this.previousImageUrl != this.props.imageState.url) {
-      if (this.props.imageState.url) {
-        this.imageElement = new Image()
-        this.imageElement.src = this.props.imageState.url
-      } else {
-        this.imageElement = null
-      }
-    }
-    this.previousImageUrl = this.props.imageState.url
 
     let hasImage = this.props.imageState.url !== null
 
@@ -238,11 +223,11 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
         imageWith={this.props.imageState.width}
         imageHeight={this.props.imageState.height}
         imageSrc={this.props.imageState.url}
-        position={ {
+        position={{
           x: this.state.magnifyingGlassPosition.x,
           y: this.state.magnifyingGlassPosition.y - this.state.height!
         }}
-        relativeImagePosition={ this.abs2RelPoint(this.state.magnifyingGlassPosition) }
+        relativeImagePosition={this.abs2RelPoint(this.state.magnifyingGlassPosition)}
       />
     )
   }
@@ -267,7 +252,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
 
   private renderImage() {
     let imageAABB = this.imageAbsoluteAABB()
-    if (!imageAABB || !this.imageElement) {
+    if (!imageAABB) {
       return null
     }
 
@@ -603,7 +588,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
     let width = this.state.width
     let height = this.state.height
 
-    if (!this.imageElement || !imageWidth || !imageHeight || !width || !height) {
+    if (!imageWidth || !imageHeight || !width || !height) {
       return null
     }
 
