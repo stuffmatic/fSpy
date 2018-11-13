@@ -28,6 +28,11 @@ export function resultDisplaySettings(state: ResultDisplaySettings | undefined, 
         ...state,
         displayAbsoluteFocalLength: action.displayAbsoluteFocalLength
       }
+    case ActionTypes.LOAD_STATE:
+      return {
+        ...state,
+        ...action.savedState.resultDisplaySettings
+      }
   }
 
   return state
