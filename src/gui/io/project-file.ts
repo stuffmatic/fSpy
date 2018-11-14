@@ -142,6 +142,18 @@ export default class ProjectFile {
           }
         }
 
+        // Fix old files not storing camera preset data
+        if (loadedState.calibrationSettingsBase.cameraData.presetData === undefined) {
+          loadedState.calibrationSettingsBase.cameraData.presetData = null
+          const presetId = loadedState.calibrationSettingsBase.cameraData.presetId
+          if (presetId) {
+            const preset = cameraPresets[presetId]
+            if (preset) {
+              loadedState.calibrationSettingsBase.cameraData.presetData = preset
+            }
+          }
+        }
+
         if (imageBuffer) {
           // There is image data in the project file. Load the image and then load
           // the state

@@ -24,6 +24,7 @@ export const defaultCalibrationSettingsBase: CalibrationSettingsBase = {
   referenceDistanceUnit: ReferenceDistanceUnit.Meters,
   cameraData: {
     presetId: null,
+    presetData: null,
     customSensorWidth: 36,
     customSensorHeight: 24
   },

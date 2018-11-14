@@ -342,13 +342,13 @@ export function setReferenceDistanceAxis(axis: Axis | null): SetReferenceDistanc
 //
 export interface SetCameraPreset {
   type: ActionTypes.SET_CAMERA_PRESET,
-  cameraPreset: string | null
+  cameraPresetId: string | null
 }
 
-export function setCameraPreset(cameraPreset: string | null): SetCameraPreset {
+export function setCameraPreset(cameraPresetId: string | null): SetCameraPreset {
   return {
     type: ActionTypes.SET_CAMERA_PRESET,
-    cameraPreset: cameraPreset
+    cameraPresetId: cameraPresetId
   }
 }
 

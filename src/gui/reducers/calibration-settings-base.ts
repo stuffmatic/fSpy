@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { CalibrationSettingsBase } from '../types/calibration-settings'
+import { CalibrationSettingsBase, CameraData } from '../types/calibration-settings'
 import { defaultCalibrationSettingsBase } from '../defaults/calibration-settings'
 import { ActionTypes, AppAction } from '../actions'
+import { cameraPresets } from '../solver/camera-presets'
 
 export function calibrationSettingsBase(state: CalibrationSettingsBase | undefined, action: AppAction): CalibrationSettingsBase {
   if (state === undefined) {
@@ -42,12 +43,26 @@ export function calibrationSettingsBase(state: CalibrationSettingsBase | undefin
         referenceDistanceUnit: action.unit
       }
     case ActionTypes.SET_CAMERA_PRESET:
+      // Update the preset id
+      let newCameraData: CameraData = {
+        ...state.cameraData,
+        presetId: action.cameraPresetId,
+        presetData: null
+      }
+      // Also store the preset data. Not accessed by fSpy internally
+      // but may come in handy for importers etc
+      if (action.cameraPresetId) {
+        const cameraPreset = cameraPresets[action.cameraPresetId]
+        if (cameraPreset) {
+          newCameraData = {
+            ...newCameraData,
+            presetData: cameraPreset
+          }
+        }
+      }
       return {
         ...state,
-        cameraData: {
-          ...state.cameraData,
-          presetId: action.cameraPreset
-        }
+        cameraData: newCameraData
       }
     case ActionTypes.SET_CAMERA_SENSOR_SIZE:
       let oldCameraData = state.cameraData

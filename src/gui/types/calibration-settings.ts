@@ -1,3 +1,5 @@
+import { CameraPreset } from '../solver/camera-presets'
+
 /**
  * fSpy
  * Copyright (C) 2018 - Per Gantelius
@@ -44,6 +46,7 @@ export enum ReferenceDistanceUnit {
 
 export interface CameraData {
   presetId: string | null
+  presetData: CameraPreset | null
   customSensorWidth: number
   customSensorHeight: number
 }
