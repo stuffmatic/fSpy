@@ -51,6 +51,10 @@ export function resultDisplaySettings(state: ResultDisplaySettings | undefined, 
         ...state,
         ...action.savedState.resultDisplaySettings
       }
+    case ActionTypes.LOAD_DEFAULT_STATE:
+      return {
+        ...defaultResultDisplaySettings
+      }
   }
 
   return state
