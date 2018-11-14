@@ -264,7 +264,7 @@ function createWindow() {
     if (initialOpenMessage) {
       window.webContents.send(
         OpenProjectMessage.type,
-        new OpenProjectMessage(initialOpenMessage.filePath, true)
+        new OpenProjectMessage(initialOpenMessage.filePath, false)
       )
     }
 
