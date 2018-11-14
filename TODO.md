@@ -1,11 +1,7 @@
 # Fix
-* add license info
-* bump project file version and clean up load checks
-* use transform() to scale bg image?
-* view menu -> view tool panels
-* help menu with link to site
-* add appropriate entries to the macos fSpy menu
 * cmd-s should trigger save-as for new project
+* bump project file version and clean up load checks
+* add appropriate entries to the macos fSpy menu
 * Den kraschar när jag vill starta nytt projekt - Linux
 
 # build
@@ -16,9 +12,11 @@
 * name: fSpy instead of fspy
 
 # future
+* use transform() to scale bg image?
+* view menu -> view tool panels
+* help menu with link to site
 * include camera preset in solver result?
 * actions name space
-* opening by double click opens project in example project mode
 * about window?
 * revert to saved
 * full screen mode for projector use
