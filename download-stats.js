@@ -21,10 +21,15 @@ https.get(options, (resp) => {
       let release = releases[i]
       console.log(release.tag_name)
       let assets = release.assets
+      let totalCount = 0
       for (let j = 0; j < assets.length; j++) {
         let asset = assets[j]
         console.log('  ' + asset.name + ', ' + asset.download_count + ' downloads')
+        totalCount += asset.download_count
       }
+      console.log('  -----')
+      console.log('  Total: ' + totalCount)
+      console.log('')
     }
 
   });
