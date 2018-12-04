@@ -1,6 +1,9 @@
+# 1.0.2
+
+* euler angles
+
 # Fix
 * cmd-s should trigger save-as for new project
-* bump project file version and clean up load checks
 * add appropriate entries to the macos fSpy menu
 * Den kraschar när jag vill starta nytt projekt - Linux
 
