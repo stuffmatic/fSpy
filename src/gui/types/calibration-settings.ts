@@ -40,8 +40,13 @@ export enum Axis {
 
 export enum ReferenceDistanceUnit {
   None = 'No unit',
+  Millimeters = 'Millimeters',
+  Centimeters = 'Centimeters',
   Meters = 'Meters',
-  Yards = 'Yards'
+  Kilometers = 'Kilometers',
+  Inches = 'Inches',
+  Feet = 'Feet',
+  Miles = 'Miles'
 }
 
 export interface CameraData {

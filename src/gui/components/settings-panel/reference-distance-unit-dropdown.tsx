@@ -33,14 +33,39 @@ const options = [
     title: ReferenceDistanceUnit.None
   },
   {
+    value: ReferenceDistanceUnit.Millimeters,
+    id: ReferenceDistanceUnit.Millimeters,
+    title: ReferenceDistanceUnit.Millimeters
+  },
+  {
+    value: ReferenceDistanceUnit.Centimeters,
+    id: ReferenceDistanceUnit.Centimeters,
+    title: ReferenceDistanceUnit.Centimeters
+  },
+  {
     value: ReferenceDistanceUnit.Meters,
     id: ReferenceDistanceUnit.Meters,
     title: ReferenceDistanceUnit.Meters
   },
   {
-    value: ReferenceDistanceUnit.Yards,
-    id: ReferenceDistanceUnit.Yards,
-    title: ReferenceDistanceUnit.Yards
+    value: ReferenceDistanceUnit.Kilometers,
+    id: ReferenceDistanceUnit.Kilometers,
+    title: ReferenceDistanceUnit.Kilometers
+  },
+  {
+    value: ReferenceDistanceUnit.Inches,
+    id: ReferenceDistanceUnit.Inches,
+    title: ReferenceDistanceUnit.Inches
+  },
+  {
+    value: ReferenceDistanceUnit.Feet,
+    id: ReferenceDistanceUnit.Feet,
+    title: ReferenceDistanceUnit.Feet
+  },
+  {
+    value: ReferenceDistanceUnit.Miles,
+    id: ReferenceDistanceUnit.Miles,
+    title: ReferenceDistanceUnit.Miles
   }
 ]
 

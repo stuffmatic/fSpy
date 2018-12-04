@@ -26,6 +26,7 @@ import { loadImage, resourcePath } from './util'
 import { remote } from 'electron'
 import { defaultResultDisplaySettings } from '../defaults/result-display-settings'
 import { cameraPresets } from '../solver/camera-presets'
+import { ReferenceDistanceUnit } from '../types/calibration-settings'
 
 export default class ProjectFile {
   static readonly EXAMPLE_PROJECT_FILENAME = 'example.fspy'
@@ -131,6 +132,14 @@ export default class ProjectFile {
         }
         if (loadedState.resultDisplaySettings === undefined) {
           loadedState.resultDisplaySettings = defaultResultDisplaySettings
+        }
+
+        // Earlier versions had yards as a reference distance unit. Switch to feet
+        // if that's the case
+        const distanceUnitString = loadedState.calibrationSettingsBase.referenceDistanceUnit.toString()
+        if (distanceUnitString == 'Yards') {
+          loadedState.calibrationSettingsBase.referenceDistanceUnit = ReferenceDistanceUnit.Feet
+          loadedState.calibrationSettingsBase.referenceDistance *= 3.0 // 3 feet per yard
         }
 
         // Make sure the stored camera preset still exists. If not, fall back to
