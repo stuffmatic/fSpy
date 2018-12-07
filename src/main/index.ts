@@ -28,6 +28,7 @@ import AppMenuManager from './app-menu-manager'
 import ProjectFile from '../gui/io/project-file'
 import { Palette } from '../gui/style/palette'
 import { openSync, writeSync, closeSync } from 'fs'
+import { CLI } from '../cli/cli'
 
 let mainWindow: Electron.BrowserWindow | null = null
 
@@ -426,7 +427,29 @@ function showDiscardChangesDialogIfNeeded(
   }
 }
 
-app.on('ready', () => createWindow())
+app.on('ready', () => {
+  // We're in CLI mode if there is more than one command line argument
+  const args = process.argv
+  let isCli = args && args.length > 1
+
+  // Dev mode checks:
+  if (process.env.DEV != undefined) {
+    // If DEV is set, always show the GUI
+    isCli = false
+  } else if (process.env.DEV_CLI != undefined) {
+    // If DEV_CLI is set, always run in CLI mode
+    isCli = true
+  }
+
+  if (isCli) {
+    // We're in CLI mode. Run the CLI and exit
+    CLI.run(process.argv)
+    process.exit()
+  } else {
+    // We're in GUI mode.
+    createWindow()
+  }
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
