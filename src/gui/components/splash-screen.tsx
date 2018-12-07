@@ -19,6 +19,7 @@
 import React from 'react'
 import { resourceURL } from '../io/util'
 import { Palette } from '../style/palette'
+import { remote } from 'electron'
 
 interface SplashScreenProps {
   onClickedLoadExampleProject(): void
@@ -27,6 +28,7 @@ interface SplashScreenProps {
 export default function SplashScreen(props: SplashScreenProps) {
   return (
     <div style={{ backgroundColor: Palette.imagePanelBackgroundColor, width: '100vw', height: '100vh', position: 'absolute' }}>
+      <div style={{ position: 'absolute', right: '0px', padding: '10px', color: 'white', opacity: 0.1 }}>{ remote.app.getVersion() }</div>
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center', alignSelf: 'center' }}>
           <img
