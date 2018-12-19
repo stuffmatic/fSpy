@@ -441,6 +441,13 @@ app.on('ready', () => {
     isCli = true
   }
 
+  // On macOS, the open-file event seems to use arguments
+  // passed to the app. If the app is lauched in respose to
+  // such an event, don't start in cli mode.
+  if (initialOpenMessage) {
+    isCli = false
+  }
+
   if (isCli) {
     // We're in CLI mode. Run the CLI and exit
     CLI.run(process.argv)
