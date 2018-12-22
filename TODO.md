@@ -1,6 +1,7 @@
-# 1.0.2
+# 1.0.3
 
 * euler angles
+* overwrite warning does not use name with appended .fspy
 
 # Fix
 * cmd-s should trigger save-as for new project
