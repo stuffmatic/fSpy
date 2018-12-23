@@ -69,7 +69,7 @@ export class CLI {
     const imageWidth = parseFloat(imageWidthString)
     const imageHeight = parseFloat(imageHeightString)
 
-    if (imageWidth == undefined || imageHeight == undefined) {
+    if (isNaN(imageWidth) || isNaN(imageHeight)) {
       console.log('Error: got invalid image dimensions')
       return
     }
