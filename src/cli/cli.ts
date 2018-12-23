@@ -49,7 +49,7 @@ export class CLI {
   }
 
   static run(argv: string[]) {
-    const args = minimist(argv.slice(2))
+    const args = minimist(argv)
 
     let hasValidOptions = true
     const imageWidthString = args.w
