@@ -33,6 +33,8 @@ export class CLI {
     console.log('using the GUI. The image data is not used for this process.')
     console.log('Only the image dimensions are required.')
     console.log('')
+    console.log('To show this help text, pass -h or --help as the only option')
+    console.log('')
     console.log('Options (all required)')
     console.log('  -w')
     console.log('     The width of the input image.')

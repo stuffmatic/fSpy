@@ -428,24 +428,17 @@ function showDiscardChangesDialogIfNeeded(
 }
 
 app.on('ready', () => {
-  // We're in CLI mode if there is more than one command line argument
+  // Assume we're in CLI mode if any argument starts
+  // with '-' or equals 'help'
+  let isCli = false
   const args = process.argv
-  let isCli = args && args.length > 1
-
-  // Dev mode checks:
-  if (process.env.DEV != undefined) {
-    // If DEV is set, always show the GUI
-    isCli = false
-  } else if (process.env.DEV_CLI != undefined) {
-    // If DEV_CLI is set, always run in CLI mode
-    isCli = true
-  }
-
-  // On macOS, the open-file event seems to use arguments
-  // passed to the app. If the app is lauched in respose to
-  // such an event, don't start in cli mode.
-  if (initialOpenMessage) {
-    isCli = false
+  for (const arg of args) {
+    if (arg == 'help') {
+      isCli = true
+    }
+    if (arg.startsWith('-')) {
+      isCli = true
+    }
   }
 
   if (isCli) {
