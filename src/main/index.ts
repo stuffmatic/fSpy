@@ -433,11 +433,9 @@ app.on('ready', () => {
   let isCli = false
   const args = process.argv
   for (const arg of args) {
-    if (arg == 'help') {
+    if (['-w', '-h', '-s', '-o', '-h', '--help', 'help'].indexOf(arg) >= 0) {
       isCli = true
-    }
-    if (arg.startsWith('-')) {
-      isCli = true
+      break
     }
   }
 
