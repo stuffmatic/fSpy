@@ -1,8 +1,8 @@
-<p align="center"><img src="logo.png"></p>
-
 ## What is this?
 
 fSpy is an open source, cross platform app for still image camera matching. See [fspy.io](https://fspy.io) for more info. The source code is available under the GPL license.
+
+![fSpy screenshot](screenshot.jpg)
 
 ## Backstory
 
