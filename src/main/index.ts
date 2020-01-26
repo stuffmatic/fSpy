@@ -416,7 +416,7 @@ function showDiscardChangesDialogIfNeeded(
       window!,
       {
         type: 'question',
-        buttons: ['Yes', 'No'],
+        buttons: ['Discard', 'Cancel'],
         title: 'Proceed?',
         message: 'Do you want to discard unsaved changes?'
       }
