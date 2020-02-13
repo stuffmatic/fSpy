@@ -23,10 +23,12 @@ export interface DropdownProps<T> {
   options: DropdownOption<T>[]
   selectedOptionId: string
   disabled?: boolean
+  search?: string
   onOptionSelected(value: T): void
 }
 
 interface DropdownState {
+  char?: string
   menuIsVisible: boolean
 }
 
@@ -125,6 +127,14 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
         break
       }
     }
+    if (this.props.search) {
+      return (
+        <div ref={this.topContainerRef} style={{ ...menuContainerStyle, ...menuTitleStyle }}>
+          {selectedOption !== undefined ? this.renderOptionSearch(selectedOption, -1, true, () => { this.toggleMenu() }) : null }
+          {this.renderMenu()}
+        </div>
+      )
+    }
     return (
       <div ref={this.topContainerRef} style={{ ...menuContainerStyle, ...menuTitleStyle }}>
         {selectedOption !== undefined ? this.renderOption(selectedOption, -1, () => { this.toggleMenu() }) : null}
@@ -150,21 +160,44 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
         display: 'none'
       }
     }
+    if (this.props.search) {
 
-    return (
-      <div style={{ position: 'relative', width: '100%' }}>
-        <div ref={this.scrollContainerRef} style={scrollContainerStyle}>
-          {this.props.options.map((option: DropdownOption<T>, index: number) => {
-            return this.renderOption(option, index, () => { this.onOptionSelected(option.value) })
-          })}
+      return (
+        <div style={{ position: 'relative', width: '100%' }}>
+          <div ref={this.scrollContainerRef} style={scrollContainerStyle}>
+            {this.props.options.map((option: DropdownOption<T>, index: number) => {
+              // Filter out presets that aren't relevant. Non-case sensitive and ignores whitespace.
+              if (this.state.char) {
+                if (option.title.toLowerCase().trim().includes(this.state.char!.toLowerCase().trim())) {
+                  return this.renderOptionSearch(option, index, false, () => { this.onOptionSelected(option) })
+                } else {
+                  // Typescript return compliant
+                  return
+                }
+              } else {
+                return
+              }
+            })}
+          </div>
         </div>
-      </div>
-    )
+      )
+    } else {
+      return (
+        <div style={{ position: 'relative', width: '100%' }}>
+          <div ref={this.scrollContainerRef} style={scrollContainerStyle}>
+            {this.props.options.map((option: DropdownOption<T>, index: number) => {
+
+              return this.renderOption(option, index, () => { this.onOptionSelected(option) })
+            })}
+          </div>
+        </div>
+      )
+    }
   }
 
   private renderOption(option: DropdownOption<T>, index: number, clickHandler: () => void) {
     let markerStyle = {
-      //
+
     }
     if (option.circleColor) {
       if (option.strokeCircle) {
@@ -200,7 +233,9 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
     return (
       <button style={ { ...menuCellStyle, display: 'flex', alignItems: 'center' }} key={index} onClick={(_) => clickHandler()}>
         <div style={{ ...circleStyle, ...markerStyle }} />
-        <div style={{ ...titleStyle, flexGrow: '100' }}>{option.title}</div>
+        <div style={{ ...titleStyle, flexGrow: '100' }}>
+        {option.title}
+        </div>
         <svg style={{ display: 'inline-block', width: 12, height: 5 }}>
           <polyline points={'0,0, 3,3, 6,0'} stroke={ index < 0 ? (this.props.disabled ? Palette.disabledTextColor : Palette.black) : 'none' } fill={ 'none' } />
         </svg>
@@ -208,9 +243,99 @@ export default class Dropdown<T> extends React.PureComponent<DropdownProps<T>, D
     )
   }
 
-  private onOptionSelected(value: T) {
-    this.props.onOptionSelected(value)
+  private renderOptionSearch(option: DropdownOption<T>, index: number, input: boolean, clickHandler: () => void) {
+    let markerStyle = {
+      //
+    }
+    if (option.circleColor) {
+      if (option.strokeCircle) {
+        markerStyle = {
+          ...markerStyle,
+          ...strokedCircleStyle,
+          border: '1px solid ' + option.circleColor
+        }
+      } else {
+        markerStyle = {
+          ...markerStyle,
+          ...filledCircleStyle,
+          backgroundColor: option.circleColor
+        }
+      }
+    } else {
+      markerStyle = {
+        display: 'none'
+      }
+    }
+
+    let titleStyle: any = {
+      display: 'inline-block'
+    }
+
+    if (this.props.disabled) {
+      titleStyle = {
+        ...titleStyle,
+        color: Palette.disabledTextColor
+      }
+    }
+
+    if (input) {
+      return (
+        <button style={ { ...menuCellStyle, display: 'flex', alignItems: 'center' }} key={index} onClick={(_) => this.showMenu()}>
+          <div style={{ ...circleStyle, ...markerStyle }} />
+          <div style={{ ...titleStyle, flexGrow: '100' }}>
+          <input style={ { ...menuCellStyle, display: 'flex', alignItems: 'center' }} type='text' value={this.setChar(option)} placeholder={this.props.search} onChange={(_) => this.keyEvent(_)}/>
+          </div>
+          <svg style={{ display: 'inline-block', width: 12, height: 5 }}>
+            <polyline points={'0,0, 3,3, 6,0'} stroke={ index < 0 ? (this.props.disabled ? Palette.disabledTextColor : Palette.black) : 'none' } fill={ 'none' } />
+          </svg>
+        </button>
+      )
+    }
+
+    return (
+      <button style={ { ...menuCellStyle, display: 'flex', alignItems: 'center' }} key={index} onClick={(_) => clickHandler()}>
+        <div style={{ ...circleStyle, ...markerStyle }} />
+        <div style={{ ...titleStyle, flexGrow: '100' }}>
+        {option.title}
+        </div>
+        <svg style={{ display: 'inline-block', width: 12, height: 5 }}>
+          <polyline points={'0,0, 3,3, 6,0'} stroke={ index < 0 ? (this.props.disabled ? Palette.disabledTextColor : Palette.black) : 'none' } fill={ 'none' } />
+        </svg>
+      </button>
+    )
+  }
+
+  private onOptionSelected(value: DropdownOption<T>) {
+    this.props.onOptionSelected(value.value)
     this.hideMenu()
+    if (this.props.search) {
+      this.setState(
+        {
+          char: value.title
+        }
+      )
+    }
+  }
+
+  private setChar(option: DropdownOption<T>) {
+    if (this.state.char == null) {
+      this.setState(
+        {
+          ...this.state,
+          char: option.title
+        }
+      )
+    }
+    return (this.state.char)
+  }
+
+  private keyEvent(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState(
+      {
+        ...this.state,
+        char: e.currentTarget.value
+      }
+    )
   }
 
   private hideMenu() {
