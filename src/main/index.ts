@@ -101,7 +101,8 @@ function createWindow() {
     backgroundColor: Palette.imagePanelBackgroundColor,
     webPreferences: {
       // Allow loading local files in dev mode
-      webSecurity: process.env.DEV === undefined
+      webSecurity: process.env.DEV === undefined,
+      nodeIntegration: true
     }
   })
 
@@ -234,7 +235,7 @@ function createWindow() {
   // Prevent (macos) zooming
   let webContents = window.webContents
   webContents.on('did-finish-load', () => {
-    webContents.setZoomFactor(1)
+    webContents.zoomFactor = 1
     webContents.setVisualZoomLevelLimits(1, 1)
     webContents.setLayoutZoomLevelLimits(0, 0)
   })
@@ -412,7 +413,7 @@ function showDiscardChangesDialogIfNeeded(
   }
 
   if (documentState.hasUnsavedChanges) {
-    let result = dialog.showMessageBox(
+    let result = dialog.showMessageBoxSync(
       window!,
       {
         type: 'question',

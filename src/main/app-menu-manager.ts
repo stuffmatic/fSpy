@@ -129,13 +129,13 @@ export default class AppMenuManager {
       fileMenuItems.push({ type: 'separator' })
       fileMenuItems.push(quitMenuItem)
     } else {
-      let recentDocumentsSubmenu = {
+      let recentDocumentsSubmenu: Electron.MenuItemConstructorOptions = {
         label: 'Open Recent',
-        role: 'recentdocuments',
+        role: 'recentDocuments',
         submenu: [
           {
             label: 'Clear Recent',
-            role: 'clearrecentdocuments'
+            role: 'clearRecentDocuments'
           }
         ]
       }
@@ -159,7 +159,7 @@ export default class AppMenuManager {
 
     if (process.platform === 'darwin') {
       menus.unshift({
-        label: app.getName(),
+        label: app.name,
         submenu: [
           quitMenuItem
         ]
