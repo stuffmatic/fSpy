@@ -62,11 +62,11 @@ export interface ControlPointsPanelProps {
   controlPointsState2VP: ControlPointsState2VP
 
   solverResult: SolverResult
+
+  applyImagePadding: boolean
 }
 
 export default class ControlPointsPanel extends React.Component<ControlPointsPanelProps, ControlPointsPanelState> {
-
-  private readonly pad = 20
 
   constructor(props: ControlPointsPanelProps) {
     super(props)
@@ -583,7 +583,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
       return null
     }
 
-    let pad = this.pad
+    let pad = this.props.applyImagePadding ? 20 : 0
     let imageAspect = imageWidth / imageHeight
     let aspect = (width - 2 * pad) / (height - 2 * pad)
     let xOffset = pad

@@ -17,7 +17,7 @@
  */
 
 import { app, BrowserWindow, ipcMain, dialog, Menu } from 'electron'
-import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAsMessage, NewProjectMessage, ExportMessage, ExportType } from './ipc-messages'
+import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAsMessage, NewProjectMessage, ExportMessage, ExportType, SetSidePanelVisibilityMessage } from './ipc-messages'
 const path = require('path')
 const url = require('url')
 
@@ -228,6 +228,20 @@ function createWindow() {
       },
       onQuit: () => {
         app.quit()
+      },
+      onEnterFullScreenMode: () => {
+        window.webContents.send(
+          SetSidePanelVisibilityMessage.type,
+          new SetSidePanelVisibilityMessage(false)
+        )
+        window.setFullScreen(true)
+      },
+      onExitFullScreenMode: () => {
+        window.webContents.send(
+          SetSidePanelVisibilityMessage.type,
+          new SetSidePanelVisibilityMessage(true)
+        )
+        window.setFullScreen(false)
       }
     }
   )
@@ -287,6 +301,7 @@ function createWindow() {
   window.loadURL(process.env.DEV ? devUrl : startUrl)
 
   Menu.setApplicationMenu(appMenuManager.menu)
+  appMenuManager.setExitFullScreenItemEnabled(false)
 
   window.on('close', (event: Event) => {
     showDiscardChangesDialogIfNeeded(window, (didCancel: boolean) => {

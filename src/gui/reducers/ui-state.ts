@@ -58,6 +58,11 @@ export function uiState(state: UIState | undefined, action: AppAction): UIState 
         projectHasUnsavedChanges: false,
         projectFilePath: null
       }
+    case ActionTypes.SET_SIDE_PANEL_VISIBILITY:
+      return {
+        ...state,
+        sidePanelsAreVisible: action.panelsAreVisible
+      }
     case ActionTypes.LOAD_STATE:
       ipcRenderer.send(
         SetDocumentStateMessage.type,

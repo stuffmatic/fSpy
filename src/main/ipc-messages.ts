@@ -55,6 +55,15 @@ export class OpenImageMessage {
   }
 }
 
+export class SetSidePanelVisibilityMessage {
+  static readonly type = 'setSidePanelVisibility'
+  readonly panelsAreVisible: boolean
+
+  constructor(panelsAreVisible: boolean) {
+    this.panelsAreVisible = panelsAreVisible
+  }
+}
+
 export enum ExportType {
   CameraParametersJSON,
   ProjectImage

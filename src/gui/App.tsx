@@ -23,13 +23,13 @@ import SettingsContainer from './containers/settings-container'
 
 import { StoreState } from './types/store-state'
 import { Dispatch, connect } from 'react-redux'
-import { AppAction, setImage, loadDefaultState } from './actions'
+import { AppAction, setImage, loadDefaultState, setSidePanelVisibility } from './actions'
 import { GlobalSettings } from './types/global-settings'
 import { UIState } from './types/ui-state'
 import { ImageState } from './types/image-state'
 import { SolverResult } from './solver/solver-result'
 import { ipcRenderer, remote } from 'electron'
-import { NewProjectMessage, OpenProjectMessage, SaveProjectMessage, SaveProjectAsMessage, OpenImageMessage, ExportMessage, ExportType } from '../main/ipc-messages'
+import { NewProjectMessage, OpenProjectMessage, SaveProjectMessage, SaveProjectAsMessage, OpenImageMessage, ExportMessage, ExportType, SetSidePanelVisibilityMessage } from '../main/ipc-messages'
 import ProjectFile from './io/project-file'
 import { readFileSync } from 'fs'
 import { SpecifyProjectPathMessage, OpenDroppedProjectMessage, SpecifyExportPathMessage } from './ipc-messages'
@@ -51,6 +51,7 @@ interface AppProps {
   onSaveProjectAsIPCMessage(filePath: string): void
   onOpenImageIPCMessage(imagePath: string): void
   onExportIPCMessage(exportType: ExportType): void
+  onSetSidePanelVisibilityIPCMessage(panelsAreVisible: boolean): void
 }
 
 class App extends React.PureComponent<AppProps> {
@@ -138,6 +139,9 @@ class App extends React.PureComponent<AppProps> {
       this.props.onExportIPCMessage(message.exportType)
     })
 
+    ipcRenderer.on(SetSidePanelVisibilityMessage.type, (_: any, message: SetSidePanelVisibilityMessage) => {
+      this.props.onSetSidePanelVisibilityIPCMessage(message.panelsAreVisible)
+    })
   }
 }
 
@@ -222,6 +226,9 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
           new SpecifyExportPathMessage(exportType, dataToExport)
         )
       }
+    },
+    onSetSidePanelVisibilityIPCMessage: (panelsAreVisible: boolean) => {
+      dispatch(setSidePanelVisibility(panelsAreVisible))
     }
   }
 }

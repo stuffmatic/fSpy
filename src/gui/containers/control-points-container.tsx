@@ -66,6 +66,7 @@ interface ControlPointsContainerProps {
   controlPointsState1VP: ControlPointsState1VP
   controlPointsState2VP: ControlPointsState2VP
   solverResult: SolverResult
+  applyImagePadding: boolean
 }
 
 class ControlPointsContainer extends React.Component<ControlPointsContainerProps & ControlPointsContainerCallbacks> {
@@ -82,6 +83,7 @@ class ControlPointsContainer extends React.Component<ControlPointsContainerProps
         controlPointsState1VP={this.props.controlPointsState1VP}
         controlPointsState2VP={this.props.controlPointsState2VP}
         solverResult={this.props.solverResult}
+        applyImagePadding={this.props.applyImagePadding}
       />
     )
   }
@@ -97,7 +99,8 @@ export function mapStateToProps(state: StoreState) {
     controlPointsStateBase: state.controlPointsStateBase,
     controlPointsState1VP: state.controlPointsState1VP,
     controlPointsState2VP: state.controlPointsState2VP,
-    solverResult: state.solverResult
+    solverResult: state.solverResult,
+    applyImagePadding: state.uiState.sidePanelsAreVisible
   }
 }
 
