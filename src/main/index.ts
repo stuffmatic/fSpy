@@ -246,14 +246,6 @@ function createWindow() {
     }
   )
 
-  // Prevent (macos) zooming
-  let webContents = window.webContents
-  webContents.on('did-finish-load', () => {
-    webContents.zoomFactor = 1
-    webContents.setVisualZoomLevelLimits(1, 1)
-    webContents.setLayoutZoomLevelLimits(0, 0)
-  })
-
   // Prevent following links, e.g when they are dropped
   // on the app window
   window.webContents.on('will-navigate', ev => {
