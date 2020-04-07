@@ -92,10 +92,15 @@ export default class Solver {
     }
 
     // Compute the input vanishing point in image plane coordinates
+    const vanishingPointStates = [controlPointsBase.firstVanishingPoint]
     let inputVanishingPoints = this.computeVanishingPointsFromControlPoints(
       image,
-      [controlPointsBase.firstVanishingPoint],
+      vanishingPointStates,
       result.errors
+    )
+    this.validateVanishingPointAccuracy(
+      vanishingPointStates,
+      result.warnings
     )
 
     if (result.errors.length > 0) {
@@ -248,6 +253,13 @@ export default class Solver {
       result.errors.push('Invalid vanishing point configuration. Failed to compute focal length.')
       return result
     }
+
+    // Check vanishing point accuracy
+    const vanishingPointStatesToCheck = [controlPointsBase.firstVanishingPoint, secondVanishingPointControlState]
+    if (settings2VP.principalPointMode == PrincipalPointMode2VP.FromThirdVanishingPoint) {
+      vanishingPointStatesToCheck.push(controlPoints2VP.thirdVanishingPoint)
+    }
+    this.validateVanishingPointAccuracy(vanishingPointStatesToCheck, result.warnings)
 
     // compute camera parameters
     result.cameraParameters = this.computeCameraParameters(
@@ -590,6 +602,24 @@ export default class Solver {
       errors.push('No image loaded')
     }
     return errors
+  }
+
+  private static validateVanishingPointAccuracy(
+    controlPointStates: VanishingPointControlState[],
+    warnings: string[]
+  ) {
+    controlPointStates.forEach((controlPointState, stateIndex) => {
+      const line1Direction = MathUtil.normalized(
+        MathUtil.difference(controlPointState.lineSegments[0][1], controlPointState.lineSegments[0][0])
+      )
+      const line2Direction = MathUtil.normalized(
+        MathUtil.difference(controlPointState.lineSegments[1][1], controlPointState.lineSegments[1][0])
+      )
+      const dot = MathUtil.dot(line1Direction, line2Direction)
+      if (Math.abs(dot) > 0.99995) {
+        warnings.push('Near parallel lines for VP ' + (stateIndex + 1))
+      }
+    })
   }
 
   /**
