@@ -16,9 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { createStore, applyMiddleware, AnyAction } from 'redux'
+import { createStore, applyMiddleware, AnyAction, Store } from 'redux'
 import rootReducer from '../reducers/root'
-import { Store } from 'react-redux'
 import { StoreState } from '../types/store-state'
 import thunk from 'redux-thunk'
 import { appMiddleware } from './app-middleware'

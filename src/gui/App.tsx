@@ -22,7 +22,7 @@ import ResultContainer from './containers/result-container'
 import SettingsContainer from './containers/settings-container'
 
 import { StoreState } from './types/store-state'
-import { Dispatch, connect } from 'react-redux'
+import { connect } from 'react-redux'
 import { AppAction, setImage, loadDefaultState, setSidePanelVisibility } from './actions'
 import { GlobalSettings } from './types/global-settings'
 import { UIState } from './types/ui-state'
@@ -36,6 +36,7 @@ import { SpecifyProjectPathMessage, OpenDroppedProjectMessage, SpecifyExportPath
 import { loadImage } from './io/util'
 import store from './store/store'
 import SplashScreen from './components/splash-screen'
+import { Dispatch } from 'redux'
 
 interface AppProps {
   uiState: UIState,
@@ -99,7 +100,7 @@ class App extends React.PureComponent<AppProps> {
   }
 
   render() {
-    const hasImage = this.props.image.data != null
+    const hasImage = this.props.image.data !== null
     return (
       <div id='app-container'>
         <SettingsContainer isVisible={this.props.uiState.sidePanelsAreVisible} />

@@ -20,13 +20,14 @@ import * as React from 'react'
 import { ImageState } from '../types/image-state'
 import { StoreState } from '../types/store-state'
 import { ControlPointsState1VP, ControlPointsState2VP, ControlPointPairIndex, ControlPointsStateBase } from '../types/control-points-state'
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { GlobalSettings } from '../types/global-settings'
 import ControlPointsPanel from '../components/control-points-panel/control-points-panel'
 import Point2D from '../solver/point-2d'
 import { AppAction, setPrincipalPoint, setOrigin, setReferenceDistanceAnchor, adjustHorizon, adjustReferenceDistanceHandle, adjustFirstVanishingPoint, adjustSecondVanishingPoint, adjustThirdVanishingPoint } from '../actions'
 import { CalibrationSettingsBase, CalibrationSettings1VP, CalibrationSettings2VP } from '../types/calibration-settings'
 import { SolverResult } from '../solver/solver-result'
+import { Dispatch } from 'redux'
 
 export interface ControlPointsContainerCallbacks {
   onPrincipalPointDrag(position: Point2D): void

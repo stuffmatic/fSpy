@@ -17,7 +17,7 @@
  */
 
 import * as React from 'react'
-import { connect, Dispatch } from 'react-redux'
+import { connect } from 'react-redux'
 
 import { AppAction, setCameraPreset, setCameraSensorSize, setFieldOfViewDisplayFormat, setOrientationDisplayFormat, setPrincipalPointDisplayFormat, SetDisplayAbsoluteFocalLength } from '../actions'
 
@@ -28,6 +28,7 @@ import { SolverResult } from '../solver/solver-result'
 import { CalibrationSettingsBase } from '../types/calibration-settings'
 import { GlobalSettings } from '../types/global-settings'
 import { FieldOfViewFormat, OrientationFormat, PrincipalPointFormat, ResultDisplaySettings } from '../types/result-display-settings'
+import { Dispatch } from 'redux'
 
 interface ResultContainerProps {
   isVisible: boolean
