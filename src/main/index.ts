@@ -324,6 +324,16 @@ function createWindow() {
     })
   })
 
+  window.on('enter-full-screen', (_: Event) => {
+    appMenuManager.setEnterFullScreenItemEnabled(false)
+    appMenuManager.setExitFullScreenItemEnabled(true)
+  })
+
+  window.on('leave-full-screen', (_: Event) => {
+    appMenuManager.setEnterFullScreenItemEnabled(true)
+    appMenuManager.setExitFullScreenItemEnabled(false)
+  })
+
   ipcMain.on(SpecifyProjectPathMessage.type, (_: any, __: SpecifyProjectPathMessage) => {
     // TODO: DRY
     dialog.showSaveDialog(

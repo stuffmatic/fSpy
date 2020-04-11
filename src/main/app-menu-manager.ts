@@ -158,8 +158,6 @@ export default class AppMenuManager {
           id: 'enter-full-screen',
           accelerator: 'Command+F',
           click: () => {
-            this.setEnterFullScreenItemEnabled(false)
-            this.setExitFullScreenItemEnabled(true)
             this.callbacks.onEnterFullScreenMode()
           }
         },
@@ -168,8 +166,6 @@ export default class AppMenuManager {
           id: 'exit-full-screen',
           accelerator: 'Escape',
           click: () => {
-            this.setEnterFullScreenItemEnabled(true)
-            this.setExitFullScreenItemEnabled(false)
             this.callbacks.onExitFullScreenMode()
           }
         }
