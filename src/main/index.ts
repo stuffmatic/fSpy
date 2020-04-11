@@ -278,6 +278,24 @@ function createWindow() {
         OpenProjectMessage.type,
         new OpenProjectMessage(initialOpenMessage.filePath, false)
       )
+    } else {
+      // Check if an image or project path was passed as an argument
+      const argCount = process.argv.length
+      const openCommand = process.argv[argCount - 2]
+      const filePath = process.argv[argCount - 1]
+      if (openCommand == 'open' && filePath) {
+        if (ProjectFile.isProjectFile(filePath)) {
+          window.webContents.send(
+            OpenProjectMessage.type,
+            new OpenProjectMessage(filePath, false)
+          )
+        } else {
+          window.webContents.send(
+            OpenImageMessage.type,
+            new OpenImageMessage(filePath)
+          )
+        }
+      }
     }
 
     if (process.env.DEV) {
