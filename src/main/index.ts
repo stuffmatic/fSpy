@@ -335,6 +335,8 @@ function createWindow() {
         appMenuManager.setOpenImageItemEnabled(false)
         appMenuManager.setSaveAsItemEnabled(false)
         appMenuManager.setSaveItemEnabled(false)
+        appMenuManager.setEnterFullScreenItemEnabled(false)
+        appMenuManager.setExitFullScreenItemEnabled(false)
         mainWindow = null
         documentState = null
         initialOpenMessage = null
@@ -348,6 +350,10 @@ function createWindow() {
   })
 
   window.on('leave-full-screen', (_: Event) => {
+    window.webContents.send(
+      SetSidePanelVisibilityMessage.type,
+      new SetSidePanelVisibilityMessage(true)
+    )
     appMenuManager.setEnterFullScreenItemEnabled(true)
     appMenuManager.setExitFullScreenItemEnabled(false)
   })
