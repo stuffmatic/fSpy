@@ -30,6 +30,8 @@ import { Palette } from '../gui/style/palette'
 import { openSync, writeSync, closeSync } from 'fs'
 import { CLI } from '../cli/cli'
 
+app.allowRendererProcessReuse = true
+
 let mainWindow: Electron.BrowserWindow | null = null
 
 export interface DocumentState {
