@@ -364,6 +364,7 @@ function createWindow() {
   window.on('enter-full-screen', (_: Event) => {
     appMenuManager.setEnterFullScreenItemEnabled(false)
     appMenuManager.setExitFullScreenItemEnabled(true)
+    window.setMenuBarVisibility(false)
   })
 
   window.on('leave-full-screen', (_: Event) => {
@@ -373,6 +374,7 @@ function createWindow() {
     )
     appMenuManager.setEnterFullScreenItemEnabled(true)
     appMenuManager.setExitFullScreenItemEnabled(false)
+    window.setMenuBarVisibility(true)
   })
 
   ipcMain.on(SpecifyProjectPathMessage.type, (_: any, __: SpecifyProjectPathMessage) => {
