@@ -286,16 +286,31 @@ function createWindow() {
       const openCommand = process.argv[argCount - 2]
       const filePath = process.argv[argCount - 1]
       if (openCommand == 'open' && filePath) {
-        if (ProjectFile.isProjectFile(filePath)) {
-          window.webContents.send(
-            OpenProjectMessage.type,
-            new OpenProjectMessage(filePath, false)
-          )
-        } else {
-          window.webContents.send(
-            OpenImageMessage.type,
-            new OpenImageMessage(filePath)
-          )
+        try {
+          // Make sure the file can be opened before proceeding
+          const fd = openSync(filePath, 'r')
+          closeSync(fd)
+
+          if (ProjectFile.isProjectFile(filePath)) {
+            window.webContents.send(
+              OpenProjectMessage.type,
+              new OpenProjectMessage(filePath, false)
+            )
+          } else {
+            window.webContents.send(
+              OpenImageMessage.type,
+              new OpenImageMessage(filePath)
+            )
+          }
+        } catch (error) {
+          console.log(error)
+          console.log('process.argv:')
+          console.log(process.argv)
+
+          const errorMessage = 'Failed to open \'' + filePath + '\'. ' + error
+          dialog.showMessageBoxSync(window, {
+            message: errorMessage
+          })
         }
       }
     }
