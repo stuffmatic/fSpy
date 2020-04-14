@@ -22,3 +22,8 @@
     * Press F3, search for and select "View camera center" (pressing home should also work). This makes the camera viewport fit the screen.
     * For a more immersive experience, disable overlays and gizmos (button in the upper right corner of the 3D view)
 3. By now, the Blender viewport and camera should match the scene the projector is projectin onto. 
+
+### Notes:
+
+1. When calibrating a projector whith any lens shift it's important to set the Principal Point to "From 3rd vanishing point", otherwise the calibration will not be correct.
+2. There is currently a bug in Blender, when in Render View AND Fullscreen mode AND in Maximize Area (ctrl-alt-space) with **Cycles**: the rendered image is shifted and scaled (see [this issue](https://developer.blender.org/T70800) in the bug tracker). This is **not** a bug whith fSpy's calibration, if you render the image and project it, it will be properly calibrated.
