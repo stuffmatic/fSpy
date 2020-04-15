@@ -39,6 +39,7 @@ export default function CameraPresetsDropdown(props: CameraPresetsDropdownProps)
   return (
     <div>
       <Dropdown
+        search='Search presets'
         options={
           ids.map(
             (id: string | null) => {
