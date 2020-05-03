@@ -48,8 +48,6 @@ textarea {
 
 #app-container {
   display: flex;
-  height: 100vh;
-  overflow: hidden;
 }
 
 #left-panel {
@@ -60,7 +58,6 @@ textarea {
 #panel-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
 }
 
 #panel-top-container {
