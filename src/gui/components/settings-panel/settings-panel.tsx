@@ -22,6 +22,7 @@ import { CalibrationMode, Overlay3DGuide } from '../../types/global-settings'
 import Overlay3DGuideDropdown from './overlay-3d-guide-dropdown'
 import { PrincipalPointMode1VP, PrincipalPointMode2VP } from '../../types/calibration-settings'
 import Checkbox from './checkbox'
+import Slider from './slider'
 import PanelSpacer from './../common/panel-spacer'
 import ReferenceDistanceForm from './reference-distance-form'
 import AxisDropdown from './axis-dropdown'
@@ -106,11 +107,14 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
               }}
             />
             <PanelSpacer />
-            <Checkbox
-              title={'Dim image'}
-              isSelected={ this.props.globalSettings.imageOpacity < 1}
-              onChange={(checked: boolean) => {
-                this.props.onImageOpacityChange(checked ? 0.2 : 1)
+            <Slider
+              title={'Image opacity'}
+              rangeMin={0}
+              rangeMax={1}
+              rangeStep={0.05}
+              value={this.props.globalSettings.imageOpacity}
+              onChange={(value: number) => {
+                this.props.onImageOpacityChange(value)
               }}
             />
           </div>
