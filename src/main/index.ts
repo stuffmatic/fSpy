@@ -263,7 +263,7 @@ function createWindow() {
     }
   })
 
-  window.on('ready-to-show', () => {
+  window.webContents.once('dom-ready', () => {
     refreshTitle(window)
     window.show()
     window.focus()
