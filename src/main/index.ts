@@ -29,6 +29,7 @@ import ProjectFile from '../gui/io/project-file'
 import { Palette } from '../gui/style/palette'
 import { openSync, writeSync, closeSync } from 'fs'
 import { CLI } from '../cli/cli'
+import minimist from 'minimist'
 
 app.allowRendererProcessReuse = true
 
@@ -281,11 +282,14 @@ function createWindow() {
         new OpenProjectMessage(initialOpenMessage.filePath, false)
       )
     } else {
-      // Check if an image or project path was passed as an argument
-      const argCount = process.argv.length
-      const openCommand = process.argv[argCount - 2]
-      const filePath = process.argv[argCount - 1]
-      if (openCommand == 'open' && filePath) {
+      // parse GUI command line arguments
+      const args = minimist(process.argv, {
+        string: 'open',
+        default: { open: null }
+      })
+
+      if (args.open) {
+        const filePath = args.open
         try {
           // Make sure the file can be opened before proceeding
           const fd = openSync(filePath, 'r')
