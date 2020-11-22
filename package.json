@@ -1,6 +1,6 @@
 {
   "name": "fspy",
-  "version": "1.1.0-beta.3",
+  "version": "1.1.0-beta3-cli",
   "main": "build/main.js",
   "homepage": "https://fspy.io",
   "repository": {
@@ -16,8 +16,8 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "@types/electron-window-state": "^2.0.33",
-    "@types/minimist": "^1.2.0",
     "@types/jest": "^23.0.0",
+    "@types/minimist": "^1.2.0",
     "@types/react": "^16.3.16",
     "@types/react-dom": "^16.0.5",
     "@types/react-measure": "^2.0.2",
@@ -59,16 +59,17 @@
     "build-test": "webpack --config webpack.tests.config.js --mode development",
     "pretest": "yarn run build-test",
     "dev-server": "webpack-dev-server --config webpack.config.js --content-base build/  --mode development",
-    "electron-dev": "DEV=true electron ./build/main.js",
+    "electron-dev": "cross-env DEV=true electron ./build/main.js",
     "dist": "electron-builder -mwl",
     "test": "jest",
     "prepublish-release": "yarn build-dist",
     "publish-release": "electron-builder -mwl --publish always"
   },
   "dependencies": {
-    "minimist": "^1.2.0",
+    "cross-env": "^7.0.2",
     "electron-window-state": "^4.1.1",
     "konva": "^2.1.3",
+    "minimist": "^1.2.0",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-konva": "^1.7.4",

@@ -29,6 +29,7 @@ import ProjectFile from '../gui/io/project-file'
 import { Palette } from '../gui/style/palette'
 import { openSync, writeSync, closeSync } from 'fs'
 import { CLI } from '../cli/cli'
+import minimist from 'minimist'
 
 app.allowRendererProcessReuse = true
 
@@ -37,7 +38,8 @@ let mainWindow: Electron.BrowserWindow | null = null
 export interface DocumentState {
   hasUnsavedChanges: boolean
   filePath: string | null,
-  isExampleProject: boolean
+  isExampleProject: boolean,
+  workingDirectory: string | undefined
 }
 
 let documentState: DocumentState | null = null
@@ -70,6 +72,13 @@ function openProject(path: string, window: BrowserWindow) {
     OpenProjectMessage.type,
     new OpenProjectMessage(path, false)
   )
+}
+
+function defaultPath(): string | undefined {
+  if (documentState && documentState.workingDirectory) {
+    return path.normalize(documentState.workingDirectory)
+  }
+  return undefined
 }
 
 function createWindow() {
@@ -137,7 +146,8 @@ function createWindow() {
                   filters: [
                     { name: 'fSpy project files', extensions: ['fspy'] }
                   ],
-                  properties: ['openFile']
+                  properties: ['openFile'],
+                  defaultPath: defaultPath()
                 }
               ).then((result) => {
                 if (!result.canceled) {
@@ -152,7 +162,8 @@ function createWindow() {
                   filters: [
                     { name: 'fSpy project files', extensions: ['fspy'] }
                   ],
-                  properties: ['openFile']
+                  properties: ['openFile'],
+                  defaultPath: defaultPath()
                 }
               ).then((result) => {
                 if (!result.canceled) {
@@ -175,7 +186,9 @@ function createWindow() {
       onSaveProjectAs: () => {
         dialog.showSaveDialog(
           window,
-          {}
+          {
+            defaultPath: defaultPath()
+          }
         ).then((result) => {
           if (!result.canceled && result.filePath !== undefined) {
             window.webContents.send(
@@ -191,6 +204,7 @@ function createWindow() {
         dialog.showOpenDialog(
           window,
           {
+            defaultPath: defaultPath(),
             properties: ['openFile']
           }
         ).then((result) => {
@@ -263,7 +277,7 @@ function createWindow() {
     }
   })
 
-  window.on('ready-to-show', () => {
+  window.webContents.once('dom-ready', () => {
     refreshTitle(window)
     window.show()
     window.focus()
@@ -272,7 +286,8 @@ function createWindow() {
     documentState = {
       hasUnsavedChanges: false,
       filePath: null,
-      isExampleProject: false
+      isExampleProject: false,
+      workingDirectory: undefined
     }
 
     if (initialOpenMessage) {
@@ -281,11 +296,14 @@ function createWindow() {
         new OpenProjectMessage(initialOpenMessage.filePath, false)
       )
     } else {
-      // Check if an image or project path was passed as an argument
-      const argCount = process.argv.length
-      const openCommand = process.argv[argCount - 2]
-      const filePath = process.argv[argCount - 1]
-      if (openCommand == 'open' && filePath) {
+      // parse GUI command line arguments
+      const args = minimist(process.argv, {
+        string: ['open', 'wd'],
+        default: { open: null, wd: undefined }
+      })
+
+      if (args.open) {
+        const filePath = args.open
         try {
           // Make sure the file can be opened before proceeding
           const fd = openSync(filePath, 'r')
@@ -312,6 +330,10 @@ function createWindow() {
             message: errorMessage
           })
         }
+      }
+
+      if (documentState) {
+        documentState.workingDirectory = args.wd
       }
     }
 
@@ -381,7 +403,9 @@ function createWindow() {
     // TODO: DRY
     dialog.showSaveDialog(
       window,
-      {}
+      {
+        defaultPath: defaultPath()
+      }
     ).then((result) => {
       if (!result.canceled && result.filePath) {
         window.webContents.send(
@@ -398,7 +422,9 @@ function createWindow() {
     // TODO: DRY
     dialog.showSaveDialog(
       window,
-      {}
+      {
+        defaultPath: defaultPath()
+      }
     ).then((result) => {
       if (!result.canceled && result.filePath) {
         let file = openSync(result.filePath, 'w')
