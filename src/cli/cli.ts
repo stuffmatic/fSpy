@@ -24,28 +24,35 @@ import Solver from '../gui/solver/solver'
 import { ImageState } from '../gui/types/image-state'
 import { SolverResult } from '../gui/solver/solver-result'
 
+const helpMessage = `\
+Usage:
+  fSpy (-h | --help)
+   Show this help message
+
+  fSpy [--open <imgPath>] [--wd <folderPath>]
+   Open fSpy in GUI mode. Optional arguments to load an image and
+   set a default working directory.
+
+  fSpy -w <width> -h <height> -s <statePath> -o <resultPath>
+   CLI mode. The fSpy CLI is used to compute camera parameters
+   without using the GUI. Image data is not used for this process,
+   only the image dimensions are required.
+
+Options:
+    -w  The width of the input image.
+    -h  The height of the input image.
+    -s  Path to a JSON file with project state data, the shape
+        of which is described by the SavedState interface.
+    -o  A path to write the solver result to. The shape of
+        the data is described by the SolverResult interface.
+--open  A path to an image file for fSpy to load on launch
+  --wd  A path to a folder, for all open/save dialogs to open to
+        by default.
+`
 export class CLI {
 
   static printUsage() {
-    console.log('fSpy CLI')
-    console.log('')
-    console.log('The fSpy CLI is used to compute camera parameters without')
-    console.log('using the GUI. The image data is not used for this process.')
-    console.log('Only the image dimensions are required.')
-    console.log('')
-    console.log('To show this help text, pass -h or --help as the only option')
-    console.log('')
-    console.log('Options (all required)')
-    console.log('  -w')
-    console.log('     The width of the input image.')
-    console.log('  -h')
-    console.log('     The height of the input image.')
-    console.log('  -s')
-    console.log('     Path to a JSON file with project state data, the shape')
-    console.log('     of which is described by the SavedState interface.')
-    console.log('  -o')
-    console.log('     A path to write the solver result to. The shape of')
-    console.log('     the data is described by the SolverResult interface.')
+    console.log(helpMessage)
   }
 
   static run(argv: string[]) {
