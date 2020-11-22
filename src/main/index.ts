@@ -38,7 +38,8 @@ let mainWindow: Electron.BrowserWindow | null = null
 export interface DocumentState {
   hasUnsavedChanges: boolean
   filePath: string | null,
-  isExampleProject: boolean
+  isExampleProject: boolean,
+  workingDirectory: string | undefined
 }
 
 let documentState: DocumentState | null = null
@@ -71,6 +72,13 @@ function openProject(path: string, window: BrowserWindow) {
     OpenProjectMessage.type,
     new OpenProjectMessage(path, false)
   )
+}
+
+function defaultPath(): string | undefined {
+  if (documentState) {
+    return documentState.workingDirectory
+  }
+  return undefined
 }
 
 function createWindow() {
@@ -138,7 +146,8 @@ function createWindow() {
                   filters: [
                     { name: 'fSpy project files', extensions: ['fspy'] }
                   ],
-                  properties: ['openFile']
+                  properties: ['openFile'],
+                  defaultPath: defaultPath()
                 }
               ).then((result) => {
                 if (!result.canceled) {
@@ -153,7 +162,8 @@ function createWindow() {
                   filters: [
                     { name: 'fSpy project files', extensions: ['fspy'] }
                   ],
-                  properties: ['openFile']
+                  properties: ['openFile'],
+                  defaultPath: defaultPath()
                 }
               ).then((result) => {
                 if (!result.canceled) {
@@ -176,7 +186,9 @@ function createWindow() {
       onSaveProjectAs: () => {
         dialog.showSaveDialog(
           window,
-          {}
+          {
+            defaultPath: defaultPath()
+          }
         ).then((result) => {
           if (!result.canceled && result.filePath !== undefined) {
             window.webContents.send(
@@ -192,6 +204,7 @@ function createWindow() {
         dialog.showOpenDialog(
           window,
           {
+            defaultPath: defaultPath(),
             properties: ['openFile']
           }
         ).then((result) => {
@@ -273,7 +286,8 @@ function createWindow() {
     documentState = {
       hasUnsavedChanges: false,
       filePath: null,
-      isExampleProject: false
+      isExampleProject: false,
+      workingDirectory: undefined
     }
 
     if (initialOpenMessage) {
@@ -284,8 +298,8 @@ function createWindow() {
     } else {
       // parse GUI command line arguments
       const args = minimist(process.argv, {
-        string: 'open',
-        default: { open: null }
+        string: ['open', 'wd'],
+        default: { open: null, wd: undefined }
       })
 
       if (args.open) {
@@ -316,6 +330,10 @@ function createWindow() {
             message: errorMessage
           })
         }
+      }
+
+      if (documentState) {
+        documentState.workingDirectory = args.wd
       }
     }
 
@@ -385,7 +403,9 @@ function createWindow() {
     // TODO: DRY
     dialog.showSaveDialog(
       window,
-      {}
+      {
+        defaultPath: defaultPath()
+      }
     ).then((result) => {
       if (!result.canceled && result.filePath) {
         window.webContents.send(
@@ -402,7 +422,9 @@ function createWindow() {
     // TODO: DRY
     dialog.showSaveDialog(
       window,
-      {}
+      {
+        defaultPath: defaultPath()
+      }
     ).then((result) => {
       if (!result.canceled && result.filePath) {
         let file = openSync(result.filePath, 'w')
