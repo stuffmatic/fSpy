@@ -75,8 +75,8 @@ function openProject(path: string, window: BrowserWindow) {
 }
 
 function defaultPath(): string | undefined {
-  if (documentState) {
-    return documentState.workingDirectory
+  if (documentState && documentState.workingDirectory) {
+    return path.normalize(documentState.workingDirectory)
   }
   return undefined
 }
