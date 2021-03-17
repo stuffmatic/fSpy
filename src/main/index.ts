@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { app, BrowserWindow, ipcMain, dialog, Menu } from 'electron'
+import { app, BrowserWindow, ipcMain, dialog, Menu, FileFilter } from 'electron'
 import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAsMessage, NewProjectMessage, ExportMessage, ExportType, SetSidePanelVisibilityMessage } from './ipc-messages'
 const path = require('path')
 const url = require('url')
@@ -175,7 +175,12 @@ function createWindow() {
       onSaveProjectAs: () => {
         dialog.showSaveDialog(
           window,
-          {}
+          {
+            filters: [
+              { name: 'fSpy project files', extensions: ['fspy'] },
+              { name: 'All files', extensions: ['*'] }
+            ]
+          }
         ).then((result) => {
           if (!result.canceled && result.filePath !== undefined) {
             window.webContents.send(
@@ -381,7 +386,12 @@ function createWindow() {
     // TODO: DRY
     dialog.showSaveDialog(
       window,
-      {}
+      {
+        filters: [
+          { name: 'fSpy project files', extensions: ['fspy'] },
+          { name: 'All files', extensions: ['*'] }
+        ]
+      }
     ).then((result) => {
       if (!result.canceled && result.filePath) {
         window.webContents.send(
@@ -395,10 +405,20 @@ function createWindow() {
   })
 
   ipcMain.on(SpecifyExportPathMessage.type, (_: any, message: SpecifyExportPathMessage) => {
+    const filters: FileFilter[] = []
+    switch (message.exportType) {
+      case ExportType.CameraParametersJSON:
+        filters.push({ name: 'JSON files', extensions: ['json'] })
+        break
+      case ExportType.ProjectImage:
+        filters.push({ name: 'JPEG images', extensions: ['jpg'] })
+        break
+    }
+    filters.push({ name: 'All files', extensions: ['*'] })
     // TODO: DRY
     dialog.showSaveDialog(
       window,
-      {}
+      { filters }
     ).then((result) => {
       if (!result.canceled && result.filePath) {
         let file = openSync(result.filePath, 'w')
