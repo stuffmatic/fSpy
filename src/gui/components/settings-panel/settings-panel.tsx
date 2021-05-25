@@ -38,7 +38,8 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
         <div id='panel-container'>
           <div>
             <div className='panel-section bottom-border'>
-              <div className='panel-group-title'>Number of vanishing points</div>
+              <div className='panel-group-title'>Number of vanishing points<input type='button' value='Hidden' onClick={togle_hidden_NumberOfVanishingPoints}/></div>
+              <div id='NumberOfVanishingPoints'>
               <Dropdown
                 options={[
                   {
@@ -57,12 +58,13 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
                   this.props.onCalibrationModeChange(selectedValue)
                 }}
               />
+              </div>
             </div>
             <div className='panel-section'>
               <div className='panel-group-title'>
-                Vanishing point axes
+                Vanishing point axes<input type='button' value='Hidden' onClick={togle_hidden_VanishingPointAxes}/>
               </div>
-
+              <div id='VanishingPointAxes'>
               <div style={{ display: 'flex' }}>
                 <span style={{ alignSelf: 'center', paddingRight: 6, paddingLeft: 4 }}>1</span><AxisDropdown
                   selectedAxis={this.props.calibrationSettingsBase.firstVanishingPointAxis}
@@ -75,6 +77,7 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
                   selectedAxis={this.props.calibrationSettingsBase.secondVanishingPointAxis}
                   onChange={this.props.onSecondVanishingPointAxisChange}
                 />
+              </div>
               </div>
             </div>
             <div className='panel-section'>
@@ -242,5 +245,22 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
         </div>
       </div>
     )
+  }
+}
+
+function togle_hidden_VanishingPointAxes() {
+  togle_hidden('VanishingPointAxes')
+}
+
+function togle_hidden_NumberOfVanishingPoints() {
+  togle_hidden('NumberOfVanishingPoints')
+}
+
+function togle_hidden(elementId: string) {
+  let resp = document.getElementById(elementId)!.getAttribute('hidden')!
+  if (resp == '') {
+    document.getElementById(elementId)!.removeAttribute('hidden')
+  } else {
+    document.getElementById(elementId)!.setAttribute('hidden','')
   }
 }
