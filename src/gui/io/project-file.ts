@@ -16,17 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { openSync, writeSync, closeSync, readFileSync, readSync } from 'fs'
-import store from '../store/store'
-import { StoreState } from '../types/store-state'
-import SavedState from './saved-state'
-import { AppAction, loadState, setProjectFilePath } from '../actions'
+import { dialog } from 'electron'
+import { closeSync, openSync, readFileSync, readSync, writeSync } from 'fs'
 import { Dispatch } from 'redux'
-import { loadImage, resourcePath } from './util'
-import { remote } from 'electron'
+import { AppAction, loadState, setProjectFilePath } from '../actions'
 import { defaultResultDisplaySettings } from '../defaults/result-display-settings'
 import { cameraPresets } from '../solver/camera-presets'
+import store from '../store/store'
 import { ReferenceDistanceUnit } from '../types/calibration-settings'
+import { StoreState } from '../types/store-state'
+import SavedState from './saved-state'
+import { loadImage, resourcePath } from './util'
 
 export default class ProjectFile {
   static readonly EXAMPLE_PROJECT_FILENAME = 'example.fspy'
@@ -49,12 +49,11 @@ export default class ProjectFile {
       controlPointsState1VP: storeState.controlPointsState1VP,
       controlPointsState2VP: storeState.controlPointsState2VP,
       cameraParameters: storeState.solverResult.cameraParameters,
-      resultDisplaySettings: storeState.resultDisplaySettings
+      resultDisplaySettings: storeState.resultDisplaySettings,
     }
   }
 
   static save(path: string, dispatch: Dispatch<AppAction>) {
-
     if (!path.endsWith('.' + this.PROJECT_FILE_EXTENSION)) {
       path += '.' + this.PROJECT_FILE_EXTENSION
     }
@@ -91,9 +90,14 @@ export default class ProjectFile {
     this.load(this.exampleProjectPath, dispatch, true)
   }
 
-  static load(path: string, dispatch: Dispatch<AppAction>, isExampleProject: boolean) {
+  static load(
+    path: string,
+    dispatch: Dispatch<AppAction>,
+    isExampleProject: boolean
+  ) {
     if (!this.isProjectFile(path)) {
-      remote.dialog.showErrorBox(// TODO: proper modal
+      dialog.showErrorBox(
+        // TODO: proper modal
         'Failed to load project',
         'This does not appear to be a valid project file'
       )
@@ -102,7 +106,8 @@ export default class ProjectFile {
       try {
         buffer = readFileSync(path)
       } catch {
-        remote.dialog.showErrorBox(// TODO: proper modal
+        dialog.showErrorBox(
+          // TODO: proper modal
           'Failed to load image data',
           'Could not load the image data contained in the project file'
         )
@@ -112,13 +117,19 @@ export default class ProjectFile {
       let headerSize = 16
       let projectFileVersion = buffer.readUInt32LE(4)
       if (projectFileVersion != this.PROJECT_FILE_VERSION) {
-        remote.dialog.showErrorBox(// TODO: proper modal
+        dialog.showErrorBox(
+          // TODO: proper modal
           'Failed to load project',
-          'Version ' + projectFileVersion + ' project files are not compatible with this version of fSpy.'
+          'Version ' +
+            projectFileVersion +
+            ' project files are not compatible with this version of fSpy.'
         )
       } else {
         let stateStringSize = buffer.readUInt32LE(8)
-        let stateStringBuffer = buffer.slice(headerSize, headerSize + stateStringSize)
+        let stateStringBuffer = buffer.slice(
+          headerSize,
+          headerSize + stateStringSize
+        )
         let stateString = stateStringBuffer.toString()
         let imageBufferSize = buffer.readUInt32LE(12)
         let imageBuffer: Buffer | null = null
@@ -136,15 +147,18 @@ export default class ProjectFile {
 
         // Earlier versions had yards as a reference distance unit. Switch to feet
         // if that's the case
-        const distanceUnitString = loadedState.calibrationSettingsBase.referenceDistanceUnit.toString()
+        const distanceUnitString =
+          loadedState.calibrationSettingsBase.referenceDistanceUnit.toString()
         if (distanceUnitString == 'Yards') {
-          loadedState.calibrationSettingsBase.referenceDistanceUnit = ReferenceDistanceUnit.Feet
+          loadedState.calibrationSettingsBase.referenceDistanceUnit =
+            ReferenceDistanceUnit.Feet
           loadedState.calibrationSettingsBase.referenceDistance *= 3.0 // 3 feet per yard
         }
 
         // Make sure the stored camera preset still exists. If not, fall back to
         // custom camera preset
-        const cameraPresetId = loadedState.calibrationSettingsBase.cameraData.presetId
+        const cameraPresetId =
+          loadedState.calibrationSettingsBase.cameraData.presetId
         if (cameraPresetId) {
           if (cameraPresets[cameraPresetId] === undefined) {
             loadedState.calibrationSettingsBase.cameraData.presetId = null
@@ -152,9 +166,13 @@ export default class ProjectFile {
         }
 
         // Fix old files not storing camera preset data
-        if (loadedState.calibrationSettingsBase.cameraData.presetData === undefined) {
+        if (
+          loadedState.calibrationSettingsBase.cameraData.presetData ===
+          undefined
+        ) {
           loadedState.calibrationSettingsBase.cameraData.presetData = null
-          const presetId = loadedState.calibrationSettingsBase.cameraData.presetId
+          const presetId =
+            loadedState.calibrationSettingsBase.cameraData.presetId
           if (presetId) {
             const preset = cameraPresets[presetId]
             if (preset) {
@@ -176,7 +194,7 @@ export default class ProjectFile {
                     width: width,
                     height: height,
                     data: imageBuffer,
-                    url: url
+                    url: url,
                   },
                   path,
                   isExampleProject
@@ -184,7 +202,7 @@ export default class ProjectFile {
               )
             },
             () => {
-              remote.dialog.showErrorBox(
+              dialog.showErrorBox(
                 'Failed to load image data',
                 'Could not load the image data contained in the project file'
               )
@@ -200,7 +218,7 @@ export default class ProjectFile {
                 width: null,
                 height: null,
                 data: null,
-                url: null
+                url: null,
               },
               path,
               isExampleProject
@@ -226,7 +244,7 @@ export default class ProjectFile {
       buffer.readUInt8(0),
       buffer.readUInt8(1),
       buffer.readUInt8(2),
-      buffer.readUInt8(3)
+      buffer.readUInt8(3),
     ]
     for (let i = 0; i < fileId.length; i++) {
       if (fileId[i] != this.PROJECT_FILE_ID.charCodeAt(i)) {

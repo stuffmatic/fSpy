@@ -13,6 +13,7 @@
     "sourceMap": true,
     "skipLibCheck": true,
     "allowJs": true,
-    "jsx": "preserve"
-  }
+    "jsx": "react"
+  },
+  "include": ["./src/**/*.ts", "./src/**/*.tsx"]
 }
