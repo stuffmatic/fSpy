@@ -16,17 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { CalibrationMode, Overlay3DGuide } from '../types/global-settings'
-import { ControlPointPairIndex } from '../types/control-points-state'
-import { PrincipalPointMode1VP, PrincipalPointMode2VP, Axis, ReferenceDistanceUnit } from '../types/calibration-settings'
-import Point2D from '../solver/point-2d'
-import { StoreState } from '../types/store-state'
 import { ThunkAction, ThunkDispatch } from 'redux-thunk'
+import SavedState from '../io/saved-state'
+import Point2D from '../solver/point-2d'
 import Solver from '../solver/solver'
 import { SolverResult } from '../solver/solver-result'
-import SavedState from '../io/saved-state'
+import {
+  Axis,
+  PrincipalPointMode1VP,
+  PrincipalPointMode2VP,
+  ReferenceDistanceUnit,
+} from '../types/calibration-settings'
+import { ControlPointPairIndex } from '../types/control-points-state'
+import { CalibrationMode, Overlay3DGuide } from '../types/global-settings'
 import { ImageState } from '../types/image-state'
-import { OrientationFormat, PrincipalPointFormat, FieldOfViewFormat } from '../types/result-display-settings'
+import {
+  FieldOfViewFormat,
+  OrientationFormat,
+  PrincipalPointFormat,
+} from '../types/result-display-settings'
+import { StoreState } from '../types/store-state'
 
 export enum ActionTypes {
   // IO actions
@@ -41,6 +50,7 @@ export enum ActionTypes {
   SET_OVERLAY_3D_GUIDE = 'SET_OVERLAY_3D_GUIDE',
 
   // Image loading actions
+  LOAD_IMAGE = 'LOAD_IMAGE',
   SET_IMAGE = 'SET_IMAGE',
 
   // Calibration settings actions
@@ -76,11 +86,19 @@ export enum ActionTypes {
   SET_PRINCIPAL_POINT_DISPLAY_FORMAT = 'SET_PRINCIPAL_POINT_DISPLAY_FORMAT',
   SET_FOV_DISPLAY_FORMAT = 'SET_FOV_DISPLAY_FORMAT',
   SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH = 'SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH',
-  SET_SIDE_PANEL_VISIBILITY = 'SET_SIDE_PANEL_VISIBILITY'
+  SET_SIDE_PANEL_VISIBILITY = 'SET_SIDE_PANEL_VISIBILITY',
 }
 
-export function recalculateCalibrationResult(): ThunkAction<void, StoreState, void, AppAction> {
-  return (dispatch: ThunkDispatch<StoreState, void, AppAction>, getState: () => StoreState) => {
+export function recalculateCalibrationResult(): ThunkAction<
+  void,
+  StoreState,
+  void,
+  AppAction
+> {
+  return (
+    dispatch: ThunkDispatch<StoreState, void, AppAction>,
+    getState: () => StoreState
+  ) => {
     setTimeout(() => {
       let state = getState()
 
@@ -99,10 +117,11 @@ export function recalculateCalibrationResult(): ThunkAction<void, StoreState, vo
         state.image
       )
 
-      let is1VPMode = state.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint
+      let is1VPMode =
+        state.globalSettings.calibrationMode ==
+        CalibrationMode.OneVanishingPoint
       dispatch(setSolverResult(is1VPMode ? result1VP : result2VP))
-    },
-    0)
+    }, 0)
   }
 }
 
@@ -113,16 +132,16 @@ export interface LoadDefaultState {
 
 export function loadDefaultState(): LoadDefaultState {
   return {
-    type: ActionTypes.LOAD_DEFAULT_STATE
+    type: ActionTypes.LOAD_DEFAULT_STATE,
   }
 }
 
 //
 export interface LoadState {
-  type: ActionTypes.LOAD_STATE,
-  savedState: SavedState,
-  imageState: ImageState,
-  projectFilePath: string,
+  type: ActionTypes.LOAD_STATE
+  savedState: SavedState
+  imageState: ImageState
+  projectFilePath: string
   isExampleProject: boolean
 }
 
@@ -137,7 +156,7 @@ export function loadState(
     savedState: savedState,
     imageState: imageState,
     projectFilePath: projectFilePath,
-    isExampleProject: isExampleProject
+    isExampleProject: isExampleProject,
   }
 }
 
@@ -148,7 +167,7 @@ export interface SetProjectHasUnsavedChanged {
 
 export function setProjectHasUnsavedChanges(): SetProjectHasUnsavedChanged {
   return {
-    type: ActionTypes.SET_PROJECT_HAS_UNSAVED_CHANGES
+    type: ActionTypes.SET_PROJECT_HAS_UNSAVED_CHANGES,
   }
 }
 
@@ -158,10 +177,12 @@ export interface SetProjectFilePath {
   projectFilePath: string
 }
 
-export function setProjectFilePath(projectFilePath: string): SetProjectFilePath {
+export function setProjectFilePath(
+  projectFilePath: string
+): SetProjectFilePath {
   return {
     type: ActionTypes.SET_PROJECT_FILE_PATH,
-    projectFilePath: projectFilePath
+    projectFilePath: projectFilePath,
   }
 }
 
@@ -171,10 +192,12 @@ export interface SetCalibrationMode {
   calibrationMode: CalibrationMode
 }
 
-export function setCalibrationMode(calibrationMode: CalibrationMode): SetCalibrationMode {
+export function setCalibrationMode(
+  calibrationMode: CalibrationMode
+): SetCalibrationMode {
   return {
     type: ActionTypes.SET_CALIBRATION_MODE,
-    calibrationMode: calibrationMode
+    calibrationMode: calibrationMode,
   }
 }
 
@@ -187,7 +210,7 @@ export interface SetImageOpacity {
 export function setImageOpacity(opacity: number): SetImageOpacity {
   return {
     type: ActionTypes.SET_IMAGE_OPACITY,
-    opacity: opacity
+    opacity: opacity,
   }
 }
 
@@ -197,10 +220,22 @@ export interface SetOverlay3DGuide {
   overlay3DGuide: Overlay3DGuide
 }
 
-export function setOverlay3DGuide(overlay3DGuide: Overlay3DGuide): SetOverlay3DGuide {
+export function setOverlay3DGuide(
+  overlay3DGuide: Overlay3DGuide
+): SetOverlay3DGuide {
   return {
     type: ActionTypes.SET_OVERLAY_3D_GUIDE,
-    overlay3DGuide: overlay3DGuide
+    overlay3DGuide: overlay3DGuide,
+  }
+}
+
+//
+export interface ImageLoading {
+  type: ActionTypes.LOAD_IMAGE
+}
+export function setImageLoading(): ImageLoading {
+  return {
+    type: ActionTypes.LOAD_IMAGE,
   }
 }
 
@@ -212,13 +247,18 @@ export interface SetImage {
   width: number
   height: number
 }
-export function setImage(url: string, data: Buffer, width: number, height: number): SetImage {
+export function setImage(
+  url: string,
+  data: Buffer,
+  width: number,
+  height: number
+): SetImage {
   return {
     type: ActionTypes.SET_IMAGE,
     url: url,
     data: data,
     width: width,
-    height: height
+    height: height,
   }
 }
 
@@ -228,10 +268,12 @@ export interface SetQuadModeEnabled {
   quadModeEnabled: boolean
 }
 
-export function setQuadModeEnabled(quadModeEnabled: boolean): SetQuadModeEnabled {
+export function setQuadModeEnabled(
+  quadModeEnabled: boolean
+): SetQuadModeEnabled {
   return {
     type: ActionTypes.SET_QUAD_MODE_ENABLED,
-    quadModeEnabled: quadModeEnabled
+    quadModeEnabled: quadModeEnabled,
   }
 }
 
@@ -241,10 +283,12 @@ export interface SetPrincipalPointMode1VP {
   principalPointMode: PrincipalPointMode1VP
 }
 
-export function setPrincipalPointMode1VP(principalPointMode: PrincipalPointMode1VP): SetPrincipalPointMode1VP {
+export function setPrincipalPointMode1VP(
+  principalPointMode: PrincipalPointMode1VP
+): SetPrincipalPointMode1VP {
   return {
     type: ActionTypes.SET_PRINCIPAL_POINT_MODE_1VP,
-    principalPointMode: principalPointMode
+    principalPointMode: principalPointMode,
   }
 }
 
@@ -254,10 +298,12 @@ export interface SetPrincipalPointMode2VP {
   principalPointMode: PrincipalPointMode2VP
 }
 
-export function setPrincipalPointMode2VP(principalPointMode: PrincipalPointMode2VP): SetPrincipalPointMode2VP {
+export function setPrincipalPointMode2VP(
+  principalPointMode: PrincipalPointMode2VP
+): SetPrincipalPointMode2VP {
   return {
     type: ActionTypes.SET_PRINCIPAL_POINT_MODE_2VP,
-    principalPointMode: principalPointMode
+    principalPointMode: principalPointMode,
   }
 }
 
@@ -267,104 +313,119 @@ export interface SetFirstVanishingPointAxis {
   axis: Axis
 }
 
-export function setFirstVanishingPointAxis(axis: Axis): SetFirstVanishingPointAxis {
+export function setFirstVanishingPointAxis(
+  axis: Axis
+): SetFirstVanishingPointAxis {
   return {
     type: ActionTypes.SET_FIRST_VANISHING_POINT_AXIS,
-    axis: axis
+    axis: axis,
   }
 }
 
 //
 export interface SetSecondVanishingPointAxis {
-  type: ActionTypes.SET_SECOND_VANISHING_POINT_AXIS,
+  type: ActionTypes.SET_SECOND_VANISHING_POINT_AXIS
   axis: Axis
 }
 
-export function setSecondVanishingPointAxis(axis: Axis): SetSecondVanishingPointAxis {
+export function setSecondVanishingPointAxis(
+  axis: Axis
+): SetSecondVanishingPointAxis {
   return {
     type: ActionTypes.SET_SECOND_VANISHING_POINT_AXIS,
-    axis: axis
+    axis: axis,
   }
 }
 
 //
 
 export interface SetAbsoluteFocalLength1VP {
-  type: ActionTypes.SET_ABSOLUTE_FOCAL_LENGTH_1VP,
+  type: ActionTypes.SET_ABSOLUTE_FOCAL_LENGTH_1VP
   absoluteFocalLength: number
 }
 
-export function setAbsoluteFocalLength1VP(absoluteFocalLength: number): SetAbsoluteFocalLength1VP {
+export function setAbsoluteFocalLength1VP(
+  absoluteFocalLength: number
+): SetAbsoluteFocalLength1VP {
   return {
     type: ActionTypes.SET_ABSOLUTE_FOCAL_LENGTH_1VP,
-    absoluteFocalLength: absoluteFocalLength
+    absoluteFocalLength: absoluteFocalLength,
   }
 }
 
 //
 export interface SetReferenceDistance {
-  type: ActionTypes.SET_REFERENCE_DISTANCE,
+  type: ActionTypes.SET_REFERENCE_DISTANCE
   distance: number
 }
 
 export function setReferenceDistance(distance: number): SetReferenceDistance {
   return {
     type: ActionTypes.SET_REFERENCE_DISTANCE,
-    distance: distance
+    distance: distance,
   }
 }
 
 //
 export interface SetReferenceDistanceUnit {
-  type: ActionTypes.SET_REFERENCE_DISTANCE_UNIT,
+  type: ActionTypes.SET_REFERENCE_DISTANCE_UNIT
   unit: ReferenceDistanceUnit
 }
 
-export function setReferenceDistanceUnit(unit: ReferenceDistanceUnit): SetReferenceDistanceUnit {
+export function setReferenceDistanceUnit(
+  unit: ReferenceDistanceUnit
+): SetReferenceDistanceUnit {
   return {
     type: ActionTypes.SET_REFERENCE_DISTANCE_UNIT,
-    unit: unit
+    unit: unit,
   }
 }
 
 //
 export interface SetReferenceDistanceAxis {
-  type: ActionTypes.SET_REFERENCE_DISTANCE_AXIS,
+  type: ActionTypes.SET_REFERENCE_DISTANCE_AXIS
   axis: Axis | null
 }
 
-export function setReferenceDistanceAxis(axis: Axis | null): SetReferenceDistanceAxis {
+export function setReferenceDistanceAxis(
+  axis: Axis | null
+): SetReferenceDistanceAxis {
   return {
     type: ActionTypes.SET_REFERENCE_DISTANCE_AXIS,
-    axis: axis
+    axis: axis,
   }
 }
 
 //
 export interface SetCameraPreset {
-  type: ActionTypes.SET_CAMERA_PRESET,
+  type: ActionTypes.SET_CAMERA_PRESET
   cameraPresetId: string | null
 }
 
-export function setCameraPreset(cameraPresetId: string | null): SetCameraPreset {
+export function setCameraPreset(
+  cameraPresetId: string | null
+): SetCameraPreset {
   return {
     type: ActionTypes.SET_CAMERA_PRESET,
-    cameraPresetId: cameraPresetId
+    cameraPresetId: cameraPresetId,
   }
 }
 
 //
 export interface SetCameraSensorSize {
-  type: ActionTypes.SET_CAMERA_SENSOR_SIZE,
+  type: ActionTypes.SET_CAMERA_SENSOR_SIZE
   width: number | undefined
   height: number | undefined
 }
 
-export function setCameraSensorSize(width: number | undefined, height: number | undefined): SetCameraSensorSize {
+export function setCameraSensorSize(
+  width: number | undefined,
+  height: number | undefined
+): SetCameraSensorSize {
   return {
     type: ActionTypes.SET_CAMERA_SENSOR_SIZE,
     width: width,
-    height: height
+    height: height,
   }
 }
 
@@ -377,7 +438,7 @@ export interface SetPrincipalPoint {
 export function setPrincipalPoint(position: Point2D): SetPrincipalPoint {
   return {
     type: ActionTypes.SET_PRINCIPAL_POINT,
-    position: position
+    position: position,
   }
 }
 
@@ -390,7 +451,7 @@ export interface SetOrigin {
 export function setOrigin(position: Point2D): SetOrigin {
   return {
     type: ActionTypes.SET_ORIGIN,
-    position: position
+    position: position,
   }
 }
 
@@ -400,17 +461,19 @@ export interface SetReferenceDistanceAnchor {
   position: Point2D
 }
 
-export function setReferenceDistanceAnchor(position: Point2D): SetReferenceDistanceAnchor {
+export function setReferenceDistanceAnchor(
+  position: Point2D
+): SetReferenceDistanceAnchor {
   return {
     type: ActionTypes.SET_REFERENCE_DISTANCE_ANCHOR,
-    position: position
+    position: position,
   }
 }
 
 // Adjust horizon (i.e set the position one endpoint of the horizon line)
 export interface AdjustHorizon {
-  type: ActionTypes.ADJUST_HORIZON,
-  controlPointIndex: ControlPointPairIndex,
+  type: ActionTypes.ADJUST_HORIZON
+  controlPointIndex: ControlPointPairIndex
   position: Point2D
 }
 
@@ -421,15 +484,15 @@ export function adjustHorizon(
   return {
     type: ActionTypes.ADJUST_HORIZON,
     controlPointIndex: controlPointIndex,
-    position: position
+    position: position,
   }
 }
 
 //
 export interface AdjustFirstVanishingPoint {
-  type: ActionTypes.ADJUST_FIRST_VANISHING_POINT,
-  lineSegmentIndex: number,
-  controlPointIndex: ControlPointPairIndex,
+  type: ActionTypes.ADJUST_FIRST_VANISHING_POINT
+  lineSegmentIndex: number
+  controlPointIndex: ControlPointPairIndex
   position: Point2D
 }
 
@@ -442,7 +505,7 @@ export function adjustFirstVanishingPoint(
     type: ActionTypes.ADJUST_FIRST_VANISHING_POINT,
     lineSegmentIndex: lineSegmentIndex,
     controlPointIndex: controlPointIndex,
-    position: position
+    position: position,
   }
 }
 
@@ -463,7 +526,7 @@ export function adjustSecondVanishingPoint(
     type: ActionTypes.ADJUST_SECOND_VANISHING_POINT,
     lineSegmentIndex: lineSegmentIndex,
     controlPointIndex: controlPointIndex,
-    position: position
+    position: position,
   }
 }
 
@@ -484,15 +547,15 @@ export function adjustThirdVanishingPoint(
     type: ActionTypes.ADJUST_THIRD_VANISHING_POINT,
     lineSegmentIndex: lineSegmentIndex,
     controlPointIndex: controlPointIndex,
-    position: position
+    position: position,
   }
 }
 
 //
 
 export interface AdjustReferenceDistanceHandle {
-  type: ActionTypes.ADJUST_REFERENCE_DISTANCE_HANDLE,
-  handleIndex: number,
+  type: ActionTypes.ADJUST_REFERENCE_DISTANCE_HANDLE
+  handleIndex: number
   position: number
 }
 
@@ -503,119 +566,130 @@ export function adjustReferenceDistanceHandle(
   return {
     type: ActionTypes.ADJUST_REFERENCE_DISTANCE_HANDLE,
     handleIndex: handleIndex,
-    position: position
+    position: position,
   }
 }
 
 // Set calibration result
 export interface SetSolverResult {
-  type: ActionTypes.SET_SOLVER_RESULT,
+  type: ActionTypes.SET_SOLVER_RESULT
   result: SolverResult
 }
 
 export function setSolverResult(result: SolverResult): SetSolverResult {
   return {
     type: ActionTypes.SET_SOLVER_RESULT,
-    result: result
+    result: result,
   }
 }
 
 // Result display settings
 export interface SetOrientationDisplayFormat {
-  type: ActionTypes.SET_ORIENTATION_DISPLAY_FORMAT,
+  type: ActionTypes.SET_ORIENTATION_DISPLAY_FORMAT
   displayFormat: OrientationFormat
 }
 
-export function setOrientationDisplayFormat(displayFormat: OrientationFormat): SetOrientationDisplayFormat {
+export function setOrientationDisplayFormat(
+  displayFormat: OrientationFormat
+): SetOrientationDisplayFormat {
   return {
     type: ActionTypes.SET_ORIENTATION_DISPLAY_FORMAT,
-    displayFormat: displayFormat
+    displayFormat: displayFormat,
   }
 }
 
 export interface SetPrincipalPointDisplayFormat {
-  type: ActionTypes.SET_PRINCIPAL_POINT_DISPLAY_FORMAT,
+  type: ActionTypes.SET_PRINCIPAL_POINT_DISPLAY_FORMAT
   displayFormat: PrincipalPointFormat
 }
 
-export function setPrincipalPointDisplayFormat(displayFormat: PrincipalPointFormat): SetPrincipalPointDisplayFormat {
+export function setPrincipalPointDisplayFormat(
+  displayFormat: PrincipalPointFormat
+): SetPrincipalPointDisplayFormat {
   return {
     type: ActionTypes.SET_PRINCIPAL_POINT_DISPLAY_FORMAT,
-    displayFormat: displayFormat
+    displayFormat: displayFormat,
   }
 }
 
 export interface SetFieldOfViewDisplayFormat {
-  type: ActionTypes.SET_FOV_DISPLAY_FORMAT,
+  type: ActionTypes.SET_FOV_DISPLAY_FORMAT
   displayFormat: FieldOfViewFormat
 }
 
-export function setFieldOfViewDisplayFormat(displayFormat: FieldOfViewFormat): SetFieldOfViewDisplayFormat {
+export function setFieldOfViewDisplayFormat(
+  displayFormat: FieldOfViewFormat
+): SetFieldOfViewDisplayFormat {
   return {
     type: ActionTypes.SET_FOV_DISPLAY_FORMAT,
-    displayFormat: displayFormat
+    displayFormat: displayFormat,
   }
 }
 
 export interface SetDisplayAbsoluteFocalLength {
-  type: ActionTypes.SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH,
+  type: ActionTypes.SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH
   displayAbsoluteFocalLength: boolean
 }
 
-export function SetDisplayAbsoluteFocalLength(displayAbsoluteFocalLength: boolean): SetDisplayAbsoluteFocalLength {
+export function SetDisplayAbsoluteFocalLength(
+  displayAbsoluteFocalLength: boolean
+): SetDisplayAbsoluteFocalLength {
   return {
     type: ActionTypes.SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH,
-    displayAbsoluteFocalLength: displayAbsoluteFocalLength
+    displayAbsoluteFocalLength: displayAbsoluteFocalLength,
   }
 }
 
 export interface SetSidePanelVisibility {
-  type: ActionTypes.SET_SIDE_PANEL_VISIBILITY,
+  type: ActionTypes.SET_SIDE_PANEL_VISIBILITY
   panelsAreVisible: boolean
 }
 
-export function setSidePanelVisibility(panelsAreVisible: boolean): SetSidePanelVisibility {
+export function setSidePanelVisibility(
+  panelsAreVisible: boolean
+): SetSidePanelVisibility {
   return {
     type: ActionTypes.SET_SIDE_PANEL_VISIBILITY,
-    panelsAreVisible: panelsAreVisible
+    panelsAreVisible: panelsAreVisible,
   }
 }
 
 // Define a type covering all actions
 export type AppAction =
-  LoadState |
-  LoadDefaultState |
-  SetProjectFilePath |
-  SetProjectHasUnsavedChanged |
-  SetCalibrationMode |
-  SetImageOpacity |
-  SetOverlay3DGuide |
-  SetImage |
-  SetQuadModeEnabled |
-  SetPrincipalPointMode1VP |
-  SetPrincipalPointMode2VP |
-  SetFirstVanishingPointAxis |
-  SetSecondVanishingPointAxis |
-  SetAbsoluteFocalLength1VP |
-  SetReferenceDistanceAxis |
-  SetReferenceDistanceUnit |
-  SetCameraPreset |
-  SetCameraSensorSize |
-  SetReferenceDistance |
-  SetOrigin |
-  SetReferenceDistanceAnchor |
-  SetPrincipalPoint |
-  AdjustHorizon |
-  AdjustReferenceDistanceHandle |
-  AdjustFirstVanishingPoint |
-  AdjustSecondVanishingPoint |
-  AdjustThirdVanishingPoint |
-  SetSolverResult |
-  SetOrientationDisplayFormat |
-  SetFieldOfViewDisplayFormat |
-  SetPrincipalPointDisplayFormat |
-  SetDisplayAbsoluteFocalLength |
-  SetSidePanelVisibility
+  | LoadState
+  | LoadDefaultState
+  | SetProjectFilePath
+  | SetProjectHasUnsavedChanged
+  | SetCalibrationMode
+  | SetImageOpacity
+  | SetOverlay3DGuide
+  | ImageLoading
+  | SetImage
+  | SetQuadModeEnabled
+  | SetPrincipalPointMode1VP
+  | SetPrincipalPointMode2VP
+  | SetFirstVanishingPointAxis
+  | SetSecondVanishingPointAxis
+  | SetAbsoluteFocalLength1VP
+  | SetReferenceDistanceAxis
+  | SetReferenceDistanceUnit
+  | SetCameraPreset
+  | SetCameraSensorSize
+  | SetReferenceDistance
+  | SetOrigin
+  | SetReferenceDistanceAnchor
+  | SetPrincipalPoint
+  | AdjustHorizon
+  | AdjustReferenceDistanceHandle
+  | AdjustFirstVanishingPoint
+  | AdjustSecondVanishingPoint
+  | AdjustThirdVanishingPoint
+  | SetSolverResult
+  | SetOrientationDisplayFormat
+  | SetFieldOfViewDisplayFormat
+  | SetPrincipalPointDisplayFormat
+  | SetDisplayAbsoluteFocalLength
+  | SetSidePanelVisibility
 
 // A list of action types that trigger calibration result calculation
 export const actionTypesTriggeringRecalculation: ActionTypes[] = [
@@ -645,7 +719,7 @@ export const actionTypesTriggeringRecalculation: ActionTypes[] = [
   ActionTypes.ADJUST_FIRST_VANISHING_POINT,
   ActionTypes.ADJUST_SECOND_VANISHING_POINT,
   ActionTypes.ADJUST_THIRD_VANISHING_POINT,
-  ActionTypes.ADJUST_REFERENCE_DISTANCE_HANDLE
+  ActionTypes.ADJUST_REFERENCE_DISTANCE_HANDLE,
 ]
 
 export const actionTypesSettingNeedsSaveFlag: ActionTypes[] = [
@@ -681,5 +755,5 @@ export const actionTypesSettingNeedsSaveFlag: ActionTypes[] = [
   ActionTypes.SET_PRINCIPAL_POINT_DISPLAY_FORMAT,
   ActionTypes.SET_FOV_DISPLAY_FORMAT,
   ActionTypes.SET_ORIENTATION_DISPLAY_FORMAT,
-  ActionTypes.SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH
+  ActionTypes.SET_DISPLAY_ABSOLUTE_FOCAL_LENGTH,
 ]

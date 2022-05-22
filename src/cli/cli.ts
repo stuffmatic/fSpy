@@ -16,16 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { existsSync, readFileSync, writeFileSync } from 'fs'
 import minimist from 'minimist'
-import { writeFileSync, readFileSync, existsSync } from 'fs'
 import SavedState from '../gui/io/saved-state'
-import { CalibrationMode } from '../gui/types/global-settings'
 import Solver from '../gui/solver/solver'
-import { ImageState } from '../gui/types/image-state'
 import { SolverResult } from '../gui/solver/solver-result'
+import { CalibrationMode } from '../gui/types/global-settings'
+import { ImageState } from '../gui/types/image-state'
 
 export class CLI {
-
   static printUsage() {
     console.log('fSpy CLI')
     console.log('')
@@ -80,14 +79,19 @@ export class CLI {
     }
 
     const imageState: ImageState = {
+      loading: false,
       width: imageWidth,
       height: imageHeight,
       url: null,
-      data: null
+      data: null,
     }
 
-    const projectState: SavedState = JSON.parse(readFileSync(statePath).toString())
-    const is1VPMode = projectState.globalSettings.calibrationMode == CalibrationMode.OneVanishingPoint
+    const projectState: SavedState = JSON.parse(
+      readFileSync(statePath).toString()
+    )
+    const is1VPMode =
+      projectState.globalSettings.calibrationMode ==
+      CalibrationMode.OneVanishingPoint
     let solverResult: SolverResult
     if (is1VPMode) {
       solverResult = Solver.solve1VP(

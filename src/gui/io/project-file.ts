@@ -19,7 +19,12 @@
 import { dialog } from 'electron'
 import { closeSync, openSync, readFileSync, readSync, writeSync } from 'fs'
 import { Dispatch } from 'redux'
-import { AppAction, loadState, setProjectFilePath } from '../actions'
+import {
+  AppAction,
+  loadState,
+  setImageLoading,
+  setProjectFilePath,
+} from '../actions'
 import { defaultResultDisplaySettings } from '../defaults/result-display-settings'
 import { cameraPresets } from '../solver/camera-presets'
 import store from '../store/store'
@@ -186,11 +191,13 @@ export default class ProjectFile {
           // the state
           loadImage(
             imageBuffer,
+            () => dispatch(setImageLoading()),
             (width: number, height: number, url: string) => {
               dispatch(
                 loadState(
                   loadedState,
                   {
+                    loading: false,
                     width: width,
                     height: height,
                     data: imageBuffer,
@@ -215,6 +222,7 @@ export default class ProjectFile {
             loadState(
               loadedState,
               {
+                loading: false,
                 width: null,
                 height: null,
                 data: null,
