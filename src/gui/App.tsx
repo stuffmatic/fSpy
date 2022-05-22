@@ -16,33 +16,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { dialog, ipcRenderer } from 'electron'
+import { readFileSync } from 'fs'
 import * as React from 'react'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import {
+  ExportMessage,
+  ExportType,
+  NewProjectMessage,
+  OpenImageMessage,
+  OpenProjectMessage,
+  SaveProjectAsMessage,
+  SaveProjectMessage,
+  SetSidePanelVisibilityMessage,
+} from '../main/ipc-messages'
+import {
+  AppAction,
+  loadDefaultState,
+  setImage,
+  setImageLoading,
+  setSidePanelVisibility,
+} from './actions'
+import SplashScreen from './components/splash-screen'
 import ControlPointsContainer from './containers/control-points-container'
 import ResultContainer from './containers/result-container'
 import SettingsContainer from './containers/settings-container'
-
-import { StoreState } from './types/store-state'
-import { connect } from 'react-redux'
-import { AppAction, setImage, loadDefaultState, setSidePanelVisibility } from './actions'
-import { GlobalSettings } from './types/global-settings'
-import { UIState } from './types/ui-state'
-import { ImageState } from './types/image-state'
-import { SolverResult } from './solver/solver-result'
-import { ipcRenderer, remote } from 'electron'
-import { NewProjectMessage, OpenProjectMessage, SaveProjectMessage, SaveProjectAsMessage, OpenImageMessage, ExportMessage, ExportType, SetSidePanelVisibilityMessage } from '../main/ipc-messages'
 import ProjectFile from './io/project-file'
-import { readFileSync } from 'fs'
-import { SpecifyProjectPathMessage, OpenDroppedProjectMessage, SpecifyExportPathMessage } from './ipc-messages'
 import { loadImage } from './io/util'
+import {
+  OpenDroppedProjectMessage,
+  SpecifyExportPathMessage,
+  SpecifyProjectPathMessage,
+} from './ipc-messages'
+import { SolverResult } from './solver/solver-result'
 import store from './store/store'
-import SplashScreen from './components/splash-screen'
-import { Dispatch } from 'redux'
+import { GlobalSettings } from './types/global-settings'
+import { ImageState } from './types/image-state'
+import { StoreState } from './types/store-state'
+import { UIState } from './types/ui-state'
 
 interface AppProps {
-  uiState: UIState,
-  globalSettings: GlobalSettings,
-  solverResult: SolverResult,
-  image: ImageState,
+  uiState: UIState
+  globalSettings: GlobalSettings
+  solverResult: SolverResult
+  image: ImageState
   onImageFileDropped(imagePath: string): void
   onProjectFileDropped(imagePath: string): void
   onOpenExampleProjectPressed(): void
@@ -56,7 +74,6 @@ interface AppProps {
 }
 
 class App extends React.PureComponent<AppProps> {
-
   constructor(props: AppProps) {
     super(props)
   }
@@ -102,11 +119,17 @@ class App extends React.PureComponent<AppProps> {
   render() {
     const hasImage = this.props.image.data !== null
     return (
-      <div id='app-container'>
-        <SettingsContainer isVisible={this.props.uiState.sidePanelsAreVisible} />
+      <div id="app-container">
+        <SettingsContainer
+          isVisible={this.props.uiState.sidePanelsAreVisible}
+        />
         <ControlPointsContainer />
         <ResultContainer isVisible={this.props.uiState.sidePanelsAreVisible} />
-        { !hasImage ? (<SplashScreen onClickedLoadExampleProject={this.props.onOpenExampleProjectPressed} />) : null }
+        {!hasImage ? (
+          <SplashScreen
+            onClickedLoadExampleProject={this.props.onOpenExampleProjectPressed}
+          />
+        ) : null}
       </div>
     )
   }
@@ -116,33 +139,56 @@ class App extends React.PureComponent<AppProps> {
       this.props.onNewProjectIPCMessage()
     })
 
-    ipcRenderer.on(OpenProjectMessage.type, (_: any, message: OpenProjectMessage) => {
-      this.props.onOpenProjectIPCMessage(message.filePath, message.isExampleProject)
-    })
-
-    ipcRenderer.on(SaveProjectMessage.type, (_: any, __: SaveProjectMessage) => {
-      if (this.props.uiState.projectFilePath) {
-        this.props.onSaveProjectAsIPCMessage(this.props.uiState.projectFilePath)
-      } else {
-        ipcRenderer.send(SpecifyProjectPathMessage.type, new SpecifyProjectPathMessage())
+    ipcRenderer.on(
+      OpenProjectMessage.type,
+      (_: any, message: OpenProjectMessage) => {
+        this.props.onOpenProjectIPCMessage(
+          message.filePath,
+          message.isExampleProject
+        )
       }
-    })
+    )
 
-    ipcRenderer.on(SaveProjectAsMessage.type, (_: any, message: SaveProjectAsMessage) => {
-      this.props.onSaveProjectAsIPCMessage(message.filePath)
-    })
+    ipcRenderer.on(
+      SaveProjectMessage.type,
+      (_: any, __: SaveProjectMessage) => {
+        if (this.props.uiState.projectFilePath) {
+          this.props.onSaveProjectAsIPCMessage(
+            this.props.uiState.projectFilePath
+          )
+        } else {
+          ipcRenderer.send(
+            SpecifyProjectPathMessage.type,
+            new SpecifyProjectPathMessage()
+          )
+        }
+      }
+    )
 
-    ipcRenderer.on(OpenImageMessage.type, (_: any, message: OpenImageMessage) => {
-      this.props.onOpenImageIPCMessage(message.filePath)
-    })
+    ipcRenderer.on(
+      SaveProjectAsMessage.type,
+      (_: any, message: SaveProjectAsMessage) => {
+        this.props.onSaveProjectAsIPCMessage(message.filePath)
+      }
+    )
+
+    ipcRenderer.on(
+      OpenImageMessage.type,
+      (_: any, message: OpenImageMessage) => {
+        this.props.onOpenImageIPCMessage(message.filePath)
+      }
+    )
 
     ipcRenderer.on(ExportMessage.type, (_: any, message: ExportMessage) => {
       this.props.onExportIPCMessage(message.exportType)
     })
 
-    ipcRenderer.on(SetSidePanelVisibilityMessage.type, (_: any, message: SetSidePanelVisibilityMessage) => {
-      this.props.onSetSidePanelVisibilityIPCMessage(message.panelsAreVisible)
-    })
+    ipcRenderer.on(
+      SetSidePanelVisibilityMessage.type,
+      (_: any, message: SetSidePanelVisibilityMessage) => {
+        this.props.onSetSidePanelVisibilityIPCMessage(message.panelsAreVisible)
+      }
+    )
   }
 }
 
@@ -151,7 +197,7 @@ export function mapStateToProps(state: StoreState) {
     uiState: state.uiState,
     globalSettings: state.globalSettings,
     solverResult: state.solverResult,
-    image: state.image
+    image: state.image,
   }
 }
 
@@ -162,11 +208,12 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
       // TODO: good to do async loading here?
       loadImage(
         imageBuffer,
+        () => dispatch(setImageLoading()),
         (width: number, height: number, url: string) => {
           dispatch(setImage(url, imageBuffer, width, height))
         },
         () => {
-          remote.dialog.showErrorBox(
+          dialog.showErrorBox(
             'Failed to load image data',
             'Could not load the image data. Is this a valid image file?'
           )
@@ -195,6 +242,7 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
       let imageBuffer = readFileSync(imagePath)
       loadImage(
         imageBuffer,
+        () => dispatch(setImageLoading()),
         (width: number, height: number, url: string) => {
           dispatch(setImage(url, imageBuffer, width, height))
         },
@@ -230,7 +278,7 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
     },
     onSetSidePanelVisibilityIPCMessage: (panelsAreVisible: boolean) => {
       dispatch(setSidePanelVisibility(panelsAreVisible))
-    }
+    },
   }
 }
 

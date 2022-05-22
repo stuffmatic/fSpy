@@ -44,7 +44,7 @@ export default class AppMenuManager {
       accelerator: 'CommandOrControl+N',
       click: () => {
         this.callbacks.onNewProject()
-      }
+      },
     }
 
     let openItem = {
@@ -52,7 +52,7 @@ export default class AppMenuManager {
       accelerator: 'CommandOrControl+O',
       click: () => {
         this.callbacks.onOpenProject()
-      }
+      },
     }
 
     let saveItem = {
@@ -61,7 +61,7 @@ export default class AppMenuManager {
       accelerator: 'CommandOrControl+S',
       click: () => {
         this.callbacks.onSaveProject()
-      }
+      },
     }
 
     let saveAsItem = {
@@ -70,7 +70,7 @@ export default class AppMenuManager {
       accelerator: 'CommandOrControl+Shift+S',
       click: () => {
         this.callbacks.onSaveProjectAs()
-      }
+      },
     }
 
     let openExampleProjectItem = {
@@ -78,7 +78,7 @@ export default class AppMenuManager {
       id: 'open-example-project',
       click: () => {
         this.callbacks.onOpenExampleProject()
-      }
+      },
     }
 
     let openImageItem = {
@@ -87,7 +87,7 @@ export default class AppMenuManager {
       accelerator: 'CommandOrControl+Shift+O',
       click: () => {
         this.callbacks.onOpenImage()
-      }
+      },
     }
 
     let quitMenuItem: Electron.MenuItemConstructorOptions = {
@@ -95,7 +95,7 @@ export default class AppMenuManager {
       accelerator: 'Command+Q',
       click: () => {
         this.callbacks.onQuit()
-      }
+      },
     }
 
     let fileMenuItems: Electron.MenuItemConstructorOptions[] = [
@@ -115,16 +115,16 @@ export default class AppMenuManager {
             label: 'Camera parameters as JSON',
             click: () => {
               this.callbacks.onExportJSON()
-            }
+            },
           },
           {
             label: 'Project image',
             click: () => {
               this.callbacks.onExportProjectImage()
-            }
-          }
-        ]
-      }
+            },
+          },
+        ],
+      },
     ]
 
     if (process.platform !== 'darwin') {
@@ -137,16 +137,16 @@ export default class AppMenuManager {
         submenu: [
           {
             label: 'Clear Recent',
-            role: 'clearRecentDocuments'
-          }
-        ]
+            role: 'clearRecentDocuments',
+          },
+        ],
       }
       fileMenuItems.splice(2, 0, recentDocumentsSubmenu)
     }
 
     let fileMenu = {
       label: 'File',
-      submenu: fileMenuItems
+      submenu: fileMenuItems,
     }
 
     let menus = [fileMenu]
@@ -159,7 +159,7 @@ export default class AppMenuManager {
           accelerator: 'Command+F',
           click: () => {
             this.callbacks.onEnterFullScreenMode()
-          }
+          },
         },
         {
           label: 'Exit full screen mode',
@@ -167,18 +167,16 @@ export default class AppMenuManager {
           accelerator: 'Escape',
           click: () => {
             this.callbacks.onExitFullScreenMode()
-          }
-        }
-      ]
+          },
+        },
+      ],
     }
     menus.push(viewMenu)
 
     if (process.platform === 'darwin') {
       menus.unshift({
         label: app.name,
-        submenu: [
-          quitMenuItem
-        ]
+        submenu: [quitMenuItem],
       })
     }
 
@@ -186,22 +184,22 @@ export default class AppMenuManager {
   }
 
   setOpenImageItemEnabled(enabled: boolean) {
-    this.menu.getMenuItemById('open-image').enabled = enabled
+    this.menu.getMenuItemById('open-image')!.enabled = enabled
   }
 
   setSaveItemEnabled(enabled: boolean) {
-    this.menu.getMenuItemById('save').enabled = enabled
+    this.menu.getMenuItemById('save')!.enabled = enabled
   }
 
   setSaveAsItemEnabled(enabled: boolean) {
-    this.menu.getMenuItemById('save-as').enabled = enabled
+    this.menu.getMenuItemById('save-as')!.enabled = enabled
   }
 
   setEnterFullScreenItemEnabled(enabled: boolean) {
-    this.menu.getMenuItemById('enter-full-screen').enabled = enabled
+    this.menu.getMenuItemById('enter-full-screen')!.enabled = enabled
   }
 
   setExitFullScreenItemEnabled(enabled: boolean) {
-    this.menu.getMenuItemById('exit-full-screen').enabled = enabled
+    this.menu.getMenuItemById('exit-full-screen')!.enabled = enabled
   }
 }

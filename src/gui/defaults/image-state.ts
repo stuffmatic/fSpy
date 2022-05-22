@@ -19,8 +19,9 @@
 import { ImageState } from '../types/image-state'
 
 export const defaultImageState: ImageState = {
+  loading: false,
   width: null,
   height: null,
   url: null,
-  data: null
+  data: null,
 }

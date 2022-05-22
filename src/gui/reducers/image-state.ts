@@ -17,22 +17,28 @@
  */
 
 import { ActionTypes, AppAction } from '../actions'
-import { ImageState } from '../types/image-state'
 import { defaultImageState } from '../defaults/image-state'
+import { ImageState } from '../types/image-state'
 
-export function imageState(state: ImageState | undefined, action: AppAction): ImageState {
+export function imageState(
+  state: ImageState | undefined,
+  action: AppAction
+): ImageState {
   if (state === undefined) {
     return defaultImageState
   }
 
   switch (action.type) {
+    case ActionTypes.LOAD_IMAGE:
+      return { ...state, loading: true }
     case ActionTypes.SET_IMAGE:
       return {
         ...state,
         data: action.data,
         url: action.url,
         width: action.width,
-        height: action.height
+        height: action.height,
+        loading: false,
       }
     case ActionTypes.LOAD_STATE:
       return action.imageState
@@ -42,7 +48,8 @@ export function imageState(state: ImageState | undefined, action: AppAction): Im
         data: null,
         url: null,
         width: null,
-        height: null
+        height: null,
+        loading: false,
       }
   }
 

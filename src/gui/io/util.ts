@@ -16,14 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// @ts-ignore
+import { checkImage, HEIC } from 'check-image-type'
+import heic2any from 'heic2any'
 import { join } from 'path'
 
-export function loadImage(
+export async function loadImage(
   imageBuffer: Buffer,
+  onStart: () => void,
   onLoad: (width: number, height: number, url: string) => void,
   onError: () => void
 ) {
+  onStart()
+
   let blob = new Blob([imageBuffer])
+  if (checkImage(imageBuffer) === HEIC) {
+    blob = (await heic2any({ blob })) as Blob
+  }
   let url = URL.createObjectURL(blob)
   let image = new Image()
   image.src = url

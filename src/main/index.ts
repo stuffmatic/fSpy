@@ -16,27 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { app, BrowserWindow, ipcMain, dialog, Menu } from 'electron'
-import { OpenProjectMessage, OpenImageMessage, SaveProjectMessage, SaveProjectAsMessage, NewProjectMessage, ExportMessage, ExportType, SetSidePanelVisibilityMessage } from './ipc-messages'
+import { app, BrowserWindow, dialog, ipcMain, Menu } from 'electron'
+import windowStateKeeper from 'electron-window-state'
+import { closeSync, openSync, writeSync } from 'fs'
+import { basename, join } from 'path'
+import { CLI } from '../cli/cli'
+import ProjectFile from '../gui/io/project-file'
+import {
+  OpenDroppedProjectMessage,
+  SetDocumentStateMessage,
+  SpecifyExportPathMessage,
+  SpecifyProjectPathMessage,
+} from '../gui/ipc-messages'
+import { Palette } from '../gui/style/palette'
+import AppMenuManager from './app-menu-manager'
+import {
+  ExportMessage,
+  ExportType,
+  NewProjectMessage,
+  OpenImageMessage,
+  OpenProjectMessage,
+  SaveProjectAsMessage,
+  SaveProjectMessage,
+  SetSidePanelVisibilityMessage,
+} from './ipc-messages'
 const path = require('path')
 const url = require('url')
-
-import windowStateKeeper from 'electron-window-state'
-import { SpecifyProjectPathMessage, SpecifyExportPathMessage, SetDocumentStateMessage, OpenDroppedProjectMessage } from '../gui/ipc-messages'
-import { basename, join } from 'path'
-import AppMenuManager from './app-menu-manager'
-import ProjectFile from '../gui/io/project-file'
-import { Palette } from '../gui/style/palette'
-import { openSync, writeSync, closeSync } from 'fs'
-import { CLI } from '../cli/cli'
-
-app.allowRendererProcessReuse = true
 
 let mainWindow: Electron.BrowserWindow | null = null
 
 export interface DocumentState {
   hasUnsavedChanges: boolean
-  filePath: string | null,
+  filePath: string | null
   isExampleProject: boolean
 }
 
@@ -77,7 +88,7 @@ function createWindow() {
   const minHeight = 768
   let mainWindowState = windowStateKeeper({
     defaultWidth: minWidth,
-    defaultHeight: minHeight
+    defaultHeight: minHeight,
   })
 
   let windowIconPath: string | undefined
@@ -104,157 +115,153 @@ function createWindow() {
     webPreferences: {
       // Allow loading local files in dev mode
       webSecurity: process.env.DEV === undefined,
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
   })
 
   mainWindowState.manage(window)
   mainWindow = window
 
-  let appMenuManager = new AppMenuManager(
-    {
-      onNewProject: () => {
-        if (mainWindow) {
-          showDiscardChangesDialogIfNeeded(mainWindow, (didCancel: boolean) => {
-            if (!didCancel) {
-              window.webContents.send(
-                NewProjectMessage.type,
-                new NewProjectMessage()
-              )
-            }
-          })
-        } else {
-          createWindow()
-        }
-      },
-      onOpenProject: () => {
+  let appMenuManager = new AppMenuManager({
+    onNewProject: () => {
+      if (mainWindow) {
         showDiscardChangesDialogIfNeeded(mainWindow, (didCancel: boolean) => {
           if (!didCancel) {
-            if (mainWindow) {
-              dialog.showOpenDialog(
-                mainWindow,
-                {
-                  filters: [
-                    { name: 'fSpy project files', extensions: ['fspy'] }
-                  ],
-                  properties: ['openFile']
-                }
-              ).then((result) => {
+            window.webContents.send(
+              NewProjectMessage.type,
+              new NewProjectMessage()
+            )
+          }
+        })
+      } else {
+        createWindow()
+      }
+    },
+    onOpenProject: () => {
+      showDiscardChangesDialogIfNeeded(mainWindow, (didCancel: boolean) => {
+        if (!didCancel) {
+          if (mainWindow) {
+            dialog
+              .showOpenDialog(mainWindow, {
+                filters: [{ name: 'fSpy project files', extensions: ['fspy'] }],
+                properties: ['openFile'],
+              })
+              .then((result) => {
                 if (!result.canceled) {
                   openProject(result.filePaths[0], window)
                 }
-              }).catch((_) => {
+              })
+              .catch((_) => {
                 //
               })
-            } else {
-              dialog.showOpenDialog(
-                {
-                  filters: [
-                    { name: 'fSpy project files', extensions: ['fspy'] }
-                  ],
-                  properties: ['openFile']
-                }
-              ).then((result) => {
+          } else {
+            dialog
+              .showOpenDialog({
+                filters: [{ name: 'fSpy project files', extensions: ['fspy'] }],
+                properties: ['openFile'],
+              })
+              .then((result) => {
                 if (!result.canceled) {
-                  initialOpenMessage = new OpenProjectMessage(result.filePaths[0], false)
+                  initialOpenMessage = new OpenProjectMessage(
+                    result.filePaths[0],
+                    false
+                  )
                   createWindow()
                 }
-              }).catch((_) => {
+              })
+              .catch((_) => {
                 //
               })
-            }
           }
-        })
-      },
-      onSaveProject: () => {
-        window.webContents.send(
-          SaveProjectMessage.type,
-          new SaveProjectMessage()
-        )
-      },
-      onSaveProjectAs: () => {
-        dialog.showSaveDialog(
-          window,
-          {}
-        ).then((result) => {
+        }
+      })
+    },
+    onSaveProject: () => {
+      window.webContents.send(SaveProjectMessage.type, new SaveProjectMessage())
+    },
+    onSaveProjectAs: () => {
+      dialog
+        .showSaveDialog(window, {})
+        .then((result) => {
           if (!result.canceled && result.filePath !== undefined) {
             window.webContents.send(
               SaveProjectAsMessage.type,
               new SaveProjectAsMessage(result.filePath)
             )
           }
-        }).catch((_) => {
+        })
+        .catch((_) => {
           //
         })
-      },
-      onOpenImage: () => {
-        dialog.showOpenDialog(
-          window,
-          {
-            properties: ['openFile']
-          }
-        ).then((result) => {
+    },
+    onOpenImage: () => {
+      dialog
+        .showOpenDialog(window, {
+          properties: ['openFile'],
+        })
+        .then((result) => {
           if (!result.canceled) {
             window.webContents.send(
               OpenImageMessage.type,
               new OpenImageMessage(result.filePaths[0])
             )
           }
-        }).catch((_) => {
+        })
+        .catch((_) => {
           //
         })
-      },
-      onOpenExampleProject: () => {
-        showDiscardChangesDialogIfNeeded(mainWindow, (didCancel: boolean) => {
-          if (!didCancel) {
-            let projectPath = ProjectFile.exampleProjectPath
-            if (mainWindow) {
-              window.webContents.send(
-                OpenProjectMessage.type,
-                new OpenProjectMessage(projectPath, true)
-              )
-            } else {
-              initialOpenMessage = new OpenProjectMessage(projectPath, true)
-              createWindow()
-            }
+    },
+    onOpenExampleProject: () => {
+      showDiscardChangesDialogIfNeeded(mainWindow, (didCancel: boolean) => {
+        if (!didCancel) {
+          let projectPath = ProjectFile.exampleProjectPath
+          if (mainWindow) {
+            window.webContents.send(
+              OpenProjectMessage.type,
+              new OpenProjectMessage(projectPath, true)
+            )
+          } else {
+            initialOpenMessage = new OpenProjectMessage(projectPath, true)
+            createWindow()
           }
-        })
-      },
-      onExportJSON: () => {
-        window.webContents.send(
-          ExportMessage.type,
-          new ExportMessage(ExportType.CameraParametersJSON)
-        )
-      },
-      onExportProjectImage: () => {
-        window.webContents.send(
-          ExportMessage.type,
-          new ExportMessage(ExportType.ProjectImage)
-        )
-      },
-      onQuit: () => {
-        app.quit()
-      },
-      onEnterFullScreenMode: () => {
-        window.webContents.send(
-          SetSidePanelVisibilityMessage.type,
-          new SetSidePanelVisibilityMessage(false)
-        )
-        window.setFullScreen(true)
-      },
-      onExitFullScreenMode: () => {
-        window.webContents.send(
-          SetSidePanelVisibilityMessage.type,
-          new SetSidePanelVisibilityMessage(true)
-        )
-        window.setFullScreen(false)
-      }
-    }
-  )
+        }
+      })
+    },
+    onExportJSON: () => {
+      window.webContents.send(
+        ExportMessage.type,
+        new ExportMessage(ExportType.CameraParametersJSON)
+      )
+    },
+    onExportProjectImage: () => {
+      window.webContents.send(
+        ExportMessage.type,
+        new ExportMessage(ExportType.ProjectImage)
+      )
+    },
+    onQuit: () => {
+      app.quit()
+    },
+    onEnterFullScreenMode: () => {
+      window.webContents.send(
+        SetSidePanelVisibilityMessage.type,
+        new SetSidePanelVisibilityMessage(false)
+      )
+      window.setFullScreen(true)
+    },
+    onExitFullScreenMode: () => {
+      window.webContents.send(
+        SetSidePanelVisibilityMessage.type,
+        new SetSidePanelVisibilityMessage(true)
+      )
+      window.setFullScreen(false)
+    },
+  })
 
   // Prevent following links, e.g when they are dropped
   // on the app window
-  window.webContents.on('will-navigate', ev => {
+  window.webContents.on('will-navigate', (ev) => {
     if (process.env.DEV) {
       // Allow this event in dev builds, since auto reload
       // relies on it
@@ -272,7 +279,7 @@ function createWindow() {
     documentState = {
       hasUnsavedChanges: false,
       filePath: null,
-      isExampleProject: false
+      isExampleProject: false,
     }
 
     if (initialOpenMessage) {
@@ -307,9 +314,9 @@ function createWindow() {
           console.log('process.argv:')
           console.log(process.argv)
 
-          const errorMessage = 'Failed to open \'' + filePath + '\'. ' + error
+          const errorMessage = "Failed to open '" + filePath + "'. " + error
           dialog.showMessageBoxSync(window, {
-            message: errorMessage
+            message: errorMessage,
           })
         }
       }
@@ -324,18 +331,19 @@ function createWindow() {
   const startUrl = url.format({
     pathname: path.join(__dirname, '../build/index.html'),
     protocol: 'file:',
-    slashes: true
+    slashes: true,
   })
 
   const devUrl = 'http://localhost:8080'
 
-  window.loadURL(
-    process.env.DEV ? devUrl : startUrl
-  ).then((_) => {
-    //
-  }).catch((_) => {
-    //
-  })
+  window
+    .loadURL(process.env.DEV ? devUrl : startUrl)
+    .then((_) => {
+      //
+    })
+    .catch((_) => {
+      //
+    })
 
   Menu.setApplicationMenu(appMenuManager.menu)
   appMenuManager.setExitFullScreenItemEnabled(false)
@@ -377,46 +385,55 @@ function createWindow() {
     window.setMenuBarVisibility(true)
   })
 
-  ipcMain.on(SpecifyProjectPathMessage.type, (_: any, __: SpecifyProjectPathMessage) => {
-    // TODO: DRY
-    dialog.showSaveDialog(
-      window,
-      {}
-    ).then((result) => {
-      if (!result.canceled && result.filePath) {
-        window.webContents.send(
-          SaveProjectAsMessage.type,
-          new SaveProjectAsMessage(result.filePath)
-        )
-      }
-    }).catch((_) => {
-      //
-    })
-  })
+  ipcMain.on(
+    SpecifyProjectPathMessage.type,
+    (_: any, __: SpecifyProjectPathMessage) => {
+      // TODO: DRY
+      dialog
+        .showSaveDialog(window, {})
+        .then((result) => {
+          if (!result.canceled && result.filePath) {
+            window.webContents.send(
+              SaveProjectAsMessage.type,
+              new SaveProjectAsMessage(result.filePath)
+            )
+          }
+        })
+        .catch((_) => {
+          //
+        })
+    }
+  )
 
-  ipcMain.on(SpecifyExportPathMessage.type, (_: any, message: SpecifyExportPathMessage) => {
-    // TODO: DRY
-    dialog.showSaveDialog(
-      window,
-      {}
-    ).then((result) => {
-      if (!result.canceled && result.filePath) {
-        let file = openSync(result.filePath, 'w')
-        writeSync(file, message.data)
-        closeSync(file)
-      }
-    }).catch((_) => {
-      //
-    })
-  })
+  ipcMain.on(
+    SpecifyExportPathMessage.type,
+    (_: any, message: SpecifyExportPathMessage) => {
+      // TODO: DRY
+      dialog
+        .showSaveDialog(window, {})
+        .then((result) => {
+          if (!result.canceled && result.filePath) {
+            let file = openSync(result.filePath, 'w')
+            writeSync(file, message.data)
+            closeSync(file)
+          }
+        })
+        .catch((_) => {
+          //
+        })
+    }
+  )
 
-  ipcMain.on(OpenDroppedProjectMessage.type, (_: any, message: OpenDroppedProjectMessage) => {
-    showDiscardChangesDialogIfNeeded(window, (didCancel: boolean) => {
-      if (!didCancel) {
-        openProject(message.filePath, window)
-      }
-    })
-  })
+  ipcMain.on(
+    OpenDroppedProjectMessage.type,
+    (_: any, message: OpenDroppedProjectMessage) => {
+      showDiscardChangesDialogIfNeeded(window, (didCancel: boolean) => {
+        if (!didCancel) {
+          openProject(message.filePath, window)
+        }
+      })
+    }
+  )
 
   function refreshTitle(window: BrowserWindow) {
     let title = 'Untitled'
@@ -452,22 +469,25 @@ function createWindow() {
     window.setTitle(title)
   }
 
-  ipcMain.on(SetDocumentStateMessage.type, (_: any, message: SetDocumentStateMessage) => {
-    if (documentState !== null) {
-      if (message.filePath !== undefined) {
-        documentState.filePath = message.filePath
-      }
-      if (message.hasUnsavedChanges !== undefined) {
-        documentState.hasUnsavedChanges = message.hasUnsavedChanges
-      }
+  ipcMain.on(
+    SetDocumentStateMessage.type,
+    (_: any, message: SetDocumentStateMessage) => {
+      if (documentState !== null) {
+        if (message.filePath !== undefined) {
+          documentState.filePath = message.filePath
+        }
+        if (message.hasUnsavedChanges !== undefined) {
+          documentState.hasUnsavedChanges = message.hasUnsavedChanges
+        }
 
-      if (message.isExampleProject !== undefined) {
-        documentState.isExampleProject = message.isExampleProject
-        appMenuManager.setSaveItemEnabled(!message.isExampleProject)
+        if (message.isExampleProject !== undefined) {
+          documentState.isExampleProject = message.isExampleProject
+          appMenuManager.setSaveItemEnabled(!message.isExampleProject)
+        }
       }
+      refreshTitle(window)
     }
-    refreshTitle(window)
-  })
+  )
 }
 
 function showDiscardChangesDialogIfNeeded(
@@ -485,15 +505,12 @@ function showDiscardChangesDialogIfNeeded(
   }
 
   if (documentState.hasUnsavedChanges) {
-    let result = dialog.showMessageBoxSync(
-      window!,
-      {
-        type: 'question',
-        buttons: ['Discard', 'Cancel'],
-        title: 'Proceed?',
-        message: 'Do you want to discard unsaved changes?'
-      }
-    )
+    let result = dialog.showMessageBoxSync(window!, {
+      type: 'question',
+      buttons: ['Discard', 'Cancel'],
+      title: 'Proceed?',
+      message: 'Do you want to discard unsaved changes?',
+    })
     callback(result != 0)
   } else {
     callback(false)
