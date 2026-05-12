@@ -16,13 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { createStore, applyMiddleware, AnyAction, Store } from 'redux'
+import { legacy_createStore as createStore, applyMiddleware } from 'redux'
 import rootReducer from '../reducers/root'
-import { StoreState } from '../types/store-state'
-import thunk from 'redux-thunk'
+import { thunk } from 'redux-thunk'
 import { appMiddleware } from './app-middleware'
 
-const store: Store<any> = createStore<StoreState, AnyAction, {}, {}>(
+const store = createStore(
   rootReducer,
   applyMiddleware(appMiddleware, thunk)
 )

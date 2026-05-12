@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { combineReducers } from 'redux'
+import { combineReducers, Reducer } from 'redux'
 import { StoreState } from '../types/store-state'
 import { calibrationSettingsBase } from './calibration-settings-base'
 import { calibrationSettings1VP } from './calibration-settings-1-vp'
@@ -30,7 +30,7 @@ import { globalSettings } from './global-settings'
 import { imageState } from './image-state'
 import { uiState } from './ui-state'
 
-const rootReducer = combineReducers<StoreState>({
+const rootReducer = combineReducers({
   globalSettings,
   calibrationSettingsBase,
   calibrationSettings1VP,
@@ -44,4 +44,4 @@ const rootReducer = combineReducers<StoreState>({
   uiState
 })
 
-export default rootReducer
+export default rootReducer as unknown as Reducer<StoreState>

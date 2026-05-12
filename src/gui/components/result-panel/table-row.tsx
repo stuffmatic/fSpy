@@ -18,7 +18,7 @@
 
 import * as React from 'react'
 import Button from '../common/button'
-import { clipboard } from 'electron'
+import '../../types/electron-api'
 
 interface TableRowProps {
   title: string
@@ -43,7 +43,7 @@ export default class TableRow extends React.PureComponent<TableRowProps> {
         <span style={{ fontFamily: 'monospace' }}> {this.valueDisplayString}</span>
         <span style={{ flexGrow: 1, textAlign: 'right' }}>
           <Button width='50px' title='Copy' onClick={ () => {
-            clipboard.writeText(this.valueClipboardString)
+            window.electronAPI.writeClipboardText(this.valueClipboardString)
           } }/>
         </span>
       </div>

@@ -16,14 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { openSync, writeSync, closeSync, readFileSync, readSync } from 'fs'
 import store from '../store/store'
 import { StoreState } from '../types/store-state'
 import SavedState from './saved-state'
 import { AppAction, loadState, setProjectFilePath } from '../actions'
 import { Dispatch } from 'redux'
-import { loadImage, resourcePath } from './util'
-import { remote } from 'electron'
+import { loadImage } from './util'
+import '../types/electron-api'
 import { defaultResultDisplaySettings } from '../defaults/result-display-settings'
 import { cameraPresets } from '../solver/camera-presets'
 import { ReferenceDistanceUnit } from '../types/calibration-settings'
@@ -33,10 +32,6 @@ export default class ProjectFile {
   static readonly PROJECT_FILE_EXTENSION = 'fspy'
   static readonly PROJECT_FILE_ID = 'fspy'
   static readonly PROJECT_FILE_VERSION = 1
-
-  static get exampleProjectPath() {
-    return resourcePath(this.EXAMPLE_PROJECT_FILENAME)
-  }
 
   static getStateToSave(): SavedState {
     let storeState: StoreState = store.getState()
@@ -53,7 +48,7 @@ export default class ProjectFile {
     }
   }
 
-  static save(path: string, dispatch: Dispatch<AppAction>) {
+  static async save(path: string, dispatch: Dispatch<AppAction>) {
 
     if (!path.endsWith('.' + this.PROJECT_FILE_EXTENSION)) {
       path += '.' + this.PROJECT_FILE_EXTENSION
@@ -65,63 +60,69 @@ export default class ProjectFile {
     let stateToSave = this.getStateToSave()
 
     let stateJsonString = JSON.stringify(stateToSave)
-    let stateBuffer = new Buffer(stateJsonString)
+    let stateBytes = new TextEncoder().encode(stateJsonString)
 
-    let headerBuffer = new Buffer(16)
+    let headerBytes = new Uint8Array(16)
+    let headerView = new DataView(headerBytes.buffer)
 
-    headerBuffer.writeUInt8(this.PROJECT_FILE_ID.charCodeAt(0), 0)
-    headerBuffer.writeUInt8(this.PROJECT_FILE_ID.charCodeAt(1), 1)
-    headerBuffer.writeUInt8(this.PROJECT_FILE_ID.charCodeAt(2), 2)
-    headerBuffer.writeUInt8(this.PROJECT_FILE_ID.charCodeAt(3), 3)
-    headerBuffer.writeUInt32LE(this.PROJECT_FILE_VERSION, 4)
-    headerBuffer.writeUInt32LE(stateBuffer.length, 8)
-    headerBuffer.writeUInt32LE(imageData ? imageData.length : 0, 12)
+    headerBytes[0] = this.PROJECT_FILE_ID.charCodeAt(0)
+    headerBytes[1] = this.PROJECT_FILE_ID.charCodeAt(1)
+    headerBytes[2] = this.PROJECT_FILE_ID.charCodeAt(2)
+    headerBytes[3] = this.PROJECT_FILE_ID.charCodeAt(3)
+    headerView.setUint32(4, this.PROJECT_FILE_VERSION, true)
+    headerView.setUint32(8, stateBytes.length, true)
+    headerView.setUint32(12, imageData ? imageData.length : 0, true)
 
-    let file = openSync(path, 'w')
-    writeSync(file, headerBuffer)
-    writeSync(file, stateBuffer)
+    let totalSize = headerBytes.length + stateBytes.length + (imageData ? imageData.length : 0)
+    let fileData = new Uint8Array(totalSize)
+    fileData.set(headerBytes, 0)
+    fileData.set(stateBytes, headerBytes.length)
     if (imageData) {
-      writeSync(file, imageData)
+      fileData.set(imageData, headerBytes.length + stateBytes.length)
     }
-    closeSync(file)
+
+    await window.electronAPI.writeFile(path, fileData)
     dispatch(setProjectFilePath(path))
   }
 
-  static loadExample(dispatch: Dispatch<AppAction>) {
-    this.load(this.exampleProjectPath, dispatch, true)
+  static async loadExample(dispatch: Dispatch<AppAction>) {
+    let examplePath = await window.electronAPI.getResourcePath(this.EXAMPLE_PROJECT_FILENAME)
+    await this.load(examplePath, dispatch, true)
   }
 
-  static load(path: string, dispatch: Dispatch<AppAction>, isExampleProject: boolean) {
-    if (!this.isProjectFile(path)) {
-      remote.dialog.showErrorBox(// TODO: proper modal
+  static async load(path: string, dispatch: Dispatch<AppAction>, isExampleProject: boolean) {
+    let valid = await window.electronAPI.isProjectFile(path)
+    if (!valid) {
+      window.electronAPI.showErrorBox(
         'Failed to load project',
         'This does not appear to be a valid project file'
       )
     } else {
-      let buffer = new Buffer(0)
+      let buffer: Uint8Array
       try {
-        buffer = readFileSync(path)
+        buffer = await window.electronAPI.readFile(path)
       } catch {
-        remote.dialog.showErrorBox(// TODO: proper modal
+        window.electronAPI.showErrorBox(
           'Failed to load image data',
           'Could not load the image data contained in the project file'
         )
         return
       }
 
+      let view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength)
       let headerSize = 16
-      let projectFileVersion = buffer.readUInt32LE(4)
+      let projectFileVersion = view.getUint32(4, true)
       if (projectFileVersion != this.PROJECT_FILE_VERSION) {
-        remote.dialog.showErrorBox(// TODO: proper modal
+        window.electronAPI.showErrorBox(
           'Failed to load project',
           'Version ' + projectFileVersion + ' project files are not compatible with this version of fSpy.'
         )
       } else {
-        let stateStringSize = buffer.readUInt32LE(8)
-        let stateStringBuffer = buffer.slice(headerSize, headerSize + stateStringSize)
-        let stateString = stateStringBuffer.toString()
-        let imageBufferSize = buffer.readUInt32LE(12)
-        let imageBuffer: Buffer | null = null
+        let stateStringSize = view.getUint32(8, true)
+        let stateStringBytes = buffer.slice(headerSize, headerSize + stateStringSize)
+        let stateString = new TextDecoder().decode(stateStringBytes)
+        let imageBufferSize = view.getUint32(12, true)
+        let imageBuffer: Uint8Array | null = null
         if (imageBufferSize > 0) {
           imageBuffer = buffer.slice(headerSize + stateStringSize)
         }
@@ -184,7 +185,7 @@ export default class ProjectFile {
               )
             },
             () => {
-              remote.dialog.showErrorBox(
+              window.electronAPI.showErrorBox(
                 'Failed to load image data',
                 'Could not load the image data contained in the project file'
               )
@@ -211,29 +212,7 @@ export default class ProjectFile {
     }
   }
 
-  static isProjectFile(path: string): boolean {
-    let file = 0
-    try {
-      file = openSync(path, 'r')
-    } catch {
-      return false
-    }
-
-    let buffer = new Buffer(4)
-    readSync(file, buffer, 0, 4, 0)
-    closeSync(file)
-    let fileId = [
-      buffer.readUInt8(0),
-      buffer.readUInt8(1),
-      buffer.readUInt8(2),
-      buffer.readUInt8(3)
-    ]
-    for (let i = 0; i < fileId.length; i++) {
-      if (fileId[i] != this.PROJECT_FILE_ID.charCodeAt(i)) {
-        return false
-      }
-    }
-
-    return true
+  static async isProjectFile(path: string): Promise<boolean> {
+    return window.electronAPI.isProjectFile(path)
   }
 }

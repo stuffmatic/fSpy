@@ -208,11 +208,11 @@ export function setOverlay3DGuide(overlay3DGuide: Overlay3DGuide): SetOverlay3DG
 export interface SetImage {
   type: ActionTypes.SET_IMAGE
   url: string
-  data: Buffer
+  data: Uint8Array
   width: number
   height: number
 }
-export function setImage(url: string, data: Buffer, width: number, height: number): SetImage {
+export function setImage(url: string, data: Uint8Array, width: number, height: number): SetImage {
   return {
     type: ActionTypes.SET_IMAGE,
     url: url,

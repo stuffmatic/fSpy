@@ -28,11 +28,9 @@ import { GlobalSettings } from './types/global-settings'
 import { UIState } from './types/ui-state'
 import { ImageState } from './types/image-state'
 import { SolverResult } from './solver/solver-result'
-import { ipcRenderer, remote } from 'electron'
-import { NewProjectMessage, OpenProjectMessage, SaveProjectMessage, SaveProjectAsMessage, OpenImageMessage, ExportMessage, ExportType, SetSidePanelVisibilityMessage } from '../main/ipc-messages'
+import './types/electron-api'
+import { ExportType } from '../main/ipc-messages'
 import ProjectFile from './io/project-file'
-import { readFileSync } from 'fs'
-import { SpecifyProjectPathMessage, OpenDroppedProjectMessage, SpecifyExportPathMessage } from './ipc-messages'
 import { loadImage } from './io/util'
 import store from './store/store'
 import SplashScreen from './components/splash-screen'
@@ -61,7 +59,7 @@ class App extends React.PureComponent<AppProps> {
     super(props)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.registerIPCHandlers()
 
     document.ondragover = (ev) => {
@@ -83,14 +81,15 @@ class App extends React.PureComponent<AppProps> {
       if (ev.dataTransfer != null) {
         let firstFile = ev.dataTransfer.files[0]
         if (firstFile) {
-          let filePath = firstFile.path
-          let isProjectFile = ProjectFile.isProjectFile(filePath)
-          if (isProjectFile) {
-            this.props.onProjectFileDropped(filePath)
-          } else {
-            // try to open the file as an image
-            this.props.onImageFileDropped(filePath)
-          }
+          let filePath = window.electronAPI.getPathForFile(firstFile)
+          ProjectFile.isProjectFile(filePath).then((isProject) => {
+            if (isProject) {
+              this.props.onProjectFileDropped(filePath)
+            } else {
+              // try to open the file as an image
+              this.props.onImageFileDropped(filePath)
+            }
+          })
         }
         ev.preventDefault()
         return false
@@ -112,36 +111,36 @@ class App extends React.PureComponent<AppProps> {
   }
 
   private registerIPCHandlers() {
-    ipcRenderer.on(NewProjectMessage.type, (_: any, __: NewProjectMessage) => {
+    window.electronAPI.onNewProject(() => {
       this.props.onNewProjectIPCMessage()
     })
 
-    ipcRenderer.on(OpenProjectMessage.type, (_: any, message: OpenProjectMessage) => {
-      this.props.onOpenProjectIPCMessage(message.filePath, message.isExampleProject)
+    window.electronAPI.onOpenProject((filePath: string, isExampleProject: boolean) => {
+      this.props.onOpenProjectIPCMessage(filePath, isExampleProject)
     })
 
-    ipcRenderer.on(SaveProjectMessage.type, (_: any, __: SaveProjectMessage) => {
+    window.electronAPI.onSaveProject(() => {
       if (this.props.uiState.projectFilePath) {
         this.props.onSaveProjectAsIPCMessage(this.props.uiState.projectFilePath)
       } else {
-        ipcRenderer.send(SpecifyProjectPathMessage.type, new SpecifyProjectPathMessage())
+        window.electronAPI.sendSpecifyProjectPath()
       }
     })
 
-    ipcRenderer.on(SaveProjectAsMessage.type, (_: any, message: SaveProjectAsMessage) => {
-      this.props.onSaveProjectAsIPCMessage(message.filePath)
+    window.electronAPI.onSaveProjectAs((filePath: string) => {
+      this.props.onSaveProjectAsIPCMessage(filePath)
     })
 
-    ipcRenderer.on(OpenImageMessage.type, (_: any, message: OpenImageMessage) => {
-      this.props.onOpenImageIPCMessage(message.filePath)
+    window.electronAPI.onOpenImage((filePath: string) => {
+      this.props.onOpenImageIPCMessage(filePath)
     })
 
-    ipcRenderer.on(ExportMessage.type, (_: any, message: ExportMessage) => {
-      this.props.onExportIPCMessage(message.exportType)
+    window.electronAPI.onExport((exportType: number) => {
+      this.props.onExportIPCMessage(exportType)
     })
 
-    ipcRenderer.on(SetSidePanelVisibilityMessage.type, (_: any, message: SetSidePanelVisibilityMessage) => {
-      this.props.onSetSidePanelVisibilityIPCMessage(message.panelsAreVisible)
+    window.electronAPI.onSetSidePanelVisibility((panelsAreVisible: boolean) => {
+      this.props.onSetSidePanelVisibilityIPCMessage(panelsAreVisible)
     })
   }
 }
@@ -158,26 +157,23 @@ export function mapStateToProps(state: StoreState) {
 export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
   return {
     onImageFileDropped: (imagePath: string) => {
-      let imageBuffer = readFileSync(imagePath)
-      // TODO: good to do async loading here?
-      loadImage(
-        imageBuffer,
-        (width: number, height: number, url: string) => {
-          dispatch(setImage(url, imageBuffer, width, height))
-        },
-        () => {
-          remote.dialog.showErrorBox(
-            'Failed to load image data',
-            'Could not load the image data. Is this a valid image file?'
-          )
-        }
-      )
+      window.electronAPI.readFile(imagePath).then((imageBuffer) => {
+        loadImage(
+          imageBuffer,
+          (width: number, height: number, url: string) => {
+            dispatch(setImage(url, imageBuffer, width, height))
+          },
+          () => {
+            window.electronAPI.showErrorBox(
+              'Failed to load image data',
+              'Could not load the image data. Is this a valid image file?'
+            )
+          }
+        )
+      })
     },
     onProjectFileDropped: (projectPath: string) => {
-      ipcRenderer.send(
-        OpenDroppedProjectMessage.type,
-        new OpenDroppedProjectMessage(projectPath)
-      )
+      window.electronAPI.sendOpenDroppedProject(projectPath)
     },
     onOpenExampleProjectPressed: () => {
       ProjectFile.loadExample(dispatch)
@@ -192,16 +188,17 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
       ProjectFile.save(filePath, dispatch)
     },
     onOpenImageIPCMessage: (imagePath: string) => {
-      let imageBuffer = readFileSync(imagePath)
-      loadImage(
-        imageBuffer,
-        (width: number, height: number, url: string) => {
-          dispatch(setImage(url, imageBuffer, width, height))
-        },
-        () => {
-          alert('Failed to load image')
-        }
-      )
+      window.electronAPI.readFile(imagePath).then((imageBuffer) => {
+        loadImage(
+          imageBuffer,
+          (width: number, height: number, url: string) => {
+            dispatch(setImage(url, imageBuffer, width, height))
+          },
+          () => {
+            alert('Failed to load image')
+          }
+        )
+      })
     },
     onOpenExampleProjectIPCMessage: () => {
       ProjectFile.loadExample(dispatch)
@@ -222,10 +219,7 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
       }
 
       if (dataToExport) {
-        ipcRenderer.send(
-          SpecifyExportPathMessage.type,
-          new SpecifyExportPathMessage(exportType, dataToExport)
-        )
+        window.electronAPI.sendSpecifyExportPath(exportType, dataToExport)
       }
     },
     onSetSidePanelVisibilityIPCMessage: (panelsAreVisible: boolean) => {

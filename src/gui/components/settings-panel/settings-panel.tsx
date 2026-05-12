@@ -106,13 +106,22 @@ export default class SettingsPanel extends React.PureComponent<SettingsContainer
               }}
             />
             <PanelSpacer />
-            <Checkbox
-              title={'Dim image'}
-              isSelected={ this.props.globalSettings.imageOpacity < 1}
-              onChange={(checked: boolean) => {
-                this.props.onImageOpacityChange(checked ? 0.2 : 1)
-              }}
-            />
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div>Image opacity</div>
+              <div style={{ flexGrow: 1, marginLeft: '8px' }}>
+                <input
+                  style={{ width: '100%' }}
+                  type='range'
+                  min='0'
+                  max='1'
+                  step='0.01'
+                  value={this.props.globalSettings.imageOpacity}
+                  onChange={(event) => {
+                    this.props.onImageOpacityChange(parseFloat(event.target.value))
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

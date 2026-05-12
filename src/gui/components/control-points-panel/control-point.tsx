@@ -45,6 +45,8 @@ export default class ControlPoint extends React.Component<ControlPointProps, Con
   readonly RADIUS = 3
   readonly SHIFT_DRAG_DAMING = 0.1
 
+  private circleRef = React.createRef<any>()
+
   constructor(props: ControlPointProps) {
     super(props)
 
@@ -59,11 +61,22 @@ export default class ControlPoint extends React.Component<ControlPointProps, Con
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyDown)
     document.addEventListener('keyup', this.handleKeyUp)
+    window.addEventListener('mouseup', this.handleWindowMouseUp)
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown)
     document.removeEventListener('keyup', this.handleKeyUp)
+    window.removeEventListener('mouseup', this.handleWindowMouseUp)
+  }
+
+  private handleWindowMouseUp = () => {
+    if (this.state.isDragging) {
+      const node = this.circleRef.current
+      if (node) {
+        node.stopDrag()
+      }
+    }
   }
 
   handleKeyDown = (event: KeyboardEvent) => {
@@ -92,6 +105,7 @@ export default class ControlPoint extends React.Component<ControlPointProps, Con
     return (
       <Group>
         <Circle
+          ref={this.circleRef}
           draggable={!this.props.isDragDisabled}
           radius={this.HIT_RADIUS}
           x={this.props.absolutePosition.x}
@@ -122,10 +136,20 @@ export default class ControlPoint extends React.Component<ControlPointProps, Con
             })
             this.onDragPositionChanged()
           }}
-          onDragEnd={(event: any) => {
+          onDragEnd={(_event: any) => {
+            // Reset the Konva node position to match React props.
+            // During drag, Konva internally moves the node to follow the pointer.
+            // If the pointer moved outside the stage, the node's internal position
+            // can be far from the visible area. react-konva may skip updating it
+            // if props haven't changed (e.g. clamped to the same boundary), leaving
+            // the hit area desynchronized from the visual representation.
+            const node = this.circleRef.current
+            if (node) {
+              node.x(this.props.absolutePosition.x)
+              node.y(this.props.absolutePosition.y)
+            }
             this.setState({
               ...this.state,
-              previousDragPosition: { x: event.target.x(), y: event.target.y() },
               isDragging: false
             })
             this.onDragPositionChanged()

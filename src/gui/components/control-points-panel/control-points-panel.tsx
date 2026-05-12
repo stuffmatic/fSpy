@@ -134,7 +134,7 @@ export default class ControlPointsPanel extends React.Component<ControlPointsPan
             })
           }}
         >
-          {({ measureRef }) => {
+          {({ measureRef }: { measureRef: (ref: Element | null) => void }) => {
             return (<div id='image-panel' ref={measureRef} >
               {hasImage ? this.renderImageAndControlPoints(width, height, is1VPMode) : null }
             </div>

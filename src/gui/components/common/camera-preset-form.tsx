@@ -27,6 +27,7 @@ import { cameraPresets } from '../../solver/camera-presets'
 export interface CameraPresetFormProps {
   absoluteFocalLength: number
   cameraData: CameraData
+  children?: React.ReactNode
   onCameraPresetChange(cameraPreset: string | null): void
   onSensorSizeChange(width: number | undefined, height: number | undefined): void
 }

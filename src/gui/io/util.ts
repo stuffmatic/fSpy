@@ -16,14 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path'
+import '../types/electron-api'
 
 export function loadImage(
-  imageBuffer: Buffer,
+  imageBuffer: Uint8Array,
   onLoad: (width: number, height: number, url: string) => void,
   onError: () => void
 ) {
-  let blob = new Blob([imageBuffer])
+  let blob = new Blob([new Uint8Array(imageBuffer) as BlobPart])
   let url = URL.createObjectURL(blob)
   let image = new Image()
   image.src = url
@@ -35,26 +35,10 @@ export function loadImage(
   }
 }
 
-export function resourceURL(fileName: string): string {
-  if (process.resourcesPath != null) {
-    if (process.env.DEV) {
-      return join(`file://${process.cwd()}`, 'assets/electron', fileName)
-    } else {
-      return join(process.resourcesPath, fileName)
-    }
-  }
-
-  return ''
+export function resourceURL(fileName: string): Promise<string> {
+  return window.electronAPI.getResourceURL(fileName)
 }
 
-export function resourcePath(fileName: string): string {
-  if (process.resourcesPath != null) {
-    if (process.env.DEV) {
-      return join(process.cwd(), 'assets/electron', fileName)
-    } else {
-      return join(process.resourcesPath, fileName)
-    }
-  }
-
-  return ''
+export function resourcePath(fileName: string): Promise<string> {
+  return window.electronAPI.getResourcePath(fileName)
 }

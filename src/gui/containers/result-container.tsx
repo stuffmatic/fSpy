@@ -104,4 +104,8 @@ export function mapDispatchToProps(dispatch: Dispatch<AppAction>) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResultContainer)
+interface OwnProps {
+  isVisible: boolean
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ResultContainer) as unknown as React.ComponentType<OwnProps>

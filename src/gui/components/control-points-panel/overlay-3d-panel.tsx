@@ -28,7 +28,6 @@ import MathUtil from '../../solver/math-util'
 import { Group, Line } from 'react-konva'
 import AABB from '../../solver/aabb'
 import AABBOps from '../../solver/aabb-ops'
-import { Point } from 'electron'
 import { axisGlyph } from './glyph-paths'
 
 interface GridLineProps {
@@ -112,7 +111,7 @@ export default class Overlay3DPanel extends React.PureComponent<Overlay3DPanelPr
       [new Vector3D(-1, 1, -1), new Vector3D(-1, 1, 1)]
     ]
 
-    let projectedFaces: Point[][] = []
+    let projectedFaces: Point2D[][] = []
     for (let face of [zMinFace, zMaxFace]) {
       let projected = face.map((vector: Vector3D) => this.project(vector.multipliedByScalar(size)))
       projectedFaces.push(projected)

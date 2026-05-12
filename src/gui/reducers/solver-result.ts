@@ -17,11 +17,11 @@
  */
 
 import { ActionTypes } from './../actions'
-import { AnyAction } from 'redux'
 import { SolverResult } from '../solver/solver-result'
 import { defaultSolverResult } from '../defaults/solver-result'
+import { AppAction } from '../actions'
 
-export function solverResult(state: SolverResult | undefined, action: AnyAction): SolverResult {
+export function solverResult(state: SolverResult | undefined, action: AppAction): SolverResult {
   if (state === undefined) {
     return defaultSolverResult
   }

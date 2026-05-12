@@ -27,12 +27,12 @@ To install necessary dependencies, run
 yarn
 ```
 
-The `src` folder contains two subfolders `main` and `gui`, containing code for the [Electron main and renderer processes](https://electronjs.org/docs/tutorial/application-architecture) respectively.
+The `src` folder contains three subfolders: `main` and `gui`, containing code for the [Electron main and renderer processes](https://electronjs.org/docs/tutorial/application-architecture) respectively, and `cli`, which contains a command-line interface for processing fSpy project files without the GUI. The main process includes a preload script (`src/main/preload.ts`) that bridges the renderer and main processes via IPC.
 
 Here's how to run the app in development mode
 
 1. Run `yarn dev-server` in a separate terminal tab to start the dev server
-2. Run `yarn build-dev` to build both the main and GUI code. This build step is needed to generate main process code used to start up the app.
+2. Run `yarn build-dev` to build the main, preload, and GUI code. This build step is needed to generate main process and preload code used to start up the app.
 3. Run `yarn electron-dev` in a separate terminal tab to start an Electron instance which uses the dev server to provide automatic reloading on GUI code changes.
 
 ⚠️ The current build process is not ideal. For example, it lacks support for live reloading on main process code changes. Changes to main process code require a manual rebuild, i.e steps 2-3, in order to show up in the app.
@@ -47,3 +47,5 @@ yarn dist
 ```
 
 which invokes [Electron builder](https://github.com/electron-userland/electron-builder).
+
+⚠️ The `yarn dist` script builds for macOS, Windows, and Linux (`-mwl`). Building for macOS requires running on macOS. To build only for the current platform, run `yarn dist-preview` instead (output in `dist/` without packaging).

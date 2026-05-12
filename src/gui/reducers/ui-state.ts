@@ -19,8 +19,7 @@
 import { ActionTypes, AppAction } from '../actions'
 import { UIState } from '../types/ui-state'
 import { defaultUIState } from '../defaults/ui-state'
-import { ipcRenderer } from 'electron'
-import { SetDocumentStateMessage } from '../ipc-messages'
+import '../types/electron-api'
 
 export function uiState(state: UIState | undefined, action: AppAction): UIState {
   if (state === undefined) {
@@ -31,28 +30,19 @@ export function uiState(state: UIState | undefined, action: AppAction): UIState 
 
   switch (action.type) {
     case ActionTypes.SET_PROJECT_HAS_UNSAVED_CHANGES:
-      ipcRenderer.send(
-        SetDocumentStateMessage.type,
-        new SetDocumentStateMessage(true, undefined, undefined)
-      )
+      window.electronAPI.sendSetDocumentState(true, undefined, undefined)
       return {
         ...state,
         projectHasUnsavedChanges: true
       }
     case ActionTypes.SET_PROJECT_FILE_PATH:
-      ipcRenderer.send(
-        SetDocumentStateMessage.type,
-        new SetDocumentStateMessage(false, action.projectFilePath, false)
-      )
+      window.electronAPI.sendSetDocumentState(false, action.projectFilePath, false)
       return {
         ...state,
         projectFilePath: action.projectFilePath
       }
     case ActionTypes.LOAD_DEFAULT_STATE:
-      ipcRenderer.send(
-        SetDocumentStateMessage.type,
-        new SetDocumentStateMessage(false, null, false)
-      )
+      window.electronAPI.sendSetDocumentState(false, null, false)
       return {
         ...state,
         projectHasUnsavedChanges: false,
@@ -64,13 +54,10 @@ export function uiState(state: UIState | undefined, action: AppAction): UIState 
         sidePanelsAreVisible: action.panelsAreVisible
       }
     case ActionTypes.LOAD_STATE:
-      ipcRenderer.send(
-        SetDocumentStateMessage.type,
-        new SetDocumentStateMessage(
-          false,
-          action.projectFilePath,
-          action.isExampleProject
-        )
+      window.electronAPI.sendSetDocumentState(
+        false,
+        action.projectFilePath,
+        action.isExampleProject
       )
       return {
         ...state,
